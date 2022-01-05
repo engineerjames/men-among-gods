@@ -1,8 +1,8 @@
 all: server cgi/info.cgi respawn password cgi/acct.cgi 
 
-CC=gcc
+CC=gcc -m32
 DEBUG=-g
-CFLAGS=-Wall -Wshadow -Winline -Wno-pointer-sign -O3 $(DEBUG) -march=pentium4 -fno-strict-aliasing
+CFLAGS=-Wall -Wshadow -Winline -Wno-pointer-sign -O3 $(DEBUG) -fno-strict-aliasing
 LDFLAGS=-O $(DEBUG) -lm -lz -lcrypt
 
 OBJS=.obj/server.o .obj/svr_disk.o .obj/svr_tick.o .obj/svr_act.o \
@@ -17,7 +17,7 @@ SHEADER=client.h data.h funcs.h gendefs.h globals.h server.h driver.h \
 lab9.h
 
 server:	$(OBJS) 
-	$(CC) $(LDFLAGS) -o server $(OBJS) 
+	$(CC) -o server $(OBJS) $(LDFLAGS)
 
 cgi/info.cgi: info.c gendefs.h data.h
 	$(CC) $(CFLAGS) -o info.cgi info.c
