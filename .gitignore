@@ -1,0 +1,6 @@
+# Ignore files generated from the server build
+src/server/.obj/**
+src/server/acct.cgi
+src/server/password
+src/server/respawn
+src/server/server
