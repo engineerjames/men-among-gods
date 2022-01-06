@@ -1,7 +1,7 @@
 #define MNAME	"Asguard"
 #define MHELP	"http://mercaston.dnsalias.net/help.html"
 #define MNEWS	"http://mercaston.dnsalias.net/news.html"
-#define MHOST	"mercaston.dnsalias.net"
+#define MHOST	"127.0.0.1"
 
 /*#define MNAME	"Revolution"
 #define MHELP	"http://192.168.0.5/help.html"
