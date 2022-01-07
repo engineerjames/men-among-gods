@@ -4,3 +4,15 @@ src/server/acct.cgi
 src/server/password
 src/server/respawn
 src/server/server
+src/server/server.pid
+
+# Ignore client build files
+src/client/*.obj
+src/client/*.exe
+src/client/*.RES
+src/client/*.ilc
+src/client/*.ild
+src/client/*.ilf
+src/client/*.ils
+src/client/*.map
+src/client/*.tds
