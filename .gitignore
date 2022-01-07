@@ -5,8 +5,10 @@ src/server/password
 src/server/respawn
 src/server/server
 src/server/server.pid
+src/server/*.log
 
 # Ignore client build files
+src/client/*.dat
 src/client/*.obj
 src/client/*.exe
 src/client/*.RES
