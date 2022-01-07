@@ -800,6 +800,7 @@ void cmd(int cmd,int x,int y)
 	xsend(buf);
 }
 
+// Same thing as cmd, but 's' is for silent? I guess?
 void cmds(int cmd,int x,int y)
 {
 	unsigned char buf[16];
@@ -853,10 +854,12 @@ void mouse_mapbox(int x,int y,int state)
 	mx=2*y+x-(YPOS*2)-XPOS+((TILEX-34)/2*32);
 	my=x-2*y+(YPOS*2)-XPOS+((TILEX-34)/2*32);;
 
+// I believe this is the code that controls those four corner things you can click on to perma-move in one direction
+// xmove -> eXtendedMove? Who knows...
         if (mx<3*32+12 || mx>(TILEX-7)*32+20 || my<7*32+12 || my>(TILEY-3)*32+20) {
 		if (state==MS_LB_UP) {
 			mx/=32; my/=32;
-		  
+
 			if (my==17 && (mx==2 || mx==3)) xmove=1;
 			if (mx==17 && (my==6 || my==7)) xmove=2;
 			if (my==17 && (mx==27 || mx==28)) xmove=3;
@@ -890,10 +893,11 @@ void mouse_mapbox(int x,int y,int state)
 	if (GetAsyncKeyState(VK_CONTROL)&0x8000) keys|=2;
 	if (GetAsyncKeyState(VK_MENU)&0x8000) keys|=4;
 
-	if (keys==0) {
+	if (keys==0) { // Player NOT holding shift, control, or MENU
 		tile_x=mx; tile_y=my;
 		tile_type=0;
 
+		// Once the player releases the mouse, issue the command to turn, then move.
 		if (state==MS_RB_UP) { xmove=0; cmd(CL_CMD_TURN,map[m].x,map[m].y); }
 		if (state==MS_LB_UP) { xmove=0; cmd(CL_CMD_MOVE,map[m].x,map[m].y); }
 		hightlight=HL_MAP;
@@ -1061,7 +1065,7 @@ int mouse_shop(int x,int y,int mode)
 	return 0;
 }
 
-
+// Where did the user click? (What is held in state?) State is the CURRENT state of the mouse
 void mouse(int x,int y,int state)
 {
 	if (!init_done) return;

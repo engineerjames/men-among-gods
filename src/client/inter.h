@@ -5,7 +5,7 @@
 #define MODEX			800
 #define MODEY			600
 
-#define DB_WINDOWED
+//#define DB_WINDOWED
 
 #define MAPX			TILEX
 #define MAPY			TILEY
