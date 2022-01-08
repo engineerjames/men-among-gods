@@ -1,6 +1,22 @@
+# Men Among Gods - Server
+This folder contains the source files in order to build both the server application, as well as a few helper applications as well (respawn, CGI, password).
 
-Please read the LICENSE
+## Installation Information
+You'll need to execute the following steps to get the server compiled and running on Linux.  These instructions were tested using WSL2 (Windows Subsystem for Linux 2, on Windows 11 - using the Ubuntu 20.04 distro):
 
+1. Follow instructions to install WSL2 on Windows 11. The Microsoft documentation is fairly good, and [can be found here](https://docs.microsoft.com/en-us/windows/wsl/install).
+
+2. Install necessary packages in order to build the server code:
+
+```bash
+dpkg install --add-architecture i386
+sudo apt install make gcc gcc-multilib g++-multilib libcrypt-dev libz1g-dev cmake
+```
+
+## Development Notes
+Do not check in changes to the .dat files the server relies on.
+
+## Miscellaneous Information
 There is a bug somewhere if the server finds lost items (garbage collection) or
 lost links!
 

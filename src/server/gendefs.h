@@ -37,7 +37,7 @@ All rights reserved.
 #define CNTSAY			(TICKS)
 #define MAXSAY			(TICKS*7)
 
-#define GODPASSWORD "xxxxxxxxxxxx"
+#define GODPASSWORD "devpassword"
 
 // wear positions
 #define WN_HEAD                 0

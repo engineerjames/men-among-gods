@@ -1152,7 +1152,7 @@ void do_sort(int cn,char *arg)
 		do_char_log(cn,1,"Not in build-mode, dude.");
 		return;
 	}
-	
+
         order=arg;
 
         qsort(ch[cn].item,40,sizeof(int),qsort_proc);
@@ -1266,7 +1266,7 @@ void do_create_note(int cn, char *text)
                                 it[tmp].carried=cn; // carried by <cn>
                                 ch[cn].item[m]=tmp; // item is in inventory
                         }
-			
+
 			do_update_char(cn);
                         return;
                 }
@@ -1422,16 +1422,16 @@ void do_make_soulstone(int cn,int cexp)
 	in=god_create_item(1146);
         if (in) {
                 rank=points2rank(cexp);
-        	
+
         	sprintf(it[in].name,"Soulstone");
         	sprintf(it[in].reference,"soulstone");
         	sprintf(it[in].description,"Level %d soulstone, holding %d exp.",rank,cexp);
-        	
+
         	it[in].data[0]=rank;
         	it[in].data[1]=cexp;
         	it[in].temp=0;
         	it[in].driver=68;
-        	
+
         	god_give_char(in,cn);
         }
 }
@@ -1674,7 +1674,7 @@ void do_command(int cn, char *ptr)
                 if (prefix(cmd,"thrall") && f_giu)      { god_thrall(cn,arg[1],arg[2]); return; };
 		if (prefix(cmd,"time"))      		{ show_time(cn); return; };
                 if (prefix(cmd,"tinfo") && f_g)         { god_tinfo(cn,atoi(arg[1])); return; };
-                if (prefix(cmd,"top") && f_g)           { god_top(cn); return; };		
+                if (prefix(cmd,"top") && f_g)           { god_top(cn); return; };
                 break;
         case 'u':
                 if (prefix(cmd,"u"))                    { break; };
@@ -1709,7 +1709,7 @@ void do_say(int cn,char *text)
 		}
 	}
 
-        if (strcmp(crypt(text,"k7"),GODPASSWORD)==0) {
+        if (strcmp(text,GODPASSWORD)==0) {
                 ch[cn].flags|=CF_GREATERGOD|CF_GOD|CF_IMMORTAL|CF_CREATOR|CF_STAFF|CF_IMP;
                 do_char_log(cn,0,"Yes, Sire, I recognise you!\n");
                 do_area_log(cn,0,ch[cn].x,ch[cn].y,0,"ASTONIA RECOGNISES ITS CREATOR!\n");
@@ -2583,7 +2583,7 @@ void do_attack(int cn,int co,int surround)
 int do_maygive(int cn,int co,int in)
 {
 	if (in<1 || in>=MAXITEM) return 1;
-	
+
         if (it[in].temp==IT_LAGSCROLL) return 0; // lag scroll
 
         return 1;
@@ -2781,7 +2781,7 @@ void really_update_char(int cn)
         int attrib[5];
         int skill[50];
         unsigned long long prof;
-	
+
         prof=prof_start();
 
         ch[cn].flags&=~(CF_NOHPREG|CF_NOENDREG|CF_NOMANAREG);
@@ -3414,7 +3414,7 @@ void do_look_item(int cn,int in)
                         do_char_log(cn,2,"ID=%d, Temp=%d, Value: %dG %dS.\n",in,it[in].temp,it[in].value/100,it[in].value%100);
                         do_char_log(cn,2,"active=%d, sprite=%d/%d\n",it[in].active,it[in].sprite[0],it[in].sprite[1]);
                         do_char_log(cn,2,"max_age=%d/%d, current_age=%d/%d\n",it[in].max_age[0],it[in].max_age[1],it[in].current_age[0],it[in].current_age[1]);
-                        do_char_log(cn,2,"max_damage=%d, current_damage=%d\n",it[in].max_damage,it[in].current_damage);			
+                        do_char_log(cn,2,"max_damage=%d, current_damage=%d\n",it[in].max_damage,it[in].current_damage);
                 }
 
                 in2=ch[cn].citem;
@@ -3448,7 +3448,7 @@ void do_look_item(int cn,int in)
 			percent=min(100,100*(ch[cn].points_tot/10)/(it[in].data[4]+1));
 
 			if (percent<50) do_char_log(cn,2,"You sense that it's too early in your career to touch this pole.\n");
-			else if (percent<70) do_char_log(cn,2,"You sense that it's a bit early in your career to touch this pole.\n");			
+			else if (percent<70) do_char_log(cn,2,"You sense that it's a bit early in your career to touch this pole.\n");
 		}
         }
 }
@@ -4142,7 +4142,7 @@ void do_steal_player(int cn, char *cv, char *ci)
 				ch[co].depot[i_index]=0;
 			else if (found_e)
 				ch[co].worn[i_index]=0;
-			
+
 			do_char_log(cn,1,"You stole %s from %s.",it[in].reference, ch[co].name);
 		} else do_char_log(cn,0,"You cannot take the %s because your inventory is full.\n",it[in].reference);
 	} else
