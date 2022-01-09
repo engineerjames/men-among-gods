@@ -10,8 +10,10 @@ You'll need to execute the following steps to get the server compiled and runnin
 
 ```bash
 dpkg install --add-architecture i386
-sudo apt install make gcc gcc-multilib g++-multilib libcrypt-dev libz1g-dev cmake
+sudo apt-get update
+sudo apt-get install make gcc gcc-multilib g++-multilib libcrypt-dev zlib1g-dev:i386 cmake apache2
 ```
+Note: This was tested using GCC version 9.  Version 11 did not work (I have not spent the time to fix this yet.)
 
 ## Development Notes
 Do not check in changes to the .dat files the server relies on.
