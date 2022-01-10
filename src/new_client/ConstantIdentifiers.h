@@ -9,6 +9,24 @@ static const std::string MNEWS = "http://mercaston.dnsalias.net/news.html";
 static const std::string MHOST = "127.0.0.1";
 static const constexpr int MHOST_PORT = 5555;
 
+static const constexpr int TSIZE = 8192 * 16;
+
+/*
+Some key sizes (bytes)
+
+cplayer: 3348
+cmap: 64
+key: 56
+look: 496
+skilltab: 260
+pdata: 480
+xbutton: 12
+unsigned long: 4
+unsigned char: 1
+unsigned int: 4
+int*: 4
+*/
+
 //#define DOCONVERT	// enable sprite packer
 
 // These values are zeroed out when the user selects "new character".  Presumably
@@ -19,6 +37,7 @@ struct key {
   char name[40];
   int race;
 };
+static_assert(sizeof(key) == 56);
 
 static const constexpr int TILEX = 34;
 static const constexpr int TILEY = 34;
@@ -54,6 +73,7 @@ struct xbutton {
   int skill_nr;
   //   int skill_strength;
 };
+static_assert(sizeof(xbutton) == 12);
 
 struct pdata {
   char cname[80];
@@ -67,6 +87,7 @@ struct pdata {
   int show_proz;
   struct xbutton xbutton[12];
 };
+static_assert(sizeof(pdata) == 480);
 
 enum struct WEAR_POSITIONS {
   WN_HEAD,
@@ -177,6 +198,7 @@ struct cmap {
 
   int idle_ani;
 };
+static_assert(sizeof(cmap) == 64);
 
 // TODO: Put in a compile time expression to guarantee the sizes here match
 // exactly what is there currently.
@@ -228,6 +250,7 @@ struct cplayer {
   int misc_action, misc_target1, misc_target2;
   int dir;
 };
+static_assert(sizeof(cplayer) == 3348);
 
 enum struct CLIENT_MESSAGE_TYPES : unsigned char {
   CL_EMPTY = 0,

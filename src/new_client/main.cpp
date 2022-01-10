@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <cstring>
 #include <iostream>
 
 #include <SFML/Graphics.hpp>
@@ -6,111 +7,151 @@
 
 #include "ConstantIdentifiers.h"
 
+namespace {
+// Global data, needs refactoring
+static int unique1 = 0;
+static int unique2 = 0;
+static int ser_ver = 0;
+static key okey{};
+static sf::TcpSocket socket{};
+static unsigned char tickbuf[TSIZE];
+static int ticksize = 0;  // amount of data in tickbuf
+static int tickstart = 0; // start index to scan buffer for next tick
+} // namespace
+
+static void save_unique() {
+  // Do nothing for now
+}
+
+static void load_unique() {
+  // Do nothing for now
+}
+
+static char secret[256] = {"\
+Ifhjf64hH8sa,-#39ddj843tvxcv0434dvsdc40G#34Trefc349534Y5#34trecerr943\
+5#erZt#eA534#5erFtw#Trwec,9345mwrxm gerte-534lMIZDN(/dn8sfn8&DBDB/D&s\
+8efnsd897)DDzD'D'D''Dofs,t0943-rg-gdfg-gdf.t,e95.34u.5retfrh.wretv.56\
+9v4#asf.59m(D)/ND/DDLD;gd+dsa,fw9r,x  OD(98snfsf"};
+
+unsigned int xcrypt(unsigned int val) {
+  unsigned int res = 0;
+
+  res += (unsigned int)(secret[val & 255]);
+  res += (unsigned int)(secret[(val >> 8) & 255]) << 8;
+  res += (unsigned int)(secret[(val >> 16) & 255]) << 16;
+  res += (unsigned int)(secret[(val >> 24) & 255]) << 24;
+
+  res ^= 0x5a7ce52e;
+
+  return res;
+}
+
 int so_login(unsigned char *buf) {
-  //   unsigned int tmp, prio;
-  //   unsigned char obuf[16];
-  //   char xbuf[128];
-  //   extern int race;
-  //   static int capcnt;
-  //   static char mod[256];
+  unsigned int tmp{};
+  unsigned int prio{};
+  unsigned char obuf[16]{};
 
-  //   if (buf[0] ==
-  //       SERVER_MESSAGE_TYPES::SV_CHALLENGE) { // answer challenges at once
-  //     // SetDlgItemText(hwnd, IDC_STATUS, "STATUS: Login Part I");
+  static int capcnt{};
+  static char mod[256]{};
 
-  //     tmp = *(unsigned long *)(buf + 1);
-  //     tmp = xcrypt(tmp);
+  if (buf[0] ==
+      static_cast<unsigned char>(
+          SERVER_MESSAGE_TYPES::SV_CHALLENGE)) { // answer challenges at once
+    // SetDlgItemText(hwnd, IDC_STATUS, "STATUS: Login Part I");
 
-  //     obuf[0] = CLIENT_MESSAGE_TYPES::CL_CHALLENGE;
-  //     *(unsigned long *)(obuf + 1) = tmp;
-  //     *(unsigned long *)(obuf + 5) = VERSION;
-  //     *(unsigned long *)(obuf + 9) = race;
-  //     send(sock, (char *)obuf, 16, 0);
+    tmp = *(unsigned long *)(buf + 1);
+    tmp = xcrypt(tmp);
 
-  //     load_unique();
+    obuf[0] = static_cast<unsigned char>(CLIENT_MESSAGE_TYPES::CL_CHALLENGE);
+    *(unsigned long *)(obuf + 1) = tmp;
+    *(unsigned long *)(obuf + 5) = VERSION;
+    *(unsigned long *)(obuf + 9) = 1;
+    std::cerr << "Sending CL_CHALLENGE...\n";
+    socket.send(obuf, sizeof(obuf));
 
-  //     obuf[0] = CLIENT_MESSAGE_TYPES::CL_CMD_UNIQUE;
-  //     *(unsigned long *)(obuf + 1) = unique1;
-  //     *(unsigned long *)(obuf + 5) = unique2;
-  //     send(sock, (char *)obuf, 16, 0);
+    load_unique();
 
-  //     capcnt = 0;
+    obuf[0] = static_cast<unsigned char>(CLIENT_MESSAGE_TYPES::CL_CMD_UNIQUE);
+    *(unsigned long *)(obuf + 1) = unique1;
+    *(unsigned long *)(obuf + 5) = unique2;
+    std::cerr << "Sending CL_CMD_UNIQUE...\n";
+    socket.send(obuf, sizeof(obuf));
 
-  //     return 0;
-  //   }
-  //   if (buf[0] ==
-  //       SERVER_MESSAGE_TYPES::SV_NEWPLAYER) { // answer newplayer at once
-  //     // SetDlgItemText(hwnd, IDC_STATUS, "STATUS: Login as New Player OK");
-  //     okey.usnr = *(unsigned long *)(buf + 1);
-  //     okey.pass1 = *(unsigned long *)(buf + 5);
-  //     okey.pass2 = *(unsigned long *)(buf + 9);
-  //     ser_ver = *(unsigned char *)(buf + 13);
-  //     ser_ver += (int)((*(unsigned char *)(buf + 14))) << 8;
-  //     ser_ver += (int)((*(unsigned char *)(buf + 15))) << 16;
-  //     save_options();
-  //     return 1;
-  //   }
-  //   if (buf[0] == SERVER_MESSAGE_TYPES::SV_LOGIN_OK) {
-  //     ser_ver = *(unsigned long *)(buf + 1);
-  //     // SetDlgItemText(hwnd, IDC_STATUS, "STATUS: Login OK");
-  //     return 1;
-  //   }
+    capcnt = 0;
 
-  //   if (buf[0] == SERVER_MESSAGE_TYPES::SV_EXIT) {
-  //     tmp = *(unsigned int *)(buf + 1);
-  //     if (tmp < 1 || tmp > 14)
-  //       sprintf(xbuf, "STATUS: Server demands exit:\nunknown reason");
-  //     sprintf(xbuf, "STATUS: Server demands exit:\n%s", logout_reason[tmp]);
-  //     // SetDlgItemText(hwnd, IDC_STATUS, xbuf);
-  //     return -1;
-  //   }
+    return 0;
+  }
+  if (buf[0] ==
+      static_cast<unsigned char>(
+          SERVER_MESSAGE_TYPES::SV_NEWPLAYER)) { // answer newplayer at once
+    okey.usnr = *(unsigned long *)(buf + 1);     // Unique player ID
+    okey.pass1 = *(unsigned long *)(buf + 5);
+    okey.pass2 = *(unsigned long *)(buf + 9);
+    ser_ver = *(unsigned char *)(buf + 13);
+    ser_ver += (int)((*(unsigned char *)(buf + 14))) << 8;
+    ser_ver += (int)((*(unsigned char *)(buf + 15))) << 16;
+    std::cerr << "Server Response: SV_NEWPLAYER...\n";
+    std::cerr << "received usnr:" << okey.usnr << std::endl;
+    std::cerr << "received pass1:" << okey.pass1 << std::endl;
+    std::cerr << "received pass2:" << okey.pass2 << std::endl;
+    return 1;
+  }
+  if (buf[0] == static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_LOGIN_OK)) {
+    ser_ver = *(unsigned long *)(buf + 1);
+    std::cerr << "Server Response: LOGIN OK...\n";
+    return 1;
+  }
 
-  //   if (buf[0] == SERVER_MESSAGE_TYPES::SV_CAP) {
-  //     tmp = *(unsigned int *)(buf + 1);
-  //     prio = *(unsigned int *)(buf + 5);
-  //     capcnt++;
-  //     sprintf(xbuf,
-  //             "STATUS: Player limit reached. Your place in queue: %d.
-  //             Priority: "
-  //             "%d. Try: %d",
-  //             tmp, prio, capcnt);
-  //     // SetDlgItemText(hwnd, IDC_STATUS, xbuf);
-  //     return 0;
-  //   }
+  if (buf[0] == static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_EXIT)) {
+    tmp = *(unsigned int *)(buf + 1);
+    if (tmp < 1 || tmp > 14) {
+      // std::cerr << "STATUS: Server demands exit:\nunknown reason";
+    }
+    std::cerr << "STATUS: Server demands exit.\n";
 
-  //   if (buf[0] == SERVER_MESSAGE_TYPES::SV_MOD1) {
-  //     std::memcpy(mod, buf + 1, 15);
-  //     return 0;
-  //   }
-  //   if (buf[0] == SERVER_MESSAGE_TYPES::SV_MOD2) {
-  //     std::memcpy(mod + 15, buf + 1, 15);
-  //     return 0;
-  //   }
-  //   if (buf[0] == SERVER_MESSAGE_TYPES::SV_MOD3) {
-  //     std::memcpy(mod + 30, buf + 1, 15);
-  //     return 0;
-  //   }
-  //   if (buf[0] == SERVER_MESSAGE_TYPES::SV_MOD4) {
-  //     std::memcpy(mod + 45, buf + 1, 15);
-  //     return 0;
-  //   }
-  //   if (buf[0] == SERVER_MESSAGE_TYPES::SV_MOD5) {
-  //     std::memcpy(mod + 60, buf + 1, 15);
-  //     return 0;
-  //   }
-  //   if (buf[0] == SERVER_MESSAGE_TYPES::SV_MOD6) {
-  //     std::memcpy(mod + 75, buf + 1, 15);
-  //     return 0;
-  //   }
-  //   if (buf[0] == SERVER_MESSAGE_TYPES::SV_MOD7) {
-  //     std::memcpy(mod + 90, buf + 1, 15);
-  //     return 0;
-  //   }
-  //   if (buf[0] == SERVER_MESSAGE_TYPES::SV_MOD8) {
-  //     std::memcpy(mod + 105, buf + 1, 15);
-  //     // SetDlgItemText(hwnd, IDC_MOD, mod);
-  //     return 0;
-  //   }
+    return -1;
+  }
+
+  if (buf[0] == static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_CAP)) {
+    tmp = *(unsigned int *)(buf + 1);
+    prio = *(unsigned int *)(buf + 5);
+    capcnt++;
+    std::cerr << "STATUS: Player limit reached. You're in queue.\n";
+    return 0;
+  }
+
+  if (buf[0] == static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_MOD1)) {
+    std::memcpy(mod, buf + 1, 15);
+    return 0;
+  }
+  if (buf[0] == static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_MOD2)) {
+    std::memcpy(mod + 15, buf + 1, 15);
+    return 0;
+  }
+  if (buf[0] == static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_MOD3)) {
+    std::memcpy(mod + 30, buf + 1, 15);
+    return 0;
+  }
+  if (buf[0] == static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_MOD4)) {
+    std::memcpy(mod + 45, buf + 1, 15);
+    return 0;
+  }
+  if (buf[0] == static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_MOD5)) {
+    std::memcpy(mod + 60, buf + 1, 15);
+    return 0;
+  }
+  if (buf[0] == static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_MOD6)) {
+    std::memcpy(mod + 75, buf + 1, 15);
+    return 0;
+  }
+  if (buf[0] == static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_MOD7)) {
+    std::memcpy(mod + 90, buf + 1, 15);
+    return 0;
+  }
+  if (buf[0] == static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_MOD8)) {
+    std::memcpy(mod + 105, buf + 1, 15);
+    return 0;
+  }
 
   return 0;
 }
@@ -118,7 +159,6 @@ int so_login(unsigned char *buf) {
 void so_connect() {
   unsigned char buf[16]{};
 
-  sf::TcpSocket socket;
   sf::Socket::Status status = socket.connect(MHOST, MHOST_PORT);
   if (status != sf::Socket::Done) {
     std::cerr << "Error connecting to host." << std::endl;
@@ -143,6 +183,7 @@ void so_connect() {
   socket.send(buf, sizeof(buf));
 
   std::cerr << "Waiting for receipt of information...\n";
+  int tmp = 0;
   do {
     std::size_t bytesReceived = 0;
     socket.receive(buf, sizeof(buf), bytesReceived);
@@ -151,44 +192,11 @@ void so_connect() {
       return;
     }
 
-    std::cerr << "Exiting early.\n";
-    return;
-
-    // tmp = so_login(buf);
-    // if (tmp == -1) {
-    //   return;
-    // }
-  } while (true);//!tmp);
-
-  //   do {
-  //     if (xrecv(sock, buf, 16, 0) < 16) {
-  //       // SetDlgItemText(hwnd, IDC_STATUS, "STATUS: ERROR: Server closed
-  //       // connection (2)."); so_status = 0;
-  //       return;
-  //     }
-  //     tmp = so_login(buf);
-  //     if (tmp == -1) {
-  //       // so_status = 0;
-  //       close(sock); // error condition
-  //       return;
-  //     }
-  //   } while (!tmp);
-
-  //   Sleep(500);
-
-  //   ioctlsocket(sock, FIONBIO, (u_long *)&one);
-
-  //   zs.zalloc = Z_NULL;
-  //   zs.zfree = Z_NULL;
-  //   zs.opaque = Z_NULL;
-  //   if (inflateInit(&zs)) {
-  //     // SetDlgItemText(hwnd, IDC_STATUS, "STATUS: ERROR: Compressor
-  //     failure.");
-  //     // so_status = 0;
-  //     return;
-  //   }
-
-  //   // EndDialog(hwnd, 0);
+    tmp = so_login(buf);
+    if (tmp == -1) {
+      return;
+    }
+  } while (!tmp);
 
   return;
 }
@@ -201,12 +209,26 @@ int main() {
   // Essentially need to call void so_connect(HWND hwnd)
   std::cerr << "Connecting to men-among-gods Server." << std::endl;
   so_connect();
+  std::cerr << "Connected to server: " << socket.getRemoteAddress() << ":"
+            << socket.getRemotePort() << std::endl;
+
+  // After we initialize the connection, set the socket to non-blocking I/O
+  socket.setBlocking(false);
 
   while (window.isOpen()) {
     sf::Event event;
     while (window.pollEvent(event)) {
       if (event.type == sf::Event::Closed)
         window.close();
+    }
+
+    // Check to see if we have data from the server available
+    std::size_t bytesReceived = 0;
+    socket.receive(tickbuf, ticksize, bytesReceived);
+
+    if (bytesReceived != 0)
+    {
+      std::cerr << "Received data from the server: " << tickbuf[0] << std::endl;
     }
 
     window.clear();
