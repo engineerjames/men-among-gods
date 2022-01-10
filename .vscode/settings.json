@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "DD.H": "cpp"
+        "DD.H": "cpp",
+        "type_traits": "c"
     }
 }
