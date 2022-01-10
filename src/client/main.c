@@ -519,6 +519,25 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	void pascal (*regxy)(HANDLE);
 	HANDLE mutex;
 
+	#ifdef PRINT_SIZES
+	FILE* thefp=fopen("structsizes.txt", "w");
+	fprintf(thefp, "cplayer: %i", sizeof(struct cplayer));
+    fprintf(thefp, "cmap: %i", sizeof(struct cmap));
+    fprintf(thefp, "key: %i", sizeof(struct key));
+    fprintf(thefp, "look: %i", sizeof(struct look));
+    fprintf(thefp, "skilltab: %i", sizeof(struct skilltab));
+    fprintf(thefp, "pdata: %i", sizeof(struct pdata));
+    fprintf(thefp, "xbutton: %i", sizeof(struct xbutton));
+
+	fprintf(thefp, "unsigned long: %i", sizeof(unsigned long));
+	fprintf(thefp, "unsigned char: %i", sizeof(unsigned char));
+	fprintf(thefp, "unsigned int: %i", sizeof(unsigned int));
+	fprintf(thefp, "int*: %i", sizeof(int*));
+
+	fclose(thefp);
+
+	#endif
+
         /* create_pnglib();
 	exit(1); */
 
@@ -578,7 +597,7 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         init_xalloc();
 	conv_init();
 	init_pnglib();
-	dd_init_sprites();	
+	dd_init_sprites();
 
 	if (RGBM==-1) {
 		sprintf(buf,"|unknown card: R=%04X G=%04X B=%04X",RED,GREEN,BLUE);

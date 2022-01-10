@@ -89,6 +89,8 @@
 
 #define MF_NOEXPIRE     (1U<<13)
 
+#define PRINT_SIZES
+
 struct cmap {
 	// common:
 

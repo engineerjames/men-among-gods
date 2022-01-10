@@ -1255,41 +1255,26 @@ unsigned char tickbuf[TSIZE];
 int ticksize = 0;  // amount of data in tickbuf
 int tickstart = 0; // start index to scan buffer for next tick
 
-//#define TRANS 1024
-
-#ifdef TRANS
-int tmptime = 0, tmpsize = 0;
-#endif
-
 int game_loop(void)
 {
     int ret, tmp;
 
-#ifdef TRANS
-    if (tmptime != (tmp = time(NULL)))
-    {
-        xlog(2, "tmpsize=%d", tmpsize);
-        tmptime = tmp;
-        tmpsize = 0;
-    }
-#endif
-
     while (1)
     {
-#ifdef TRANS
-        ret = recv(sock, tickbuf + ticksize, min(TRANS - tmpsize, TSIZE - ticksize), 0);
-#else
+        // Returns # of bytes received or -1 for error
+        // sock - socket identifier
+        // (tickbuf + ticksize) = start of buffer to receive data into
+        // (TSIZE - ticksize) = length of data to attempt to read
+        // Flags is the last argument (0, or No flags, in this case)
         ret = recv(sock, tickbuf + ticksize, TSIZE - ticksize, 0);
-#endif
+
         if (ret < 0)
         {
             if (!non_critical_socket_error())
                 so_error("receive error");
             ret = 0;
         }
-#ifdef TRANS
-        tmpsize += ret;
-#endif
+
         ticksize += ret;
 
         if (ticksize >= tickstart + 2)
@@ -1303,6 +1288,7 @@ int game_loop(void)
         }
         else
             break;
+
         do_msg();
     }
 
