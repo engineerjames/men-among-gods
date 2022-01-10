@@ -203,6 +203,7 @@ void so_connect() {
 
 int main() {
   sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
+  window.setFramerateLimit(60);
   sf::CircleShape shape(100.f);
   shape.setFillColor(sf::Color::Green);
 
@@ -214,6 +215,8 @@ int main() {
 
   // After we initialize the connection, set the socket to non-blocking I/O
   socket.setBlocking(false);
+
+  sf::Uint64 frameCount = 0;
 
   while (window.isOpen()) {
     sf::Event event;
@@ -234,6 +237,18 @@ int main() {
     window.clear();
     window.draw(shape);
     window.display();
+
+    frameCount++;
+
+    if (frameCount % 60 == 0)
+    {
+      unsigned char buf[16];
+      buf[0]=(unsigned char)CLIENT_MESSAGE_TYPES::CL_CMD_CTICK;
+      *(unsigned int*)(buf + 1)=frameCount;
+
+      std::size_t dataSent{};
+      socket.send(buf, sizeof(buf), dataSent);
+    }
   }
 
   return 0;
