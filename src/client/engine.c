@@ -765,10 +765,10 @@ void eng_display(int init)	// optimize me!!!!!
 					} else {
                                                 if (hightlight==HL_MAP && tile_type==1 && tile_x==x && tile_y==y) copysprite(map[m].obj1,map[m].light|16|tmp,x*32,y*32,xoff,yoff);
 						else copysprite(map[m].obj1,map[m].light|tmp,x*32,y*32,xoff,yoff);
-					}					
+					}
 
-				} else if (map[m].obj1) {					
-					copysprite(map[m].obj1+1,map[m].light|tmp,x*32,y*32,xoff,yoff);					
+				} else if (map[m].obj1) {
+					copysprite(map[m].obj1+1,map[m].light|tmp,x*32,y*32,xoff,yoff);
 				}
 
 				if (map[m].obj1 && map[m].x<1024 && map[m].y<1024) {
@@ -787,7 +787,7 @@ void eng_display(int init)	// optimize me!!!!!
 				if (map[m].flags&UWATER) tmp|=512;
 
 				if (do_shadow) dd_shadow(map[m].obj2,x*32,y*32,xoff+map[m].obj_xoff,yoff+map[m].obj_yoff+4);
-				copysprite(map[m].obj2,map[m].light|tmp,x*32,y*32,xoff+map[m].obj_xoff,yoff+map[m].obj_yoff);				
+				copysprite(map[m].obj2,map[m].light|tmp,x*32,y*32,xoff+map[m].obj_xoff,yoff+map[m].obj_yoff);
 
 				if (pl.attack_cn && pl.attack_cn==map[m].ch_nr)
 					copysprite(34,0,x*32,y*32,xoff+map[m].obj_xoff,yoff+map[m].obj_yoff);

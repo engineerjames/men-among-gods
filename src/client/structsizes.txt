@@ -1,0 +1,1 @@
+cplayer: 3348cmap: 64key: 56look: 496skilltab: 260pdata: 480xbutton: 12unsigned long: 4unsigned char: 1unsigned int: 4int*: 4

@@ -18,3 +18,6 @@ src/client/*.ilf
 src/client/*.ils
 src/client/*.map
 src/client/*.tds
+
+# Ignore build directory
+**/build/**
