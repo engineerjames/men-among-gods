@@ -349,6 +349,7 @@ void so_connect(HWND hwnd)
 
     Sleep(500);
 
+    // if 'one' is 0, nonblocking I/O is cleared, otherwise the socket is set for nonblocking I/O
     ioctlsocket(sock, FIONBIO, (u_long *)&one);
 
     zs.zalloc = Z_NULL;
