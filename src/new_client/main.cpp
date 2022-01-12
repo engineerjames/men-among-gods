@@ -425,6 +425,9 @@ int main()
   // After we initialize the connection, set the socket to non-blocking I/O
   socket.setBlocking(false);
 
+  // Need to implement log_system_data()
+  // Also, look at rec_player and send_player--these are the main I/O pathways to the client
+
   sf::Uint64 frameCount = 0;
 
   while (window.isOpen())

@@ -31,6 +31,7 @@ All rights reserved.
 
 volatile int quit = 0;
 
+// Array of current players
 struct player   player[MAXPLAYER];
 struct see_map *see;
 
@@ -238,6 +239,7 @@ void send_player(int nr)
   }
 
   ret = send(player[nr].sock, ptr, len, 0);
+  xlog("Sent %i bytes to %s", ret, player[nr].cpl.name);
   if (ret == -1)
   { // send failure
     plog(nr, "Connection closed (send, %s)", strerror(errno));
@@ -267,6 +269,7 @@ int csend(int nr, unsigned char *buf, int len)
   if (player[nr].sock == 0)
     return -1;
 
+  printf("Sending player data... %u\n", buf[0]);
   while (len)
   {
     tmp = player[nr].iptr + 1;
@@ -534,6 +537,10 @@ void game_loop(int sock)
       {
         if (!player[n].sock)
           continue;
+
+        // After the 'select' statement above, we check the players socket to see if it is
+        // a part of the file descriptors ready for output, or ready for input -- then execute
+        // the corresponding action.
         if (FD_ISSET(player[n].sock, &in_fd))
           rec_player(n);
         if (FD_ISSET(player[n].sock, &out_fd))
