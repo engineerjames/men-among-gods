@@ -3,10 +3,10 @@
 
 // Based heavily off of common.h
 
-static const std::string MNAME = "Asguard";
-static const std::string MHELP = "http://mercaston.dnsalias.net/help.html";
-static const std::string MNEWS = "http://mercaston.dnsalias.net/news.html";
-static const std::string MHOST = "127.0.0.1";
+static const std::string   MNAME      = "Asguard";
+static const std::string   MHELP      = "http://mercaston.dnsalias.net/help.html";
+static const std::string   MNEWS      = "http://mercaston.dnsalias.net/news.html";
+static const std::string   MHOST      = "127.0.0.1";
 static const constexpr int MHOST_PORT = 5555;
 
 static const constexpr int TSIZE = 8192 * 16;
@@ -31,19 +31,20 @@ int*: 4
 
 // These values are zeroed out when the user selects "new character".  Presumably
 // they have some intrinsic values if/when an MOA file is loaded.
-struct key {
+struct key
+{
   unsigned int usnr;
   unsigned int pass1, pass2;
-  char name[40];
-  int race;
+  char         name[40];
+  int          race;
 };
 static_assert(sizeof(key) == 56);
 
-static const constexpr int TILEX = 34;
-static const constexpr int TILEY = 34;
-static const constexpr int TICKS = 18;
-static const constexpr unsigned int VERSION = 0x020E06;
-static const constexpr int MAXSPRITE = 2000 + (32 * 1024);
+static const constexpr int          TILEX     = 34;
+static const constexpr int          TILEY     = 34;
+static const constexpr int          TICKS     = 18;
+static const constexpr unsigned int VERSION   = 0x020E06;
+static const constexpr int          MAXSPRITE = 2000 + (32 * 1024);
 
 static const constexpr int MODEX = 800;
 static const constexpr int MODEY = 600;
@@ -55,41 +56,45 @@ static const constexpr int YPOS = 440;
 static const constexpr int XPOS = 0;
 
 // Should this be a float?
-static const constexpr int TICK = (1000 / TICKS);
+static const constexpr int          TICK     = (1000 / TICKS);
 static const constexpr unsigned int HIGH_VAL = 1 << 30;
 
-enum struct MOUSE_STATES {
-  MS_MOVE = 0,
+enum struct MOUSE_STATES
+{
+  MS_MOVE    = 0,
   MS_LB_DOWN = 1,
   MS_RB_DOWN = 2,
-  MS_LB_UP = 3,
-  MS_RB_UP = 4
+  MS_LB_UP   = 3,
+  MS_RB_UP   = 4
 };
 
 static const constexpr int QSIZE = 8;
 
-struct xbutton {
+struct xbutton
+{
   char name[8];
-  int skill_nr;
+  int  skill_nr;
   //   int skill_strength;
 };
 static_assert(sizeof(xbutton) == 12);
 
-struct pdata {
+struct pdata
+{
   char cname[80];
   char ref[80];
   char desc[160];
 
   char changed;
 
-  int hide;
-  int show_names;
-  int show_proz;
+  int            hide;
+  int            show_names;
+  int            show_proz;
   struct xbutton xbutton[12];
 };
 static_assert(sizeof(pdata) == 480);
 
-enum struct WEAR_POSITIONS {
+enum struct WEAR_POSITIONS
+{
   WN_HEAD,
   WN_NECK,
   WN_BODY,
@@ -104,19 +109,20 @@ enum struct WEAR_POSITIONS {
   WN_RRING
 };
 
-enum struct PLACEMENT_BITS {
-  PL_HEAD = 1,
-  PL_NECK = 2,
-  PL_BODY = 4,
-  PL_ARMS = 8,
-  PL_BELT = 32,
-  PL_LEGS = 64,
-  PL_FEET = 128,
-  PL_WEAPON = 256,
-  PL_SHIELD = 512,
-  PL_CLOAK = 1024,
+enum struct PLACEMENT_BITS
+{
+  PL_HEAD    = 1,
+  PL_NECK    = 2,
+  PL_BODY    = 4,
+  PL_ARMS    = 8,
+  PL_BELT    = 32,
+  PL_LEGS    = 64,
+  PL_FEET    = 128,
+  PL_WEAPON  = 256,
+  PL_SHIELD  = 512,
+  PL_CLOAK   = 1024,
   PL_TWOHAND = 2048,
-  PL_RING = 4096
+  PL_RING    = 4096
 };
 
 #define DX_RIGHT 1
@@ -164,28 +170,29 @@ enum struct PLACEMENT_BITS {
 
 #define MF_NOEXPIRE (1U << 13)
 
-struct cmap {
+struct cmap
+{
   // common:
 
   unsigned short x, y; // position
 
   // for background
-  short int ba_sprite; // background image
+  short int     ba_sprite; // background image
   unsigned char light;
-  unsigned int flags;
-  unsigned int flags2;
+  unsigned int  flags;
+  unsigned int  flags2;
 
   // for character
   unsigned short ch_sprite; // basic sprite of character
-  unsigned char ch_status;  // what the character is doing, animation-wise
-  unsigned char ch_stat_off;
-  unsigned char ch_speed; // speed of animation
-  unsigned short ch_nr;   // character id
-  unsigned short ch_id;   // character 'crc'
-  unsigned char ch_proz;
+  unsigned char  ch_status; // what the character is doing, animation-wise
+  unsigned char  ch_stat_off;
+  unsigned char  ch_speed; // speed of animation
+  unsigned short ch_nr;    // character id
+  unsigned short ch_id;    // character 'crc'
+  unsigned char  ch_proz;
 
   // for item
-  short int it_sprite;     // basic sprite of item
+  short int     it_sprite; // basic sprite of item
   unsigned char it_status; // for items with animation (burning torches etc)
 
   // for local computation -- client only:
@@ -202,7 +209,8 @@ static_assert(sizeof(cmap) == 64);
 
 // TODO: Put in a compile time expression to guarantee the sizes here match
 // exactly what is there currently.
-struct cplayer {
+struct cplayer
+{
   // informative stuff
   char name[40];
 
@@ -252,111 +260,113 @@ struct cplayer {
 };
 static_assert(sizeof(cplayer) == 3348);
 
-enum struct CLIENT_MESSAGE_TYPES : unsigned char {
-  CL_EMPTY = 0,
-  CL_NEWLOGIN = 1,
-  CL_LOGIN = 2,
-  CL_CHALLENGE = 3,
-  CL_PERF_REPORT = 4,
-  CL_CMD_MOVE = 5,
-  CL_CMD_PICKUP = 6,
-  CL_CMD_ATTACK = 7,
-  CL_CMD_MODE = 8,
-  CL_CMD_INV = 9,
-  CL_CMD_STAT = 10,
-  CL_CMD_DROP = 11,
-  CL_CMD_GIVE = 12,
-  CL_CMD_LOOK = 13,
-  CL_CMD_INPUT1 = 14,
-  CL_CMD_INPUT2 = 15,
-  CL_CMD_INV_LOOK = 16,
+enum struct CLIENT_MESSAGE_TYPES : unsigned char
+{
+  CL_EMPTY         = 0,
+  CL_NEWLOGIN      = 1,
+  CL_LOGIN         = 2,
+  CL_CHALLENGE     = 3,
+  CL_PERF_REPORT   = 4,
+  CL_CMD_MOVE      = 5,
+  CL_CMD_PICKUP    = 6,
+  CL_CMD_ATTACK    = 7,
+  CL_CMD_MODE      = 8,
+  CL_CMD_INV       = 9,
+  CL_CMD_STAT      = 10,
+  CL_CMD_DROP      = 11,
+  CL_CMD_GIVE      = 12,
+  CL_CMD_LOOK      = 13,
+  CL_CMD_INPUT1    = 14,
+  CL_CMD_INPUT2    = 15,
+  CL_CMD_INV_LOOK  = 16,
   CL_CMD_LOOK_ITEM = 17,
-  CL_CMD_USE = 18,
-  CL_CMD_SETUSER = 19,
-  CL_CMD_TURN = 20,
-  CL_CMD_AUTOLOOK = 21,
-  CL_CMD_INPUT3 = 22,
-  CL_CMD_INPUT4 = 23,
-  CL_CMD_RESET = 24,
-  CL_CMD_SHOP = 25,
-  CL_CMD_SKILL = 26,
-  CL_CMD_INPUT5 = 27,
-  CL_CMD_INPUT6 = 28,
-  CL_CMD_INPUT7 = 29,
-  CL_CMD_INPUT8 = 30,
-  CL_CMD_EXIT = 31,
-  CL_CMD_UNIQUE = 32,
-  CL_PASSWD = 33,
-  CL_CMD_CTICK = 255
+  CL_CMD_USE       = 18,
+  CL_CMD_SETUSER   = 19,
+  CL_CMD_TURN      = 20,
+  CL_CMD_AUTOLOOK  = 21,
+  CL_CMD_INPUT3    = 22,
+  CL_CMD_INPUT4    = 23,
+  CL_CMD_RESET     = 24,
+  CL_CMD_SHOP      = 25,
+  CL_CMD_SKILL     = 26,
+  CL_CMD_INPUT5    = 27,
+  CL_CMD_INPUT6    = 28,
+  CL_CMD_INPUT7    = 29,
+  CL_CMD_INPUT8    = 30,
+  CL_CMD_EXIT      = 31,
+  CL_CMD_UNIQUE    = 32,
+  CL_PASSWD        = 33,
+  CL_CMD_CTICK     = 255
 };
 
-enum struct SERVER_MESSAGE_TYPES : unsigned char {
-  SV_EMPTY = 0,
-  SV_CHALLENGE = 1,
-  SV_NEWPLAYER = 2,
-  SV_SETCHAR_NAME1 = 3,
-  SV_SETCHAR_NAME2 = 4,
-  SV_SETCHAR_NAME3 = 5,
-  SV_SETCHAR_MODE = 6,
-  SV_SETCHAR_ATTRIB = 7,
-  SV_SETCHAR_SKILL = 8,
-  SV_SETCHAR_HP = 12,
-  SV_SETCHAR_ENDUR = 13,
-  SV_SETCHAR_MANA = 14,
-  SV_SETCHAR_AHP = 20,
-  SV_SETCHAR_PTS = 21,
-  SV_SETCHAR_GOLD = 22,
-  SV_SETCHAR_ITEM = 23,
-  SV_SETCHAR_WORN = 24,
-  SV_SETCHAR_OBJ = 25,
-  SV_TICK = 27,
-  SV_LOOK1 = 29,
-  SV_SCROLL_RIGHT = 30,
-  SV_SCROLL_LEFT = 31,
-  SV_SCROLL_UP = 32,
-  SV_SCROLL_DOWN = 33,
-  SV_LOGIN_OK = 34,
-  SV_SCROLL_RIGHTUP = 35,
+enum struct SERVER_MESSAGE_TYPES : unsigned char
+{
+  SV_EMPTY            = 0,
+  SV_CHALLENGE        = 1,
+  SV_NEWPLAYER        = 2,
+  SV_SETCHAR_NAME1    = 3,
+  SV_SETCHAR_NAME2    = 4,
+  SV_SETCHAR_NAME3    = 5,
+  SV_SETCHAR_MODE     = 6,
+  SV_SETCHAR_ATTRIB   = 7,
+  SV_SETCHAR_SKILL    = 8,
+  SV_SETCHAR_HP       = 12,
+  SV_SETCHAR_ENDUR    = 13,
+  SV_SETCHAR_MANA     = 14,
+  SV_SETCHAR_AHP      = 20,
+  SV_SETCHAR_PTS      = 21,
+  SV_SETCHAR_GOLD     = 22,
+  SV_SETCHAR_ITEM     = 23,
+  SV_SETCHAR_WORN     = 24,
+  SV_SETCHAR_OBJ      = 25,
+  SV_TICK             = 27,
+  SV_LOOK1            = 29,
+  SV_SCROLL_RIGHT     = 30,
+  SV_SCROLL_LEFT      = 31,
+  SV_SCROLL_UP        = 32,
+  SV_SCROLL_DOWN      = 33,
+  SV_LOGIN_OK         = 34,
+  SV_SCROLL_RIGHTUP   = 35,
   SV_SCROLL_RIGHTDOWN = 36,
-  SV_SCROLL_LEFTUP = 37,
-  SV_SCROLL_LEFTDOWN = 38,
-  SV_LOOK2 = 39,
-  SV_LOOK3 = 40,
-  SV_LOOK4 = 41,
-  SV_SETTARGET = 42,
-  SV_SETMAP2 = 43,
-  SV_SETORIGIN = 44,
-  SV_SETMAP3 = 45,
-  SV_SETCHAR_SPELL = 46,
-  SV_PLAYSOUND = 47,
-  SV_EXIT = 48,
-  SV_MSG = 49,
-  SV_LOOK5 = 50,
-  SV_LOOK6 = 51,
-  SV_LOG = 52,
-  SV_LOG0 = 52,
-  SV_LOG1 = 53,
-  SV_LOG2 = 54,
-  SV_LOG3 = 55,
-  SV_LOAD = 56,
-  SV_CAP = 57,
-  SV_MOD1 = 58,
-  SV_MOD2 = 59,
-  SV_MOD3 = 60,
-  SV_MOD4 = 61,
-  SV_MOD5 = 62,
-  SV_MOD6 = 63,
-  SV_MOD7 = 64,
-  SV_MOD8 = 65,
-  SV_SETMAP4 = 66,
-  SV_SETMAP5 = 67,
-  SV_SETMAP6 = 68,
-  SV_SETCHAR_AEND = 69,
-  SV_SETCHAR_AMANA = 70,
-  SV_SETCHAR_DIR = 71,
-  SV_UNIQUE = 72,
-  SV_IGNORE = 73,
-  SV_SETMAP = 128
+  SV_SCROLL_LEFTUP    = 37,
+  SV_SCROLL_LEFTDOWN  = 38,
+  SV_LOOK2            = 39,
+  SV_LOOK3            = 40,
+  SV_LOOK4            = 41,
+  SV_SETTARGET        = 42,
+  SV_SETMAP2          = 43,
+  SV_SETORIGIN        = 44,
+  SV_SETMAP3          = 45,
+  SV_SETCHAR_SPELL    = 46,
+  SV_PLAYSOUND        = 47,
+  SV_EXIT             = 48,
+  SV_MSG              = 49,
+  SV_LOOK5            = 50,
+  SV_LOOK6            = 51,
+  SV_LOG              = 52,
+  SV_LOG0             = 52,
+  SV_LOG1             = 53,
+  SV_LOG2             = 54,
+  SV_LOG3             = 55,
+  SV_LOAD             = 56,
+  SV_CAP              = 57,
+  SV_MOD1             = 58,
+  SV_MOD2             = 59,
+  SV_MOD3             = 60,
+  SV_MOD4             = 61,
+  SV_MOD5             = 62,
+  SV_MOD6             = 63,
+  SV_MOD7             = 64,
+  SV_MOD8             = 65,
+  SV_SETMAP4          = 66,
+  SV_SETMAP5          = 67,
+  SV_SETMAP6          = 68,
+  SV_SETCHAR_AEND     = 69,
+  SV_SETCHAR_AMANA    = 70,
+  SV_SETCHAR_DIR      = 71,
+  SV_UNIQUE           = 72,
+  SV_IGNORE           = 73,
+  SV_SETMAP           = 128
 };
 
 #define SPR_INVISIBLE 0
