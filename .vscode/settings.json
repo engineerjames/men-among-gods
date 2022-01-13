@@ -2,6 +2,7 @@
     "files.associations": {
         "DD.H": "cpp",
         "type_traits": "c",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "thread": "cpp"
     }
 }

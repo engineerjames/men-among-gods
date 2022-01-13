@@ -1,3 +1,4 @@
+#include <atomic>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
@@ -18,8 +19,9 @@ static key           okey{};
 static pdata         playerData{};
 static sf::TcpSocket socket{};
 static unsigned char tickbuf[TSIZE];
-static int           ticksize  = 0; // amount of data in tickbuf
-static int           tickstart = 0; // start index to scan buffer for next tick
+static int           ticksize      = 0; // amount of data in tickbuf
+static int           tickstart     = 0; // start index to scan buffer for next tick
+std::atomic<bool>    stopRequested;
 } // namespace
 
 static void save_unique()
@@ -415,15 +417,40 @@ int main()
   sf::RenderWindow window(sf::VideoMode(MODEX, MODEY), "Mercenaries of Astonia - New Client");
   window.setFramerateLimit(60);
 
-  // Essentially need to call void so_connect(HWND hwnd)
-  std::cerr << "Connecting to men-among-gods Server." << std::endl;
-  so_connect();
-  std::cerr << "Connected to server: " << socket.getRemoteAddress() << ":" << socket.getRemotePort() << std::endl;
+  stopRequested.store(false);
 
-  send_opt();
+  // Start networking thread
+  std::thread networkThread{[]() {
+    std::cerr << "Connecting to men-among-gods Server." << std::endl;
+    so_connect();
+    std::cerr << "Connected to server: " << socket.getRemoteAddress() << ":" << socket.getRemotePort() << std::endl;
+    send_opt();
 
-  // After we initialize the connection, set the socket to non-blocking I/O
-  socket.setBlocking(false);
+    socket.setBlocking(false);
+
+    std::size_t tickCount = 0;
+
+    while (!stopRequested.load())
+    {
+      std::this_thread::sleep_for(std::chrono::seconds(1));
+
+      unsigned char buf[16]{};
+      buf[0]                     = (unsigned char)CLIENT_MESSAGE_TYPES::CL_CMD_CTICK;
+      *(unsigned int *)(buf + 1) = tickCount++;
+
+      std::size_t        dataSent{};
+      sf::Socket::Status status = socket.send(buf, sizeof(buf), dataSent);
+
+      std::cerr << "Sending CL_CMD_CTICK: " << tickCount << " with status: " << status << std::endl;
+
+      unsigned char inputBuffer[1024]{};
+      std::size_t received{};
+      sf::Socket::Status recStatus = socket.receive(inputBuffer, sizeof(inputBuffer), received);
+      std::cerr << "Received " << received << " bytes with status: " << recStatus << std::endl;
+    }
+  }};
+
+  networkThread.detach();
 
   // Need to implement log_system_data()
   // Also, look at rec_player and send_player--these are the main I/O pathways to the client
@@ -451,26 +478,9 @@ int main()
     window.clear();
     // window.draw(ourstuff);
     window.display();
-
-    // This is essentially our 'keep-alive' message to the server.  Otherwise we
-    // get a protocol-level timeout after a minute or so.  Why is this even a
-    // good idea?
-    frameCount++;
-
-    if (frameCount % 60 == 0)
-    {
-      unsigned char buf[16]{};
-      buf[0]                     = (unsigned char)CLIENT_MESSAGE_TYPES::CL_CMD_CTICK;
-      *(unsigned int *)(buf + 1) = frameCount;
-
-      std::cerr << "Sending CL_CMD_CTICK: " << frameCount << " with status: " << status << std::endl;
-
-      std::cerr << socket.getLocalPort() << std::endl;
-
-      std::size_t dataSent{};
-      status = socket.send(buf, sizeof(buf), dataSent);
-    }
   }
+
+  stopRequested.store(true);
 
   return 0;
 }
