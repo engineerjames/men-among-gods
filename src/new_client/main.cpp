@@ -8,37 +8,351 @@
 #include <SFML/Network.hpp>
 
 #include "ConstantIdentifiers.h"
+#include "server_message_processing.h"
 
-namespace
-{
+#include <zlib.h>
+
+
+skilltab static_skilltab[50]={
+	{0,     'C',    "Hand to Hand", "Fighting without weapons.",                    {AT_BRAVE,AT_AGIL,AT_STREN}},
+	{1,     'C',    "Karate",       "Fighting without weapons and doing damage.",   {AT_BRAVE,AT_AGIL,AT_STREN}},
+	{2,     'C',    "Dagger",       "Fighting with daggers or similiar weapons.",   {AT_BRAVE,AT_AGIL,AT_INT}},
+	{3,     'C',    "Sword",        "Fighting with swords or similiar weapons.",    {AT_BRAVE,AT_AGIL,AT_STREN}},
+	{4,     'C',    "Axe",          "Fighting with axes or similiar weapons.",      {AT_BRAVE,AT_STREN,AT_STREN}},
+	{5,     'C',    "Staff",        "Fighting with staffs or similiar weapons.",    {AT_AGIL,AT_STREN,AT_STREN}},
+	{6,     'C',    "Two-Handed",   "Fighting with two-handed weapons.",            {AT_AGIL,AT_STREN,AT_STREN}},
+
+	{7,     'G',    "Lock-Picking", "Opening doors without keys.",                  {AT_INT,AT_WILL,AT_AGIL}},
+	{8,     'G',    "Stealth",      "Moving without being seen or heard.",          {AT_INT,AT_WILL,AT_AGIL}},
+	{9,     'G',    "Perception",   "Seeing and hearing.",                          {AT_INT,AT_WILL,AT_AGIL}},
+
+	{10,    'M',    "Swimming",     "Moving through water without drowning.",       {AT_INT,AT_WILL,AT_AGIL}},
+	{11,    'R',    "Magic Shield", "Spell: Create a magic shield (Cost: 25 Mana).",  {AT_BRAVE,AT_INT,AT_WILL}},
+
+	{12,    'G',    "Bartering",    "Getting good prices from merchants.",          {AT_BRAVE,AT_INT,AT_WILL}},
+	{13,    'G',    "Repair",       "Repairing items.",                             {AT_INT,AT_WILL,AT_AGIL}},
+
+	{14,    'R',    "Light",        "Spell: Create light (Cost: 5 Mana).",           {AT_BRAVE,AT_INT,AT_WILL}},
+	{15,    'R',    "Recall",       "Spell: Teleport to temple (Cost: 15 Mana).",    {AT_BRAVE,AT_INT,AT_WILL}},
+	{16,    'R',    "Guardian Angel","Spell: Avoid loss of HPs and items on death.", {AT_BRAVE,AT_INT,AT_WILL}},
+	{17,    'R',    "Protection",   "Spell: Enhance Armor of target (Cost: 15 Mana).", {AT_BRAVE,AT_INT,AT_WILL}},
+	{18,    'R',    "Enhance Weapon","Spell: Enhance Weapon of target (Cost: 15 Mana).", {AT_BRAVE,AT_INT,AT_WILL}},
+	{19,    'R',    "Stun",         "Spell: Make target motionless (Cost: 20 Mana).",   {AT_BRAVE,AT_INT,AT_WILL}},
+	{20,    'R',    "Curse",        "Spell: Decrease attributes of target (Cost: 35 Mana).",  {AT_BRAVE,AT_INT,AT_WILL}},
+	{21,    'R',    "Bless",        "Spell: Increase attributes of target (Cost: 35 Mana).", {AT_BRAVE,AT_INT,AT_WILL}},
+	{22,    'R',    "Identify",     "Spell: Read stats of item/character. (Cost: 25 Mana)",   {AT_BRAVE,AT_INT,AT_WILL}},
+
+	{23,    'G',    "Resistance",   "Resist against magic.",                        {AT_INT,AT_WILL,AT_STREN}},
+
+	{24,    'R',    "Blast",        "Spell: Inflict injuries to target (Cost: varies).", {AT_INT,AT_WILL,AT_STREN}},
+	{25,    'R',    "Dispel Magic", "Spell: Removes curse magic from target (Cost: 25 Mana).", {AT_BRAVE,AT_INT,AT_WILL}},
+
+	{26,    'R',    "Heal",         "Spell: Heal injuries (Cost: 25 Mana).",         {AT_BRAVE,AT_INT,AT_WILL}},
+	{27,    'R',    "Ghost Companion","Spell: Create a ghost to attack an enemy.",    {AT_BRAVE,AT_INT,AT_WILL}},
+
+	{28,    'B',    "Regenerate",   "Regenerate Hitpoints faster.",                 {AT_STREN,AT_STREN,AT_STREN}},
+	{29,    'B',    "Rest",         "Regenerate Endurance faster.",                 {AT_AGIL,AT_AGIL,AT_AGIL}},
+	{30,    'B',    "Meditate",     "Regenerate Mana faster.",                      {AT_INT,AT_WILL,AT_WILL}},
+
+	{31,    'G',    "Sense Magic",  "Find out who casts what at you.",              {AT_BRAVE,AT_INT,AT_WILL}},
+	{32,    'G',    "Immunity",     "Partial immunity against negative magic.",     {AT_BRAVE,AT_AGIL,AT_STREN}},
+	{33,    'G',    "Surround Hit", "Hit all your enemies at once.",                {AT_BRAVE,AT_AGIL,AT_STREN}},
+	{34,    'G',    "Concentrate",  "Reduces mana cost for all spells.",            {AT_WILL,AT_WILL,AT_WILL}},
+	{35,    'G',    "Warcry",       "Frighten all enemies in hearing distance.",    {AT_BRAVE,AT_BRAVE,AT_STREN}},
+
+	{36,   'Z',   "", "", {0,0,0,}},
+	{37,   'Z',   "", "", {0,0,0,}},
+	{38,   'Z',   "", "", {0,0,0,}},
+	{39,   'Z',   "", "", {0,0,0,}},
+
+	{40,   'Z',   "", "", {0,0,0,}},
+	{41,   'Z',   "", "", {0,0,0,}},
+	{42,   'Z',   "", "", {0,0,0,}},
+	{43,   'Z',   "", "", {0,0,0,}},
+	{44,   'Z',   "", "", {0,0,0,}},
+	{45,   'Z',   "", "", {0,0,0,}},
+	{46,   'Z',   "", "", {0,0,0,}},
+	{47,   'Z',   "", "", {0,0,0,}},
+	{48,   'Z',   "", "", {0,0,0,}},
+	{49,   'Z',   "", "", {0,0,0,}}};
+
 // Global data, needs refactoring
-static int           unique1 = 0;
-static int           unique2 = 0;
+int           unique1 = 0;
+int           unique2 = 0;
 static int           ser_ver = 0;
-static key           okey{};
+key                  okey{};
 static pdata         playerData{};
 static sf::TcpSocket socket{};
 static unsigned char tickbuf[TSIZE];
-static int           ticksize      = 0; // amount of data in tickbuf
-static int           tickstart     = 0; // start index to scan buffer for next tick
+static int           ticksize     = 0; // amount of data in tickbuf
+static int           tickstart    = 0; // start index to scan buffer for next tick
+static int           ticksInQueue = 0;
+int                  ctick        = 0;
+static int           lastn        = 0;
 std::atomic<bool>    stopRequested;
-} // namespace
+static z_stream_s    zs{};
+cmap *               map;
+skilltab *    playerSkillTab;
+int load = 0;
 
-static void save_unique()
-{
-  // Do nothing for now
-}
-
-static void load_unique()
-{
-  // Do nothing for now
-}
+// TODO: Why did I have to remove static for 'extern' in the other translation unit to pick
+// up the definitions correctly?
 
 static char secret[256] = {"\
 Ifhjf64hH8sa,-#39ddj843tvxcv0434dvsdc40G#34Trefc349534Y5#34trecerr943\
 5#erZt#eA534#5erFtw#Trwec,9345mwrxm gerte-534lMIZDN(/dn8sfn8&DBDB/D&s\
 8efnsd897)DDzD'D'D''Dofs,t0943-rg-gdfg-gdf.t,e95.34u.5retfrh.wretv.56\
 9v4#asf.59m(D)/ND/DDLD;gd+dsa,fw9r,x  OD(98snfsf"};
+
+int sv_cmd(unsigned char *buf)
+{
+
+  if (buf[0] & static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SETMAP))
+    return sv_setmap(buf, buf[0] & ~static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SETMAP));
+
+  switch (buf[0])
+  {
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SETCHAR_NAME1):
+    sv_setchar_name1(buf);
+    break;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SETCHAR_NAME2):
+    sv_setchar_name2(buf);
+    break;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SETCHAR_NAME3):
+    sv_setchar_name3(buf);
+    break;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SETCHAR_MODE):
+    sv_setchar_mode(buf);
+    return 2;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SETCHAR_ATTRIB):
+    sv_setchar_attrib(buf);
+    return 8;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SETCHAR_SKILL):
+    sv_setchar_skill(buf);
+    return 8;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SETCHAR_HP):
+    sv_setchar_hp(buf);
+    return 13;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SETCHAR_ENDUR):
+    sv_setchar_endur(buf);
+    return 13;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SETCHAR_MANA):
+    sv_setchar_mana(buf);
+    return 13;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SETCHAR_AHP):
+    sv_setchar_ahp(buf);
+    return 3;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SETCHAR_AEND):
+    sv_setchar_aend(buf);
+    return 3;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SETCHAR_AMANA):
+    sv_setchar_amana(buf);
+    return 3;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SETCHAR_DIR):
+    sv_setchar_dir(buf);
+    return 2;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SETCHAR_PTS):
+    sv_setchar_pts(buf);
+    return 13;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SETCHAR_GOLD):
+    sv_setchar_gold(buf);
+    return 13;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SETCHAR_ITEM):
+    sv_setchar_item(buf);
+    return 9;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SETCHAR_WORN):
+    sv_setchar_worn(buf);
+    return 9;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SETCHAR_SPELL):
+    sv_setchar_spell(buf);
+    return 9;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SETCHAR_OBJ):
+    sv_setchar_obj(buf);
+    return 5;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SETMAP3):
+    return sv_setmap3(buf, 26);
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SETMAP4):
+    return sv_setmap3(buf, 0);
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SETMAP5):
+    return sv_setmap3(buf, 2);
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SETMAP6):
+    return sv_setmap3(buf, 6);
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SETORIGIN):
+    sv_setorigin(buf);
+    return 5;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_TICK):
+    sv_tick(buf);
+    return 2;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_LOG0):
+    sv_log(buf, 0);
+    break;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_LOG1):
+    sv_log(buf, 1);
+    break;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_LOG2):
+    sv_log(buf, 2);
+    break;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_LOG3):
+    sv_log(buf, 3);
+    break;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SCROLL_RIGHT):
+    sv_scroll_right(buf);
+    return 1;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SCROLL_LEFT):
+    sv_scroll_left(buf);
+    return 1;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SCROLL_DOWN):
+    sv_scroll_down(buf);
+    return 1;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SCROLL_UP):
+    sv_scroll_up(buf);
+    return 1;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SCROLL_RIGHTDOWN):
+    sv_scroll_rightdown(buf);
+    return 1;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SCROLL_RIGHTUP):
+    sv_scroll_rightup(buf);
+    return 1;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SCROLL_LEFTDOWN):
+    sv_scroll_leftdown(buf);
+    return 1;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SCROLL_LEFTUP):
+    sv_scroll_leftup(buf);
+    return 1;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_LOOK1):
+    sv_look1(buf);
+    break;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_LOOK2):
+    sv_look2(buf);
+    break;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_LOOK3):
+    sv_look3(buf);
+    break;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_LOOK4):
+    sv_look4(buf);
+    break;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_LOOK5):
+    sv_look5(buf);
+    break;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_LOOK6):
+    sv_look6(buf);
+    break;
+
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SETTARGET):
+    sv_settarget(buf);
+    return 13;
+
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_PLAYSOUND):
+    sv_playsound(buf);
+    return 13;
+
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_EXIT):
+    sv_exit(buf);
+    break;
+
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_LOAD):
+    sv_load(buf);
+    return 5;
+
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_UNIQUE):
+    sv_unique(buf);
+    return 9;
+  case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_IGNORE):
+    return sv_ignore(buf);
+
+  default:
+    std::cerr << "Unknown server message type!" << std::endl;
+    return -1;
+  }
+
+  return 16;
+}
+
+int tick_do(void)
+{
+  int                  len   = 0;
+  int                  idx   = 0;
+  int                  ret   = 0;
+  int                  csize = 0;
+  int                  comp  = 0;
+  static unsigned char buf[65536];
+  static int           ctot = 1;
+  static int           utot = 1;
+  static int           t    = 0;
+  static int           td   = 0;
+
+  if (!t)
+    t = time(NULL);
+
+  len  = *(unsigned short *)(tickbuf);
+  comp = len & 0x8000;
+  len &= 0x7fff;
+  ctot += len;
+  if (len > ticksize)
+    return 0;
+
+  if (comp)
+  {
+    zs.next_in  = tickbuf + 2;
+    zs.avail_in = len - 2;
+
+    zs.next_out  = buf;
+    zs.avail_out = 65536;
+
+    ret = inflate(&zs, Z_SYNC_FLUSH);
+    if (ret != Z_OK)
+    {
+      std::cerr << "uncompress error!" << std::endl;
+      std::cerr << "Error code is: " << ret << std::endl;
+    }
+
+    if (zs.avail_in)
+    {
+      std::cerr << "uncompress: avail is " << zs.avail_in << std::endl;
+    }
+
+    csize = 65536 - zs.avail_out;
+  }
+  else
+  {
+    csize = len - 2;
+    if (csize)
+      memcpy(buf, tickbuf + 2, csize);
+  }
+
+  utot += csize;
+
+  td = time(NULL) - t;
+  if (!td)
+    td = 1;
+
+  lastn = -1; // reset sv_setmap
+  ctick++;
+  if (ctick > 19)
+    ctick = 0;
+
+  while (idx < csize)
+  {
+    ret = sv_cmd(buf + idx);
+    if (ret == -1)
+    {
+      std::cerr << "Warning: syntax error in server data";
+      exit(1);
+    }
+    idx += ret;
+  }
+
+  ticksize -= len;
+  tickstart -= len;
+  ticksInQueue--;
+
+  if (ticksize)
+    memmove(tickbuf, tickbuf + len, ticksize);
+
+  // engine_tick();
+
+  return 1;
+}
 
 unsigned int xcrypt(unsigned int val)
 {
@@ -218,6 +532,9 @@ void send_opt()
       playerData.changed = 0;
       std::cerr << "Transfer done.\n";
       break;
+    default:
+      std::cerr << "Invalid state!" << std::endl;
+      break;
     }
 
     socket.send(buf, sizeof(buf));
@@ -228,7 +545,6 @@ void send_opt()
 int so_login(unsigned char *buf)
 {
   unsigned int  tmp{};
-  unsigned int  prio{};
   unsigned char obuf[16]{};
 
   static int  capcnt{};
@@ -247,8 +563,6 @@ int so_login(unsigned char *buf)
     *(unsigned long *)(obuf + 9) = 1;
     std::cerr << "Sending CL_CHALLENGE...\n";
     socket.send(obuf, sizeof(obuf));
-
-    load_unique();
 
     obuf[0]                      = static_cast<unsigned char>(CLIENT_MESSAGE_TYPES::CL_CMD_UNIQUE);
     *(unsigned long *)(obuf + 1) = unique1;
@@ -295,8 +609,7 @@ int so_login(unsigned char *buf)
 
   if (buf[0] == static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_CAP))
   {
-    tmp  = *(unsigned int *)(buf + 1);
-    prio = *(unsigned int *)(buf + 5);
+    tmp = *(unsigned int *)(buf + 1);
     capcnt++;
     std::cerr << "STATUS: Player limit reached. You're in queue.\n";
     return 0;
@@ -388,8 +701,8 @@ void so_connect()
   int tmp = 0;
   do
   {
-    std::size_t        bytesReceived = 0;
-    sf::Socket::Status status        = socket.receive(buf, sizeof(buf), bytesReceived);
+    std::size_t bytesReceived = 0;
+    status                    = socket.receive(buf, sizeof(buf), bytesReceived);
     if (bytesReceived == 0 || status == sf::Socket::Status::Disconnected)
     {
       std::cerr << "STATUS: ERROR: Server closed connection.\n";
@@ -414,6 +727,20 @@ void so_connect()
 
 int main()
 {
+  map = static_cast<cmap *>(calloc(MAPX * MAPY * sizeof(struct cmap), 1));
+
+  for (int n = 0; n < MAPX * MAPY; n++)
+  {
+    map[n].ba_sprite = SPR_EMPTY;
+  }
+
+  playerSkillTab = static_cast<skilltab *>(malloc(sizeof(struct skilltab) * 50));
+  for (int n = 0; n < 50; n++)
+  {
+    playerSkillTab[n]           = static_skilltab[n];
+    playerSkillTab[n].attrib[0] = 1;
+  }
+
   sf::RenderWindow window(sf::VideoMode(MODEX, MODEY), "Mercenaries of Astonia - New Client");
   window.setFramerateLimit(60);
 
@@ -443,10 +770,31 @@ int main()
 
       std::cerr << "Sending CL_CMD_CTICK: " << tickCount << " with status: " << status << std::endl;
 
-      unsigned char inputBuffer[1024]{};
-      std::size_t received{};
+      unsigned char      inputBuffer[1024]{};
+      std::size_t        received{};
       sf::Socket::Status recStatus = socket.receive(inputBuffer, sizeof(inputBuffer), received);
+
+      // Copy bytes into tickbuffer
+      std::memcpy(tickbuf + ticksize, inputBuffer, received);
+      ticksize += received;
+
+      if (ticksize >= tickstart + 2)
+      {
+        int tmp = *(unsigned short *)(tickbuf + tickstart);
+        tmp &= 0x7fff;
+        if (tmp < 2)
+        {
+          std::cerr << "Transmission corrupt!" << std::endl;
+        }
+
+        tickstart += tmp;
+        ticksInQueue++;
+      }
+
       std::cerr << "Received " << received << " bytes with status: " << recStatus << std::endl;
+      std::cerr << "Ticksize now: " << ticksize << std::endl;
+      std::cerr << "ticksInQueue: " << ticksInQueue << std::endl;
+      tick_do();
     }
   }};
 
@@ -454,9 +802,6 @@ int main()
 
   // Need to implement log_system_data()
   // Also, look at rec_player and send_player--these are the main I/O pathways to the client
-
-  sf::Uint64 frameCount = 0;
-
   while (window.isOpen())
   {
     sf::Event event;
@@ -464,15 +809,6 @@ int main()
     {
       if (event.type == sf::Event::Closed)
         window.close();
-    }
-
-    // Check to see if we have data from the server available
-    std::size_t        bytesReceived = 0;
-    sf::Socket::Status status        = socket.receive(tickbuf, ticksize, bytesReceived);
-
-    if (bytesReceived != 0)
-    {
-      std::cerr << "Received data from the server: " << tickbuf[0] << std::endl;
     }
 
     window.clear();

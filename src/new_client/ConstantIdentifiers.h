@@ -1,3 +1,6 @@
+#ifndef CONSTANT_IDENTIFIERS_H
+#define CONSTANT_IDENTIFIERS_H
+
 #include <cstddef>
 #include <string>
 
@@ -28,6 +31,45 @@ int*: 4
 */
 
 //#define DOCONVERT	// enable sprite packer
+
+struct look
+{
+  unsigned char  autoflag;
+  unsigned short worn[20];
+  unsigned short sprite;
+  unsigned int   points;
+  char           name[40];
+  unsigned int   hp;
+  unsigned int   end;
+  unsigned int   mana;
+  unsigned int   a_hp;
+  unsigned int   a_end;
+  unsigned int   a_mana;
+  unsigned short nr;
+  unsigned short id;
+  unsigned char  extended;
+  unsigned short item[62];
+  unsigned int   price[62];
+  unsigned int   pl_price;
+};
+static_assert(sizeof(look) == 496);
+
+struct skilltab
+{
+  int  nr;
+  char sortkey;
+  char name[40];
+  char desc[200];
+
+  int attrib[3];
+};
+static_assert(sizeof(skilltab) == 260);
+
+static const constexpr int AT_BRAVE = 0;
+static const constexpr int AT_WILL  = 1;
+static const constexpr int AT_INT   = 2;
+static const constexpr int AT_AGIL  = 3;
+static const constexpr int AT_STREN = 4;
 
 // These values are zeroed out when the user selects "new character".  Presumably
 // they have some intrinsic values if/when an MOA file is loaded.
@@ -474,3 +516,5 @@ enum struct SERVER_MESSAGE_TYPES : unsigned char
 #define DR_SINGLEBUILD 8
 #define DR_AREABUILD1 9
 #define DR_AREABUILD2 10
+
+#endif // CONSTANT_IDENTIFIERS_H
