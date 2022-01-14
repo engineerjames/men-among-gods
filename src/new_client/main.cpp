@@ -106,7 +106,6 @@ Ifhjf64hH8sa,-#39ddj843tvxcv0434dvsdc40G#34Trefc349534Y5#34trecerr943\
 
 int sv_cmd(unsigned char *buf)
 {
-
   if (buf[0] & static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SETMAP))
     return sv_setmap(buf, buf[0] & ~static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SETMAP));
 
@@ -237,23 +236,18 @@ int sv_cmd(unsigned char *buf)
   case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_LOOK6):
     sv_look6(buf);
     break;
-
   case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_SETTARGET):
     sv_settarget(buf);
     return 13;
-
   case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_PLAYSOUND):
     sv_playsound(buf);
     return 13;
-
   case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_EXIT):
     sv_exit(buf);
     break;
-
   case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_LOAD):
     sv_load(buf);
     return 5;
-
   case static_cast<unsigned char>(SERVER_MESSAGE_TYPES::SV_UNIQUE):
     sv_unique(buf);
     return 9;
@@ -289,7 +283,9 @@ int tick_do(void)
   len &= 0x7fff;
   ctot += len;
   if (len > ticksize)
+  {
     return 0;
+  }
 
   if (comp)
   {
@@ -324,12 +320,16 @@ int tick_do(void)
 
   td = time(NULL) - t;
   if (!td)
+  {
     td = 1;
+  }
 
   lastn = -1; // reset sv_setmap
   ctick++;
   if (ctick > 19)
+  {
     ctick = 0;
+  }
 
   while (idx < csize)
   {
@@ -347,7 +347,9 @@ int tick_do(void)
   ticksInQueue--;
 
   if (ticksize)
+  {
     memmove(tickbuf, tickbuf + len, ticksize);
+  }
 
   // engine_tick();
 
@@ -727,7 +729,16 @@ void so_connect()
 
 int main()
 {
-  map = static_cast<cmap *>(calloc(MAPX * MAPY * sizeof(struct cmap), 1));
+  map       = static_cast<cmap *>(calloc(MAPX * MAPY * sizeof(struct cmap), 1));
+  zs.zalloc = Z_NULL;
+  zs.zfree  = Z_NULL;
+  zs.opaque = Z_NULL;
+
+  if (inflateInit(&zs))
+  {
+    std::cerr << "STATUS: ERROR: Compressor failure.\n";
+    return -1;
+  }
 
   for (int n = 0; n < MAPX * MAPY; n++)
   {
@@ -759,7 +770,7 @@ int main()
 
     while (!stopRequested.load())
     {
-      std::this_thread::sleep_for(std::chrono::seconds(1));
+      std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
       unsigned char buf[16]{};
       buf[0]                     = (unsigned char)CLIENT_MESSAGE_TYPES::CL_CMD_CTICK;
@@ -770,14 +781,17 @@ int main()
 
       std::cerr << "Sending CL_CMD_CTICK: " << tickCount << " with status: " << status << std::endl;
 
-      unsigned char      inputBuffer[1024]{};
+      //unsigned char      inputBuffer[1024]{};
       std::size_t        received{};
-      sf::Socket::Status recStatus = socket.receive(inputBuffer, sizeof(inputBuffer), received);
+
+      // sret = recv(sock, tickbuf + ticksize, TSIZE - ticksize, 0);
+      sf::Socket::Status recStatus = socket.receive(tickbuf + ticksize, TSIZE - ticksize, received);
 
       // Copy bytes into tickbuffer
-      std::memcpy(tickbuf + ticksize, inputBuffer, received);
+      // std::memcpy(tickbuf + ticksize, inputBuffer, received);
       ticksize += received;
 
+      std::cerr << "ticksize, tickstart: " << ticksize << ", " << tickstart << std::endl;
       if (ticksize >= tickstart + 2)
       {
         int tmp = *(unsigned short *)(tickbuf + tickstart);
@@ -792,7 +806,6 @@ int main()
       }
 
       std::cerr << "Received " << received << " bytes with status: " << recStatus << std::endl;
-      std::cerr << "Ticksize now: " << ticksize << std::endl;
       std::cerr << "ticksInQueue: " << ticksInQueue << std::endl;
       tick_do();
     }
