@@ -26,6 +26,7 @@ Once you have made yourself a god, you can create items via `/createitem`:
 492 - Huge saph on gold
 524 - tit sword
 833 - gpot
+768 - Ankh Amulet
 1201 - ring of prophet
 ### Useful Positions
 607,499 - Entrance to labrynth
