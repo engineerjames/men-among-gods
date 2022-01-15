@@ -302,45 +302,6 @@ struct cplayer
 };
 static_assert(sizeof(cplayer) == 3348);
 
-enum struct CLIENT_MESSAGE_TYPES : unsigned char
-{
-  CL_EMPTY         = 0,
-  CL_NEWLOGIN      = 1,
-  CL_LOGIN         = 2,
-  CL_CHALLENGE     = 3,
-  CL_PERF_REPORT   = 4,
-  CL_CMD_MOVE      = 5,
-  CL_CMD_PICKUP    = 6,
-  CL_CMD_ATTACK    = 7,
-  CL_CMD_MODE      = 8,
-  CL_CMD_INV       = 9,
-  CL_CMD_STAT      = 10,
-  CL_CMD_DROP      = 11,
-  CL_CMD_GIVE      = 12,
-  CL_CMD_LOOK      = 13,
-  CL_CMD_INPUT1    = 14,
-  CL_CMD_INPUT2    = 15,
-  CL_CMD_INV_LOOK  = 16,
-  CL_CMD_LOOK_ITEM = 17,
-  CL_CMD_USE       = 18,
-  CL_CMD_SETUSER   = 19,
-  CL_CMD_TURN      = 20,
-  CL_CMD_AUTOLOOK  = 21,
-  CL_CMD_INPUT3    = 22,
-  CL_CMD_INPUT4    = 23,
-  CL_CMD_RESET     = 24,
-  CL_CMD_SHOP      = 25,
-  CL_CMD_SKILL     = 26,
-  CL_CMD_INPUT5    = 27,
-  CL_CMD_INPUT6    = 28,
-  CL_CMD_INPUT7    = 29,
-  CL_CMD_INPUT8    = 30,
-  CL_CMD_EXIT      = 31,
-  CL_CMD_UNIQUE    = 32,
-  CL_PASSWD        = 33,
-  CL_CMD_CTICK     = 255
-};
-
 #define SPR_INVISIBLE 0
 #define SPR_E1 1
 #define SPR_E2 2

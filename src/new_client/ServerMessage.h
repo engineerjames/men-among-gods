@@ -2,7 +2,6 @@
 #define SERVER_MESSAGE_H
 
 #include <cstdint>
-#include <map>
 #include <string>
 
 namespace ServerMessages

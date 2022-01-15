@@ -1,5 +1,7 @@
 #include "ServerMessage.h"
 
+#include <map>
+
 namespace ServerMessages
 {
 

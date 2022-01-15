@@ -7,6 +7,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
 
+#include "ClientMessage.h"
 #include "ConstantIdentifiers.h"
 #include "ServerMessage.h"
 #include "server_message_processing.h"
@@ -403,7 +404,7 @@ void send_opt()
   while ( playerData.changed == 1 )
   {
 
-    buf[ 0 ] = static_cast< unsigned char >( CLIENT_MESSAGE_TYPES::CL_CMD_SETUSER );
+    buf[ 0 ] = ClientMessages::getValue( ClientMessages::MessageTypes::CMD_SETUSER );
 
     switch ( state )
     {
@@ -581,14 +582,14 @@ int so_login( unsigned char *buf )
     tmp = *( unsigned long * ) ( buf + 1 );
     tmp = xcrypt( tmp );
 
-    obuf[ 0 ]                         = static_cast< unsigned char >( CLIENT_MESSAGE_TYPES::CL_CHALLENGE );
+    obuf[ 0 ]                         = ClientMessages::getValue( ClientMessages::MessageTypes::CHALLENGE );
     *( unsigned long * ) ( obuf + 1 ) = tmp;
     *( unsigned long * ) ( obuf + 5 ) = VERSION;
     *( unsigned long * ) ( obuf + 9 ) = 1;
     std::cerr << "Sending CL_CHALLENGE...\n";
     socket.send( obuf, sizeof( obuf ) );
 
-    obuf[ 0 ]                         = static_cast< unsigned char >( CLIENT_MESSAGE_TYPES::CL_CMD_UNIQUE );
+    obuf[ 0 ]                         = ClientMessages::getValue( ClientMessages::MessageTypes::CMD_UNIQUE );
     *( unsigned long * ) ( obuf + 1 ) = unique1;
     *( unsigned long * ) ( obuf + 5 ) = unique2;
     std::cerr << "Sending CL_CMD_UNIQUE...\n";
@@ -711,14 +712,14 @@ void so_connect()
 
   std::cerr << "Sending initial password...\n";
   const std::string myEmptyPassword = "";
-  buf[ 0 ]                          = static_cast< unsigned char >( CLIENT_MESSAGE_TYPES::CL_PASSWD );
+  buf[ 0 ]                          = ClientMessages::getValue( ClientMessages::MessageTypes::PASSWD );
   socket.send( buf, sizeof( buf ) );
 
   // Assume we're creating a new character each time.
   // Normally you'd need to send the 'key' structure (username, pass1, pass2,
   // etc.)
   std::cerr << "Sending new login request...\n";
-  buf[ 0 ] = static_cast< unsigned char >( CLIENT_MESSAGE_TYPES::CL_NEWLOGIN );
+  buf[ 0 ] = ClientMessages::getValue( ClientMessages::MessageTypes::NEWLOGIN );
   socket.send( buf, sizeof( buf ) );
 
   std::cerr << "Waiting for receipt of information...\n";
@@ -795,7 +796,7 @@ int main()
       std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
 
       unsigned char buf[ 16 ] {};
-      buf[ 0 ]                        = ( unsigned char ) CLIENT_MESSAGE_TYPES::CL_CMD_CTICK;
+      buf[ 0 ]                        = ClientMessages::getValue( ClientMessages::MessageTypes::CMD_CTICK );
       *( unsigned int * ) ( buf + 1 ) = tickCount++;
 
       std::size_t        dataSent {};

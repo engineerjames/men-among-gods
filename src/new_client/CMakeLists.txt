@@ -11,6 +11,8 @@ add_executable(${target} main.cpp
                          ConstantIdentifiers.h
                          server_message_processing.h
                          server_message_processing.cpp
+                         ClientMessage.h
+                         ClientMessage.cpp
                          ServerMessage.h
                          ServerMessage.cpp)
 target_link_libraries(${target} PRIVATE sfml-graphics sfml-network pthread z)
