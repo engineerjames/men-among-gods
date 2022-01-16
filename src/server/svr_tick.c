@@ -1626,7 +1626,7 @@ void plr_state(int nr)
   }
 }
 
-void inline plr_change_stat(int nr, unsigned char *a, unsigned char *b, unsigned char code, unsigned char n)
+void plr_change_stat(int nr, unsigned char *a, unsigned char *b, unsigned char code, unsigned char n)
 {
   unsigned char buf[16];
 
@@ -1648,7 +1648,7 @@ void inline plr_change_stat(int nr, unsigned char *a, unsigned char *b, unsigned
   }
 }
 
-void inline plr_change_power(int nr, unsigned short *a, unsigned short *b, unsigned char code)
+void plr_change_power(int nr, unsigned short *a, unsigned short *b, unsigned char code)
 {
   unsigned char buf[16];
 
@@ -2449,7 +2449,7 @@ inline int check_dlight(int x, int y)
   return (globs->dlight * map[m].dlight) / 256;
 }
 
-inline int check_dlightm(int m)
+int check_dlightm(int m)
 {
   if (!(map[m].flags & MF_INDOORS))
     return globs->dlight;

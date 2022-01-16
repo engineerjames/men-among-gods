@@ -6,6 +6,7 @@ All rights reserved.
 
 **************************************************************************/
 
+#include <x86intrin.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -711,13 +712,13 @@ void prof_tick(void)
     proftab[n] = 0;
 }
 
-unsigned long long prof_start(void) { return rdtsc(); }
+unsigned long long prof_start(void) { return __rdtsc(); }
 
 void prof_stop(int task, unsigned long long cycle)
 {
   unsigned long long td;
 
-  td = rdtsc() - cycle;
+  td = __rdtsc() - cycle;
 
   if (task >= 0 && task < 100)
     proftab[task] += td;
@@ -772,9 +773,9 @@ int main(int argc, char *args[])
   xlog("Mercenaries of Astonia Server v%d.%02d.%02d", VERSION >> 16, (VERSION >> 8) & 255, VERSION & 255);
   xlog("Copyright (C) 1997-2001 Daniel Brockhaus");
 
-  t1 = rdtsc();
+  t1 = __rdtsc();
   sleep(1);
-  t2             = rdtsc();
+  t2             = __rdtsc();
   t1             = t2 - t1;
   cycles_per_sek = ((t1 + 25000000) / 50000000) * 50000000;
   xlog("Speed test: %.0f Mhz", cycles_per_sek / 1000000);
@@ -901,8 +902,9 @@ int main(int argc, char *args[])
 
   for (n = 1; n < MAXCHARS; n++)
   {
-    if (ch[n].used == USE_ACTIVE)
+    if (ch[n].used == USE_ACTIVE) {
       plr_logout(n, 0, LO_SHUTDOWN);
+    }
   }
 
   srand(time(NULL));
