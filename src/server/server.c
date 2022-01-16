@@ -270,7 +270,6 @@ int csend( int nr, unsigned char *buf, int len )
   if ( player[ nr ].sock == 0 )
     return -1;
 
-  printf( "Sending player data... %u\n", buf[ 0 ] );
   while ( len )
   {
     tmp = player[ nr ].iptr + 1;

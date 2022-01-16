@@ -13,6 +13,7 @@ public:
   ~Compressor() = default;
 
   int inflate();
+  int deflate();
 
   // next input byte
   void setNextInput( void *input );

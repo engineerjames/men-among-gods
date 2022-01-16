@@ -14,6 +14,11 @@ int Compressor::inflate()
   return ::inflate( &zStream, Z_SYNC_FLUSH );
 }
 
+int Compressor::deflate()
+{
+  return ::deflate( &zStream, Z_SYNC_FLUSH );
+}
+
 // next input byte
 void Compressor::setNextInput( void *input )
 {

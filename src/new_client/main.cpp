@@ -777,22 +777,14 @@ int main()
                                   buf[ 0 ]                        = ClientMessages::getValue( ClientMessages::MessageTypes::CMD_CTICK );
                                   *( unsigned int * ) ( buf + 1 ) = tickCount++;
 
-                                  std::size_t        dataSent {};
-                                  sf::Socket::Status status = socket.send( buf, sizeof( buf ), dataSent );
+                                  std::size_t dataSent {};
+                                  socket.send( buf, sizeof( buf ), dataSent );
 
-                                  std::cerr << "Sending CL_CMD_CTICK: " << tickCount << " with status: " << status << std::endl;
-
-                                  // unsigned char      inputBuffer[1024]{};
                                   std::size_t received {};
+                                  socket.receive( tickbuf + ticksize, TSIZE - ticksize, received );
 
-                                  // sret = recv(sock, tickbuf + ticksize, TSIZE - ticksize, 0);
-                                  sf::Socket::Status recStatus = socket.receive( tickbuf + ticksize, TSIZE - ticksize, received );
-
-                                  // Copy bytes into tickbuffer
-                                  // std::memcpy(tickbuf + ticksize, inputBuffer, received);
                                   ticksize += received;
 
-                                  std::cerr << "ticksize, tickstart: " << ticksize << ", " << tickstart << std::endl;
                                   if ( ticksize >= tickstart + 2 )
                                   {
                                     int tmp = *( unsigned short * ) ( tickbuf + tickstart );
@@ -806,13 +798,9 @@ int main()
                                     ticksInQueue++;
                                   }
 
-                                  std::cerr << "Received " << received << " bytes with status: " << recStatus << std::endl;
-                                  std::cerr << "ticksInQueue: " << ticksInQueue << std::endl;
                                   tick_do( compressor );
                                 }
                               } };
-
-  networkThread.detach();
 
   // Need to implement log_system_data()
   // Also, look at rec_player and send_player--these are the main I/O pathways to the client
@@ -830,6 +818,7 @@ int main()
     window.display();
   }
 
+  networkThread.join();
   stopRequested.store( true );
 
   return 0;

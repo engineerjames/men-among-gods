@@ -11,6 +11,8 @@ add_executable(${target} main.cpp
                          ConstantIdentifiers.h
                          server_message_processing.h
                          server_message_processing.cpp
+                         ClientConnection.h
+                         ClientConnection.cpp
                          ClientMessage.h
                          ClientMessage.cpp
                          Compressor.h
