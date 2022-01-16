@@ -1,7 +1,6 @@
 set(target server)
 
 set( sources
-#    acct.c
     area.c
     build.c
     ccp_driver.c
@@ -13,14 +12,11 @@ set( sources
     driver_etc.c
     driver_generic.c
     helper.c
-#    info.c
     lab9.c
     look_driver.c
     npc_malte.c
-#    password.c
     path.c
     populate.c
-#    respawn.c
     server.c
     skill.c
     skill_driver.c
@@ -54,6 +50,7 @@ set( headers
     server.h
 )
 
+# TODO: Add respawn / password executables?
 add_executable(${target} ${sources} ${headers})
 target_include_directories(${target} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/cgilib)
 target_link_libraries(${target} PRIVATE -m32 z m crypt)
@@ -65,3 +62,17 @@ add_custom_command(
             POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E make_directory  $<TARGET_FILE_DIR:${target}>/.dat
             COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/.dat/*.dat $<TARGET_FILE_DIR:${target}>/.dat)
+
+# CGI Output
+set(target acct)
+add_executable(${target} acct.c skill.c gendefs.h data.h)
+target_compile_options(${target} PRIVATE -m32)
+target_include_directories(${target} SYSTEM PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/cgilib)
+target_link_libraries(${target} PRIVATE -m32 ${CMAKE_CURRENT_SOURCE_DIR}/cgilib/cgi-lib.a)
+set_target_properties(${target} PROPERTIES SUFFIX ".cgi")
+
+set(target info)
+add_executable(${target} info.c gendefs.h data.h)
+target_compile_options(${target} PRIVATE -m32)
+target_link_libraries(${target} PRIVATE -m32)
+set_target_properties(${target} PROPERTIES SUFFIX ".cgi")
