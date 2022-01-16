@@ -16,6 +16,11 @@
             "cppStandard": "c++17",
             "intelliSenseMode": "windows-msvc-x64",
             "configurationProvider": "ms-vscode.cmake-tools"
+        },
+        {
+            "name":"Linux",
+            "configurationProvider":"ms-vscode.cmake-tools",
+            "cppStandard":"c++17"
         }
     ],
     "version": 4
