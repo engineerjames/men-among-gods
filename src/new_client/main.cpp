@@ -8,11 +8,11 @@
 #include <SFML/Network.hpp>
 
 #include "ClientMessage.h"
+#include "Compressor.h"
 #include "ConstantIdentifiers.h"
+#include "Encoder.h"
 #include "ServerMessage.h"
 #include "server_message_processing.h"
-
-#include <zlib.h>
 
 // clang-format off
 skilltab static_skilltab[50]={
@@ -93,19 +93,12 @@ static int           ticksInQueue = 0;
 int                  ctick        = 0;
 static int           lastn        = 0;
 std::atomic< bool >  stopRequested;
-static z_stream_s    zs {};
 cmap *               map;
 skilltab *           playerSkillTab;
 int                  load = 0;
 
 // TODO: Why did I have to remove static for 'extern' in the other translation unit to pick
 // up the definitions correctly?
-
-static char secret[ 256 ] = { "\
-Ifhjf64hH8sa,-#39ddj843tvxcv0434dvsdc40G#34Trefc349534Y5#34trecerr943\
-5#erZt#eA534#5erFtw#Trwec,9345mwrxm gerte-534lMIZDN(/dn8sfn8&DBDB/D&s\
-8efnsd897)DDzD'D'D''Dofs,t0943-rg-gdfg-gdf.t,e95.34u.5retfrh.wretv.56\
-9v4#asf.59m(D)/ND/DDLD;gd+dsa,fw9r,x  OD(98snfsf" };
 
 int sv_cmd( unsigned char *buf )
 {
@@ -285,22 +278,23 @@ int sv_cmd( unsigned char *buf )
   return 16;
 }
 
-int tick_do( void )
+int tick_do( Compressor &compressor )
 {
-  int                  len   = 0;
-  int                  idx   = 0;
-  int                  ret   = 0;
-  int                  csize = 0;
-  int                  comp  = 0;
-  static unsigned char buf[ 65536 ];
-  static int           ctot = 1;
-  static int           utot = 1;
-  static int           t    = 0;
-  static int           td   = 0;
+  int                                len         = 0;
+  int                                idx         = 0;
+  int                                csize       = 0;
+  int                                comp        = 0;
+  static const constexpr std::size_t BUFFER_SIZE = 65536;
+  static unsigned char               buf[ BUFFER_SIZE ];
+  static int                         ctot = 1;
+  static int                         utot = 1;
+  static int                         t    = 0;
+  static int                         td   = 0;
 
   if ( ! t )
+  {
     t = time( NULL );
-
+  }
   len  = *( unsigned short * ) ( tickbuf );
   comp = len & 0x8000;
   len &= 0x7fff;
@@ -312,31 +306,34 @@ int tick_do( void )
 
   if ( comp )
   {
-    zs.next_in  = tickbuf + 2;
-    zs.avail_in = len - 2;
+    compressor.setNextInput( tickbuf + 2 );
+    compressor.setAvailableIn( len - 2 );
 
-    zs.next_out  = buf;
-    zs.avail_out = 65536;
+    compressor.setNextOutput( buf );
+    compressor.setAvailableOut( BUFFER_SIZE );
 
-    ret = inflate( &zs, Z_SYNC_FLUSH );
+    int ret = compressor.inflate();
+
     if ( ret != Z_OK )
     {
       std::cerr << "uncompress error!" << std::endl;
       std::cerr << "Error code is: " << ret << std::endl;
     }
 
-    if ( zs.avail_in )
+    if ( compressor.getAvailableIn() != 0 )
     {
-      std::cerr << "uncompress: avail is " << zs.avail_in << std::endl;
+      std::cerr << "uncompress: avail is " << compressor.getAvailableIn() << std::endl;
     }
 
-    csize = 65536 - zs.avail_out;
+    csize = BUFFER_SIZE - compressor.getAvailableOut();
   }
   else
   {
     csize = len - 2;
     if ( csize )
-      memcpy( buf, tickbuf + 2, csize );
+    {
+      std::memcpy( buf, tickbuf + 2, csize );
+    }
   }
 
   utot += csize;
@@ -356,13 +353,13 @@ int tick_do( void )
 
   while ( idx < csize )
   {
-    ret = sv_cmd( buf + idx );
-    if ( ret == -1 )
+    int retVal = sv_cmd( buf + idx );
+    if ( retVal == -1 )
     {
       std::cerr << "Warning: syntax error in server data";
       exit( 1 );
     }
-    idx += ret;
+    idx += retVal;
   }
 
   ticksize -= len;
@@ -371,26 +368,12 @@ int tick_do( void )
 
   if ( ticksize )
   {
-    memmove( tickbuf, tickbuf + len, ticksize );
+    std::memmove( tickbuf, tickbuf + len, ticksize );
   }
 
   // engine_tick();
 
   return 1;
-}
-
-unsigned int xcrypt( unsigned int val )
-{
-  unsigned int res = 0;
-
-  res += ( unsigned int ) ( secret[ val & 255 ] );
-  res += ( unsigned int ) ( secret[ ( val >> 8 ) & 255 ] ) << 8;
-  res += ( unsigned int ) ( secret[ ( val >> 16 ) & 255 ] ) << 16;
-  res += ( unsigned int ) ( secret[ ( val >> 24 ) & 255 ] ) << 24;
-
-  res ^= 0x5a7ce52e;
-
-  return res;
 }
 
 void send_opt()
@@ -580,7 +563,7 @@ int so_login( unsigned char *buf )
     // SetDlgItemText(hwnd, IDC_STATUS, "STATUS: Login Part I");
 
     tmp = *( unsigned long * ) ( buf + 1 );
-    tmp = xcrypt( tmp );
+    tmp = Encoder::xcrypt( tmp );
 
     obuf[ 0 ]                         = ClientMessages::getValue( ClientMessages::MessageTypes::CHALLENGE );
     *( unsigned long * ) ( obuf + 1 ) = tmp;
@@ -752,16 +735,7 @@ void so_connect()
 
 int main()
 {
-  map       = static_cast< cmap * >( calloc( MAPX * MAPY * sizeof( struct cmap ), 1 ) );
-  zs.zalloc = Z_NULL;
-  zs.zfree  = Z_NULL;
-  zs.opaque = Z_NULL;
-
-  if ( inflateInit( &zs ) )
-  {
-    std::cerr << "STATUS: ERROR: Compressor failure.\n";
-    return -1;
-  }
+  map = static_cast< cmap * >( calloc( MAPX * MAPY * sizeof( struct cmap ), 1 ) );
 
   for ( int n = 0; n < MAPX * MAPY; n++ )
   {
@@ -781,58 +755,62 @@ int main()
   stopRequested.store( false );
 
   // Start networking thread
-  std::thread networkThread { []() {
-    std::cerr << "Connecting to men-among-gods Server." << std::endl;
-    so_connect();
-    std::cerr << "Connected to server: " << socket.getRemoteAddress() << ":" << socket.getRemotePort() << std::endl;
-    send_opt();
+  std::thread networkThread { []()
+                              {
+                                Compressor compressor {};
 
-    socket.setBlocking( false );
+                                std::cerr << "Connecting to men-among-gods Server." << std::endl;
+                                so_connect();
+                                std::cerr << "Connected to server: " << socket.getRemoteAddress() << ":" << socket.getRemotePort()
+                                          << std::endl;
+                                send_opt();
 
-    std::size_t tickCount = 0;
+                                socket.setBlocking( false );
 
-    while ( ! stopRequested.load() )
-    {
-      std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
+                                std::size_t tickCount = 0;
 
-      unsigned char buf[ 16 ] {};
-      buf[ 0 ]                        = ClientMessages::getValue( ClientMessages::MessageTypes::CMD_CTICK );
-      *( unsigned int * ) ( buf + 1 ) = tickCount++;
+                                while ( ! stopRequested.load() )
+                                {
+                                  std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
 
-      std::size_t        dataSent {};
-      sf::Socket::Status status = socket.send( buf, sizeof( buf ), dataSent );
+                                  unsigned char buf[ 16 ] {};
+                                  buf[ 0 ]                        = ClientMessages::getValue( ClientMessages::MessageTypes::CMD_CTICK );
+                                  *( unsigned int * ) ( buf + 1 ) = tickCount++;
 
-      std::cerr << "Sending CL_CMD_CTICK: " << tickCount << " with status: " << status << std::endl;
+                                  std::size_t        dataSent {};
+                                  sf::Socket::Status status = socket.send( buf, sizeof( buf ), dataSent );
 
-      // unsigned char      inputBuffer[1024]{};
-      std::size_t received {};
+                                  std::cerr << "Sending CL_CMD_CTICK: " << tickCount << " with status: " << status << std::endl;
 
-      // sret = recv(sock, tickbuf + ticksize, TSIZE - ticksize, 0);
-      sf::Socket::Status recStatus = socket.receive( tickbuf + ticksize, TSIZE - ticksize, received );
+                                  // unsigned char      inputBuffer[1024]{};
+                                  std::size_t received {};
 
-      // Copy bytes into tickbuffer
-      // std::memcpy(tickbuf + ticksize, inputBuffer, received);
-      ticksize += received;
+                                  // sret = recv(sock, tickbuf + ticksize, TSIZE - ticksize, 0);
+                                  sf::Socket::Status recStatus = socket.receive( tickbuf + ticksize, TSIZE - ticksize, received );
 
-      std::cerr << "ticksize, tickstart: " << ticksize << ", " << tickstart << std::endl;
-      if ( ticksize >= tickstart + 2 )
-      {
-        int tmp = *( unsigned short * ) ( tickbuf + tickstart );
-        tmp &= 0x7fff;
-        if ( tmp < 2 )
-        {
-          std::cerr << "Transmission corrupt!" << std::endl;
-        }
+                                  // Copy bytes into tickbuffer
+                                  // std::memcpy(tickbuf + ticksize, inputBuffer, received);
+                                  ticksize += received;
 
-        tickstart += tmp;
-        ticksInQueue++;
-      }
+                                  std::cerr << "ticksize, tickstart: " << ticksize << ", " << tickstart << std::endl;
+                                  if ( ticksize >= tickstart + 2 )
+                                  {
+                                    int tmp = *( unsigned short * ) ( tickbuf + tickstart );
+                                    tmp &= 0x7fff;
+                                    if ( tmp < 2 )
+                                    {
+                                      std::cerr << "Transmission corrupt!" << std::endl;
+                                    }
 
-      std::cerr << "Received " << received << " bytes with status: " << recStatus << std::endl;
-      std::cerr << "ticksInQueue: " << ticksInQueue << std::endl;
-      tick_do();
-    }
-  } };
+                                    tickstart += tmp;
+                                    ticksInQueue++;
+                                  }
+
+                                  std::cerr << "Received " << received << " bytes with status: " << recStatus << std::endl;
+                                  std::cerr << "ticksInQueue: " << ticksInQueue << std::endl;
+                                  tick_do( compressor );
+                                }
+                              } };
 
   networkThread.detach();
 

@@ -140,11 +140,11 @@ static inline unsigned int _mcpy(unsigned char *a, unsigned char *b, unsigned in
 // some magic to avoid a lot of casts
 static inline unsigned int mcpy(void *a, void *b, unsigned int len) { return _mcpy(a, b, len); }
 
-static char secret[256] = {"\
+static char secret[ 256 ] = { "\
 Ifhjf64hH8sa,-#39ddj843tvxcv0434dvsdc40G#34Trefc349534Y5#34trecerr943\
 5#erZt#eA534#5erFtw#Trwec,9345mwrxm gerte-534lMIZDN(/dn8sfn8&DBDB/D&s\
 8efnsd897)DDzD'D'D''Dofs,t0943-rg-gdfg-gdf.t,e95.34u.5retfrh.wretv.56\
-9v4#asf.59m(D)/ND/DDLD;gd+dsa,fw9r,x  OD(98snfsfa"};
+9v4#asf.59m(D)/ND/DDLD;gd+dsa,fw9r,x  OD(98snfsf" };
 
 unsigned int xcrypt(unsigned int val)
 {

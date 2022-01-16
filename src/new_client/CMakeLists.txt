@@ -13,8 +13,12 @@ add_executable(${target} main.cpp
                          server_message_processing.cpp
                          ClientMessage.h
                          ClientMessage.cpp
+                         Compressor.h
+                         Compressor.cpp
                          ServerMessage.h
-                         ServerMessage.cpp)
+                         ServerMessage.cpp
+                         Encoder.h
+                         Encoder.cpp)
 target_link_libraries(${target} PRIVATE sfml-graphics sfml-network pthread z)
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE -Wall -Wextra -Wshadow -Werror -Wpedantic -Wmissing-include-dirs -Wswitch-default -Wswitch-enum -Wfloat-equal )
