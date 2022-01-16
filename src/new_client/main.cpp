@@ -818,7 +818,11 @@ int main()
     window.display();
   }
 
-  networkThread.join();
+  if ( networkThread.joinable() )
+  {
+    networkThread.join();
+  }
+
   stopRequested.store( true );
 
   return 0;

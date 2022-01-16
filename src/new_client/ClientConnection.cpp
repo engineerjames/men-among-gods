@@ -71,8 +71,7 @@ bool ClientConnection::login()
   return true;
 }
 
-
-// Returns 0 1, -1
+// Returns 0 1, -1; TODO: Add checks for if connected...
 ClientConnection::ProcessStatus ClientConnection::processLoginResponse( const std::array< std::uint8_t, 16 > &buffer )
 {
   unsigned int                   tmp {};
@@ -191,6 +190,179 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( const st
   {
     return ProcessStatus::CONTINUE;
   }
+}
+
+// TODO: Make sure we set playerData.changed = 1
+bool ClientConnection::sendPlayerData( const pdata &playerData )
+{
+  int                            state = 0;
+  std::array< std::uint8_t, 16 > buffer {};
+  int                            n {};
+
+  while ( playerData.changed == 1 )
+  {
+    buffer[ 0 ] = ClientMessages::getValue( ClientMessages::MessageTypes::CMD_SETUSER );
+
+    switch ( state )
+    {
+    case 0:
+      buffer[ 1 ] = 0;
+      buffer[ 2 ] = 0;
+      for ( n = 0; n < 13; n++ )
+      {
+        buffer[ n + 3 ] = playerData.cname[ n ];
+      }
+      std::cerr << "Transfering user data...";
+      break;
+    case 1:
+      buffer[ 1 ] = 0;
+      buffer[ 2 ] = 13;
+      for ( n = 0; n < 13; n++ )
+      {
+        buffer[ n + 3 ] = playerData.cname[ n + 13 ];
+      }
+      break;
+    case 2:
+      buffer[ 1 ] = 0;
+      buffer[ 2 ] = 26;
+      for ( n = 0; n < 13; n++ )
+      {
+        buffer[ n + 3 ] = playerData.cname[ n + 26 ];
+      }
+      break;
+    case 3:
+      buffer[ 1 ] = 0;
+      buffer[ 2 ] = 39;
+      for ( n = 0; n < 13; n++ )
+      {
+        buffer[ n + 3 ] = playerData.cname[ n + 39 ];
+      }
+      break;
+    case 4:
+      buffer[ 1 ] = 0;
+      buffer[ 2 ] = 52;
+      for ( n = 0; n < 13; n++ )
+      {
+        buffer[ n + 3 ] = playerData.cname[ n + 52 ];
+      }
+      break;
+    case 5:
+      buffer[ 1 ] = 0;
+      buffer[ 2 ] = 65;
+      for ( n = 0; n < 13; n++ )
+      {
+        buffer[ n + 3 ] = playerData.cname[ n + 65 ];
+      }
+      break;
+
+    case 6:
+      buffer[ 1 ] = 1;
+      buffer[ 2 ] = 0;
+      for ( n = 0; n < 13; n++ )
+      {
+        buffer[ n + 3 ] = playerData.desc[ n ];
+      }
+      break;
+    case 7:
+      buffer[ 1 ] = 1;
+      buffer[ 2 ] = 13;
+      for ( n = 0; n < 13; n++ )
+      {
+        buffer[ n + 3 ] = playerData.desc[ n + 13 ];
+      }
+      break;
+    case 8:
+      buffer[ 1 ] = 1;
+      buffer[ 2 ] = 26;
+      for ( n = 0; n < 13; n++ )
+      {
+        buffer[ n + 3 ] = playerData.desc[ n + 26 ];
+      }
+      break;
+    case 9:
+      buffer[ 1 ] = 1;
+      buffer[ 2 ] = 39;
+      for ( n = 0; n < 13; n++ )
+      {
+        buffer[ n + 3 ] = playerData.desc[ n + 39 ];
+      }
+      break;
+    case 10:
+      buffer[ 1 ] = 1;
+      buffer[ 2 ] = 52;
+      for ( n = 0; n < 13; n++ )
+      {
+        buffer[ n + 3 ] = playerData.desc[ n + 52 ];
+      }
+      break;
+    case 11:
+      buffer[ 1 ] = 1;
+      buffer[ 2 ] = 65;
+      for ( n = 0; n < 13; n++ )
+      {
+        buffer[ n + 3 ] = playerData.desc[ n + 65 ];
+      }
+      break;
+
+    case 12:
+      buffer[ 1 ] = 2;
+      buffer[ 2 ] = 0;
+      for ( n = 0; n < 13; n++ )
+      {
+        buffer[ n + 3 ] = playerData.desc[ n + 78 ];
+      }
+      break;
+    case 13:
+      buffer[ 1 ] = 2;
+      buffer[ 2 ] = 13;
+      for ( n = 0; n < 13; n++ )
+      {
+        buffer[ n + 3 ] = playerData.desc[ n + 91 ];
+      }
+      break;
+    case 14:
+      buffer[ 1 ] = 2;
+      buffer[ 2 ] = 26;
+      for ( n = 0; n < 13; n++ )
+      {
+        buffer[ n + 3 ] = playerData.desc[ n + 104 ];
+      }
+      break;
+    case 15:
+      buffer[ 1 ] = 2;
+      buffer[ 2 ] = 39;
+      for ( n = 0; n < 13; n++ )
+      {
+        buffer[ n + 3 ] = playerData.desc[ n + 117 ];
+      }
+      break;
+    case 16:
+      buffer[ 1 ] = 2;
+      buffer[ 2 ] = 52;
+      for ( n = 0; n < 13; n++ )
+      {
+        buffer[ n + 3 ] = playerData.desc[ n + 130 ];
+      }
+      break;
+    case 17:
+      buffer[ 1 ] = 2;
+      buffer[ 2 ] = 65;
+      for ( n = 0; n < 13; n++ )
+      {
+        buffer[ n + 3 ] = playerData.desc[ n + 143 ];
+      }
+      std::cerr << "Transfer done.\n";
+      return true;
+    default:
+      std::cerr << "Invalid state!" << std::endl;
+      return false;
+    }
+
+    clientSocket_.send( buffer.data(), buffer.size() );
+    state++;
+  }
+
+  return false;
 }
 
 ClientConnection::~ClientConnection()

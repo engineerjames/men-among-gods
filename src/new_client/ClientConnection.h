@@ -15,8 +15,8 @@ public:
   ~ClientConnection();
 
   bool connect();
-
   bool login();
+  bool sendPlayerData(const pdata& playerData);
 
 private:
   enum struct ProcessStatus
