@@ -49,7 +49,7 @@ bool ClientConnection::login()
   clientSocket_.send( buffer.data(), buffer.size() );
 
   std::cerr << "Waiting for receipt of information...\n";
-  int tmp = 0;
+  ProcessStatus procStatus = ProcessStatus::CONTINUE;
   do
   {
     std::size_t        bytesReceived = 0;
@@ -60,24 +60,25 @@ bool ClientConnection::login()
       return false;
     }
 
-    tmp = processLoginResponse( buffer );
-    if ( tmp == -1 )
+    procStatus = processLoginResponse( buffer );
+    if ( procStatus == ProcessStatus::ERROR )
     {
       std::cerr << "Error logging in!" << std::endl;
       return false;
     }
-  } while ( tmp == 0 );
+  } while ( procStatus == ProcessStatus::CONTINUE );
 
   return true;
 }
 
-bool ClientConnection::processLoginResponse( const std::array< std::uint8_t, 16 > &buffer )
+
+// Returns 0 1, -1
+ClientConnection::ProcessStatus ClientConnection::processLoginResponse( const std::array< std::uint8_t, 16 > &buffer )
 {
   unsigned int                   tmp {};
   std::array< std::uint8_t, 16 > outputBuffer {};
   std::array< char, 256 >        messageOfTheDay {};
   static int                     capcnt {};
-  static char                    mod[ 256 ] {};
 
   ServerMessages::MessageTypes serverMsgType = ServerMessages::getType( buffer[ 0 ] );
 
@@ -95,155 +96,101 @@ bool ClientConnection::processLoginResponse( const std::array< std::uint8_t, 16 
     std::cerr << "Sending CL_CHALLENGE...\n";
     clientSocket_.send( outputBuffer.data(), outputBuffer.size() );
 
-    outputBuffer[ 0 ]                 = ClientMessages::getValue( ClientMessages::MessageTypes::CMD_UNIQUE );
+    outputBuffer[ 0 ]                                = ClientMessages::getValue( ClientMessages::MessageTypes::CMD_UNIQUE );
     *( unsigned long * ) ( outputBuffer.data() + 1 ) = unique1_;
     *( unsigned long * ) ( outputBuffer.data() + 5 ) = unique2_;
     std::cerr << "Sending CL_CMD_UNIQUE...\n";
     clientSocket_.send( outputBuffer.data(), outputBuffer.size() );
 
-    capcnt = 0;
-
-    return 0;
+    return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::NEWPLAYER )
   {
+    clientData_.usnr  = *( unsigned long * ) ( buffer.data() + 1 ); // Unique player ID
+    clientData_.pass1 = *( unsigned long * ) ( buffer.data() + 5 );
+    clientData_.pass2 = *( unsigned long * ) ( buffer.data() + 9 );
+    serverVersion_    = *( unsigned char * ) ( buffer.data() + 13 );
+    serverVersion_ += ( int ) ( ( *( unsigned char * ) ( buffer.data() + 14 ) ) ) << 8;
+    serverVersion_ += ( int ) ( ( *( unsigned char * ) ( buffer.data() + 15 ) ) ) << 16;
+    std::cerr << "Server Response: NEWPLAYER...\n";
+    std::cerr << "received usnr:" << clientData_.usnr << std::endl;
+    std::cerr << "received pass1:" << clientData_.pass1 << std::endl;
+    std::cerr << "received pass2:" << clientData_.pass2 << std::endl;
+    return ProcessStatus::DONE;
   }
   else if ( serverMsgType == MessageTypes::LOGIN_OK )
   {
+    serverVersion_ = *( unsigned long * ) ( buffer.data() + 1 );
+    std::cerr << "Server Response: LOGIN OK...\n";
+    return ProcessStatus::DONE;
   }
   else if ( serverMsgType == MessageTypes::EXIT )
   {
+    tmp = *( unsigned int * ) ( buffer.data() + 1 );
+    // TODO: Add reason from tmp
+    std::cerr << "STATUS: Server demands exit.\n";
+
+    return ProcessStatus::ERROR;
   }
   else if ( serverMsgType == MessageTypes::CAP )
   {
+    tmp = *( unsigned int * ) ( buffer.data() + 1 );
+    capcnt++;
+    std::cerr << "STATUS: Player limit reached. You're in queue.\n";
+    return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD1 )
   {
+    std::memcpy( messageOfTheDay.data(), buffer.data() + 1, 15 );
+    std::cerr << "Server Response: MOD1...\n";
+    return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD2 )
   {
+    std::memcpy( messageOfTheDay.data() + 15, buffer.data() + 1, 15 );
+    std::cerr << "Server Response: MOD2...\n";
+    return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD3 )
   {
+    std::memcpy( messageOfTheDay.data() + 30, buffer.data() + 1, 15 );
+    std::cerr << "Server Response: MOD3...\n";
+    return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD4 )
   {
+    std::memcpy( messageOfTheDay.data() + 45, buffer.data() + 1, 15 );
+    std::cerr << "Server Response: MOD4...\n";
+    return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD5 )
   {
+    std::memcpy( messageOfTheDay.data() + 60, buffer.data() + 1, 15 );
+    std::cerr << "Server Response: MOD5...\n";
+    return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD6 )
   {
+    std::memcpy( messageOfTheDay.data() + 75, buffer.data() + 1, 15 );
+    std::cerr << "Server Response: MOD6...\n";
+    return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD7 )
   {
+    std::memcpy( messageOfTheDay.data() + 90, buffer.data() + 1, 15 );
+    std::cerr << "Server Response: MOD7...\n";
+    return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD8 )
   {
+    std::memcpy( messageOfTheDay.data() + 105, buffer.data() + 1, 15 );
+    std::cerr << "Server Response: MOD8...\n";
+    return ProcessStatus::CONTINUE;
   }
   else
   {
-    return false;
+    return ProcessStatus::CONTINUE;
   }
-
-  if ( buffer[ 0 ] == ServerMessages::getValue( ServerMessages::MessageTypes::CHALLENGE ) )
-  { // answer challenges at once
-    // SetDlgItemText(hwnd, IDC_STATUS, "STATUS: Login Part I");
-  }
-  if ( buffer[ 0 ] == ServerMessages::getValue( ServerMessages::MessageTypes::NEWPLAYER ) )
-  {                                                // answer newplayer at once
-    okey.usnr  = *( unsigned long * ) ( buf + 1 ); // Unique player ID
-    okey.pass1 = *( unsigned long * ) ( buf + 5 );
-    okey.pass2 = *( unsigned long * ) ( buf + 9 );
-    ser_ver    = *( unsigned char * ) ( buf + 13 );
-    ser_ver += ( int ) ( ( *( unsigned char * ) ( buf + 14 ) ) ) << 8;
-    ser_ver += ( int ) ( ( *( unsigned char * ) ( buf + 15 ) ) ) << 16;
-    std::cerr << "Server Response: NEWPLAYER...\n";
-    std::cerr << "received usnr:" << okey.usnr << std::endl;
-    std::cerr << "received pass1:" << okey.pass1 << std::endl;
-    std::cerr << "received pass2:" << okey.pass2 << std::endl;
-    return 1;
-  }
-  if ( buf[ 0 ] == ServerMessages::getValue( ServerMessages::MessageTypes::LOGIN_OK ) )
-  {
-    ser_ver = *( unsigned long * ) ( buf + 1 );
-    std::cerr << "Server Response: LOGIN OK...\n";
-    return 1;
-  }
-
-  if ( buf[ 0 ] == ServerMessages::getValue( ServerMessages::MessageTypes::EXIT ) )
-  {
-    tmp = *( unsigned int * ) ( buf + 1 );
-    if ( tmp < 1 || tmp > 14 )
-    {
-      // std::cerr << "STATUS: Server demands exit:\nunknown reason";
-    }
-    std::cerr << "STATUS: Server demands exit.\n";
-
-    return -1;
-  }
-
-  if ( buf[ 0 ] == ServerMessages::getValue( ServerMessages::MessageTypes::CAP ) )
-  {
-    tmp = *( unsigned int * ) ( buf + 1 );
-    capcnt++;
-    std::cerr << "STATUS: Player limit reached. You're in queue.\n";
-    return 0;
-  }
-
-  // Message of the Day Processing
-  if ( buf[ 0 ] == ServerMessages::getValue( ServerMessages::MessageTypes::MOD1 ) )
-  {
-    std::memcpy( mod, buf + 1, 15 );
-    std::cerr << "Server Response: MOD1...\n";
-    return 0;
-  }
-  if ( buf[ 0 ] == ServerMessages::getValue( ServerMessages::MessageTypes::MOD2 ) )
-  {
-    std::memcpy( mod + 15, buf + 1, 15 );
-    std::cerr << "Server Response: MOD2...\n";
-    return 0;
-  }
-  if ( buf[ 0 ] == ServerMessages::getValue( ServerMessages::MessageTypes::MOD3 ) )
-  {
-    std::memcpy( mod + 30, buf + 1, 15 );
-    std::cerr << "Server Response: MOD3...\n";
-    return 0;
-  }
-  if ( buf[ 0 ] == ServerMessages::getValue( ServerMessages::MessageTypes::MOD4 ) )
-  {
-    std::memcpy( mod + 45, buf + 1, 15 );
-    std::cerr << "Server Response: MOD4...\n";
-    return 0;
-  }
-  if ( buf[ 0 ] == ServerMessages::getValue( ServerMessages::MessageTypes::MOD5 ) )
-  {
-    std::memcpy( mod + 60, buf + 1, 15 );
-    std::cerr << "Server Response: MOD5...\n";
-    return 0;
-  }
-  if ( buf[ 0 ] == ServerMessages::getValue( ServerMessages::MessageTypes::MOD6 ) )
-  {
-    std::memcpy( mod + 75, buf + 1, 15 );
-    std::cerr << "Server Response: MOD6...\n";
-    return 0;
-  }
-  if ( buf[ 0 ] == ServerMessages::getValue( ServerMessages::MessageTypes::MOD7 ) )
-  {
-    std::memcpy( mod + 90, buf + 1, 15 );
-    std::cerr << "Server Response: MOD7...\n";
-    return 0;
-  }
-  if ( buf[ 0 ] == ServerMessages::getValue( ServerMessages::MessageTypes::MOD8 ) )
-  {
-    std::memcpy( mod + 105, buf + 1, 15 );
-    std::cerr << "Server Response: MOD8...\n";
-    std::cerr << mod << std::endl;
-    return 0;
-  }
-
-  return 0;
-  return false;
 }
 
 ClientConnection::~ClientConnection()

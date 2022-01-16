@@ -5,6 +5,8 @@
 #include <array>
 #include <cstdint>
 
+#include "ConstantIdentifiers.h"
+
 class ClientConnection
 {
 
@@ -17,15 +19,23 @@ public:
   bool login();
 
 private:
-  bool processLoginResponse( const std::array< std::uint8_t, 16 > &buffer );
+  enum struct ProcessStatus
+  {
+    CONTINUE = 0,
+    DONE     = 1,
+    ERROR    = -1
+  };
 
-  sf::TcpSocket  clientSocket_;
-  std::string    hostIpAddress_;
-  unsigned short hostPort_;
-  bool           isConnected_;
-  int            unique1_;
-  int            unique2_;
+  ProcessStatus processLoginResponse( const std::array< std::uint8_t, 16 > &buffer );
 
+  sf::TcpSocket                       clientSocket_;
+  std::string                         hostIpAddress_;
+  unsigned short                      hostPort_;
+  bool                                isConnected_;
+  int                                 unique1_;
+  int                                 unique2_;
+  int                                 serverVersion_;
+  key                                 clientData_;
   static const constexpr unsigned int VERSION = 0x020E06;
 };
 
