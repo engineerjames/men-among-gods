@@ -6,6 +6,7 @@
 #include "ClientMessage.h"
 #include "Encoder.h"
 #include "ServerMessage.h"
+#include "TickBuffer.h"
 
 ClientConnection::ClientConnection( std::string hostIp, unsigned short hostPort )
     : clientSocket_()
@@ -365,7 +366,43 @@ bool ClientConnection::sendPlayerData( const pdata &playerData )
   return false;
 }
 
+bool ClientConnection::sendTick()
+{
+  std::array< uint8_t, 16 > buf {};
+  buf[ 0 ]                               = ClientMessages::getValue( ClientMessages::MessageTypes::CMD_CTICK );
+  *( unsigned int * ) ( buf.data() + 1 ) = tickCount_++;
+
+  std::size_t        dataSent {};
+  sf::Socket::Status status = clientSocket_.send( buf.data(), buf.size(), dataSent );
+
+  return status == sf::Socket::Status::Done;
+}
+
+bool ClientConnection::receiveTick( TickBuffer &tickBuffer )
+{
+  // Need tickbuf, ticksize, TSIZE, tickstart, and ticksInQueue
+  std::size_t received {};
+
+  static std::array< std::uint8_t, 1024 > buffer {};
+
+  // sf::Socket::Status status = clientSocket_.receive( tickBuffer.getBufferStart(), tickBuffer.getAvailableBytes(), received );
+  sf::Socket::Status status = clientSocket_.receive( buffer.data(), buffer.size(), received );
+
+  bool successfulTickReceipt = status == sf::Socket::Status::Done;
+
+  bool successfulTickProcessing = tickBuffer.receive( &buffer, received );
+
+  return successfulTickReceipt && successfulTickProcessing;
+}
+
 ClientConnection::~ClientConnection()
 {
   clientSocket_.disconnect();
+}
+
+void ClientConnection::setSocketMode( SocketIOMode newMode )
+{
+  bool isBlocking = newMode == SocketIOMode::Blocking;
+
+  clientSocket_.setBlocking( isBlocking );
 }

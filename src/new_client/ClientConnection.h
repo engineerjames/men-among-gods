@@ -7,20 +7,29 @@
 
 #include "ConstantIdentifiers.h"
 
+// Forward declarations
+class TickBuffer;
+
 class ClientConnection
 {
 
 public:
+  enum struct SocketIOMode
+  {
+    NonBlocking,
+    Blocking
+  };
+
   ClientConnection( std::string hostIpAddress, unsigned short hostPort );
   ~ClientConnection();
 
   bool connect();
   bool login();
-  bool sendPlayerData(const pdata& playerData);
+  bool sendPlayerData( const pdata &playerData );
+  void setSocketMode(SocketIOMode newMode);
 
-  // TODO: Implement
   bool sendTick();
-  bool receiveTick();
+  bool receiveTick( TickBuffer &tickBuffer );
 
 private:
   enum struct ProcessStatus
@@ -41,6 +50,8 @@ private:
   int                                 serverVersion_;
   key                                 clientData_;
   static const constexpr unsigned int VERSION = 0x020E06;
+  // TODO: Re-evaluate where these members are used
+  unsigned int tickCount_;
 };
 
 #endif

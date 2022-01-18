@@ -1,11 +1,20 @@
 #include "ClientNetworkActivity.h"
 
+#include <cstring>
 #include <iostream>
 
 #include "ConstantIdentifiers.h"
+#include "TickBuffer.h"
 
 ClientNetworkActivity::~ClientNetworkActivity()
 {
+  // Attempt to force the child thread to stop processing
+  // and join().
+  if ( cancellationRequested_.load() == false )
+  {
+    cancellationRequested_.store( true );
+  }
+
   if ( clientNetworkThread_.joinable() )
   {
     clientNetworkThread_.join();
@@ -14,7 +23,6 @@ ClientNetworkActivity::~ClientNetworkActivity()
 
 ClientNetworkActivity::ClientNetworkActivity( pdata &playerData, const std::string &hostIp, unsigned short hostPort )
     : clientNetworkThread_()
-    , compressor_()
     , clientConnection_( hostIp, hostPort )
     , cancellationRequested_( false )
     , isRunning_( false )
@@ -48,9 +56,19 @@ void ClientNetworkActivity::startNetworkActivity()
   playerData_.changed = 1;
   clientConnection_.sendPlayerData( playerData_ );
 
+  TickBuffer tickBuffer {};
+
+  clientConnection_.setSocketMode(ClientConnection::SocketIOMode::NonBlocking);
+
+  // Main network loop
   while ( ! cancellationRequested_.load() )
   {
-      // Main network loop
+    // Do we need a sleep here?
+    clientConnection_.sendTick();
+
+    clientConnection_.receiveTick( tickBuffer );
+
+    tickBuffer.processTicks();
   }
 
   isRunning_ = false;

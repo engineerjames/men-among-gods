@@ -18,9 +18,9 @@ public:
 
 private:
   void startNetworkActivity( );
+  void processTicks(const TickBuffer& tickBuffer);
 
   std::thread         clientNetworkThread_;
-  Compressor          compressor_;
   ClientConnection    clientConnection_;
   std::atomic< bool > cancellationRequested_;
   bool                isRunning_;
