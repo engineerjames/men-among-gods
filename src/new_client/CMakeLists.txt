@@ -15,6 +15,8 @@ add_executable(${target} main.cpp
                          ClientConnection.cpp
                          ClientMessage.h
                          ClientMessage.cpp
+                         ClientNetworkActivity.h
+                         ClientNetworkActivity.cpp
                          Compressor.h
                          Compressor.cpp
                          ServerMessage.h

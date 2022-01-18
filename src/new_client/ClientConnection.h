@@ -18,6 +18,10 @@ public:
   bool login();
   bool sendPlayerData(const pdata& playerData);
 
+  // TODO: Implement
+  bool sendTick();
+  bool receiveTick();
+
 private:
   enum struct ProcessStatus
   {

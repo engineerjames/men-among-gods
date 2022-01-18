@@ -8,6 +8,7 @@
 #include <SFML/Network.hpp>
 
 #include "ClientMessage.h"
+#include "ClientNetworkActivity.h"
 #include "Compressor.h"
 #include "ConstantIdentifiers.h"
 #include "Encoder.h"
@@ -754,7 +755,10 @@ int main()
 
   stopRequested.store( false );
 
-  //engine_tick is the main front-end for the graphics processing code
+  // engine_tick is the main front-end for the graphics processing code
+  // The sprite values correspond with the SPR_ constants defined--but only in the
+  // client.h header for the server.  Maybe the client-side ones are old? Perhaps
+  // he started with a client-side map instead of server-side? Who knows...
 
   // Start networking thread
   std::thread networkThread { []()
