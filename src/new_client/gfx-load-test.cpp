@@ -38,9 +38,10 @@ int main()
   sf::RenderWindow window( sf::VideoMode( 800, 600 ), "Mercenaries of Astonia - New Client" );
   window.setFramerateLimit( 60 );
 
-  std::array< sf::Image, 13708 >   images {};
-  std::array< sf::Texture, 13708 > textures {};
-  std::array< sf::Sprite, 13708 >  sprites {};
+  static constexpr const std::size_t  N_IMAGES = 13708;
+  std::array< sf::Image, N_IMAGES >   images {};
+  std::array< sf::Texture, N_IMAGES > textures {};
+  std::array< sf::Sprite, N_IMAGES >  sprites {};
 
   for ( unsigned int i = 0; i < imageFiles.size(); ++i )
   {
@@ -53,10 +54,10 @@ int main()
     }
     else
     {
-      if ( imageFiles[ i ].extension() == ".bmp" )
-      {
-        image.createMaskFromColor( sf::Color { 0xFF00FFFF } );
-      }
+      // Great, some images have masks of 254 0 254 as well
+      image.createMaskFromColor( sf::Color { 0xFF00FFFF } );
+      image.createMaskFromColor( sf::Color { 0xFE00FEFF } );
+
       images[ i ] = image;
 
       sf::Texture texture {};
@@ -66,23 +67,54 @@ int main()
       sf::Sprite sprite { textures[ i ] };
       sprites[ i ] = sprite;
     }
+
+    int percentComplete = i / static_cast< double >( N_IMAGES ) * 100.0;
+    std::cout << "Loading graphics data: " << percentComplete << "% complete.\r";
   }
 
+  std::cout << std::endl;
   std::cout << "Done loading sprites." << std::endl;
 
-  // Need to implement log_system_data()
-  // Also, look at rec_player and send_player--these are the main I/O pathways to the client
+  unsigned int index = 0;
+
+  // Import font with which to draw the filename
+  sf::Text text {};
+
+  sf::Font font {};
+  if ( ! font.loadFromFile( "/usr/share/fonts/truetype/msttcorefonts/Arial.ttf" ) )
+  {
+    std::cerr << "Unable to load font!" << std::endl;
+  };
+  text.setFont( font );
+  text.setString( imageFiles[ index ].filename().generic_string() );
+  text.setCharacterSize( 24 );
+  text.setFillColor( sf::Color::Yellow );
+  text.setPosition( sf::Vector2f { 800 / 2.0, 600 / 2.0 } );
+
   while ( window.isOpen() )
   {
     sf::Event event;
     while ( window.pollEvent( event ) )
     {
       if ( event.type == sf::Event::Closed )
+      {
         window.close();
+      }
+      if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Left ) )
+      {
+        index == 0 ? index = 0 : index--;
+        text.setString( imageFiles[ index ].filename().generic_string() );
+      }
+      else if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Right ) )
+      {
+        index == imageFiles.size() - 1 ? imageFiles.size() - 1 : index++;
+        text.setString( imageFiles[ index ].filename().generic_string() );
+      }
     }
 
     window.clear();
-    window.draw( sprites[ 0 ] );
+    window.draw( sprites[ index ] );
+    window.draw( text );
     window.display();
   }
 
