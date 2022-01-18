@@ -26,7 +26,7 @@ public:
   bool connect();
   bool login();
   bool sendPlayerData( const pdata &playerData );
-  void setSocketMode(SocketIOMode newMode);
+  void setSocketMode( SocketIOMode newMode );
 
   bool sendTick();
   bool receiveTick( TickBuffer &tickBuffer );
