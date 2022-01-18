@@ -754,6 +754,8 @@ int main()
 
   stopRequested.store( false );
 
+  //engine_tick is the main front-end for the graphics processing code
+
   // Start networking thread
   std::thread networkThread { []()
                               {
