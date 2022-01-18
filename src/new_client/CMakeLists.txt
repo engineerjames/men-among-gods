@@ -21,6 +21,8 @@ add_executable(${target} main.cpp
                          Compressor.cpp
                          ServerMessage.h
                          ServerMessage.cpp
+                         TickBuffer.h
+                         TickBuffer.cpp
                          Encoder.h
                          Encoder.cpp)
 target_link_libraries(${target} PRIVATE sfml-graphics sfml-network pthread z)
