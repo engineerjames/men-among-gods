@@ -19,6 +19,8 @@ add_executable(${target} main.cpp
                          ClientNetworkActivity.cpp
                          Compressor.h
                          Compressor.cpp
+                         PlayerData.h
+                         PlayerData.cpp
                          ServerMessage.h
                          ServerMessage.cpp
                          TickBuffer.h

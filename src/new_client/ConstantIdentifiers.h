@@ -249,8 +249,6 @@ struct cmap
 };
 static_assert(sizeof(cmap) == 64);
 
-// TODO: Put in a compile time expression to guarantee the sizes here match
-// exactly what is there currently.
 struct cplayer
 {
   // informative stuff
