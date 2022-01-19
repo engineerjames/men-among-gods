@@ -5,6 +5,7 @@
 #include <array>
 #include <cstdint>
 
+#include "ClientTypes.h"
 #include "ConstantIdentifiers.h"
 
 // Forward declarations

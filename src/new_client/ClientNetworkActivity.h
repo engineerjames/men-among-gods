@@ -6,19 +6,20 @@
 #include <thread>
 
 #include "ClientConnection.h"
+#include "ClientTypes.h"
 #include "Compressor.h"
 
 class ClientNetworkActivity
 {
 public:
-  ClientNetworkActivity( pdata& playerData, const std::string &hostIp, unsigned short hostPort );
-  void run( ) noexcept;
+  ClientNetworkActivity( pdata &playerData, const std::string &hostIp, unsigned short hostPort );
+  void run() noexcept;
   void stop() noexcept;
   ~ClientNetworkActivity();
 
 private:
-  void startNetworkActivity( );
-  void processTicks(const TickBuffer& tickBuffer);
+  void startNetworkActivity();
+  void processTicks( const TickBuffer &tickBuffer );
 
   std::thread         clientNetworkThread_;
   ClientConnection    clientConnection_;

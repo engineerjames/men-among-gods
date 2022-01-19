@@ -4,6 +4,7 @@
 #include <array>
 #include <memory>
 
+#include "ClientTypes.h"
 #include "ConstantIdentifiers.h"
 
 class PlayerData

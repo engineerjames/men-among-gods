@@ -5,6 +5,7 @@
 #include <cstdint>
 
 #include "Compressor.h"
+#include "ClientTypes.h"
 
 class TickBuffer
 {

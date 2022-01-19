@@ -7,13 +7,6 @@
 int main()
 {
 
-  // playerSkillTab = static_cast< skilltab * >( malloc( sizeof( struct skilltab ) * 50 ) );
-  // for ( int n = 0; n < 50; n++ )
-  // {
-  //   playerSkillTab[ n ]             = static_skilltab[ n ];
-  //   playerSkillTab[ n ].attrib[ 0 ] = 1;
-  // }
-
   sf::RenderWindow window( sf::VideoMode( MODEX, MODEY ), "Mercenaries of Astonia - New Client" );
   window.setFramerateLimit( 60 );
 

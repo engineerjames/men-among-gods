@@ -17,6 +17,7 @@ add_executable(${target} main.cpp
                          ClientMessage.cpp
                          ClientNetworkActivity.h
                          ClientNetworkActivity.cpp
+                         ClientTypes.h
                          Compressor.h
                          Compressor.cpp
                          PlayerData.h
