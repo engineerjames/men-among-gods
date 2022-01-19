@@ -12,12 +12,12 @@ ClientConnection::ClientConnection( std::string hostIp, unsigned short hostPort 
     : clientSocket_()
     , hostIpAddress_( hostIp )
     , hostPort_( hostPort )
-    , isConnected_(false)
-    , unique1_(0)
-    , unique2_(0)
-    , serverVersion_(0)
+    , isConnected_( false )
+    , unique1_( 0 )
+    , unique2_( 0 )
+    , serverVersion_( 0 )
     , clientData_()
-    , tickCount_(0)
+    , tickCount_( 0 )
 {
 }
 
