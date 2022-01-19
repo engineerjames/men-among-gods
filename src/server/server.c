@@ -240,7 +240,6 @@ void send_player( int nr )
   }
 
   ret = send( player[ nr ].sock, ptr, len, 0 );
-  xlog( "Sent %i bytes to %s", ret, player[ nr ].cpl.name );
   if ( ret == -1 )
   { // send failure
     plog( nr, "Connection closed (send, %s)", strerror( errno ) );

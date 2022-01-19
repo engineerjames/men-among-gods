@@ -9,8 +9,8 @@ find_package(SFML 2.5 COMPONENTS graphics network REQUIRED)
 
 add_executable(${target} main.cpp
                          ConstantIdentifiers.h
-                         server_message_processing.h
-                         server_message_processing.cpp
+                         #server_message_processing.h
+                         #server_message_processing.cpp
                          ClientConnection.h
                          ClientConnection.cpp
                          ClientMessage.h

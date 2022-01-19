@@ -58,7 +58,7 @@ void ClientNetworkActivity::startNetworkActivity()
 
   TickBuffer tickBuffer {};
 
-  clientConnection_.setSocketMode(ClientConnection::SocketIOMode::NonBlocking);
+  clientConnection_.setSocketMode( ClientConnection::SocketIOMode::NonBlocking );
 
   // Main network loop
   while ( ! cancellationRequested_.load() )

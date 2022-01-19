@@ -20,6 +20,8 @@ public:
   void          processTicks();
 
 private:
+  int processServerCommand( const std::uint8_t *bufferStart );
+
   Compressor                        compressor_;
   std::array< std::uint8_t, TSIZE > tickBuffer_;
   unsigned int                      tickSize_;
