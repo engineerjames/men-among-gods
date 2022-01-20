@@ -12,20 +12,20 @@
 class ClientNetworkActivity
 {
 public:
-  ClientNetworkActivity( PlayerData &playerData, const std::string &hostIp, unsigned short hostPort );
+  ClientNetworkActivity( PlayerData& playerData, const std::string& hostIp, unsigned short hostPort );
   void run() noexcept;
   void stop() noexcept;
   ~ClientNetworkActivity();
 
 private:
   void startNetworkActivity();
-  void processTicks( const TickBuffer &tickBuffer );
+  void processTicks( const TickBuffer& tickBuffer );
 
   std::thread         clientNetworkThread_;
   ClientConnection    clientConnection_;
   std::atomic< bool > cancellationRequested_;
   bool                isRunning_;
-  PlayerData &        playerData_;
+  PlayerData&         playerData_;
 };
 
 #endif

@@ -21,7 +21,7 @@ ClientNetworkActivity::~ClientNetworkActivity()
   }
 }
 
-ClientNetworkActivity::ClientNetworkActivity( PlayerData &playerData, const std::string &hostIp, unsigned short hostPort )
+ClientNetworkActivity::ClientNetworkActivity( PlayerData& playerData, const std::string& hostIp, unsigned short hostPort )
     : clientNetworkThread_()
     , clientConnection_( hostIp, hostPort )
     , cancellationRequested_( false )

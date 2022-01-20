@@ -96,12 +96,12 @@ bool PlayerData::hasPlayerDataChanged() const
   return playerDataHasChanged_;
 }
 
-const char *PlayerData::getPlayerName() const
+const char* PlayerData::getPlayerName() const
 {
   return playerInfo_.cname;
 }
 
-const char *PlayerData::getPlayerDescription() const
+const char* PlayerData::getPlayerDescription() const
 {
   return playerInfo_.desc;
 }
@@ -116,32 +116,32 @@ void PlayerData::unlock()
   ioMutex_.unlock();
 }
 
-pdata &PlayerData::getPlayerInfo()
+pdata& PlayerData::getPlayerInfo()
 {
   return playerInfo_;
 }
 
-cmap *PlayerData::getMap()
+cmap* PlayerData::getMap()
 {
   return map_.get();
 }
 
-skilltab *PlayerData::getSkillList()
+skilltab* PlayerData::getSkillList()
 {
   return skillsList_.get();
 }
 
 cplayer& PlayerData::getClientSidePlayerInfo()
 {
-    return clientSidePlayerInfo_;
+  return clientSidePlayerInfo_;
 }
 
 key& PlayerData::getOkey()
 {
-    return okey_;
+  return okey_;
 }
 
 look& PlayerData::getLook()
 {
-    return look_;
+  return look_;
 }

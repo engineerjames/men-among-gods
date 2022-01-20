@@ -80,7 +80,7 @@ bool ClientConnection::login()
 }
 
 // Returns 0 1, -1; TODO: Add checks for if connected...
-ClientConnection::ProcessStatus ClientConnection::processLoginResponse( const std::array< std::uint8_t, 16 > &buffer )
+ClientConnection::ProcessStatus ClientConnection::processLoginResponse( const std::array< std::uint8_t, 16 >& buffer )
 {
   unsigned int                   tmp {};
   std::array< std::uint8_t, 16 > outputBuffer {};
@@ -93,19 +93,19 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( const st
 
   if ( serverMsgType == MessageTypes::CHALLENGE )
   {
-    tmp = *( unsigned long * ) ( buffer.data() + 1 );
+    tmp = *( unsigned long* ) ( buffer.data() + 1 );
     tmp = Encoder::xcrypt( tmp );
 
-    outputBuffer[ 0 ]                                = ClientMessages::getValue( ClientMessages::MessageTypes::CHALLENGE );
-    *( unsigned long * ) ( outputBuffer.data() + 1 ) = tmp;
-    *( unsigned long * ) ( outputBuffer.data() + 5 ) = VERSION;
-    *( unsigned long * ) ( outputBuffer.data() + 9 ) = 1;
+    outputBuffer[ 0 ]                               = ClientMessages::getValue( ClientMessages::MessageTypes::CHALLENGE );
+    *( unsigned long* ) ( outputBuffer.data() + 1 ) = tmp;
+    *( unsigned long* ) ( outputBuffer.data() + 5 ) = VERSION;
+    *( unsigned long* ) ( outputBuffer.data() + 9 ) = 1;
     std::cerr << "Sending CL_CHALLENGE...\n";
     clientSocket_.send( outputBuffer.data(), outputBuffer.size() );
 
-    outputBuffer[ 0 ]                                = ClientMessages::getValue( ClientMessages::MessageTypes::CMD_UNIQUE );
-    *( unsigned long * ) ( outputBuffer.data() + 1 ) = unique1_;
-    *( unsigned long * ) ( outputBuffer.data() + 5 ) = unique2_;
+    outputBuffer[ 0 ]                               = ClientMessages::getValue( ClientMessages::MessageTypes::CMD_UNIQUE );
+    *( unsigned long* ) ( outputBuffer.data() + 1 ) = unique1_;
+    *( unsigned long* ) ( outputBuffer.data() + 5 ) = unique2_;
     std::cerr << "Sending CL_CMD_UNIQUE...\n";
     clientSocket_.send( outputBuffer.data(), outputBuffer.size() );
 
@@ -113,12 +113,12 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( const st
   }
   else if ( serverMsgType == MessageTypes::NEWPLAYER )
   {
-    clientData_.usnr  = *( unsigned long * ) ( buffer.data() + 1 ); // Unique player ID
-    clientData_.pass1 = *( unsigned long * ) ( buffer.data() + 5 );
-    clientData_.pass2 = *( unsigned long * ) ( buffer.data() + 9 );
-    serverVersion_    = *( unsigned char * ) ( buffer.data() + 13 );
-    serverVersion_ += ( int ) ( ( *( unsigned char * ) ( buffer.data() + 14 ) ) ) << 8;
-    serverVersion_ += ( int ) ( ( *( unsigned char * ) ( buffer.data() + 15 ) ) ) << 16;
+    clientData_.usnr  = *( unsigned long* ) ( buffer.data() + 1 ); // Unique player ID
+    clientData_.pass1 = *( unsigned long* ) ( buffer.data() + 5 );
+    clientData_.pass2 = *( unsigned long* ) ( buffer.data() + 9 );
+    serverVersion_    = *( unsigned char* ) ( buffer.data() + 13 );
+    serverVersion_ += ( int ) ( ( *( unsigned char* ) ( buffer.data() + 14 ) ) ) << 8;
+    serverVersion_ += ( int ) ( ( *( unsigned char* ) ( buffer.data() + 15 ) ) ) << 16;
     std::cerr << "Server Response: NEWPLAYER...\n";
     std::cerr << "received usnr:" << clientData_.usnr << std::endl;
     std::cerr << "received pass1:" << clientData_.pass1 << std::endl;
@@ -127,13 +127,13 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( const st
   }
   else if ( serverMsgType == MessageTypes::LOGIN_OK )
   {
-    serverVersion_ = *( unsigned long * ) ( buffer.data() + 1 );
+    serverVersion_ = *( unsigned long* ) ( buffer.data() + 1 );
     std::cerr << "Server Response: LOGIN OK...\n";
     return ProcessStatus::DONE;
   }
   else if ( serverMsgType == MessageTypes::EXIT )
   {
-    tmp = *( unsigned int * ) ( buffer.data() + 1 );
+    tmp = *( unsigned int* ) ( buffer.data() + 1 );
     // TODO: Add reason from tmp
     std::cerr << "STATUS: Server demands exit.\n";
 
@@ -141,7 +141,7 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( const st
   }
   else if ( serverMsgType == MessageTypes::CAP )
   {
-    tmp = *( unsigned int * ) ( buffer.data() + 1 );
+    tmp = *( unsigned int* ) ( buffer.data() + 1 );
     capcnt++;
     std::cerr << "STATUS: Player limit reached. You're in queue.\n";
     return ProcessStatus::CONTINUE;
@@ -200,7 +200,7 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( const st
   }
 }
 
-bool ClientConnection::sendPlayerData( const PlayerData &playerData )
+bool ClientConnection::sendPlayerData( const PlayerData& playerData )
 {
   int                            state = 0;
   std::array< std::uint8_t, 16 > buffer {};
@@ -382,8 +382,8 @@ bool ClientConnection::sendPlayerData( const PlayerData &playerData )
 bool ClientConnection::sendTick()
 {
   std::array< uint8_t, 16 > buf {};
-  buf[ 0 ]                               = ClientMessages::getValue( ClientMessages::MessageTypes::CMD_CTICK );
-  *( unsigned int * ) ( buf.data() + 1 ) = tickCount_++;
+  buf[ 0 ]                              = ClientMessages::getValue( ClientMessages::MessageTypes::CMD_CTICK );
+  *( unsigned int* ) ( buf.data() + 1 ) = tickCount_++;
 
   std::size_t        dataSent {};
   sf::Socket::Status status = clientSocket_.send( buf.data(), buf.size(), dataSent );
@@ -391,7 +391,7 @@ bool ClientConnection::sendTick()
   return status == sf::Socket::Status::Done;
 }
 
-bool ClientConnection::receiveTick( TickBuffer &tickBuffer )
+bool ClientConnection::receiveTick( TickBuffer& tickBuffer )
 {
   // Need tickbuf, ticksize, TSIZE, tickstart, and ticksInQueue
   std::size_t received {};

@@ -15,14 +15,14 @@ public:
   ~PlayerData() = default;
 
   bool        hasPlayerDataChanged() const;
-  const char *getPlayerName() const;
-  const char *getPlayerDescription() const;
+  const char* getPlayerName() const;
+  const char* getPlayerDescription() const;
 
-  pdata &   getPlayerInfo();
-  cplayer & getClientSidePlayerInfo();
-  cmap *    getMap();
-  skilltab *getSkillList();
-  key &     getOkey();
+  pdata&    getPlayerInfo();
+  cplayer&  getClientSidePlayerInfo();
+  cmap*     getMap();
+  skilltab* getSkillList();
+  key&      getOkey();
   look&     getLook();
 
   void lock();

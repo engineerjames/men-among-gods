@@ -23,7 +23,7 @@ static const constexpr int          TILEX     = 34;
 static const constexpr int          TILEY     = 34;
 static const constexpr int          TICKS     = 18;
 static const constexpr unsigned int VERSION   = 0x020E06;
-static const constexpr int          MAXSPRITE = 2000 + (32 * 1024);
+static const constexpr int          MAXSPRITE = 2000 + ( 32 * 1024 );
 
 static const constexpr int MODEX = 800;
 static const constexpr int MODEY = 600;
@@ -35,7 +35,7 @@ static const constexpr int YPOS = 440;
 static const constexpr int XPOS = 0;
 
 // Should this be a float?
-static const constexpr int          TICK     = (1000 / TICKS);
+static const constexpr int          TICK     = ( 1000 / TICKS );
 static const constexpr unsigned int HIGH_VAL = 1 << 30;
 
 enum struct MOUSE_STATES
@@ -86,45 +86,45 @@ enum struct PLACEMENT_BITS
 #define DX_UP 3
 #define DX_DOWN 4
 
-#define INJURED (1u << 0)
-#define INJURED1 (1u << 1)
-#define INJURED2 (1u << 2)
-#define STONED (1u << 3)
-#define INFRARED (1u << 4)
-#define UWATER (1u << 5)
+#define INJURED ( 1u << 0 )
+#define INJURED1 ( 1u << 1 )
+#define INJURED2 ( 1u << 2 )
+#define STONED ( 1u << 3 )
+#define INFRARED ( 1u << 4 )
+#define UWATER ( 1u << 5 )
 
-#define ISUSABLE (1u << 7)
-#define ISITEM (1u << 8)
-#define ISCHAR (1u << 9)
-#define INVIS (1u << 10)
-#define STUNNED (1u << 11)
+#define ISUSABLE ( 1u << 7 )
+#define ISITEM ( 1u << 8 )
+#define ISCHAR ( 1u << 9 )
+#define INVIS ( 1u << 10 )
+#define STUNNED ( 1u << 11 )
 
-#define TOMB ((1u << 12) | (1u << 13) | (1u << 14) | (1u << 15) | (1u << 16))
-#define TOMB1 (1u << 12)
-#define DEATH ((1u << 17) | (1u << 18) | (1u << 19) | (1u << 20) | (1u << 21))
-#define DEATH1 (1u << 17)
+#define TOMB ( ( 1u << 12 ) | ( 1u << 13 ) | ( 1u << 14 ) | ( 1u << 15 ) | ( 1u << 16 ) )
+#define TOMB1 ( 1u << 12 )
+#define DEATH ( ( 1u << 17 ) | ( 1u << 18 ) | ( 1u << 19 ) | ( 1u << 20 ) | ( 1u << 21 ) )
+#define DEATH1 ( 1u << 17 )
 
-#define EMAGIC ((1U << 22) | (1U << 23) | (1U << 24))
-#define EMAGIC1 (1U << 22)
-#define GMAGIC ((1U << 25) | (1U << 26) | (1U << 27))
-#define GMAGIC1 (1U << 25)
-#define CMAGIC ((1U << 28) | (1U << 29) | (1U << 30))
-#define CMAGIC1 (1U << 28)
+#define EMAGIC ( ( 1U << 22 ) | ( 1U << 23 ) | ( 1U << 24 ) )
+#define EMAGIC1 ( 1U << 22 )
+#define GMAGIC ( ( 1U << 25 ) | ( 1U << 26 ) | ( 1U << 27 ) )
+#define GMAGIC1 ( 1U << 25 )
+#define CMAGIC ( ( 1U << 28 ) | ( 1U << 29 ) | ( 1U << 30 ) )
+#define CMAGIC1 ( 1U << 28 )
 
-#define MF_MOVEBLOCK (1U << 0)
-#define MF_SIGHTBLOCK (1U << 1)
-#define MF_INDOORS (1U << 2)
-#define MF_UWATER (1U << 3)
-#define MF_NOLAG (1U << 4)
-#define MF_NOMONST (1U << 5)
-#define MF_BANK (1U << 6)
-#define MF_TAVERN (1U << 7)
-#define MF_NOMAGIC (1U << 8)
-#define MF_DEATHTRAP (1U << 9)
+#define MF_MOVEBLOCK ( 1U << 0 )
+#define MF_SIGHTBLOCK ( 1U << 1 )
+#define MF_INDOORS ( 1U << 2 )
+#define MF_UWATER ( 1U << 3 )
+#define MF_NOLAG ( 1U << 4 )
+#define MF_NOMONST ( 1U << 5 )
+#define MF_BANK ( 1U << 6 )
+#define MF_TAVERN ( 1U << 7 )
+#define MF_NOMAGIC ( 1U << 8 )
+#define MF_DEATHTRAP ( 1U << 9 )
 
-#define MF_ARENA (1U << 11)
+#define MF_ARENA ( 1U << 11 )
 
-#define MF_NOEXPIRE (1U << 13)
+#define MF_NOEXPIRE ( 1U << 13 )
 
 #define SPR_INVISIBLE 0
 #define SPR_E1 1
