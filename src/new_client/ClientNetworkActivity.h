@@ -6,13 +6,13 @@
 #include <thread>
 
 #include "ClientConnection.h"
-#include "ClientTypes.h"
 #include "Compressor.h"
+#include "PlayerData.h"
 
 class ClientNetworkActivity
 {
 public:
-  ClientNetworkActivity( pdata &playerData, const std::string &hostIp, unsigned short hostPort );
+  ClientNetworkActivity( PlayerData &playerData, const std::string &hostIp, unsigned short hostPort );
   void run() noexcept;
   void stop() noexcept;
   ~ClientNetworkActivity();
@@ -25,7 +25,7 @@ private:
   ClientConnection    clientConnection_;
   std::atomic< bool > cancellationRequested_;
   bool                isRunning_;
-  pdata &             playerData_;
+  PlayerData &        playerData_;
 };
 
 #endif

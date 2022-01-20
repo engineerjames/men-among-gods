@@ -5,6 +5,7 @@
 
 #include "ClientMessage.h"
 #include "Encoder.h"
+#include "PlayerData.h"
 #include "ServerMessage.h"
 #include "TickBuffer.h"
 
@@ -199,14 +200,19 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( const st
   }
 }
 
-// TODO: Make sure we set playerData.changed = 1
-bool ClientConnection::sendPlayerData( const pdata &playerData )
+bool ClientConnection::sendPlayerData( const PlayerData &playerData )
 {
   int                            state = 0;
   std::array< std::uint8_t, 16 > buffer {};
   int                            n {};
+  bool                           completedTransfer = false;
 
-  while ( playerData.changed == 1 )
+  if ( ! playerData.hasPlayerDataChanged() )
+  {
+    return false;
+  }
+
+  while ( ! completedTransfer )
   {
     buffer[ 0 ] = ClientMessages::getValue( ClientMessages::MessageTypes::CMD_SETUSER );
 
@@ -217,7 +223,7 @@ bool ClientConnection::sendPlayerData( const pdata &playerData )
       buffer[ 2 ] = 0;
       for ( n = 0; n < 13; n++ )
       {
-        buffer[ n + 3 ] = playerData.cname[ n ];
+        buffer[ n + 3 ] = playerData.getPlayerName()[ n ];
       }
       std::cerr << "Transfering user data...";
       break;
@@ -226,7 +232,7 @@ bool ClientConnection::sendPlayerData( const pdata &playerData )
       buffer[ 2 ] = 13;
       for ( n = 0; n < 13; n++ )
       {
-        buffer[ n + 3 ] = playerData.cname[ n + 13 ];
+        buffer[ n + 3 ] = playerData.getPlayerName()[ n + 13 ];
       }
       break;
     case 2:
@@ -234,7 +240,7 @@ bool ClientConnection::sendPlayerData( const pdata &playerData )
       buffer[ 2 ] = 26;
       for ( n = 0; n < 13; n++ )
       {
-        buffer[ n + 3 ] = playerData.cname[ n + 26 ];
+        buffer[ n + 3 ] = playerData.getPlayerName()[ n + 26 ];
       }
       break;
     case 3:
@@ -242,7 +248,7 @@ bool ClientConnection::sendPlayerData( const pdata &playerData )
       buffer[ 2 ] = 39;
       for ( n = 0; n < 13; n++ )
       {
-        buffer[ n + 3 ] = playerData.cname[ n + 39 ];
+        buffer[ n + 3 ] = playerData.getPlayerName()[ n + 39 ];
       }
       break;
     case 4:
@@ -250,7 +256,7 @@ bool ClientConnection::sendPlayerData( const pdata &playerData )
       buffer[ 2 ] = 52;
       for ( n = 0; n < 13; n++ )
       {
-        buffer[ n + 3 ] = playerData.cname[ n + 52 ];
+        buffer[ n + 3 ] = playerData.getPlayerName()[ n + 52 ];
       }
       break;
     case 5:
@@ -258,7 +264,7 @@ bool ClientConnection::sendPlayerData( const pdata &playerData )
       buffer[ 2 ] = 65;
       for ( n = 0; n < 13; n++ )
       {
-        buffer[ n + 3 ] = playerData.cname[ n + 65 ];
+        buffer[ n + 3 ] = playerData.getPlayerName()[ n + 65 ];
       }
       break;
 
@@ -267,7 +273,7 @@ bool ClientConnection::sendPlayerData( const pdata &playerData )
       buffer[ 2 ] = 0;
       for ( n = 0; n < 13; n++ )
       {
-        buffer[ n + 3 ] = playerData.desc[ n ];
+        buffer[ n + 3 ] = playerData.getPlayerDescription()[ n ];
       }
       break;
     case 7:
@@ -275,7 +281,7 @@ bool ClientConnection::sendPlayerData( const pdata &playerData )
       buffer[ 2 ] = 13;
       for ( n = 0; n < 13; n++ )
       {
-        buffer[ n + 3 ] = playerData.desc[ n + 13 ];
+        buffer[ n + 3 ] = playerData.getPlayerDescription()[ n + 13 ];
       }
       break;
     case 8:
@@ -283,7 +289,7 @@ bool ClientConnection::sendPlayerData( const pdata &playerData )
       buffer[ 2 ] = 26;
       for ( n = 0; n < 13; n++ )
       {
-        buffer[ n + 3 ] = playerData.desc[ n + 26 ];
+        buffer[ n + 3 ] = playerData.getPlayerDescription()[ n + 26 ];
       }
       break;
     case 9:
@@ -291,7 +297,7 @@ bool ClientConnection::sendPlayerData( const pdata &playerData )
       buffer[ 2 ] = 39;
       for ( n = 0; n < 13; n++ )
       {
-        buffer[ n + 3 ] = playerData.desc[ n + 39 ];
+        buffer[ n + 3 ] = playerData.getPlayerDescription()[ n + 39 ];
       }
       break;
     case 10:
@@ -299,7 +305,7 @@ bool ClientConnection::sendPlayerData( const pdata &playerData )
       buffer[ 2 ] = 52;
       for ( n = 0; n < 13; n++ )
       {
-        buffer[ n + 3 ] = playerData.desc[ n + 52 ];
+        buffer[ n + 3 ] = playerData.getPlayerDescription()[ n + 52 ];
       }
       break;
     case 11:
@@ -307,7 +313,7 @@ bool ClientConnection::sendPlayerData( const pdata &playerData )
       buffer[ 2 ] = 65;
       for ( n = 0; n < 13; n++ )
       {
-        buffer[ n + 3 ] = playerData.desc[ n + 65 ];
+        buffer[ n + 3 ] = playerData.getPlayerDescription()[ n + 65 ];
       }
       break;
 
@@ -316,7 +322,7 @@ bool ClientConnection::sendPlayerData( const pdata &playerData )
       buffer[ 2 ] = 0;
       for ( n = 0; n < 13; n++ )
       {
-        buffer[ n + 3 ] = playerData.desc[ n + 78 ];
+        buffer[ n + 3 ] = playerData.getPlayerDescription()[ n + 78 ];
       }
       break;
     case 13:
@@ -324,7 +330,7 @@ bool ClientConnection::sendPlayerData( const pdata &playerData )
       buffer[ 2 ] = 13;
       for ( n = 0; n < 13; n++ )
       {
-        buffer[ n + 3 ] = playerData.desc[ n + 91 ];
+        buffer[ n + 3 ] = playerData.getPlayerDescription()[ n + 91 ];
       }
       break;
     case 14:
@@ -332,7 +338,7 @@ bool ClientConnection::sendPlayerData( const pdata &playerData )
       buffer[ 2 ] = 26;
       for ( n = 0; n < 13; n++ )
       {
-        buffer[ n + 3 ] = playerData.desc[ n + 104 ];
+        buffer[ n + 3 ] = playerData.getPlayerDescription()[ n + 104 ];
       }
       break;
     case 15:
@@ -340,7 +346,7 @@ bool ClientConnection::sendPlayerData( const pdata &playerData )
       buffer[ 2 ] = 39;
       for ( n = 0; n < 13; n++ )
       {
-        buffer[ n + 3 ] = playerData.desc[ n + 117 ];
+        buffer[ n + 3 ] = playerData.getPlayerDescription()[ n + 117 ];
       }
       break;
     case 16:
@@ -348,7 +354,7 @@ bool ClientConnection::sendPlayerData( const pdata &playerData )
       buffer[ 2 ] = 52;
       for ( n = 0; n < 13; n++ )
       {
-        buffer[ n + 3 ] = playerData.desc[ n + 130 ];
+        buffer[ n + 3 ] = playerData.getPlayerDescription()[ n + 130 ];
       }
       break;
     case 17:
@@ -356,10 +362,11 @@ bool ClientConnection::sendPlayerData( const pdata &playerData )
       buffer[ 2 ] = 65;
       for ( n = 0; n < 13; n++ )
       {
-        buffer[ n + 3 ] = playerData.desc[ n + 143 ];
+        buffer[ n + 3 ] = playerData.getPlayerDescription()[ n + 143 ];
       }
       std::cerr << "Transfer done.\n";
-      return true;
+      completedTransfer = true;
+      break;
     default:
       std::cerr << "Invalid state!" << std::endl;
       return false;
@@ -369,7 +376,7 @@ bool ClientConnection::sendPlayerData( const pdata &playerData )
     state++;
   }
 
-  return false;
+  return completedTransfer;
 }
 
 bool ClientConnection::sendTick()

@@ -5,7 +5,6 @@
 #include <string>
 
 // Based heavily off of common.h
-
 static const std::string   MNAME      = "Asguard";
 static const std::string   MHELP      = "http://mercaston.dnsalias.net/help.html";
 static const std::string   MNEWS      = "http://mercaston.dnsalias.net/news.html";
@@ -13,24 +12,6 @@ static const std::string   MHOST      = "127.0.0.1";
 static const constexpr int MHOST_PORT = 5555;
 
 static const constexpr int TSIZE = 8192 * 16;
-
-/*
-Some key sizes (bytes)
-
-cplayer: 3348
-cmap: 64
-key: 56
-look: 496
-skilltab: 260
-pdata: 480
-xbutton: 12
-unsigned long: 4
-unsigned char: 1
-unsigned int: 4
-int*: 4
-*/
-
-//#define DOCONVERT	// enable sprite packer
 
 static const constexpr int AT_BRAVE = 0;
 static const constexpr int AT_WILL  = 1;

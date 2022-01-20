@@ -4,66 +4,15 @@
 #include <iostream>
 
 #include "ConstantIdentifiers.h"
+#include "PlayerData.h"
 #include "ServerMessage.h"
 
-// Temporary global -- delete ASAP
-cplayer pl {};
-look tmplook{};
-key okey{};
-cmap* map = new cmap[5000]();
-skilltab* playerSkillTab = new skilltab[500]();
 unsigned int ctick = 0;
 
-// Declarations to eliminate after refactoring
 
-void sv_setchar_name1(const unsigned char *buf);
-void sv_setchar_name2(const unsigned char *buf);
-void sv_setchar_name3(const unsigned char *buf);
-void sv_setchar_mode(const unsigned char *buf);
-void sv_setchar_hp(const unsigned char *buf);
-void sv_setchar_endur(const unsigned char *buf);
-void sv_setchar_mana(const unsigned char *buf);
-void sv_setchar_attrib(const unsigned char *buf);
-void sv_setchar_skill(const unsigned char *buf);
-void sv_setchar_ahp(const unsigned char *buf);
-void sv_setchar_aend(const unsigned char *buf);
-void sv_setchar_amana(const unsigned char *buf);
-void sv_setchar_dir(const unsigned char *buf);
-void sv_setchar_pts(const unsigned char *buf);
-void sv_setchar_gold(const unsigned char *buf);
-void sv_setchar_item(const unsigned char *buf);
-void sv_setchar_worn(const unsigned char *buf);
-void sv_setchar_spell(const unsigned char *buf);
-void sv_setchar_obj(const unsigned char *buf);
-int  sv_setmap(const unsigned char *buf, int off);
-int  sv_setmap3(const unsigned char *buf, int cnt);
-void sv_setorigin(const unsigned char *buf);
-void sv_tick(const unsigned char *buf);
-void sv_log(const unsigned char *buf, int font);
-void sv_scroll_right(const unsigned char *buf);
-void sv_scroll_left(const unsigned char *buf);
-void sv_scroll_down(const unsigned char *buf);
-void sv_scroll_up(const unsigned char *buf);
-void sv_scroll_leftup(const unsigned char *buf);
-void sv_scroll_leftdown(const unsigned char *buf);
-void sv_scroll_rightup(const unsigned char *buf);
-void sv_scroll_rightdown(const unsigned char *buf);
-void sv_look1(const unsigned char *buf);
-void sv_look2(const unsigned char *buf);
-void sv_look3(const unsigned char *buf);
-void sv_look4(const unsigned char *buf);
-void sv_look5(const unsigned char *buf);
-void sv_look6(const unsigned char *buf);
-void sv_settarget(const unsigned char *buf);
-void sv_playsound(const unsigned char *buf);
-void sv_exit(const unsigned char *buf);
-void sv_load(const unsigned char *buf);
-void sv_unique(const unsigned char *buf);
-int  sv_ignore(const unsigned char *buf);
-int  skill_cmp(const void *a, const void *b);
-
-TickBuffer::TickBuffer()
+TickBuffer::TickBuffer( PlayerData &playerData )
     : compressor_()
+    , playerData_( playerData )
     , tickBuffer_()
     , tickSize_( 0 )
     , tickStart_( 0 )
@@ -120,7 +69,7 @@ void TickBuffer::processTicks()
   ctot += len;
   if ( len > tickSize_ )
   {
-     return;
+    return;
   }
 
   if ( comp )
@@ -161,7 +110,10 @@ void TickBuffer::processTicks()
 
   while ( idx < csize )
   {
+    playerData_.lock();
     int retVal = processServerCommand( buf + idx );
+    playerData_.unlock();
+
     if ( retVal == -1 )
     {
       std::cerr << "Warning: syntax error in server data";
@@ -363,7 +315,7 @@ int TickBuffer::processServerCommand( const std::uint8_t *bufferStart )
 }
 
 // Begin server message processing implementation
-int skill_cmp( const void *a, const void *b )
+int TickBuffer::skill_cmp( const void *a, const void *b )
 {
   const skilltab *c, *d;
   int             m1, m2;
@@ -379,9 +331,9 @@ int skill_cmp( const void *a, const void *b )
   if ( m2 == 99 && m1 != 99 )
     return -1;
 
-  if ( pl.skill[ m1 ][ 0 ] == 0 && pl.skill[ m2 ][ 0 ] != 0 )
+  if ( playerData_.getClientSidePlayerInfo().skill[ m1 ][ 0 ] == 0 && playerData_.getClientSidePlayerInfo().skill[ m2 ][ 0 ] != 0 )
     return 1;
-  if ( pl.skill[ m2 ][ 0 ] == 0 && pl.skill[ m1 ][ 0 ] != 0 )
+  if ( playerData_.getClientSidePlayerInfo().skill[ m2 ][ 0 ] == 0 && playerData_.getClientSidePlayerInfo().skill[ m1 ][ 0 ] != 0 )
     return -1;
 
   if ( c->sortkey > d->sortkey )
@@ -410,60 +362,60 @@ const char *logout_reason[] = {
     "You have been banned for an hour. Enhance your social behaviour before you come back." // 14
 };
 
-void sv_setchar_name1( const unsigned char *buf )
+void TickBuffer::sv_setchar_name1( const unsigned char *buf )
 {
-  std::memcpy( pl.name, buf + 1, 15 );
+  std::memcpy( playerData_.getClientSidePlayerInfo().name, buf + 1, 15 );
 }
 
-void sv_setchar_name2( const unsigned char *buf )
+void TickBuffer::sv_setchar_name2( const unsigned char *buf )
 {
-  std::memcpy( pl.name + 15, buf + 1, 15 );
+  std::memcpy( playerData_.getClientSidePlayerInfo().name + 15, buf + 1, 15 );
 }
 
-void sv_setchar_name3( const unsigned char *buf )
+void TickBuffer::sv_setchar_name3( const unsigned char *buf )
 {
-  std::memcpy( pl.name + 30, buf + 1, 10 );
-  strcpy( okey.name, pl.name );
-  okey.race = *( unsigned long * ) ( buf + 11 );
+  std::memcpy( playerData_.getClientSidePlayerInfo().name + 30, buf + 1, 10 );
+  strcpy( playerData_.getOkey().name, playerData_.getClientSidePlayerInfo().name );
+  playerData_.getOkey().race = *( unsigned long * ) ( buf + 11 );
   // save_options();
 }
 
-void sv_setchar_mode( const unsigned char *buf )
+void TickBuffer::sv_setchar_mode( const unsigned char *buf )
 {
-  pl.mode = buf[ 1 ];
+  playerData_.getClientSidePlayerInfo().mode = buf[ 1 ];
 }
 
-void sv_setchar_hp( const unsigned char *buf )
+void TickBuffer::sv_setchar_hp( const unsigned char *buf )
 {
-  pl.hp[ 0 ] = *( unsigned short * ) ( buf + 1 );
-  pl.hp[ 1 ] = *( unsigned short * ) ( buf + 3 );
-  pl.hp[ 2 ] = *( unsigned short * ) ( buf + 5 );
-  pl.hp[ 3 ] = *( unsigned short * ) ( buf + 7 );
-  pl.hp[ 4 ] = *( unsigned short * ) ( buf + 9 );
-  pl.hp[ 5 ] = *( unsigned short * ) ( buf + 11 );
+  playerData_.getClientSidePlayerInfo().hp[ 0 ] = *( unsigned short * ) ( buf + 1 );
+  playerData_.getClientSidePlayerInfo().hp[ 1 ] = *( unsigned short * ) ( buf + 3 );
+  playerData_.getClientSidePlayerInfo().hp[ 2 ] = *( unsigned short * ) ( buf + 5 );
+  playerData_.getClientSidePlayerInfo().hp[ 3 ] = *( unsigned short * ) ( buf + 7 );
+  playerData_.getClientSidePlayerInfo().hp[ 4 ] = *( unsigned short * ) ( buf + 9 );
+  playerData_.getClientSidePlayerInfo().hp[ 5 ] = *( unsigned short * ) ( buf + 11 );
 }
 
-void sv_setchar_endur( const unsigned char *buf )
+void TickBuffer::sv_setchar_endur( const unsigned char *buf )
 {
-  pl.end[ 0 ] = *( short int * ) ( buf + 1 );
-  pl.end[ 1 ] = *( short int * ) ( buf + 3 );
-  pl.end[ 2 ] = *( short int * ) ( buf + 5 );
-  pl.end[ 3 ] = *( short int * ) ( buf + 7 );
-  pl.end[ 4 ] = *( short int * ) ( buf + 9 );
-  pl.end[ 5 ] = *( short int * ) ( buf + 11 );
+  playerData_.getClientSidePlayerInfo().end[ 0 ] = *( short int * ) ( buf + 1 );
+  playerData_.getClientSidePlayerInfo().end[ 1 ] = *( short int * ) ( buf + 3 );
+  playerData_.getClientSidePlayerInfo().end[ 2 ] = *( short int * ) ( buf + 5 );
+  playerData_.getClientSidePlayerInfo().end[ 3 ] = *( short int * ) ( buf + 7 );
+  playerData_.getClientSidePlayerInfo().end[ 4 ] = *( short int * ) ( buf + 9 );
+  playerData_.getClientSidePlayerInfo().end[ 5 ] = *( short int * ) ( buf + 11 );
 }
 
-void sv_setchar_mana( const unsigned char *buf )
+void TickBuffer::sv_setchar_mana( const unsigned char *buf )
 {
-  pl.mana[ 0 ] = *( short int * ) ( buf + 1 );
-  pl.mana[ 1 ] = *( short int * ) ( buf + 3 );
-  pl.mana[ 2 ] = *( short int * ) ( buf + 5 );
-  pl.mana[ 3 ] = *( short int * ) ( buf + 7 );
-  pl.mana[ 4 ] = *( short int * ) ( buf + 9 );
-  pl.mana[ 5 ] = *( short int * ) ( buf + 11 );
+  playerData_.getClientSidePlayerInfo().mana[ 0 ] = *( short int * ) ( buf + 1 );
+  playerData_.getClientSidePlayerInfo().mana[ 1 ] = *( short int * ) ( buf + 3 );
+  playerData_.getClientSidePlayerInfo().mana[ 2 ] = *( short int * ) ( buf + 5 );
+  playerData_.getClientSidePlayerInfo().mana[ 3 ] = *( short int * ) ( buf + 7 );
+  playerData_.getClientSidePlayerInfo().mana[ 4 ] = *( short int * ) ( buf + 9 );
+  playerData_.getClientSidePlayerInfo().mana[ 5 ] = *( short int * ) ( buf + 11 );
 }
 
-void sv_setchar_attrib( const unsigned char *buf )
+void TickBuffer::sv_setchar_attrib( const unsigned char *buf )
 {
   int n;
 
@@ -471,67 +423,67 @@ void sv_setchar_attrib( const unsigned char *buf )
   if ( n < 0 || n > 4 )
     return;
 
-  pl.attrib[ n ][ 0 ] = buf[ 2 ];
-  pl.attrib[ n ][ 1 ] = buf[ 3 ];
-  pl.attrib[ n ][ 2 ] = buf[ 4 ];
-  pl.attrib[ n ][ 3 ] = buf[ 5 ];
-  pl.attrib[ n ][ 4 ] = buf[ 6 ];
-  pl.attrib[ n ][ 5 ] = buf[ 7 ];
+  playerData_.getClientSidePlayerInfo().attrib[ n ][ 0 ] = buf[ 2 ];
+  playerData_.getClientSidePlayerInfo().attrib[ n ][ 1 ] = buf[ 3 ];
+  playerData_.getClientSidePlayerInfo().attrib[ n ][ 2 ] = buf[ 4 ];
+  playerData_.getClientSidePlayerInfo().attrib[ n ][ 3 ] = buf[ 5 ];
+  playerData_.getClientSidePlayerInfo().attrib[ n ][ 4 ] = buf[ 6 ];
+  playerData_.getClientSidePlayerInfo().attrib[ n ][ 5 ] = buf[ 7 ];
 }
 
-void sv_setchar_skill( const unsigned char *buf )
+void TickBuffer::sv_setchar_skill( const unsigned char *buf )
 {
   int n;
   n = buf[ 1 ];
   if ( n < 0 || n > 49 )
     return;
 
-  pl.skill[ n ][ 0 ] = buf[ 2 ];
-  pl.skill[ n ][ 1 ] = buf[ 3 ];
-  pl.skill[ n ][ 2 ] = buf[ 4 ];
-  pl.skill[ n ][ 3 ] = buf[ 5 ];
-  pl.skill[ n ][ 4 ] = buf[ 6 ];
-  pl.skill[ n ][ 5 ] = buf[ 7 ];
+  playerData_.getClientSidePlayerInfo().skill[ n ][ 0 ] = buf[ 2 ];
+  playerData_.getClientSidePlayerInfo().skill[ n ][ 1 ] = buf[ 3 ];
+  playerData_.getClientSidePlayerInfo().skill[ n ][ 2 ] = buf[ 4 ];
+  playerData_.getClientSidePlayerInfo().skill[ n ][ 3 ] = buf[ 5 ];
+  playerData_.getClientSidePlayerInfo().skill[ n ][ 4 ] = buf[ 6 ];
+  playerData_.getClientSidePlayerInfo().skill[ n ][ 5 ] = buf[ 7 ];
 
   // TODO: Re-evaluate this
-  qsort( playerSkillTab, 50, sizeof( skilltab ), skill_cmp );
+  //qsort( playerData_.getSkillList(), 50, sizeof( skilltab ), skill_cmp );
 }
 
-void sv_setchar_ahp( const unsigned char *buf )
+void TickBuffer::sv_setchar_ahp( const unsigned char *buf )
 {
-  pl.a_hp = *( unsigned short * ) ( buf + 1 );
+  playerData_.getClientSidePlayerInfo().a_hp = *( unsigned short * ) ( buf + 1 );
 }
 
-void sv_setchar_aend( const unsigned char *buf )
+void TickBuffer::sv_setchar_aend( const unsigned char *buf )
 {
-  pl.a_end = *( unsigned short * ) ( buf + 1 );
+  playerData_.getClientSidePlayerInfo().a_end = *( unsigned short * ) ( buf + 1 );
 }
 
-void sv_setchar_amana( const unsigned char *buf )
+void TickBuffer::sv_setchar_amana( const unsigned char *buf )
 {
-  pl.a_mana = *( unsigned short * ) ( buf + 1 );
+  playerData_.getClientSidePlayerInfo().a_mana = *( unsigned short * ) ( buf + 1 );
 }
 
-void sv_setchar_dir( const unsigned char *buf )
+void TickBuffer::sv_setchar_dir( const unsigned char *buf )
 {
-  pl.dir = *( unsigned char * ) ( buf + 1 );
+  playerData_.getClientSidePlayerInfo().dir = *( unsigned char * ) ( buf + 1 );
 }
 
-void sv_setchar_pts( const unsigned char *buf )
+void TickBuffer::sv_setchar_pts( const unsigned char *buf )
 {
-  pl.points     = *( unsigned long * ) ( buf + 1 );
-  pl.points_tot = *( unsigned long * ) ( buf + 5 );
-  pl.kindred    = *( unsigned long * ) ( buf + 9 );
+  playerData_.getClientSidePlayerInfo().points     = *( unsigned long * ) ( buf + 1 );
+  playerData_.getClientSidePlayerInfo().points_tot = *( unsigned long * ) ( buf + 5 );
+  playerData_.getClientSidePlayerInfo().kindred    = *( unsigned long * ) ( buf + 9 );
 }
 
-void sv_setchar_gold( const unsigned char *buf )
+void TickBuffer::sv_setchar_gold( const unsigned char *buf )
 {
-  pl.gold   = *( unsigned long * ) ( buf + 1 );
-  pl.armor  = *( unsigned long * ) ( buf + 5 );
-  pl.weapon = *( unsigned long * ) ( buf + 9 );
+  playerData_.getClientSidePlayerInfo().gold   = *( unsigned long * ) ( buf + 1 );
+  playerData_.getClientSidePlayerInfo().armor  = *( unsigned long * ) ( buf + 5 );
+  playerData_.getClientSidePlayerInfo().weapon = *( unsigned long * ) ( buf + 9 );
 }
 
-void sv_setchar_item( const unsigned char *buf )
+void TickBuffer::sv_setchar_item( const unsigned char *buf )
 {
   int n;
 
@@ -540,11 +492,11 @@ void sv_setchar_item( const unsigned char *buf )
   {
     std::cerr << "Invalid setchar item" << std::endl;
   }
-  pl.item[ n ]   = *( short int * ) ( buf + 5 );
-  pl.item_p[ n ] = *( short int * ) ( buf + 7 );
+  playerData_.getClientSidePlayerInfo().item[ n ]   = *( short int * ) ( buf + 5 );
+  playerData_.getClientSidePlayerInfo().item_p[ n ] = *( short int * ) ( buf + 7 );
 }
 
-void sv_setchar_worn( const unsigned char *buf )
+void TickBuffer::sv_setchar_worn( const unsigned char *buf )
 {
   int n;
 
@@ -553,11 +505,11 @@ void sv_setchar_worn( const unsigned char *buf )
   {
     std::cerr << "Invalid setchar worn" << std::endl;
   }
-  pl.worn[ n ]   = *( short int * ) ( buf + 5 );
-  pl.worn_p[ n ] = *( short int * ) ( buf + 7 );
+  playerData_.getClientSidePlayerInfo().worn[ n ]   = *( short int * ) ( buf + 5 );
+  playerData_.getClientSidePlayerInfo().worn_p[ n ] = *( short int * ) ( buf + 7 );
 }
 
-void sv_setchar_spell( const unsigned char *buf )
+void TickBuffer::sv_setchar_spell( const unsigned char *buf )
 {
   int n;
 
@@ -566,19 +518,19 @@ void sv_setchar_spell( const unsigned char *buf )
   {
     std::cerr << "Invalid setchar spell" << std::endl;
   }
-  pl.spell[ n ]  = *( short int * ) ( buf + 5 );
-  pl.active[ n ] = *( short int * ) ( buf + 7 );
+  playerData_.getClientSidePlayerInfo().spell[ n ]  = *( short int * ) ( buf + 5 );
+  playerData_.getClientSidePlayerInfo().active[ n ] = *( short int * ) ( buf + 7 );
 }
 
-void sv_setchar_obj( const unsigned char *buf )
+void TickBuffer::sv_setchar_obj( const unsigned char *buf )
 {
-  pl.citem   = *( short int * ) ( buf + 1 );
-  pl.citem_p = *( short int * ) ( buf + 3 );
+  playerData_.getClientSidePlayerInfo().citem   = *( short int * ) ( buf + 1 );
+  playerData_.getClientSidePlayerInfo().citem_p = *( short int * ) ( buf + 3 );
 }
 
 static int lastn = 0;
 
-int sv_setmap( const unsigned char *buf, int off )
+int TickBuffer::sv_setmap( const unsigned char *buf, int off )
 {
   int        n, p;
   static int cnt[ 8 ] = { 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -609,64 +561,64 @@ int sv_setmap( const unsigned char *buf, int off )
 
   if ( buf[ 1 ] & 1 )
   {
-    map[ n ].ba_sprite = *( unsigned short * ) ( buf + p );
+    playerData_.getMap()[ n ].ba_sprite = *( unsigned short * ) ( buf + p );
     p += 2;
     cnt[ 0 ]++;
   }
   if ( buf[ 1 ] & 2 )
   {
-    map[ n ].flags = *( unsigned int * ) ( buf + p );
+    playerData_.getMap()[ n ].flags = *( unsigned int * ) ( buf + p );
     p += 4;
     cnt[ 1 ]++;
   }
   if ( buf[ 1 ] & 4 )
   {
-    map[ n ].flags2 = *( unsigned int * ) ( buf + p );
+    playerData_.getMap()[ n ].flags2 = *( unsigned int * ) ( buf + p );
     p += 4;
     cnt[ 2 ]++;
   }
   if ( buf[ 1 ] & 8 )
   {
-    map[ n ].it_sprite = *( unsigned short * ) ( buf + p );
+    playerData_.getMap()[ n ].it_sprite = *( unsigned short * ) ( buf + p );
     p += 2;
     cnt[ 3 ]++;
   }
   if ( buf[ 1 ] & 16 )
   {
-    map[ n ].it_status = *( unsigned char * ) ( buf + p );
+    playerData_.getMap()[ n ].it_status = *( unsigned char * ) ( buf + p );
     p += 1;
     cnt[ 4 ]++;
   }
   if ( buf[ 1 ] & 32 )
   {
-    map[ n ].ch_sprite = *( unsigned short * ) ( buf + p );
+    playerData_.getMap()[ n ].ch_sprite = *( unsigned short * ) ( buf + p );
     p += 2;
-    map[ n ].ch_status = *( unsigned char * ) ( buf + p );
+    playerData_.getMap()[ n ].ch_status = *( unsigned char * ) ( buf + p );
     p += 1;
-    map[ n ].ch_stat_off = *( unsigned char * ) ( buf + p );
+    playerData_.getMap()[ n ].ch_stat_off = *( unsigned char * ) ( buf + p );
     p += 1;
     cnt[ 5 ]++;
   }
   if ( buf[ 1 ] & 64 )
   {
-    map[ n ].ch_nr = *( unsigned short * ) ( buf + p );
+    playerData_.getMap()[ n ].ch_nr = *( unsigned short * ) ( buf + p );
     p += 2;
-    map[ n ].ch_id = *( unsigned short * ) ( buf + p );
+    playerData_.getMap()[ n ].ch_id = *( unsigned short * ) ( buf + p );
     p += 2;
-    map[ n ].ch_speed = *( unsigned char * ) ( buf + p );
+    playerData_.getMap()[ n ].ch_speed = *( unsigned char * ) ( buf + p );
     p += 1;
     cnt[ 6 ]++;
   }
   if ( buf[ 1 ] & 128 )
   {
-    map[ n ].ch_proz = *( unsigned char * ) ( buf + p );
+    playerData_.getMap()[ n ].ch_proz = *( unsigned char * ) ( buf + p );
     p += 1;
     cnt[ 7 ]++;
   }
   return p;
 }
 
-int sv_setmap3( const unsigned char *buf, int cnt )
+int TickBuffer::sv_setmap3( const unsigned char *buf, int cnt )
 {
   int           n, m, p;
   unsigned char tmp;
@@ -679,7 +631,7 @@ int sv_setmap3( const unsigned char *buf, int cnt )
     return -1;
   }
 
-  map[ n ].light = tmp;
+  playerData_.getMap()[ n ].light = tmp;
 
   for ( m = n + 2, p = 3; m < n + cnt + 2; m += 2, p++ )
   {
@@ -687,15 +639,15 @@ int sv_setmap3( const unsigned char *buf, int cnt )
     {
       tmp = *( unsigned char * ) ( buf + p );
 
-      map[ m ].light     = ( unsigned char ) ( tmp & 15 );
-      map[ m - 1 ].light = ( unsigned char ) ( tmp >> 4 );
+      playerData_.getMap()[ m ].light     = ( unsigned char ) ( tmp & 15 );
+      playerData_.getMap()[ m - 1 ].light = ( unsigned char ) ( tmp >> 4 );
     }
   }
 
   return p;
 }
 
-void sv_setorigin( const unsigned char *buf )
+void TickBuffer::sv_setorigin( const unsigned char *buf )
 {
   int x, y, xp, yp, n;
 
@@ -706,18 +658,18 @@ void sv_setorigin( const unsigned char *buf )
   {
     for ( x = 0; x < TILEX; x++, n++ )
     {
-      map[ n ].x = ( unsigned short ) ( x + xp );
-      map[ n ].y = ( unsigned short ) ( y + yp );
+      playerData_.getMap()[ n ].x = ( unsigned short ) ( x + xp );
+      playerData_.getMap()[ n ].y = ( unsigned short ) ( y + yp );
     }
   }
 }
 
-void sv_tick( const unsigned char *buf )
+void TickBuffer::sv_tick( const unsigned char *buf )
 {
   ctick = *( unsigned char * ) ( buf + 1 );
 }
 
-void sv_log( const unsigned char *buf, int )
+void TickBuffer::sv_log( const unsigned char *buf, int )
 {
   static char text[ 512 ];
   static int  cnt = 0;
@@ -745,110 +697,110 @@ void sv_log( const unsigned char *buf, int )
   }
 }
 
-void sv_scroll_right( const unsigned char * )
+void TickBuffer::sv_scroll_right( const unsigned char * )
 {
-  memmove( map, map + 1, sizeof( struct cmap ) * ( TILEX * TILEY - 1 ) );
+  memmove( playerData_.getMap(), playerData_.getMap() + 1, sizeof( struct cmap ) * ( TILEX * TILEY - 1 ) );
 }
 
-void sv_scroll_left( const unsigned char * )
+void TickBuffer::sv_scroll_left( const unsigned char * )
 {
-  memmove( map + 1, map, sizeof( struct cmap ) * ( TILEX * TILEY - 1 ) );
+  memmove( playerData_.getMap() + 1, playerData_.getMap(), sizeof( struct cmap ) * ( TILEX * TILEY - 1 ) );
 }
 
-void sv_scroll_down( const unsigned char * )
+void TickBuffer::sv_scroll_down( const unsigned char * )
 {
-  memmove( map, map + TILEX, sizeof( struct cmap ) * ( TILEX * TILEY - TILEX ) );
+  memmove( playerData_.getMap(), playerData_.getMap() + TILEX, sizeof( struct cmap ) * ( TILEX * TILEY - TILEX ) );
 }
 
-void sv_scroll_up( const unsigned char * )
+void TickBuffer::sv_scroll_up( const unsigned char * )
 {
-  memmove( map + TILEX, map, sizeof( struct cmap ) * ( TILEX * TILEY - TILEX ) );
+  memmove( playerData_.getMap() + TILEX, playerData_.getMap(), sizeof( struct cmap ) * ( TILEX * TILEY - TILEX ) );
 }
 
-void sv_scroll_leftup( const unsigned char * )
+void TickBuffer::sv_scroll_leftup( const unsigned char * )
 {
-  memmove( map + TILEX + 1, map, sizeof( struct cmap ) * ( TILEX * TILEY - TILEX - 1 ) );
+  memmove( playerData_.getMap() + TILEX + 1, playerData_.getMap(), sizeof( struct cmap ) * ( TILEX * TILEY - TILEX - 1 ) );
 }
 
-void sv_scroll_leftdown( const unsigned char * )
+void TickBuffer::sv_scroll_leftdown( const unsigned char * )
 {
-  memmove( map, map + TILEX - 1, sizeof( struct cmap ) * ( TILEX * TILEY - TILEX + 1 ) );
+  memmove( playerData_.getMap(), playerData_.getMap() + TILEX - 1, sizeof( struct cmap ) * ( TILEX * TILEY - TILEX + 1 ) );
 }
 
-void sv_scroll_rightup( const unsigned char * )
+void TickBuffer::sv_scroll_rightup( const unsigned char * )
 {
-  memmove( map + TILEX - 1, map, sizeof( struct cmap ) * ( TILEX * TILEY - TILEX + 1 ) );
+  memmove( playerData_.getMap() + TILEX - 1, playerData_.getMap(), sizeof( struct cmap ) * ( TILEX * TILEY - TILEX + 1 ) );
 }
 
-void sv_scroll_rightdown( const unsigned char * )
+void TickBuffer::sv_scroll_rightdown( const unsigned char * )
 {
-  memmove( map, map + TILEX + 1, sizeof( struct cmap ) * ( TILEX * TILEY - TILEX - 1 ) );
+  memmove( playerData_.getMap(), playerData_.getMap() + TILEX + 1, sizeof( struct cmap ) * ( TILEX * TILEY - TILEX - 1 ) );
 }
 
-void sv_look1( const unsigned char *buf )
+void TickBuffer::sv_look1( const unsigned char *buf )
 {
-  tmplook.worn[ 0 ] = *( unsigned short * ) ( buf + 1 );
-  tmplook.worn[ 2 ] = *( unsigned short * ) ( buf + 3 );
-  tmplook.worn[ 3 ] = *( unsigned short * ) ( buf + 5 );
-  tmplook.worn[ 5 ] = *( unsigned short * ) ( buf + 7 );
-  tmplook.worn[ 6 ] = *( unsigned short * ) ( buf + 9 );
-  tmplook.worn[ 7 ] = *( unsigned short * ) ( buf + 11 );
-  tmplook.worn[ 8 ] = *( unsigned short * ) ( buf + 13 );
-  tmplook.autoflag  = *( unsigned char * ) ( buf + 15 );
+  playerData_.getLook().worn[ 0 ] = *( unsigned short * ) ( buf + 1 );
+  playerData_.getLook().worn[ 2 ] = *( unsigned short * ) ( buf + 3 );
+  playerData_.getLook().worn[ 3 ] = *( unsigned short * ) ( buf + 5 );
+  playerData_.getLook().worn[ 5 ] = *( unsigned short * ) ( buf + 7 );
+  playerData_.getLook().worn[ 6 ] = *( unsigned short * ) ( buf + 9 );
+  playerData_.getLook().worn[ 7 ] = *( unsigned short * ) ( buf + 11 );
+  playerData_.getLook().worn[ 8 ] = *( unsigned short * ) ( buf + 13 );
+  playerData_.getLook().autoflag  = *( unsigned char * ) ( buf + 15 );
 }
 
-void sv_look2( const unsigned char *buf )
+void TickBuffer::sv_look2( const unsigned char *buf )
 {
-  tmplook.worn[ 9 ]  = *( unsigned short * ) ( buf + 1 );  // 1 2
-  tmplook.sprite     = *( unsigned short * ) ( buf + 3 );  // 3 4
-  tmplook.points     = *( unsigned int * ) ( buf + 5 );    // 5 6 7 8
-  tmplook.hp         = *( unsigned int * ) ( buf + 9 );    // 9 10 11 12
-  tmplook.worn[ 10 ] = *( unsigned short * ) ( buf + 13 ); // 13 14
+  playerData_.getLook().worn[ 9 ]  = *( unsigned short * ) ( buf + 1 );  // 1 2
+  playerData_.getLook().sprite     = *( unsigned short * ) ( buf + 3 );  // 3 4
+  playerData_.getLook().points     = *( unsigned int * ) ( buf + 5 );    // 5 6 7 8
+  playerData_.getLook().hp         = *( unsigned int * ) ( buf + 9 );    // 9 10 11 12
+  playerData_.getLook().worn[ 10 ] = *( unsigned short * ) ( buf + 13 ); // 13 14
 }
 
-void sv_look3( const unsigned char *buf )
+void TickBuffer::sv_look3( const unsigned char *buf )
 {
-  tmplook.end    = *( unsigned short * ) ( buf + 1 );
-  tmplook.a_hp   = *( unsigned short * ) ( buf + 3 );
-  tmplook.a_end  = *( unsigned short * ) ( buf + 5 );
-  tmplook.nr     = *( unsigned short * ) ( buf + 7 );
-  tmplook.id     = *( unsigned short * ) ( buf + 9 );
-  tmplook.mana   = *( unsigned short * ) ( buf + 11 );
-  tmplook.a_mana = *( unsigned short * ) ( buf + 13 );
+  playerData_.getLook().end    = *( unsigned short * ) ( buf + 1 );
+  playerData_.getLook().a_hp   = *( unsigned short * ) ( buf + 3 );
+  playerData_.getLook().a_end  = *( unsigned short * ) ( buf + 5 );
+  playerData_.getLook().nr     = *( unsigned short * ) ( buf + 7 );
+  playerData_.getLook().id     = *( unsigned short * ) ( buf + 9 );
+  playerData_.getLook().mana   = *( unsigned short * ) ( buf + 11 );
+  playerData_.getLook().a_mana = *( unsigned short * ) ( buf + 13 );
 }
 
-void sv_look4( const unsigned char *buf )
+void TickBuffer::sv_look4( const unsigned char *buf )
 {
-  tmplook.worn[ 1 ]  = *( unsigned short * ) ( buf + 1 );
-  tmplook.worn[ 4 ]  = *( unsigned short * ) ( buf + 3 );
-  tmplook.extended   = buf[ 5 ];
-  tmplook.pl_price   = *( unsigned int * ) ( buf + 6 );
-  tmplook.worn[ 11 ] = *( unsigned short * ) ( buf + 10 );
-  tmplook.worn[ 12 ] = *( unsigned short * ) ( buf + 12 );
-  tmplook.worn[ 13 ] = *( unsigned short * ) ( buf + 14 );
+  playerData_.getLook().worn[ 1 ]  = *( unsigned short * ) ( buf + 1 );
+  playerData_.getLook().worn[ 4 ]  = *( unsigned short * ) ( buf + 3 );
+  playerData_.getLook().extended   = buf[ 5 ];
+  playerData_.getLook().pl_price   = *( unsigned int * ) ( buf + 6 );
+  playerData_.getLook().worn[ 11 ] = *( unsigned short * ) ( buf + 10 );
+  playerData_.getLook().worn[ 12 ] = *( unsigned short * ) ( buf + 12 );
+  playerData_.getLook().worn[ 13 ] = *( unsigned short * ) ( buf + 14 );
 }
 
-void sv_look5( const unsigned char *buf )
+void TickBuffer::sv_look5( const unsigned char *buf )
 {
   int n;
 
   for ( n = 0; n < 15; n++ )
-    tmplook.name[ n ] = buf[ n + 1 ];
-  tmplook.name[ 15 ] = 0;
+    playerData_.getLook().name[ n ] = buf[ n + 1 ];
+  playerData_.getLook().name[ 15 ] = 0;
 
-  if ( ! tmplook.extended )
+  if ( ! playerData_.getLook().extended )
   {
-    if ( ! tmplook.autoflag )
+    if ( ! playerData_.getLook().autoflag )
     {
       // show_look  = 1;
       // look       = tmplook;
       // look_timer = 10 * TICKS;
     }
-    // add_look(tmplook.nr, tmplook.name, tmplook.id);
+    // add_look(playerData_.getLook().nr, playerData_.getLook().name, playerData_.getLook().id);
   }
 }
 
-void sv_look6( const unsigned char *buf )
+void TickBuffer::sv_look6( const unsigned char *buf )
 {
   int n, s;
 
@@ -856,8 +808,8 @@ void sv_look6( const unsigned char *buf )
 
   for ( n = s; n < std::min( 62, s + 2 ); n++ )
   {
-    tmplook.item[ n ]  = *( unsigned short * ) ( buf + 2 + ( n - s ) * 6 );
-    tmplook.price[ n ] = *( unsigned int * ) ( buf + 4 + ( n - s ) * 6 );
+    playerData_.getLook().item[ n ]  = *( unsigned short * ) ( buf + 2 + ( n - s ) * 6 );
+    playerData_.getLook().price[ n ] = *( unsigned int * ) ( buf + 4 + ( n - s ) * 6 );
   }
   if ( n == 62 )
   {
@@ -866,17 +818,17 @@ void sv_look6( const unsigned char *buf )
   }
 }
 
-void sv_settarget( const unsigned char *buf )
+void TickBuffer::sv_settarget( const unsigned char *buf )
 {
-  pl.attack_cn    = *( unsigned short * ) ( buf + 1 );
-  pl.goto_x       = *( unsigned short * ) ( buf + 3 );
-  pl.goto_y       = *( unsigned short * ) ( buf + 5 );
-  pl.misc_action  = *( unsigned short * ) ( buf + 7 );
-  pl.misc_target1 = *( unsigned short * ) ( buf + 9 );
-  pl.misc_target2 = *( unsigned short * ) ( buf + 11 );
+  playerData_.getClientSidePlayerInfo().attack_cn    = *( unsigned short * ) ( buf + 1 );
+  playerData_.getClientSidePlayerInfo().goto_x       = *( unsigned short * ) ( buf + 3 );
+  playerData_.getClientSidePlayerInfo().goto_y       = *( unsigned short * ) ( buf + 5 );
+  playerData_.getClientSidePlayerInfo().misc_action  = *( unsigned short * ) ( buf + 7 );
+  playerData_.getClientSidePlayerInfo().misc_target1 = *( unsigned short * ) ( buf + 9 );
+  playerData_.getClientSidePlayerInfo().misc_target2 = *( unsigned short * ) ( buf + 11 );
 }
 
-void sv_playsound( const unsigned char *buf )
+void TickBuffer::sv_playsound( const unsigned char *buf )
 {
   int  nr, vol, pan;
   char name[ 80 ];
@@ -891,7 +843,7 @@ void sv_playsound( const unsigned char *buf )
   // play_sound(name, vol, -pan); // add flag to reverse channels!!
 }
 
-void sv_exit( const unsigned char *buf )
+void TickBuffer::sv_exit( const unsigned char *buf )
 {
   int reason;
 
@@ -908,20 +860,20 @@ void sv_exit( const unsigned char *buf )
   // do_exit = 1;
 }
 
-void sv_load( const unsigned char * )
+void TickBuffer::sv_load( const unsigned char * )
 {
   // int load <<--- EXTERN
   // load = *( unsigned int * ) ( buf + 1 );
 }
 
-void sv_unique( const unsigned char * )
+void TickBuffer::sv_unique( const unsigned char * )
 {
   // unique1 = *( unsigned int * ) ( buf + 1 );
   // unique2 = *( unsigned int * ) ( buf + 5 );
   // save_unique();
 }
 
-int sv_ignore( const unsigned char *buf )
+int TickBuffer::sv_ignore( const unsigned char *buf )
 {
   int        size, d;
   static int cnt = 0, got = 0, start = 0;

@@ -3,6 +3,7 @@
 
 #include "ClientNetworkActivity.h"
 #include "ConstantIdentifiers.h"
+#include "PlayerData.h"
 
 int main()
 {
@@ -10,7 +11,7 @@ int main()
   sf::RenderWindow window( sf::VideoMode( MODEX, MODEY ), "Mercenaries of Astonia - New Client" );
   window.setFramerateLimit( 60 );
 
-  pdata playerData {};
+  PlayerData playerData{};
 
   auto client = std::make_unique< ClientNetworkActivity >( playerData, MHOST, MHOST_PORT );
   client->run();

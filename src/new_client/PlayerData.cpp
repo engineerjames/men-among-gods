@@ -73,10 +73,12 @@ skilltab static_skilltab[SKILLTAB_SIZE]={
 
 PlayerData::PlayerData()
     : playerInfo_()
+    , playerDataHasChanged_( true ) // Temporarily default to true
     , clientSidePlayerInfo_()
     , okey_()
     , skillsList_( static_skilltab )
     , map_( std::make_unique< cmap[] >( MAPX * MAPY ) )
+    , look_()
 {
   for ( unsigned int i = 0; i < MAPX * MAPY; ++i )
   {
@@ -87,4 +89,59 @@ PlayerData::PlayerData()
   {
     skillsList_[ i ].attrib[ 0 ] = 1;
   }
+}
+
+bool PlayerData::hasPlayerDataChanged() const
+{
+  return playerDataHasChanged_;
+}
+
+const char *PlayerData::getPlayerName() const
+{
+  return playerInfo_.cname;
+}
+
+const char *PlayerData::getPlayerDescription() const
+{
+  return playerInfo_.desc;
+}
+
+void PlayerData::lock()
+{
+  ioMutex_.lock();
+}
+
+void PlayerData::unlock()
+{
+  ioMutex_.unlock();
+}
+
+pdata &PlayerData::getPlayerInfo()
+{
+  return playerInfo_;
+}
+
+cmap *PlayerData::getMap()
+{
+  return map_.get();
+}
+
+skilltab *PlayerData::getSkillList()
+{
+  return skillsList_.get();
+}
+
+cplayer& PlayerData::getClientSidePlayerInfo()
+{
+    return clientSidePlayerInfo_;
+}
+
+key& PlayerData::getOkey()
+{
+    return okey_;
+}
+
+look& PlayerData::getLook()
+{
+    return look_;
 }

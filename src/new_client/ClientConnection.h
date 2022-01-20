@@ -10,6 +10,7 @@
 
 // Forward declarations
 class TickBuffer;
+class PlayerData;
 
 class ClientConnection
 {
@@ -26,7 +27,7 @@ public:
 
   bool connect();
   bool login();
-  bool sendPlayerData( const pdata &playerData );
+  bool sendPlayerData( const PlayerData &playerData );
   void setSocketMode( SocketIOMode newMode );
 
   bool sendTick();

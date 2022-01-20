@@ -21,7 +21,7 @@ ClientNetworkActivity::~ClientNetworkActivity()
   }
 }
 
-ClientNetworkActivity::ClientNetworkActivity( pdata &playerData, const std::string &hostIp, unsigned short hostPort )
+ClientNetworkActivity::ClientNetworkActivity( PlayerData &playerData, const std::string &hostIp, unsigned short hostPort )
     : clientNetworkThread_()
     , clientConnection_( hostIp, hostPort )
     , cancellationRequested_( false )
@@ -53,10 +53,9 @@ void ClientNetworkActivity::startNetworkActivity()
   clientConnection_.login();
 
   // Temporary Hack
-  playerData_.changed = 1;
   clientConnection_.sendPlayerData( playerData_ );
 
-  TickBuffer tickBuffer {};
+  TickBuffer tickBuffer { playerData_ };
 
   clientConnection_.setSocketMode( ClientConnection::SocketIOMode::NonBlocking );
 
