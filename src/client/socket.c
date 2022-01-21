@@ -592,6 +592,7 @@ int sv_setmap(unsigned char *buf, int off)
 {
     int n, p;
     static int cnt[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+    xlog(0, "SETMAP!");
 
     DEBUG("SV SETMAP");
 
@@ -1014,6 +1015,7 @@ int sv_ignore(unsigned char *buf)
 
 int sv_cmd(unsigned char *buf)
 {
+    xlog(0, "Processing server command: %i", buf[0]);
 
     if (buf[0] & SV_SETMAP)
         return sv_setmap(buf, buf[0] & ~SV_SETMAP);
