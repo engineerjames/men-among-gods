@@ -28,16 +28,19 @@ public:
   void lock();
   void unlock();
 
+  // Some initial debug-only functionality
+  void printMapInformation() const;
+
 private:
   // Holds the name, description, and some client-related settings (split apart later)
-  pdata                         playerInfo_; // This is more what initially gets sent to the server
-  bool                          playerDataHasChanged_;
-  cplayer                       clientSidePlayerInfo_; // This is more the truth of what your character is...
-  key                           okey_;
-  std::unique_ptr< skilltab[] > skillsList_;
-  std::unique_ptr< cmap[] >     map_;
-  look                          look_;
-  std::mutex                    ioMutex_;
+  pdata                     playerInfo_; // This is more what initially gets sent to the server
+  bool                      playerDataHasChanged_;
+  cplayer                   clientSidePlayerInfo_; // This is more the truth of what your character is...
+  key                       okey_;
+  skilltab*                 skillsList_;
+  std::unique_ptr< cmap[] > map_;
+  look                      look_;
+  std::mutex                ioMutex_;
 };
 
 #endif

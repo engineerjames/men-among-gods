@@ -11,8 +11,6 @@ static const std::string   MNEWS      = "http://mercaston.dnsalias.net/news.html
 static const std::string   MHOST      = "127.0.0.1";
 static const constexpr int MHOST_PORT = 5555;
 
-static const constexpr int TSIZE = 8192 * 16;
-
 static const constexpr int AT_BRAVE = 0;
 static const constexpr int AT_WILL  = 1;
 static const constexpr int AT_INT   = 2;

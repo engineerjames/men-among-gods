@@ -144,6 +144,8 @@ int TickBuffer::processServerCommand( const std::uint8_t* bufferStart )
     return sv_setmap( bufferStart, bufferStart[ 0 ] & ~ServerMessages::getValue( ServerMessages::MessageTypes::SETMAP ) );
   }
 
+  std::cerr << "PROCESSING SERVER COMMAND: " << ServerMessages::getName( msgType ) << std::endl;
+
   switch ( msgType )
   {
   case ServerMessages::MessageTypes::SETCHAR_NAME1:

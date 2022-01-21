@@ -2378,6 +2378,9 @@ void plr_change(int nr)
     if (buf[1])
     { // we found a change (no change found can happen since it_status & ch_status are not transmitted all the time)
       xsend(nr, buf, p);
+      static int countcount = 0;
+      countcount++;
+      printf("FOUND DIFFERENCE: SENDING MAP! %i\n", countcount);
       lastn = n;
     }
     mcpy(&cmap[n], &smap[n], sizeof(struct cmap));

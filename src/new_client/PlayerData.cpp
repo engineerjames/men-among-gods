@@ -1,5 +1,8 @@
 #include "PlayerData.h"
 
+#include <fstream>
+#include <iostream>
+
 namespace
 {
 
@@ -76,7 +79,7 @@ PlayerData::PlayerData()
     , playerDataHasChanged_( true ) // Temporarily default to true
     , clientSidePlayerInfo_()
     , okey_()
-    , skillsList_( static_skilltab )
+    , skillsList_( &static_skilltab[ 0 ] )
     , map_( std::make_unique< cmap[] >( MAPX * MAPY ) )
     , look_()
 {
@@ -128,7 +131,7 @@ cmap* PlayerData::getMap()
 
 skilltab* PlayerData::getSkillList()
 {
-  return skillsList_.get();
+  return skillsList_;
 }
 
 cplayer& PlayerData::getClientSidePlayerInfo()
@@ -144,4 +147,42 @@ key& PlayerData::getOkey()
 look& PlayerData::getLook()
 {
   return look_;
+}
+
+void PlayerData::printMapInformation() const
+{
+  std::ofstream mapFile( "mapfile.log" );
+
+  if ( mapFile.is_open() )
+  {
+    for ( unsigned int x = 0; x < MAPX; ++x )
+    {
+      for ( unsigned int y = 0; y < MAPY; ++y )
+      {
+        // clang-format off
+        mapFile << std::to_string(map_[x + y * MAPX].ba_sprite)
+                << ", " << std::to_string( map_[ x + y * MAPX ].x)
+                << ", " << std::to_string( map_[ x + y * MAPX ].y)
+                << ", " << std::to_string( map_[ x + y * MAPX ].ch_sprite)
+                << ", " << std::to_string( map_[ x + y * MAPX ].ch_status)
+                << ", " << std::to_string( map_[ x + y * MAPX ].ch_stat_off)
+                << ", " << std::to_string( map_[ x + y * MAPX ].ch_speed)
+                << ", " << std::to_string( map_[ x + y * MAPX ].ch_nr)
+                << ", " << std::to_string( map_[ x + y * MAPX ].ch_id)
+                << ", " << std::to_string( map_[ x + y * MAPX ].it_sprite)
+                << ", " << std::to_string( map_[ x + y * MAPX ].it_status)
+                << ", " << std::to_string( map_[ x + y * MAPX ].back)
+                << ", " << std::to_string( map_[ x + y * MAPX ].obj1)
+                << ", " << std::to_string( map_[ x + y * MAPX ].obj2)
+                << ", " << std::to_string( map_[ x + y * MAPX ].obj_xoff)
+                << ", " << std::to_string( map_[ x + y * MAPX ].obj_yoff)
+                << ", " << std::to_string( map_[ x + y * MAPX ].ovl_xoff)
+                << ", " << std::to_string( map_[ x + y * MAPX ].ovl_yoff)
+                << ", " << std::to_string( map_[ x + y * MAPX ].idle_ani)
+                << std::endl;
+        // clang-format on
+      }
+    }
+  }
+  mapFile.close();
 }
