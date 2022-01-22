@@ -33,6 +33,7 @@ public:
 
   bool sendTick();
   bool receiveTick( TickBuffer& tickBuffer );
+  void moveOnce(); // TODO: Remove this
 
 private:
   enum struct ProcessStatus

@@ -3,6 +3,7 @@
 #include <cstring>
 #include <iostream>
 
+#include "ClientMessage.h"
 #include "ConstantIdentifiers.h"
 #include "TickBuffer.h"
 
@@ -44,6 +45,11 @@ void ClientNetworkActivity::run() noexcept
 
 void ClientNetworkActivity::stop() noexcept
 {
+  if ( ! isRunning_ )
+  {
+    return;
+  }
+
   cancellationRequested_.store( true );
 }
 
@@ -62,6 +68,9 @@ void ClientNetworkActivity::startNetworkActivity()
 
   sf::Clock clock {};
   sf::Time  timeSinceLastTickSent = clock.getElapsedTime();
+
+  // Filthy hack to have the character move once to populate map fully.
+  static bool hasMoved = false;
 
   // Main network loop
   while ( ! cancellationRequested_.load() )
@@ -84,38 +93,50 @@ void ClientNetworkActivity::startNetworkActivity()
 
     tickBuffer.processTicks();
 
-    playerData_.lock();
+    engineTick();
 
-    for ( unsigned int n = 0; n < TILEX * TILEY; n++ )
+    if ( ! hasMoved )
     {
-      playerData_.getMap()[ n ].back     = 0;
-      playerData_.getMap()[ n ].obj1     = 0;
-      playerData_.getMap()[ n ].obj2     = 0;
-      playerData_.getMap()[ n ].ovl_xoff = 0;
-      playerData_.getMap()[ n ].ovl_yoff = 0;
+      std::cerr << "Moving!" << std::endl;
+      clientConnection_.moveOnce();
+      hasMoved = true;
     }
-
-    for ( unsigned int n = 0; n < TILEX * TILEY; n++ )
-    {
-
-      playerData_.getMap()[ n ].back = playerData_.getMap()[ n ].ba_sprite;
-
-      // item
-      if ( playerData_.getMap()[ n ].it_sprite )
-      {
-        // tmp           = eng_item( n );
-        // map[ n ].obj1 = tmp;
-      }
-
-      // character
-      if ( playerData_.getMap()[ n ].ch_sprite )
-      {
-        // tmp           = eng_char( n );
-        // map[ n ].obj2 = tmp;
-      }
-    }
-    playerData_.unlock();
   }
 
   isRunning_ = false;
+}
+
+void ClientNetworkActivity::engineTick()
+{
+  playerData_.lock();
+
+  for ( unsigned int n = 0; n < TILEX * TILEY; n++ )
+  {
+    playerData_.getMap()[ n ].back     = 0;
+    playerData_.getMap()[ n ].obj1     = 0;
+    playerData_.getMap()[ n ].obj2     = 0;
+    playerData_.getMap()[ n ].ovl_xoff = 0;
+    playerData_.getMap()[ n ].ovl_yoff = 0;
+  }
+
+  for ( unsigned int n = 0; n < TILEX * TILEY; n++ )
+  {
+
+    playerData_.getMap()[ n ].back = playerData_.getMap()[ n ].ba_sprite;
+
+    // item
+    if ( playerData_.getMap()[ n ].it_sprite )
+    {
+      // tmp           = eng_item( n );
+      // map[ n ].obj1 = tmp;
+    }
+
+    // character
+    if ( playerData_.getMap()[ n ].ch_sprite )
+    {
+      // tmp           = eng_char( n );
+      // map[ n ].obj2 = tmp;
+    }
+  }
+  playerData_.unlock();
 }

@@ -19,6 +19,7 @@ public:
 
 private:
   void startNetworkActivity();
+  void engineTick();
 
   std::thread         clientNetworkThread_;
   ClientConnection    clientConnection_;
