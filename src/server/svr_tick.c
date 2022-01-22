@@ -2380,7 +2380,6 @@ void plr_change(int nr)
       xsend(nr, buf, p);
       static int countcount = 0;
       countcount++;
-      printf("FOUND DIFFERENCE: SENDING MAP! %i\n", countcount);
       lastn = n;
     }
     mcpy(&cmap[n], &smap[n], sizeof(struct cmap));

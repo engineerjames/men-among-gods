@@ -7,7 +7,11 @@
 #include "PlayerData.h"
 #include "ServerMessage.h"
 
-unsigned int ctick = 0;
+namespace
+{
+static unsigned int ctick = 0;
+static int          lastn = 0;
+} // namespace
 
 TickBuffer::TickBuffer( PlayerData& playerData )
     : compressor_()
@@ -31,7 +35,7 @@ std::size_t TickBuffer::getAvailableBytes() noexcept
 
 bool TickBuffer::receive( const std::array< std::uint8_t, 1024 >* buffer, std::size_t bytesToReceive )
 {
-  std::memcpy( getBufferStart(), buffer, bytesToReceive );
+  std::memcpy( getBufferStart(), buffer->data(), bytesToReceive );
   tickSize_ += bytesToReceive;
 
   if ( tickSize_ >= tickStart_ + 2 )
@@ -105,7 +109,7 @@ void TickBuffer::processTicks()
 
   utot += csize;
 
-  // lastn = -1; // reset sv_setmap
+  lastn = -1; // reset sv_setmap
 
   while ( idx < csize )
   {
@@ -139,12 +143,11 @@ int TickBuffer::processServerCommand( const std::uint8_t* bufferStart )
 {
   ServerMessages::MessageTypes msgType = ServerMessages::getType( bufferStart[ 0 ] );
 
-  if ( ServerMessages::getValue( msgType ) & ServerMessages::getValue( ServerMessages::MessageTypes::SETMAP ) )
+  std::uint8_t setMapValue = ServerMessages::getValue( ServerMessages::MessageTypes::SETMAP );
+  if ( ServerMessages::getValue( msgType ) & setMapValue )
   {
-    return sv_setmap( bufferStart, bufferStart[ 0 ] & ~ServerMessages::getValue( ServerMessages::MessageTypes::SETMAP ) );
+    return sv_setmap( bufferStart, bufferStart[ 0 ] & ~setMapValue );
   }
-
-  std::cerr << "PROCESSING SERVER COMMAND: " << ServerMessages::getName( msgType ) << std::endl;
 
   switch ( msgType )
   {
@@ -528,8 +531,6 @@ void TickBuffer::sv_setchar_obj( const unsigned char* buf )
   playerData_.getClientSidePlayerInfo().citem   = *( short int* ) ( buf + 1 );
   playerData_.getClientSidePlayerInfo().citem_p = *( short int* ) ( buf + 3 );
 }
-
-static int lastn = 0;
 
 int TickBuffer::sv_setmap( const unsigned char* buf, int off )
 {
