@@ -379,11 +379,90 @@ bool ClientConnection::sendPlayerData( const PlayerData& playerData )
   return completedTransfer;
 }
 
+// TODO: Get actual values here (if needed--or remove)
+void ClientConnection::sendHardwareInfo()
+{
+  char buf[ 256 ] {};
+
+  unsigned int langid    = 120;
+  unsigned int lcid      = 120;
+  std::string  systemDir = "/home/yeah";
+  std::string  winDir    = "/home/windir";
+  std::string  cDir      = "/home/cdir";
+  std::string  user      = "theUser";
+  std::string  computer  = "mainComputer";
+
+  std::sprintf( buf, "|langid=%u, lcid=%u", langid, lcid );
+  say( buf );
+  std::sprintf( buf, "|systemdir=\"%s\"", systemDir.c_str() );
+  say( buf );
+  std::sprintf( buf, "|windowsdir=\"%s\"", winDir.c_str() );
+  say( buf );
+  std::sprintf( buf, "|currentdir=\"%s\"", cDir.c_str() );
+  say( buf );
+  std::sprintf( buf, "|username=\"%s\"", user.c_str() );
+  say( buf );
+  std::sprintf( buf, "|computername=\"%s\"", computer.c_str() );
+  say( buf );
+}
+
+void ClientConnection::say( const char* input )
+{
+  using ClientMessages::MessageTypes;
+
+  int  n;
+  char buf[ 16 ];
+  buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT1 );
+  for ( n = 0; n < 15; n++ )
+  {
+    buf[ n + 1 ] = input[ n ];
+  }
+  clientSocket_.send( buf, sizeof( buf ) );
+
+  buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT2 );
+  for ( n = 0; n < 15; n++ )
+    buf[ n + 1 ] = input[ n + 15 ];
+  clientSocket_.send( buf, sizeof( buf ) );
+
+  buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT3 );
+  for ( n = 0; n < 15; n++ )
+    buf[ n + 1 ] = input[ n + 30 ];
+  clientSocket_.send( buf, sizeof( buf ) );
+
+  buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT4 );
+  for ( n = 0; n < 15; n++ )
+    buf[ n + 1 ] = input[ n + 45 ];
+  clientSocket_.send( buf, sizeof( buf ) );
+
+  buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT5 );
+  for ( n = 0; n < 15; n++ )
+    buf[ n + 1 ] = input[ n + 60 ];
+  clientSocket_.send( buf, sizeof( buf ) );
+
+  buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT6 );
+  for ( n = 0; n < 15; n++ )
+    buf[ n + 1 ] = input[ n + 75 ];
+  clientSocket_.send( buf, sizeof( buf ) );
+
+  buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT7 );
+  for ( n = 0; n < 15; n++ )
+    buf[ n + 1 ] = input[ n + 90 ];
+  clientSocket_.send( buf, sizeof( buf ) );
+
+  buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT8 );
+  for ( n = 0; n < 15; n++ )
+    buf[ n + 1 ] = input[ n + 105 ];
+  clientSocket_.send( buf, sizeof( buf ) );
+}
+
 bool ClientConnection::sendTick()
 {
   std::array< uint8_t, 16 > buf {};
   buf[ 0 ]                              = ClientMessages::getValue( ClientMessages::MessageTypes::CMD_CTICK );
-  *( unsigned int* ) ( buf.data() + 1 ) = tickCount_++;
+  *( unsigned int* ) ( buf.data() + 1 ) = tickCount_;
+
+  // Increment tickCount
+  tickCount_ += 16;
 
   std::size_t        dataSent {};
   sf::Socket::Status status = clientSocket_.send( buf.data(), buf.size(), dataSent );
@@ -393,19 +472,15 @@ bool ClientConnection::sendTick()
 
 bool ClientConnection::receiveTick( TickBuffer& tickBuffer )
 {
-  // Need tickbuf, ticksize, TSIZE, tickstart, and ticksInQueue
   std::size_t received {};
 
   static std::array< std::uint8_t, 1024 > buffer {};
 
-  // sf::Socket::Status status = clientSocket_.receive( tickBuffer.getBufferStart(), tickBuffer.getAvailableBytes(), received );
-  sf::Socket::Status status = clientSocket_.receive( buffer.data(), buffer.size(), received );
-
-  bool successfulTickReceipt = status == sf::Socket::Status::Done;
+  clientSocket_.receive( buffer.data(), buffer.size(), received );
 
   bool successfulTickProcessing = tickBuffer.receive( &buffer, received );
 
-  return successfulTickReceipt && successfulTickProcessing;
+  return successfulTickProcessing;
 }
 
 ClientConnection::~ClientConnection()

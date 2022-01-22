@@ -27,11 +27,12 @@ public:
 
   bool connect();
   bool login();
-  bool sendPlayerData( const PlayerData &playerData );
+  bool sendPlayerData( const PlayerData& playerData );
   void setSocketMode( SocketIOMode newMode );
+  void sendHardwareInfo();
 
   bool sendTick();
-  bool receiveTick( TickBuffer &tickBuffer );
+  bool receiveTick( TickBuffer& tickBuffer );
 
 private:
   enum struct ProcessStatus
@@ -41,7 +42,8 @@ private:
     ERROR    = -1
   };
 
-  ProcessStatus processLoginResponse( const std::array< std::uint8_t, 16 > &buffer );
+  ProcessStatus processLoginResponse( const std::array< std::uint8_t, 16 >& buffer );
+  void say( const char* input );
 
   sf::TcpSocket                       clientSocket_;
   std::string                         hostIpAddress_;
