@@ -75,10 +75,27 @@ const std::map< MessageTypes, std::string > typeToString = { { MessageTypes::EMP
                                                              { MessageTypes::SETMAP, "SETMAP" } };
 }
 
-std::uint8_t getValue( MessageTypes type ) { return static_cast< uint8_t >( type ); }
+std::uint8_t getValue( MessageTypes type )
+{
+  return static_cast< uint8_t >( type );
+}
 
-MessageTypes getType( std::uint8_t value ) { return static_cast< MessageTypes >( value ); }
+MessageTypes getType( std::uint8_t value )
+{
+  return static_cast< MessageTypes >( value );
+}
 
-std::string getName( MessageTypes type ) { return detail::typeToString.at( type ); }
+std::string getName( MessageTypes type )
+{
+
+  if ( detail::typeToString.count( type ) != 0 )
+  {
+    return detail::typeToString.at( type );
+  }
+  else
+  {
+    return "UNKNOWN";
+  }
+}
 
 } // namespace ServerMessages

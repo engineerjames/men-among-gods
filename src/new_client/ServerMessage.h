@@ -79,23 +79,6 @@ std::uint8_t getValue( MessageTypes type );
 MessageTypes getType( std::uint8_t value );
 std::string  getName( MessageTypes type );
 
-// Random notes: lots of 129's, then
-// 42 SETTARGET
-// 128 (SETMAP)
-// 29 LOOK1
-// 39 LOOK2
-// 40 LOOK3
-// 41 LOOK4
-// 50 LOOK5
-
-// 29
-// 39
-// 40
-// 41
-// 50
-
-// 55
-
 } // namespace ServerMessages
 
 #endif // SERVER_MESSAGE_H
