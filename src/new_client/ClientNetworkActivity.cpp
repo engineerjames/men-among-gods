@@ -52,22 +52,69 @@ void ClientNetworkActivity::startNetworkActivity()
   clientConnection_.connect();
   clientConnection_.login();
 
-  // Temporary Hack
   clientConnection_.sendPlayerData( playerData_ );
+
+  clientConnection_.sendHardwareInfo();
 
   TickBuffer tickBuffer { playerData_ };
 
   clientConnection_.setSocketMode( ClientConnection::SocketIOMode::NonBlocking );
 
+  sf::Clock clock {};
+  sf::Time  timeSinceLastTickSent = clock.getElapsedTime();
+
   // Main network loop
   while ( ! cancellationRequested_.load() )
   {
-    // Do we need a sleep here?
-    clientConnection_.sendTick();
+    sf::Time now = clock.getElapsedTime();
+    if ( ( now - timeSinceLastTickSent ).asSeconds() > 1.0f )
+    {
+      if ( ! clientConnection_.sendTick() )
+      {
+        std::cerr << "Unable to send tick!" << std::endl;
+      }
+      // Reset timeSinceLastTickSent
+      timeSinceLastTickSent = clock.getElapsedTime();
+    }
 
-    clientConnection_.receiveTick( tickBuffer );
+    if ( ! clientConnection_.receiveTick( tickBuffer ) )
+    {
+      std::cerr << "Unable to receive tick!" << std::endl;
+    }
 
     tickBuffer.processTicks();
+
+    playerData_.lock();
+
+    for ( unsigned int n = 0; n < TILEX * TILEY; n++ )
+    {
+      playerData_.getMap()[ n ].back     = 0;
+      playerData_.getMap()[ n ].obj1     = 0;
+      playerData_.getMap()[ n ].obj2     = 0;
+      playerData_.getMap()[ n ].ovl_xoff = 0;
+      playerData_.getMap()[ n ].ovl_yoff = 0;
+    }
+
+    for ( unsigned int n = 0; n < TILEX * TILEY; n++ )
+    {
+
+      playerData_.getMap()[ n ].back = playerData_.getMap()[ n ].ba_sprite;
+
+      // item
+      if ( playerData_.getMap()[ n ].it_sprite )
+      {
+        // tmp           = eng_item( n );
+        // map[ n ].obj1 = tmp;
+      }
+
+      // character
+      if ( playerData_.getMap()[ n ].ch_sprite )
+      {
+        // tmp           = eng_char( n );
+        // map[ n ].obj2 = tmp;
+      }
+    }
+    playerData_.unlock();
   }
 
   isRunning_ = false;

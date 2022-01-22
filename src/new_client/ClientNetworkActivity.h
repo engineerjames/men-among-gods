@@ -19,7 +19,6 @@ public:
 
 private:
   void startNetworkActivity();
-  void processTicks( const TickBuffer& tickBuffer );
 
   std::thread         clientNetworkThread_;
   ClientConnection    clientConnection_;
