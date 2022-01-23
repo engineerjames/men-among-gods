@@ -9,6 +9,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "TextBox.h"
 #include "TextInput.h"
 
 int main()
@@ -38,7 +39,19 @@ int main()
   // Our test text box
   TextInput input {};
 
+  // Our test message box
+  TextBox textBox {};
+
+  textBox.addMessage( TextBox::LogType::CHAT, "Mayest thou past the last gate." );
+  textBox.addMessage( TextBox::LogType::LOG, "A new player has entered the game." );
+  textBox.addMessage( TextBox::LogType::ERROR, "WARNING! This is an ERROR!!!" );
+  textBox.addMessage( TextBox::LogType::INFO, "You have taken 12 damage." );
+
   input.setPosition( sf::Vector2f { 500.0f, 225.0f } );
+
+  sf::Clock clock {};
+
+  sf::Time time = clock.getElapsedTime();
 
   while ( window.isOpen() )
   {
@@ -59,9 +72,17 @@ int main()
       }
     }
 
+    if ( ( clock.getElapsedTime() - time ).asSeconds() > 1.0f )
+    {
+      // Add new message
+      textBox.addMessage( TextBox::LogType::LOG, "Periodic update test message." );
+      time = clock.getElapsedTime();
+    }
+
     window.clear();
     window.draw( sprite );
     window.draw( input );
+    window.draw( textBox );
     window.display();
   }
 
