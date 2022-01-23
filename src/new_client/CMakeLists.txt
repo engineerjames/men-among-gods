@@ -40,11 +40,4 @@ target_link_libraries(${target} PRIVATE client sfml-graphics sfml-network pthrea
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
 
-# Test Application For Loading Legacy Sprites
-set(target gfx-load-test)
-add_executable(${target} gfx-load-test.cpp)
-target_link_libraries(${target} PRIVATE sfml-graphics pthread)
-target_compile_features(${target} PRIVATE cxx_std_17)
-target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
-
 add_subdirectory(ui_mockups)
