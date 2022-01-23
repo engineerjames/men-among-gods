@@ -9,6 +9,8 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "TextInput.h"
+
 int main()
 {
   std::string pathToBackGround = "/home/jarmes/git/men-among-gods/src/new_client/gfx/bmp/00001.bmp";
@@ -33,6 +35,11 @@ int main()
 
   sf::Sprite sprite { texture };
 
+  // Our test text box
+  TextInput input {};
+
+  input.setPosition( sf::Vector2f { 500.0f, 225.0f } );
+
   while ( window.isOpen() )
   {
     sf::Event event;
@@ -42,10 +49,19 @@ int main()
       {
         window.close();
       }
+
+      if ( event.type == sf::Event::TextEntered )
+      {
+        if ( event.text.unicode < 128 ) // ASCII only
+        {
+          input.handleInput( event );
+        }
+      }
     }
 
     window.clear();
     window.draw( sprite );
+    window.draw( input );
     window.display();
   }
 

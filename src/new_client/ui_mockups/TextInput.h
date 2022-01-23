@@ -2,20 +2,23 @@
 #define TEXT_INPUT_H
 
 #include <SFML/Graphics.hpp>
+#include <vector>
 
-class TextInput : public sf::Drawable, public sf::Transformable
+class TextInput : public sf::Text
 {
 public:
   TextInput();
-  ~TextInput() = default;
+  virtual ~TextInput() override = default;
 
   void handleInput( sf::Event e );
+  void setPosition( const sf::Vector2f& newPosition );
+  void getAndClearCommands( std::vector< std::string >& outList );
 
 private:
-  unsigned int       sizeInPixels_;
-  sf::Font           font_;
-  std::string        text_;
-  sf::RectangleShape boundingBox_;
+  unsigned int               maxCharacters_;
+  sf::Font                   font_;
+  std::string                text_;
+  std::vector< std::string > commandList_;
 };
 
 #endif
