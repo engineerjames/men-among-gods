@@ -1,5 +1,7 @@
 #include "SkillsAndAttributes.h"
 
+#include "GuiFormatters.h"
+
 SkillsAndAttributes::SkillRow::SkillRow()
     : name_()
     , displayValue_()
@@ -55,7 +57,7 @@ SkillsAndAttributes::SkillsAndAttributes( const sf::Font& font )
     attributes_[ i ].expRequired_.setPosition( initialPosition_ + sf::Vector2f { 165.0f, delta.y } );
 
     attributes_[ i ].displayValue_.setString( "0" );
-    attributes_[ i ].expRequired_.setString( "1,000" );
+    attributes_[ i ].expRequired_.setString( MenAmongGods::addThousandsSeparator( 1000u ) );
     attributes_[ i ].plus_.setString( "+" );
     attributes_[ i ].minus_.setString( "-" );
 
