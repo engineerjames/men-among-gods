@@ -2,24 +2,21 @@
 
 #include <iostream>
 
-TextInput::TextInput()
+#include "ColorPalette.h"
+
+TextInput::TextInput( sf::Font& font )
     : sf::Text()
     , maxCharacters_( 45 )
-    , font_()
+    , font_( font )
     , text_()
     , commandList_()
 {
-  // Temporarily hardcode the font
-  if ( ! font_.loadFromFile( "/usr/share/fonts/truetype/msttcorefonts/Times_New_Roman.ttf" ) )
-  {
-    std::cerr << "Unable to load font!" << std::endl;
-  };
-
   this->setFont( font_ );
   this->setCharacterSize( 12 );
-  this->setFillColor( sf::Color::Yellow );
+  this->setFillColor( MenAmongGods::MsgYellow );
   this->setOutlineColor( sf::Color::Black );
   this->setLetterSpacing( 1.5f );
+  this->setString( "_" );
 }
 
 void TextInput::handleInput( sf::Event e )
@@ -48,7 +45,7 @@ void TextInput::handleInput( sf::Event e )
     text_.clear();
   }
 
-  this->setString( text_ );
+  this->setString( text_ + "_" );
 }
 
 void TextInput::setPosition( const sf::Vector2f& newPosition )

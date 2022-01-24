@@ -7,7 +7,7 @@
 class TextInput : public sf::Text
 {
 public:
-  TextInput();
+  TextInput( sf::Font& font );
   virtual ~TextInput() override = default;
 
   void handleInput( sf::Event e );
@@ -16,7 +16,7 @@ public:
 
 private:
   unsigned int               maxCharacters_;
-  sf::Font                   font_;
+  sf::Font&                  font_;
   std::string                text_;
   std::vector< std::string > commandList_;
 };

@@ -9,8 +9,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "TextBox.h"
-#include "TextInput.h"
+#include "MainUi.h"
 
 int main()
 {
@@ -36,18 +35,12 @@ int main()
 
   sf::Sprite sprite { texture };
 
-  // Our test text box
-  TextInput input {};
+  MainUi mainui {};
 
-  // Our test message box
-  TextBox textBox {};
-
-  textBox.addMessage( TextBox::LogType::CHAT, "Mayest thou past the last gate." );
-  textBox.addMessage( TextBox::LogType::LOG, "A new player has entered the game." );
-  textBox.addMessage( TextBox::LogType::ERROR, "WARNING! This is an ERROR!!!" );
-  textBox.addMessage( TextBox::LogType::INFO, "You have taken 12 damage." );
-
-  input.setPosition( sf::Vector2f { 500.0f, 225.0f } );
+  mainui.addMessage( MainUi::LogType::CHAT, "Mayest thou past the last gate." );
+  mainui.addMessage( MainUi::LogType::LOG, "A new player has entered the game." );
+  mainui.addMessage( MainUi::LogType::ERROR, "WARNING! This is an ERROR!!!" );
+  mainui.addMessage( MainUi::LogType::INFO, "You have taken 12 damage." );
 
   sf::Clock clock {};
 
@@ -67,7 +60,7 @@ int main()
       {
         if ( event.text.unicode < 128 ) // ASCII only
         {
-          input.handleInput( event );
+          mainui.handleInput( event );
         }
       }
     }
@@ -75,14 +68,13 @@ int main()
     if ( ( clock.getElapsedTime() - time ).asSeconds() > 1.0f )
     {
       // Add new message
-      textBox.addMessage( TextBox::LogType::LOG, "Periodic update test message." );
+      mainui.addMessage( MainUi::LogType::LOG, "Periodic update test message." );
       time = clock.getElapsedTime();
     }
 
     window.clear();
     window.draw( sprite );
-    window.draw( input );
-    window.draw( textBox );
+    window.draw( mainui );
     window.display();
   }
 

@@ -2,75 +2,54 @@
 
 #include <iostream>
 
-TextBox::TextBox()
+#include "ColorPalette.h"
+
+TextBox::TextBox( sf::Font& font )
     : sf::Drawable()
     , sf::Transformable()
     , maxCharactersPerLine_( 45 )
-    , font_()
+    , font_( font )
     , fontSize_( 12 )
     , messageLog_()
 {
-  // Temporarily hardcode the font
-  if ( ! font_.loadFromFile( "/usr/share/fonts/truetype/msttcorefonts/Times_New_Roman.ttf" ) )
-  {
-    std::cerr << "Unable to load font!" << std::endl;
-  }
-
-  // 500,3 is upper left hand corner
-  // 500,224 is lower left hand corner
 }
 
-void TextBox::addMessage( LogType type, std::string text )
+unsigned int TextBox::getFontSize() const
 {
-  messageLog_.emplace_back( text, font_, fontSize_ );
-
-  auto newMessage = messageLog_.end() - 1;
-
-  sf::Color messageColor {};
-
-  switch ( type )
-  {
-  case LogType::CHAT:
-    messageColor = sf::Color::Blue;
-    break;
-  case LogType::LOG:
-    messageColor = sf::Color::Green;
-    break;
-  case LogType::ERROR:
-    messageColor = sf::Color::Red;
-    break;
-  case LogType::INFO:
-    messageColor = sf::Color::Yellow;
-    break;
-  default:
-    messageColor = sf::Color::Blue;
-    break;
-  }
-
-  newMessage->setFillColor( messageColor );
-  newMessage->setOutlineColor( sf::Color::Black );
-  newMessage->setLetterSpacing( 1.5f );
+  return fontSize_;
 }
 
-void TextBox::draw( sf::RenderTarget& target, sf::RenderStates states ) const
+void TextBox::addMessage( const sf::Text& newMsg )
 {
+  messageLog_.push_back( newMsg );
+
   const sf::Vector2f startPosition { 500.0f, 224.0f };
-  const float        minimumYPosition = 3.0f;
 
   // Start at end of message list and work backwards from the start.
-  unsigned int i = 1; // Fix this offset
+  unsigned int i = 1;
   for ( auto&& m = std::rbegin( messageLog_ ); m != std::rend( messageLog_ ); ++m )
   {
     sf::Vector2f newPosition = startPosition - sf::Vector2f { 0.0f, static_cast< float >( i * fontSize_ ) };
 
-    if ( newPosition.y < minimumYPosition )
+    // Need to handle the case where each message could take up multiple lines
+    m->setPosition( newPosition );
+    ++i;
+  }
+}
+
+void TextBox::draw( sf::RenderTarget& target, sf::RenderStates states ) const
+{
+  const float minimumYPosition = 3.0f;
+
+  for ( auto&& msg = std::rbegin( messageLog_ ); msg != std::rend( messageLog_ ); msg++ )
+  {
+    // If we're already above what's going to be rendered
+    // just break out early.
+    if ( msg->getPosition().y < minimumYPosition )
     {
       return;
     }
 
-    // Need to handle the case where each message could take up multiple lines
-    m->setPosition( newPosition );
-    target.draw( *m, states );
-    ++i;
+    target.draw( *msg, states );
   }
 }

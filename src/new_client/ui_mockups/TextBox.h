@@ -7,28 +7,19 @@
 class TextBox : public sf::Drawable, public sf::Transformable
 {
 public:
-  enum struct LogType
-  {
-    INFO, // Yellow
-    CHAT, // Blue
-    LOG,  // Green
-    ERROR // Red
-  };
-
-  TextBox();
+  TextBox( sf::Font& font );
   ~TextBox() = default;
 
-  void         addMessage( LogType type, std::string text );
+  void         addMessage( const sf::Text& newMsg );
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
+  unsigned int getFontSize() const;
 
 private:
   unsigned int maxCharactersPerLine_;
-  sf::Font     font_;
+  sf::Font&    font_;
   unsigned int fontSize_;
 
-  // Filthy hack for now--TODO: Remove mutable designation from messageLog by pre-processing
-  // the location tha should be displayed to the user
-  mutable std::vector< sf::Text > messageLog_;
+  std::vector< sf::Text > messageLog_;
 };
 
 #endif

@@ -1,7 +1,10 @@
 
 # Test Application For GUI
 set(target ui-text-box)
-add_executable(${target} TextBox.h
+add_executable(${target} ColorPalette.h
+                         MainUi.h
+                         MainUi.cpp
+                         TextBox.h
                          TextBox.cpp
                          TextInput.h
                          TextInput.cpp
