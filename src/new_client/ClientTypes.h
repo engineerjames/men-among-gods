@@ -1,13 +1,15 @@
 #ifndef CLIENT_TYPES_H
 #define CLIENT_TYPES_H
 
+#include <iostream>
+
 struct look
 {
   unsigned char  autoflag;
-  unsigned short worn[20];
+  unsigned short worn[ 20 ];
   unsigned short sprite;
   unsigned int   points;
-  char           name[40];
+  char           name[ 40 ];
   unsigned int   hp;
   unsigned int   end;
   unsigned int   mana;
@@ -17,45 +19,45 @@ struct look
   unsigned short nr;
   unsigned short id;
   unsigned char  extended;
-  unsigned short item[62];
-  unsigned int   price[62];
+  unsigned short item[ 62 ];
+  unsigned int   price[ 62 ];
   unsigned int   pl_price;
 };
-static_assert(sizeof(look) == 496);
+static_assert( sizeof( look ) == 496 );
 
 struct skilltab
 {
   int  nr;
   char sortkey;
-  char name[40];
-  char desc[200];
+  char name[ 40 ];
+  char desc[ 200 ];
 
-  int attrib[3];
+  int attrib[ 3 ];
 };
-static_assert(sizeof(skilltab) == 260);
+static_assert( sizeof( skilltab ) == 260 );
 
 struct xbutton
 {
-  char name[8];
+  char name[ 8 ];
   int  skill_nr;
   //   int skill_strength;
 };
-static_assert(sizeof(xbutton) == 12);
+static_assert( sizeof( xbutton ) == 12 );
 
 struct pdata
 {
-  char cname[80];
-  char ref[80];
-  char desc[160];
+  char cname[ 80 ];
+  char ref[ 80 ];
+  char desc[ 160 ];
 
   char changed;
 
   int            hide;
   int            show_names;
   int            show_proz;
-  struct xbutton xbutton[12];
+  struct xbutton xbutton[ 12 ];
 };
-static_assert(sizeof(pdata) == 480);
+static_assert( sizeof( pdata ) == 480 );
 
 // These values are zeroed out when the user selects "new character".  Presumably
 // they have some intrinsic values if/when an MOA file is loaded.
@@ -63,16 +65,17 @@ struct key
 {
   unsigned int usnr;
   unsigned int pass1, pass2;
-  char         name[40];
+  char         name[ 40 ];
   int          race;
 };
-static_assert(sizeof(key) == 56);
+static_assert( sizeof( key ) == 56 );
 
 struct cmap
 {
   // common:
 
-  unsigned short x, y; // position
+  unsigned short x;
+  unsigned short y; // position
 
   // for background
   short int     ba_sprite; // background image
@@ -98,27 +101,58 @@ struct cmap
   int obj1; // item
   int obj2; // character
 
-  int obj_xoff, obj_yoff;
-  int ovl_xoff, ovl_yoff;
+  int obj_xoff;
+  int obj_yoff;
+  int ovl_xoff;
+  int ovl_yoff;
 
   int idle_ani;
 };
-static_assert(sizeof(cmap) == 64);
+static_assert( sizeof( cmap ) == 64 );
+
+inline std::ostream& operator<<( std::ostream& os, cmap const& theMap )
+{
+  // clang-format off
+    os << theMap.x
+       << theMap.y
+       << theMap.ba_sprite
+       << theMap.light
+       << theMap.flags
+       << theMap.flags2
+       << theMap.ch_sprite
+       << theMap.ch_status
+       << theMap.ch_stat_off
+       << theMap.ch_speed
+       << theMap.ch_nr
+       << theMap.ch_id
+       << theMap.ch_proz
+       << theMap.it_sprite
+       << theMap.it_status
+       << theMap.back
+       << theMap.obj1
+       << theMap.obj2
+       << theMap.obj_xoff
+       << theMap.obj_yoff
+       << theMap.ovl_xoff
+       << theMap.ovl_yoff;
+  // clang-format on
+  return os;
+}
 
 struct cplayer
 {
   // informative stuff
-  char name[40];
+  char name[ 40 ];
 
   int mode; // 0 = slow, 1 = medium, 2 = fast
 
   // character attributes+abilities
   // [0]=bare value, [1]=modifier, [2]=total value
-  int attrib[5][6];
-  int skill[100][6];
-  int hp[6];
-  int end[6];
-  int mana[6];
+  int attrib[ 5 ][ 6 ];
+  int skill[ 100 ][ 6 ];
+  int hp[ 6 ];
+  int end[ 6 ];
+  int mana[ 6 ];
 
   // temporary attributes
   int a_hp;
@@ -133,27 +167,69 @@ struct cplayer
   int gold;
 
   // items carried
-  int item[40];
-  int item_p[40];
+  int item[ 40 ];
+  int item_p[ 40 ];
 
   // items worn
-  int worn[20];
-  int worn_p[20];
+  int worn[ 20 ];
+  int worn_p[ 20 ];
 
   // spells ready
-  int spell[20];
-  int active[20];
+  int spell[ 20 ];
+  int active[ 20 ];
 
   int armor;
   int weapon;
 
-  int citem, citem_p;
+  int citem;
+  int citem_p;
 
   int attack_cn;
-  int goto_x, goto_y;
-  int misc_action, misc_target1, misc_target2;
+  int goto_x;
+  int goto_y;
+  int misc_action;
+  int misc_target1;
+  int misc_target2;
   int dir;
 };
-static_assert(sizeof(cplayer) == 3348);
+static_assert( sizeof( cplayer ) == 3348 );
+
+inline std::ostream& operator<<( std::ostream& os, cplayer const& thePlayer )
+{
+  // clang-format off
+  os << thePlayer.name
+     << thePlayer.mode
+     << thePlayer.attrib
+     << thePlayer.skill
+     << thePlayer.hp
+     << thePlayer.end
+     << thePlayer.mana
+     << thePlayer.a_hp
+     << thePlayer.a_end
+     << thePlayer.a_mana
+     << thePlayer.points
+     << thePlayer.points_tot
+     << thePlayer.kindred
+     << thePlayer.gold
+     << thePlayer.item
+     << thePlayer.item_p
+     << thePlayer.worn
+     << thePlayer.worn_p
+     << thePlayer.spell
+     << thePlayer.active
+     << thePlayer.armor
+     << thePlayer.weapon
+     << thePlayer.citem
+     << thePlayer.citem_p
+     << thePlayer.attack_cn
+     << thePlayer.goto_x
+     << thePlayer.goto_y
+     << thePlayer.misc_action
+     << thePlayer.misc_target1
+     << thePlayer.misc_target2
+     << thePlayer.dir;
+  // clang-format on
+  return os;
+}
 
 #endif
