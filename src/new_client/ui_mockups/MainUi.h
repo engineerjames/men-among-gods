@@ -25,9 +25,30 @@ public:
   void         handleInput( sf::Event e );
 
 private:
-  sf::Text  goldDisplay_;
-  sf::Text  textualRank_;
-  sf::Font  font_;
+  sf::Font font_;
+
+  sf::Text goldDisplay_;
+  sf::Text textualRank_;
+
+  sf::Text avLabel_;
+  sf::Text avValue_;
+
+  sf::Text wvLabel_;
+  sf::Text wvValue_;
+
+  sf::Text expLabel_;
+  sf::Text expValue_;
+
+  sf::Text hpLabel_;
+  sf::Text hpCurrentValue_;
+  sf::Text hpMaxValue_;
+  sf::Text endLabel_;
+  sf::Text endCurrentValue_;
+  sf::Text endMaxValue_;
+  sf::Text manaLabel_;
+  sf::Text manaCurrentValue_;
+  sf::Text manaMaxValue_;
+
   TextBox   msgBox_;
   TextInput userInput_;
 };
