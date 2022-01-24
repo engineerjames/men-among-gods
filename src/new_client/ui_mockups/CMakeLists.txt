@@ -4,6 +4,8 @@ set(target ui-text-box)
 add_executable(${target} ColorPalette.h
                          MainUi.h
                          MainUi.cpp
+                         SkillDisplay.h
+                         SkillDisplay.cpp
                          TextBox.h
                          TextBox.cpp
                          TextInput.h
