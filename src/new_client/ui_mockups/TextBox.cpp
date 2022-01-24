@@ -1,5 +1,6 @@
 #include "TextBox.h"
 
+#include <fstream>
 #include <iostream>
 
 #include "ColorPalette.h"
@@ -34,6 +35,19 @@ void TextBox::addMessage( const sf::Text& newMsg )
     // Need to handle the case where each message could take up multiple lines
     m->setPosition( newPosition );
     ++i;
+  }
+}
+
+void TextBox::writeLogToFile( const std::string& pathToFile ) const
+{
+  std::ofstream fs { pathToFile };
+
+  if ( fs.is_open() )
+  {
+    for ( auto&& m : messageLog_ )
+    {
+      fs << m.getString().toAnsiString() << '\n';
+    }
   }
 }
 

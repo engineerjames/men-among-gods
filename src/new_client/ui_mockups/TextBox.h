@@ -14,6 +14,8 @@ public:
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
   unsigned int getFontSize() const;
 
+  void writeLogToFile(const std::string& pathToFile) const;
+
 private:
   unsigned int    maxCharactersPerLine_;
   const sf::Font& font_;
