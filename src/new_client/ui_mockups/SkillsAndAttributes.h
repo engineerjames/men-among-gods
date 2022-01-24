@@ -33,7 +33,9 @@ private:
   const sf::Font&                    font_;
   std::array< SkillRow, 8 >          attributes_;
   std::array< SkillRow, MAX_SKILLS > skills_;
-  const sf::Vector2f                 initialPosition_;
+  const sf::Vector2f                 initialAttributePosition_;
+  const sf::Vector2f                 initialSkillPosition_;
+  sf::RectangleShape                 skillScrollBar_;
 };
-
+// Rectangle scroll bar: 207,149
 #endif
