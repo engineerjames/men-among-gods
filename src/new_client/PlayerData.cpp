@@ -151,7 +151,7 @@ look& PlayerData::getLook()
 
 void PlayerData::printMapInformation() const
 {
-  std::ofstream mapFile( "mapfile.log" );
+  std::ofstream mapFile( "mapfile.data", std::ios::binary | std::ios::out );
 
   if ( mapFile.is_open() )
   {
@@ -159,30 +159,16 @@ void PlayerData::printMapInformation() const
     {
       for ( unsigned int y = 0; y < MAPY; ++y )
       {
-        // clang-format off
-        mapFile << std::to_string(map_[x + y * MAPX].ba_sprite)
-                << ", " << std::to_string( map_[ x + y * MAPX ].x)
-                << ", " << std::to_string( map_[ x + y * MAPX ].y)
-                << ", " << std::to_string( map_[ x + y * MAPX ].ch_sprite)
-                << ", " << std::to_string( map_[ x + y * MAPX ].ch_status)
-                << ", " << std::to_string( map_[ x + y * MAPX ].ch_stat_off)
-                << ", " << std::to_string( map_[ x + y * MAPX ].ch_speed)
-                << ", " << std::to_string( map_[ x + y * MAPX ].ch_nr)
-                << ", " << std::to_string( map_[ x + y * MAPX ].ch_id)
-                << ", " << std::to_string( map_[ x + y * MAPX ].it_sprite)
-                << ", " << std::to_string( map_[ x + y * MAPX ].it_status)
-                << ", " << std::to_string( map_[ x + y * MAPX ].back)
-                << ", " << std::to_string( map_[ x + y * MAPX ].obj1)
-                << ", " << std::to_string( map_[ x + y * MAPX ].obj2)
-                << ", " << std::to_string( map_[ x + y * MAPX ].obj_xoff)
-                << ", " << std::to_string( map_[ x + y * MAPX ].obj_yoff)
-                << ", " << std::to_string( map_[ x + y * MAPX ].ovl_xoff)
-                << ", " << std::to_string( map_[ x + y * MAPX ].ovl_yoff)
-                << ", " << std::to_string( map_[ x + y * MAPX ].idle_ani)
-                << std::endl;
-        // clang-format on
+        mapFile << map_[ x + y * MAPX ];
       }
     }
   }
   mapFile.close();
+
+  std::ofstream playerFile("player.data", std::ios::binary | std::ios::out );
+  if (playerFile.is_open())
+  {
+      playerFile << clientSidePlayerInfo_;
+  }
+  playerFile.close();
 }

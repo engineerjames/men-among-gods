@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "ColorPalette.h"
+#include "GuiFormatters.h"
 #include "UiPositions.h"
 
 MainUi::MainUi()
@@ -129,7 +130,7 @@ MainUi::MainUi()
   wvLabel_.setString( "Weapon Value" );
   wvValue_.setString( "0" );
   expLabel_.setString( "Experience" );
-  expValue_.setString( "12,412,125" );
+  expValue_.setString( MenAmongGods::addThousandsSeparator(12412125u) );
   hpLabel_.setString( "Hitpoints" );
   hpCurrentValue_.setString( "100" );
   hpMaxValue_.setString( "100" );
