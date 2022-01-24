@@ -4,7 +4,7 @@
 
 #include "ColorPalette.h"
 
-TextInput::TextInput( sf::Font& font )
+TextInput::TextInput( const sf::Font& font )
     : sf::Text()
     , maxCharacters_( 45 )
     , font_( font )

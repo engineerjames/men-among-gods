@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "SkillsAndAttributes.h"
 #include "TextBox.h"
 #include "TextInput.h"
 
@@ -48,6 +49,8 @@ private:
   sf::Text manaLabel_;
   sf::Text manaCurrentValue_;
   sf::Text manaMaxValue_;
+
+  SkillsAndAttributes skillsAndAttributes_;
 
   TextBox   msgBox_;
   TextInput userInput_;

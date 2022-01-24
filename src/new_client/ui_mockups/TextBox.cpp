@@ -4,7 +4,7 @@
 
 #include "ColorPalette.h"
 
-TextBox::TextBox( sf::Font& font )
+TextBox::TextBox( const sf::Font& font )
     : sf::Drawable()
     , sf::Transformable()
     , maxCharactersPerLine_( 45 )

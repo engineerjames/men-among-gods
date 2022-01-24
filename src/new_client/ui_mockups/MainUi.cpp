@@ -15,6 +15,7 @@ MainUi::MainUi()
     , wvValue_()
     , expLabel_()
     , expValue_()
+    , skillsAndAttributes_(font_)
     , msgBox_( font_ )
     , userInput_( font_ )
 {
@@ -192,6 +193,7 @@ void MainUi::draw( sf::RenderTarget& target, sf::RenderStates states ) const
   target.draw( manaLabel_, states );
   target.draw( manaCurrentValue_, states );
   target.draw( manaMaxValue_, states );
+  target.draw( skillsAndAttributes_, states );
 }
 
 void MainUi::handleInput( sf::Event e )

@@ -7,7 +7,7 @@
 class TextBox : public sf::Drawable, public sf::Transformable
 {
 public:
-  TextBox( sf::Font& font );
+  TextBox( const sf::Font& font );
   ~TextBox() = default;
 
   void         addMessage( const sf::Text& newMsg );
@@ -15,9 +15,9 @@ public:
   unsigned int getFontSize() const;
 
 private:
-  unsigned int maxCharactersPerLine_;
-  sf::Font&    font_;
-  unsigned int fontSize_;
+  unsigned int    maxCharactersPerLine_;
+  const sf::Font& font_;
+  unsigned int    fontSize_;
 
   std::vector< sf::Text > messageLog_;
 };
