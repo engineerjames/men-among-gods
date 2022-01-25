@@ -669,7 +669,7 @@ int mapxy_rand(int x,int y,int dur)
 void display_floortile(int tile,int light,int x,int y,int xoff,int yoff,int mx,int my)
 {
     switch(tile) {
-	case 16980:	tile+=mapxy_rand(mx,my,10)/2; break;
+	case 16980:	tile+=mapxy_rand(mx,my,10)/2; break; // Random shiney thing beneath trash-cans; why?
     }
     copysprite(tile,light,x,y,xoff,yoff);
 }

@@ -124,6 +124,17 @@ enum struct PLACEMENT_BITS
 
 #define MF_NOEXPIRE ( 1U << 13 )
 
+#define HL_BUTTONBOX 1
+#define HL_STATBOX 2
+#define HL_BACKPACK 3
+#define HL_EQUIPMENT 4
+#define HL_SPELLBOX 5
+#define HL_CITEM 6
+#define HL_MONEY 7
+#define HL_MAP 8
+#define HL_SHOP 9
+#define HL_STATBOX2 10
+
 #define SPR_INVISIBLE 0
 #define SPR_E1 1
 #define SPR_E2 2

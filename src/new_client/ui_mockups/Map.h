@@ -19,6 +19,8 @@ public:
 
 private:
   std::unique_ptr< cmap[] > map_;
+
+  void update();
 };
 } // namespace MenAmongGods
 
