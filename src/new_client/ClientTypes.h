@@ -196,28 +196,61 @@ static_assert( sizeof( cplayer ) == 3348 );
 
 inline std::ostream& operator<<( std::ostream& os, cplayer const& thePlayer )
 {
+  for ( unsigned int i = 0; i < 40; ++i )
+  {
+    os << thePlayer.name[ i ];
+  }
+  os << thePlayer.mode;
+
+  for ( unsigned int i = 0; i < 5; ++i )
+  {
+    for ( unsigned int j = 0; j < 6; ++j )
+    {
+      os << thePlayer.attrib[ i ][ j ];
+    }
+  }
+
+  for ( unsigned int i = 0; i < 100; ++i )
+  {
+    for ( unsigned int j = 0; j < 6; ++j )
+    {
+      os << thePlayer.skill[ i ][ j ];
+    }
+  }
+
+  for ( unsigned int i = 0; i < 6; ++i )
+  {
+    os << thePlayer.hp[ i ];
+    os << thePlayer.end[ i ];
+    os << thePlayer.mana[ i ];
+  }
+
   // clang-format off
-  os << thePlayer.name
-     << thePlayer.mode
-     << thePlayer.attrib
-     << thePlayer.skill
-     << thePlayer.hp
-     << thePlayer.end
-     << thePlayer.mana
-     << thePlayer.a_hp
+  os << thePlayer.a_hp
      << thePlayer.a_end
      << thePlayer.a_mana
      << thePlayer.points
      << thePlayer.points_tot
      << thePlayer.kindred
-     << thePlayer.gold
-     << thePlayer.item
-     << thePlayer.item_p
-     << thePlayer.worn
-     << thePlayer.worn_p
-     << thePlayer.spell
-     << thePlayer.active
-     << thePlayer.armor
+     << thePlayer.gold;
+  // clang-format on
+
+  for ( unsigned int i = 0; i < 40; ++i )
+  {
+    os << thePlayer.item[ i ];
+    os << thePlayer.item_p[ i ];
+  }
+
+  for ( unsigned int i = 0; i < 20; ++i )
+  {
+    os << thePlayer.worn[ i ];
+    os << thePlayer.worn_p[ i ];
+    os << thePlayer.spell[ i ];
+    os << thePlayer.active[ i ];
+  }
+
+  // clang-format off
+  os << thePlayer.armor
      << thePlayer.weapon
      << thePlayer.citem
      << thePlayer.citem_p
