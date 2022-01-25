@@ -1,7 +1,11 @@
 #ifndef CLIENT_TYPES_H
 #define CLIENT_TYPES_H
 
+#include <fstream>
 #include <iostream>
+
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
 
 struct look
 {
@@ -110,33 +114,30 @@ struct cmap
 };
 static_assert( sizeof( cmap ) == 64 );
 
-inline std::ostream& operator<<( std::ostream& os, cmap const& theMap )
+template < class Archive > void serialize( Archive& ar, cmap& theMap, const unsigned int )
 {
-  // clang-format off
-    os << theMap.x
-       << theMap.y
-       << theMap.ba_sprite
-       << theMap.light
-       << theMap.flags
-       << theMap.flags2
-       << theMap.ch_sprite
-       << theMap.ch_status
-       << theMap.ch_stat_off
-       << theMap.ch_speed
-       << theMap.ch_nr
-       << theMap.ch_id
-       << theMap.ch_proz
-       << theMap.it_sprite
-       << theMap.it_status
-       << theMap.back
-       << theMap.obj1
-       << theMap.obj2
-       << theMap.obj_xoff
-       << theMap.obj_yoff
-       << theMap.ovl_xoff
-       << theMap.ovl_yoff;
-  // clang-format on
-  return os;
+  ar& theMap.x;
+  ar& theMap.y;
+  ar& theMap.ba_sprite;
+  ar& theMap.light;
+  ar& theMap.flags;
+  ar& theMap.flags2;
+  ar& theMap.ch_sprite;
+  ar& theMap.ch_status;
+  ar& theMap.ch_stat_off;
+  ar& theMap.ch_speed;
+  ar& theMap.ch_nr;
+  ar& theMap.ch_id;
+  ar& theMap.ch_proz;
+  ar& theMap.it_sprite;
+  ar& theMap.it_status;
+  ar& theMap.back;
+  ar& theMap.obj1;
+  ar& theMap.obj2;
+  ar& theMap.obj_xoff;
+  ar& theMap.obj_yoff;
+  ar& theMap.ovl_xoff;
+  ar& theMap.ovl_yoff;
 }
 
 struct cplayer
@@ -194,75 +195,39 @@ struct cplayer
 };
 static_assert( sizeof( cplayer ) == 3348 );
 
-inline std::ostream& operator<<( std::ostream& os, cplayer const& thePlayer )
+template < class Archive > void serialize( Archive& ar, cplayer& thePlayer, const unsigned int  )
 {
-  for ( unsigned int i = 0; i < 40; ++i )
-  {
-    os << thePlayer.name[ i ];
-  }
-  os << thePlayer.mode;
-
-  for ( unsigned int i = 0; i < 5; ++i )
-  {
-    for ( unsigned int j = 0; j < 6; ++j )
-    {
-      os << thePlayer.attrib[ i ][ j ];
-    }
-  }
-
-  for ( unsigned int i = 0; i < 100; ++i )
-  {
-    for ( unsigned int j = 0; j < 6; ++j )
-    {
-      os << thePlayer.skill[ i ][ j ];
-    }
-  }
-
-  for ( unsigned int i = 0; i < 6; ++i )
-  {
-    os << thePlayer.hp[ i ];
-    os << thePlayer.end[ i ];
-    os << thePlayer.mana[ i ];
-  }
-
-  // clang-format off
-  os << thePlayer.a_hp
-     << thePlayer.a_end
-     << thePlayer.a_mana
-     << thePlayer.points
-     << thePlayer.points_tot
-     << thePlayer.kindred
-     << thePlayer.gold;
-  // clang-format on
-
-  for ( unsigned int i = 0; i < 40; ++i )
-  {
-    os << thePlayer.item[ i ];
-    os << thePlayer.item_p[ i ];
-  }
-
-  for ( unsigned int i = 0; i < 20; ++i )
-  {
-    os << thePlayer.worn[ i ];
-    os << thePlayer.worn_p[ i ];
-    os << thePlayer.spell[ i ];
-    os << thePlayer.active[ i ];
-  }
-
-  // clang-format off
-  os << thePlayer.armor
-     << thePlayer.weapon
-     << thePlayer.citem
-     << thePlayer.citem_p
-     << thePlayer.attack_cn
-     << thePlayer.goto_x
-     << thePlayer.goto_y
-     << thePlayer.misc_action
-     << thePlayer.misc_target1
-     << thePlayer.misc_target2
-     << thePlayer.dir;
-  // clang-format on
-  return os;
+  ar& thePlayer.name;
+  ar& thePlayer.mode;
+  ar& thePlayer.attrib;
+  ar& thePlayer.skill;
+  ar& thePlayer.hp;
+  ar& thePlayer.end;
+  ar& thePlayer.mana;
+  ar& thePlayer.a_hp;
+  ar& thePlayer.a_end;
+  ar& thePlayer.a_mana;
+  ar& thePlayer.points;
+  ar& thePlayer.points_tot;
+  ar& thePlayer.kindred;
+  ar& thePlayer.gold;
+  ar& thePlayer.item;
+  ar& thePlayer.item_p;
+  ar& thePlayer.worn;
+  ar& thePlayer.worn_p;
+  ar& thePlayer.spell;
+  ar& thePlayer.active;
+  ar& thePlayer.armor;
+  ar& thePlayer.weapon;
+  ar& thePlayer.citem;
+  ar& thePlayer.citem_p;
+  ar& thePlayer.attack_cn;
+  ar& thePlayer.goto_x;
+  ar& thePlayer.goto_y;
+  ar& thePlayer.misc_action;
+  ar& thePlayer.misc_target1;
+  ar& thePlayer.misc_target2;
+  ar& thePlayer.dir;
 }
 
 #endif

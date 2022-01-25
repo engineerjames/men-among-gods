@@ -3,12 +3,22 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "../ClientTypes.h"
+
 namespace MenAmongGods
 {
 class Map : public sf::Drawable
 {
-  Map()          = default;
+public:
+  Map();
   virtual ~Map() = default;
+
+  virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
+
+  void loadFromFile( std::string filePath );
+
+private:
+  std::unique_ptr< cmap[] > map_;
 };
 } // namespace MenAmongGods
 

@@ -30,13 +30,13 @@ set( headers
     TickBuffer.h
 )
 add_library(${target} ${sources} ${headers})
-target_link_libraries(${target} PRIVATE sfml-graphics sfml-network pthread z)
+target_link_libraries(${target} PRIVATE sfml-graphics sfml-network pthread z Boost::serialization)
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
 
 set(target MenAmongGods)
 add_executable(${target} main.cpp)
-target_link_libraries(${target} PRIVATE client sfml-graphics sfml-network pthread z)
+target_link_libraries(${target} PRIVATE client sfml-graphics sfml-network pthread z Boost::serialization)
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
 

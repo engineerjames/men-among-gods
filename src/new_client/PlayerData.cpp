@@ -151,24 +151,26 @@ look& PlayerData::getLook()
 
 void PlayerData::printMapInformation() const
 {
-  std::ofstream mapFile( "mapfile.data", std::ios::binary | std::ios::out );
-
+  std::ofstream                 mapFile( "mapfile.archive" );
+  boost::archive::text_oarchive oa { mapFile };
   if ( mapFile.is_open() )
   {
     for ( unsigned int x = 0; x < MAPX; ++x )
     {
       for ( unsigned int y = 0; y < MAPY; ++y )
       {
-        mapFile << map_[ x + y * MAPX ];
+        oa << map_[ x + y * MAPX ];
       }
     }
   }
   mapFile.close();
 
-  std::ofstream playerFile("player.data", std::ios::binary | std::ios::out );
-  if (playerFile.is_open())
+  std::ofstream                 playerFile( "player.archive" );
+  boost::archive::text_oarchive playeroa { playerFile };
+
+  if ( playerFile.is_open() )
   {
-      playerFile << clientSidePlayerInfo_;
+    playeroa << clientSidePlayerInfo_;
   }
   playerFile.close();
 }

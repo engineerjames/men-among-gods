@@ -10,6 +10,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "MainUi.h"
+#include "Map.h"
 
 int main()
 {
@@ -45,6 +46,9 @@ int main()
   sf::Clock clock {};
 
   sf::Time time = clock.getElapsedTime();
+
+  MenAmongGods::Map map {};
+  map.loadFromFile( "/home/jarmes/git/men-among-gods/src/new_client/ui_mockups/mapfile.archive" );
 
   while ( window.isOpen() )
   {
