@@ -20,26 +20,10 @@ int main()
   sf::RenderWindow window( sf::VideoMode( 800, 600 ), "Mercenaries of Astonia - New Client" );
   window.setFramerateLimit( 60 );
 
-  std::string   path = "/home/jarmes/git/men-among-gods/src/new_client/gfx/gfx.zip";
+  std::string path = "/home/jarmes/git/men-among-gods/src/new_client/gfx/gfx.zip";
+
   GraphicsCache cache {};
-  cache.loadSprites( path );
-
-  // Let's practice by loading the main ui
-  sf::Image image {};
-  if ( ! image.loadFromFile( pathToBackGround ) )
-  {
-    std::cerr << "Error loading main ui texture from file." << std::endl;
-    return -1;
-  }
-
-  // Great, some images have masks of 254 0 254 as well
-  image.createMaskFromColor( sf::Color { 0xFF00FFFF } );
-  image.createMaskFromColor( sf::Color { 0xFE00FEFF } );
-
-  sf::Texture texture {};
-  texture.loadFromImage( image );
-
-  sf::Sprite sprite { texture };
+  cache.loadSprites( path, GraphicsCache::MAX_SPRITES );
 
   MainUi mainui {};
 
@@ -54,6 +38,8 @@ int main()
 
   MenAmongGods::Map map {};
   map.loadFromFile( "/home/jarmes/git/men-among-gods/src/new_client/ui_mockups/mapfile.archive" );
+
+  sf::Sprite bg = cache.getSprite( 1 );
 
   while ( window.isOpen() )
   {
@@ -82,7 +68,7 @@ int main()
     }
 
     window.clear();
-    window.draw( sprite );
+    window.draw( bg );
     window.draw( mainui );
     window.display();
   }

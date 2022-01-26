@@ -11,9 +11,11 @@
 
 int main()
 {
-  std::string                          path = "/home/jarmes/git/men-among-gods/src/new_client/gfx";
+  sf::Clock                            clock {};
+  sf::Time                             currentTime = clock.getElapsedTime();
+  std::string                          path        = "/home/jarmes/git/men-among-gods/src/new_client/gfx";
   std::vector< std::filesystem::path > imageFiles {};
-  for ( const auto &entry : std::filesystem::recursive_directory_iterator( path ) )
+  for ( const auto& entry : std::filesystem::recursive_directory_iterator( path ) )
   {
     if ( ! entry.path().has_extension() )
     {
@@ -30,7 +32,7 @@ int main()
 
   // Need to sort based on the numeric file name ALONE
   std::sort( std::begin( imageFiles ), std::end( imageFiles ),
-             []( const std::filesystem::path &a, const std::filesystem::path &b )
+             []( const std::filesystem::path& a, const std::filesystem::path& b )
              {
                return a.filename() < b.filename();
              } );
@@ -66,14 +68,20 @@ int main()
 
       sf::Sprite sprite { textures[ i ] };
       sprites[ i ] = sprite;
+
+      if ( i > 5000 )
+      {
+        break;
+      }
     }
 
-    int percentComplete = i / static_cast< double >( N_IMAGES ) * 100.0;
-    std::cout << "Loading graphics data: " << percentComplete << "% complete.\r";
+    // int percentComplete = i / static_cast< double >( N_IMAGES ) * 100.0;
+    // std::cout << "Loading graphics data: " << percentComplete << "% complete.\r";
   }
 
   std::cout << std::endl;
   std::cout << "Done loading sprites." << std::endl;
+  std::cerr << "Process took " << ( currentTime - clock.getElapsedTime() ).asSeconds() << std::endl;
 
   unsigned int index = 0;
 

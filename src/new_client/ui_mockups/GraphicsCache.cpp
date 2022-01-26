@@ -1,37 +1,41 @@
 #include "GraphicsCache.h"
 
 #include <fcntl.h>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <unistd.h>
 #include <zip.h>
 
+#include <SFML/Graphics/Sprite.hpp>
+
 GraphicsCache::GraphicsCache()
-    : images_()
-    , textures_()
-    , sprites_()
+    : isLoaded_( false )
+    , images_( MAX_ID )
+    , textures_( MAX_ID )
+    , sprites_( MAX_ID )
 {
-  images_.reserve( 15000 );
-  textures_.reserve( 15000 );
-  sprites_.reserve( 15000 );
 }
 
-void GraphicsCache::loadSprites( const std::string& filePath )
+void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int howMany )
 {
-  int              errors {};
   struct zip*      za = nullptr;
   struct zip_file* zf = nullptr;
-  za                  = zip_open( filePath.c_str(), 0, &errors );
-  char buf[ 2 * 1024 * 1024 ]; // 2MB
+  char             buf[ 2 * 1024 * 1024 ]; // 2MB
+
+  int errors {};
+  za = zip_open( filePath.c_str(), 0, &errors );
 
   if ( za == nullptr )
   {
     std::cerr << "Unable to open the zip file!" << std::endl;
   }
 
-  std::cerr << "Found " << zip_get_num_entries( za, 0 ) << std::endl;
+  std::cerr << "Loading " << howMany << " of " << zip_get_num_entries( za, 0 ) << std::endl;
 
   struct zip_stat sb;
+
+  unsigned int offSet = 0;
   for ( unsigned int i = 0; i < zip_get_num_entries( za, 0 ); ++i )
   {
     if ( zip_stat_index( za, i, 0, &sb ) == 0 )
@@ -44,9 +48,19 @@ void GraphicsCache::loadSprites( const std::string& filePath )
       }
 
       // bmp/00001.bmp - example of sb.name
-      sf::Image   newImage {};
-      sf::Texture texture {};
-      sf::Sprite  sprite {};
+      std::filesystem::path gfxFile { sb.name };
+      if ( gfxFile.has_filename() )
+      {
+        auto gfxName = gfxFile.filename();
+        int  index   = std::stoi( gfxName.string() );
+        offSet       = index - i;
+      }
+
+      // Ensure the filename matches with the index.
+      // This will force some 'holes' in our data structure
+      sf::Image&   newImage   = images_[ i + offSet ];
+      sf::Texture& newTexture = textures_[ i + offSet ];
+      sf::Sprite&  newSprite  = sprites_[ i + offSet ];
 
       if ( static_cast< unsigned long >( zip_fread( zf, buf, sb.size ) ) != sb.size )
       {
@@ -64,13 +78,21 @@ void GraphicsCache::loadSprites( const std::string& filePath )
         newImage.createMaskFromColor( sf::Color { 0xFE00FEFF } );
 
         // Load in textures and sprites for now, though this is probably unnecessary work
-        texture.loadFromImage( newImage );
+        newTexture.loadFromImage( newImage );
 
-        sprite.setTexture( texture );
+        newSprite.setTexture( newTexture );
 
-        images_[ i ]   = std::move( newImage );
-        textures_[ i ] = std::move( texture );
-        sprites_[ i ]  = std::move( sprite );
+        if ( ( i + offSet ) > images_.capacity() )
+        {
+          std::cerr << "Underallocated buffers - need at least a capacity of " << ( i + offSet ) << std::endl;
+          return;
+        }
+
+        if ( i == howMany )
+        {
+          std::cerr << "Stopped at " << i + offSet << std::endl;
+          break;
+        }
       }
 
       zip_fclose( zf );
@@ -78,4 +100,11 @@ void GraphicsCache::loadSprites( const std::string& filePath )
   }
 
   zip_close( za );
+
+  isLoaded_ = true;
+}
+
+sf::Sprite GraphicsCache::getSprite( std::size_t id ) const
+{
+  return sprites_.at( id );
 }
