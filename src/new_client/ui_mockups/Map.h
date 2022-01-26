@@ -20,6 +20,7 @@ public:
 private:
   std::unique_ptr< cmap[] > map_;
 
+  void copysprite( int nr, int effect, int xpos, int ypos, int xoff, int yoff );
   void update();
 };
 } // namespace MenAmongGods

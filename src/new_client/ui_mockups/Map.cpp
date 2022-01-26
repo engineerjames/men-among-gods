@@ -38,6 +38,8 @@ void Map::loadFromFile( std::string filePath )
   }
   // 497 to 530
   mapFile.close();
+
+  this->update();
 }
 
 void Map::update()
@@ -58,14 +60,9 @@ void Map::update()
   int yoff       = -map_[ ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX ].obj_yoff;       //-176;
   int plr_sprite = map_[ ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX ].obj2;
 
-  int mapx = map_[ ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX ].x;
-  int mapy = map_[ ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX ].y;
-
   ( void ) xoff;
   ( void ) yoff;
   ( void ) plr_sprite;
-  ( void ) mapx;
-  ( void ) mapy;
   ( void ) selected_visible;
 
   for ( y = TILEY - 1; y >= 0; y-- )
@@ -76,18 +73,32 @@ void Map::update()
       int m = x + y * MAPX;
 
       if ( hightlight == HL_MAP && tile_type == 0 && tile_x == x && tile_y == y )
+      {
         tmp = 16;
+      }
       else
+      {
         tmp = 0;
+      }
       if ( map_[ m ].flags & INVIS )
+      {
         tmp |= 64;
+      }
       if ( map_[ m ].flags & INFRARED )
+      {
         tmp |= 256;
+      }
       if ( map_[ m ].flags & UWATER )
+      {
         tmp |= 512;
+      }
 
-      // display_floortile( map_[ m ].back, map_[ m ].light | tmp, x * 32, y * 32, xoff, yoff, map_[ x + y * MAPX ].x, map_[ x + y * MAPX
-      // ].y );
+      // Most of the floor tiles are 32x32 images
+      // The tile itself is on the lower portion of the image
+      // 32 px wide and 22px tall approximately
+      // xs / ys are the x and y size in tiles (width / 32), and height / 32 respectively
+
+      copysprite( map_[ m ].back, map_[ m ].light | tmp, x * 32, y * 32, xoff, yoff );
 
       //   if ( map_[ m ].x < 1024 && map_[ m ].y < 1024 && ! ( map_[ m ].flags & INVIS ) )
       //   {
@@ -407,6 +418,72 @@ void Map::update()
   //     else
   //       copyspritex( pl.citem, mouse_x - 16, mouse_y - 16, 0 );
   //   }
+}
+
+void Map::copysprite( int nr, int effect, int xpos, int ypos, int xoff, int yoff )
+{
+  unsigned int x {};
+  unsigned int y {};
+  unsigned int xs {};
+  unsigned int ys {};
+  unsigned int rx {};
+  unsigned int ry {};
+
+  if ( nr == 0 )
+  {
+    return;
+  }
+
+  ( void ) effect;
+
+  xs = 1; // sprtab[ nr ].xs;
+  ys = 1; // sprtab[ nr ].ys;
+  // sprtab[ nr ].ticker = current_tick;
+
+  rx = ( xpos / 2 ) + ( ypos / 2 ) - ( xs * 16 ) + 32 + XPOS - ( ( TILEX - 34 ) / 2 * 32 );
+  if ( xpos < 0 && ( xpos & 1 ) )
+  {
+    rx--;
+  }
+  if ( ypos < 0 && ( ypos & 1 ) )
+  {
+    rx--;
+  }
+
+  ry = ( xpos / 4 ) - ( ypos / 4 ) + YPOS - ys * 32;
+
+  if ( xpos < 0 && ( xpos & 3 ) )
+  {
+    ry--;
+  }
+  if ( ypos < 0 && ( ypos & 3 ) )
+  {
+    ry++;
+  }
+
+  // TODO: Prevent wrap-around behavior
+  if ( rx < std::abs( xoff ) )
+  {
+    rx = std::abs( xoff );
+  }
+
+  rx += xoff;
+  ry += yoff;
+
+  for ( y = 0; y < ys; y++ )
+  {
+    for ( x = 0; x < xs; x++ )
+    {
+      // n = gettile( nr, effect, x, y, xs );
+      // if ( n == -1 )
+      //  continue;
+      // dd_copytile( n, rx + x * 32, ry + y * 32, sur2, 1 );
+      // std::cerr << "xVal= " << rx + x * 32 << " || yVal= " << ry + y * 32 << std::endl;
+      // This is where we have all the data we need now to copy sprites out to a.. draw list?
+    }
+  }
+  //   if ( sprtab[ nr ].alpha )
+  //     display_alpha( sprtab[ nr ].alpha, sprtab[ nr ].alphacnt, rx, ry, effect );
 }
 
 } // namespace MenAmongGods
