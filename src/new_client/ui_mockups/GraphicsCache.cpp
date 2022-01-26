@@ -1,25 +1,28 @@
 #include "GraphicsCache.h"
 
 #include <fcntl.h>
+#include <fstream>
 #include <iostream>
 #include <unistd.h>
 #include <zip.h>
 
 GraphicsCache::GraphicsCache()
-    : sprites_()
+    : images_()
+    , textures_()
+    , sprites_()
 {
+  images_.reserve( 15000 );
+  textures_.reserve( 15000 );
+  sprites_.reserve( 15000 );
 }
 
 void GraphicsCache::loadSprites( const std::string& filePath )
 {
   int              errors {};
-  int              fd {};
-  struct zip*      za   = nullptr;
-  struct zip_file* zf   = nullptr;
-  za                    = zip_open( filePath.c_str(), 0, &errors );
-  long unsigned int sum = 0;
-  int               len = 0;
-  char              buf[ 100 ];
+  struct zip*      za = nullptr;
+  struct zip_file* zf = nullptr;
+  za                  = zip_open( filePath.c_str(), 0, &errors );
+  char buf[ 2 * 1024 * 1024 ]; // 2MB
 
   if ( za == nullptr )
   {
@@ -40,27 +43,36 @@ void GraphicsCache::loadSprites( const std::string& filePath )
         return;
       }
 
-      // bmp/00001.bmp
-      fd = open( sb.name, O_RDWR | O_TRUNC | O_CREAT, 0644 );
-      if ( fd < 0 )
+      // bmp/00001.bmp - example of sb.name
+      sf::Image   newImage {};
+      sf::Texture texture {};
+      sf::Sprite  sprite {};
+
+      if ( static_cast< unsigned long >( zip_fread( zf, buf, sb.size ) ) != sb.size )
       {
-        std::cerr << "ERROR OPENING FILE!\n";
-        return;
+        std::cerr << "Unable to read entire zip file." << std::endl;
       }
 
-      sum = 0;
-      while ( sum != sb.size )
+      if ( ! newImage.loadFromMemory( buf, sb.size ) )
       {
-        len = zip_fread( zf, buf, 100 );
-        if ( len < 0 )
-        {
-          std::cerr << "Error!\n";
-          return;
-        }
-        write( fd, buf, len );
-        sum += len;
+        std::cerr << "Error loading image from memory" << std::endl;
       }
-      close( fd );
+      else
+      {
+        // Great, some images have masks of 254 0 254 as well
+        newImage.createMaskFromColor( sf::Color { 0xFF00FFFF } );
+        newImage.createMaskFromColor( sf::Color { 0xFE00FEFF } );
+
+        // Load in textures and sprites for now, though this is probably unnecessary work
+        texture.loadFromImage( newImage );
+
+        sprite.setTexture( texture );
+
+        images_[ i ]   = std::move( newImage );
+        textures_[ i ] = std::move( texture );
+        sprites_[ i ]  = std::move( sprite );
+      }
+
       zip_fclose( zf );
     }
   }

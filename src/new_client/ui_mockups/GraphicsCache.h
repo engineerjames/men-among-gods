@@ -10,10 +10,12 @@ public:
   GraphicsCache();
   ~GraphicsCache() = default;
 
-  void loadSprites(const std::string& filePath);
+  void loadSprites( const std::string& filePath );
 
 private:
-  std::vector< sf::Sprite > sprites_;
+  std::vector< sf::Image >   images_;
+  std::vector< sf::Texture > textures_;
+  std::vector< sf::Sprite >  sprites_;
 };
 
 #endif
