@@ -49,21 +49,22 @@ int main()
       }
       if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Left ) )
       {
-        index == 0 ? index = 0 : index--;
+        index == 0 ? index : index--;
       }
       else if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Right ) )
       {
-        index == GraphicsCache::MAX_SPRITES ? GraphicsCache::MAX_SPRITES : index++;
+        index == GraphicsCache::MAX_ID ? index : index++;
       }
     }
 
-    // TODO: Fix going backwards
-    while ( cache.getSprite( index ).getTexture() == nullptr )
+    if ( cache.getSprite( index ).getTexture() == nullptr )
     {
-      index++;
+      text.setString( std::to_string( index ) + " INVALID" );
     }
-
-    text.setString( std::to_string( index ) );
+    else
+    {
+      text.setString( std::to_string( index ) );
+    }
 
     window.clear();
     window.draw( cache.getSprite( index ) );

@@ -12,7 +12,7 @@ public:
   ~GraphicsCache() = default;
 
   static const constexpr unsigned int MAX_SPRITES = 13976;
-  static const constexpr unsigned int MAX_ID      = 34191; // TODO: Find actual max.
+  static const constexpr unsigned int MAX_ID      = 34191;
 
   void       loadSprites( const std::string& filePath, const unsigned int howMany );
   sf::Sprite getSprite( std::size_t id ) const;
