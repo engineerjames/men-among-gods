@@ -9,6 +9,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "GraphicsCache.h"
 #include "MainUi.h"
 #include "Map.h"
 
@@ -18,6 +19,10 @@ int main()
 
   sf::RenderWindow window( sf::VideoMode( 800, 600 ), "Mercenaries of Astonia - New Client" );
   window.setFramerateLimit( 60 );
+
+  std::string   path = "/home/jarmes/git/men-among-gods/src/new_client/gfx/gfx.zip";
+  GraphicsCache cache {};
+  cache.loadSprites( path );
 
   // Let's practice by loading the main ui
   sf::Image image {};

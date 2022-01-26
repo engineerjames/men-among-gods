@@ -2,6 +2,8 @@
 set(target MenAmongGodsGraphics)
 add_library(${target}
                 ColorPalette.h
+                GraphicsCache.h
+                GraphicsCache.cpp
                 MainUi.h
                 MainUi.cpp
                 Map.h
@@ -12,7 +14,7 @@ add_library(${target}
                 TextBox.cpp
                 TextInput.h
                 TextInput.cpp)
-target_link_libraries(${target} PRIVATE sfml-graphics pthread Boost::serialization)
+target_link_libraries(${target} PRIVATE sfml-graphics pthread Boost::serialization zip)
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS})
 
