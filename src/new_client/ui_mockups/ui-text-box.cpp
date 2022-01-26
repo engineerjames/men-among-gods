@@ -15,8 +15,6 @@
 
 int main()
 {
-  std::string pathToBackGround = "/home/jarmes/git/men-among-gods/src/new_client/gfx/bmp/00001.bmp";
-
   sf::RenderWindow window( sf::VideoMode( 800, 600 ), "Mercenaries of Astonia - New Client" );
   window.setFramerateLimit( 60 );
 

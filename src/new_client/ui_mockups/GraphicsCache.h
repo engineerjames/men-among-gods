@@ -2,6 +2,7 @@
 #define GRAPHICS_LOADER_H
 
 #include <SFML/Graphics.hpp>
+#include <string>
 #include <vector>
 
 class GraphicsCache
