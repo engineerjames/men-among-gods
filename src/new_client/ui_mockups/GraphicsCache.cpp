@@ -48,6 +48,9 @@ void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int
       }
 
       // bmp/00001.bmp - example of sb.name
+      // But we want the index in the vector to align with the filename itself.
+      // For example... we want 00001.bmp to be sprites_[1];
+      //                        00047.bmp to be sprites_[47];
       std::filesystem::path gfxFile { sb.name };
       if ( gfxFile.has_filename() )
       {
@@ -69,7 +72,7 @@ void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int
 
       if ( ! newImage.loadFromMemory( buf, sb.size ) )
       {
-        std::cerr << "Error loading image from memory" << std::endl;
+        std::cerr << "Error loading image from memory." << std::endl;
       }
       else
       {
@@ -90,7 +93,6 @@ void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int
 
         if ( i == howMany )
         {
-          std::cerr << "Stopped at " << i + offSet << std::endl;
           break;
         }
       }
@@ -107,4 +109,9 @@ void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int
 sf::Sprite GraphicsCache::getSprite( std::size_t id ) const
 {
   return sprites_.at( id );
+}
+
+const sf::Image* GraphicsCache::getImageDetails( std::size_t id ) const
+{
+  return &images_[ id ];
 }
