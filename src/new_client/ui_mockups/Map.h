@@ -28,6 +28,10 @@ private:
 
   void copysprite( int nr, int effect, int xpos, int ypos, int xoff, int yoff );
   void update();
+  int  interpolateItemSprite( int mapIndex );
+  int  interpolateCharacterSprite( int mapIndex );
+  int  speedo( int n );
+  int  speedstep( int n, int d, int s, int update );
 };
 } // namespace MenAmongGods
 
