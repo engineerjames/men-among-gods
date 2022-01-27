@@ -17,6 +17,7 @@ public:
 
   static const constexpr unsigned int MAX_INDICES = 40000;
 
+  // TODO: Need to bring in pnglib.idx as well
   GraphicsIndex( const std::string& pathToIndexFile );
   ~GraphicsIndex() = default;
 
