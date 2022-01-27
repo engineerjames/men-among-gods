@@ -5,12 +5,14 @@
 
 #include "../ClientTypes.h"
 
+class GraphicsCache;
+
 namespace MenAmongGods
 {
 class Map : public sf::Drawable
 {
 public:
-  Map();
+  Map( const GraphicsCache& cache );
   virtual ~Map() = default;
 
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
@@ -19,6 +21,8 @@ public:
 
 private:
   std::unique_ptr< cmap[] > map_;
+  const GraphicsCache&      cache_;
+  std::vector< sf::Sprite > spritesToDraw_;
 
   void copysprite( int nr, int effect, int xpos, int ypos, int xoff, int yoff );
   void update();

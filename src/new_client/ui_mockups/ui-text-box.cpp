@@ -34,7 +34,7 @@ int main()
 
   sf::Time time = clock.getElapsedTime();
 
-  MenAmongGods::Map map {};
+  MenAmongGods::Map map { cache };
   map.loadFromFile( "/home/jarmes/git/men-among-gods/src/new_client/ui_mockups/mapfile.archive" );
 
   sf::Sprite bg = cache.getSprite( 1 );
@@ -66,6 +66,7 @@ int main()
     }
 
     window.clear();
+    window.draw( map );
     window.draw( bg );
     window.draw( mainui );
     window.display();
