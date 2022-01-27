@@ -4,6 +4,8 @@ add_library(${target}
                 ColorPalette.h
                 GraphicsCache.h
                 GraphicsCache.cpp
+                GraphicsIndex.h
+                GraphicsIndex.cpp
                 MainUi.h
                 MainUi.cpp
                 Map.h
@@ -29,5 +31,12 @@ target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
 set(target gfx-load-test)
 add_executable(${target} gfx-load-test.cpp)
 target_link_libraries(${target} PRIVATE sfml-graphics pthread MenAmongGodsGraphics)
+target_compile_features(${target} PRIVATE cxx_std_17)
+target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
+
+# Test Application for reading the graphics-related .idx file
+set(target gfx-idx-load)
+add_executable(${target} gfx-idx-load.cpp)
+target_link_libraries(${target} PRIVATE MenAmongGodsGraphics)
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
