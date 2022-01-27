@@ -6,13 +6,15 @@
 
 #include "../ConstantIdentifiers.h"
 #include "GraphicsCache.h"
+#include "GraphicsIndex.h"
 
 namespace MenAmongGods
 {
 
-Map::Map( const GraphicsCache& cache )
+Map::Map( const GraphicsCache& cache, const GraphicsIndex& index )
     : map_( std::make_unique< cmap[] >( MAPX * MAPY ) )
     , cache_( cache )
+    , index_( index )
     , spritesToDraw_()
 {
 }
@@ -469,10 +471,9 @@ void Map::copysprite( int nr, int effect, int xpos, int ypos, int xoff, int yoff
   ( void ) effect;
 
   // xs / ys are the x and y size in tiles (width / 32), and height / 32 respectively
-  const sf::Image* imageDetails = cache_.getImageDetails( nr );
-
-  unsigned int xs = imageDetails->getSize().x / 32;
-  unsigned int ys = imageDetails->getSize().y / 32;
+  GraphicsIndex::Index gfxIndex = index_.getIndex( nr );
+  unsigned char        xs       = gfxIndex.xs / 32;
+  unsigned char        ys       = gfxIndex.ys / 32;
 
   unsigned int rx = ( xpos / 2 ) + ( ypos / 2 ) - ( xs * 16 ) + 32 + XPOS - ( ( TILEX - 34 ) / 2 * 32 );
   if ( xpos < 0 && ( xpos & 1 ) )
@@ -502,7 +503,7 @@ void Map::copysprite( int nr, int effect, int xpos, int ypos, int xoff, int yoff
 
   for ( unsigned int y = 0; y < 1; y++ )
   {
-    for ( unsigned int x = 0; x < 1; x++ ) // TODO: Change this back to 1/1 instead of xs/ys in order to "fix" rendering issue
+    for ( unsigned int x = 0; x < 1; x++ ) // TODO: Why does only `1` work here, vs. the legacy xs ys values?
     {
       // n = gettile( nr, effect, x, y, xs );
 

@@ -110,8 +110,3 @@ sf::Sprite GraphicsCache::getSprite( std::size_t id ) const
 {
   return sprites_.at( id );
 }
-
-const sf::Image* GraphicsCache::getImageDetails( std::size_t id ) const
-{
-  return &images_[ id ];
-}

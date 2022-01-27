@@ -10,6 +10,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "GraphicsCache.h"
+#include "GraphicsIndex.h"
 #include "MainUi.h"
 #include "Map.h"
 
@@ -18,10 +19,14 @@ int main()
   sf::RenderWindow window( sf::VideoMode( 800, 600 ), "Mercenaries of Astonia - New Client" );
   window.setFramerateLimit( 60 );
 
-  std::string path = "/home/jarmes/git/men-among-gods/src/new_client/gfx/gfx.zip";
+  std::string path      = "/home/jarmes/git/men-among-gods/src/new_client/gfx/gfx.zip";
+  std::string indexPath = "/home/jarmes/git/men-among-gods/src/new_client/ui_mockups/gx00.idx";
 
   GraphicsCache cache {};
   cache.loadSprites( path, GraphicsCache::MAX_SPRITES );
+
+  GraphicsIndex index { indexPath };
+  index.load();
 
   MainUi mainui {};
 
@@ -34,7 +39,7 @@ int main()
 
   sf::Time time = clock.getElapsedTime();
 
-  MenAmongGods::Map map { cache };
+  MenAmongGods::Map map { cache, index };
   map.loadFromFile( "/home/jarmes/git/men-among-gods/src/new_client/ui_mockups/mapfile.archive" );
 
   sf::Sprite bg = cache.getSprite( 1 );
