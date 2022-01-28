@@ -4,13 +4,12 @@
 
 // TODO: Fix include directories
 #include "../ClientTypes.h"
-#include "../ConstantIdentifiers.h"
 
 namespace
 {
 
 // clang-format off
-skilltab static_skilltab[SkillsAndAttributes::MAX_SKILLS]={
+skilltab static_skilltab[MAX_SKILLS]={
 	{0,     'C',    "Hand to Hand", "Fighting without weapons.",                    {AT_BRAVE,AT_AGIL,AT_STREN}},
 	{1,     'C',    "Karate",       "Fighting without weapons and doing damage.",   {AT_BRAVE,AT_AGIL,AT_STREN}},
 	{2,     'C',    "Dagger",       "Fighting with daggers or similiar weapons.",   {AT_BRAVE,AT_AGIL,AT_INT}},

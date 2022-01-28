@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include "../ConstantIdentifiers.h"
 #include "ColorPalette.h"
 
 TextInput::TextInput( const sf::Font& font )
@@ -12,7 +13,7 @@ TextInput::TextInput( const sf::Font& font )
     , commandList_()
 {
   this->setFont( font_ );
-  this->setCharacterSize( 12 );
+  this->setCharacterSize( FONT_SIZE );
   this->setFillColor( MenAmongGods::MsgYellow );
   this->setOutlineColor( sf::Color::Black );
   this->setLetterSpacing( 1.0f );

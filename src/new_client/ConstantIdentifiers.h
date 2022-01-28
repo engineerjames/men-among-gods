@@ -17,6 +17,9 @@ static const constexpr int AT_INT   = 2;
 static const constexpr int AT_AGIL  = 3;
 static const constexpr int AT_STREN = 4;
 
+static const constexpr int FONT_SIZE  = 10;
+static const constexpr int MAX_SKILLS = 50;
+
 static const constexpr int          TILEX     = 34;
 static const constexpr int          TILEY     = 34;
 static const constexpr int          TICKS     = 18;
@@ -79,180 +82,174 @@ enum struct PLACEMENT_BITS
   PL_RING    = 4096
 };
 
-#define DX_RIGHT 1
-#define DX_LEFT 2
-#define DX_UP 3
-#define DX_DOWN 4
+static const constexpr unsigned int INJURED  = 1u << 0;
+static const constexpr unsigned int INJURED1 = 1u << 1;
+static const constexpr unsigned int INJURED2 = 1u << 2;
+static const constexpr unsigned int STONED   = 1u << 3;
+static const constexpr unsigned int INFRARED = 1u << 4;
+static const constexpr unsigned int UWATER   = 1u << 5;
+static const constexpr unsigned int ISUSABLE = 1u << 7;
+static const constexpr unsigned int ISITEM   = 1u << 8;
+static const constexpr unsigned int ISCHAR   = 1u << 9;
+static const constexpr unsigned int INVIS    = 1u << 10;
+static const constexpr unsigned int STUNNED  = 1u << 11;
 
-#define INJURED ( 1u << 0 )
-#define INJURED1 ( 1u << 1 )
-#define INJURED2 ( 1u << 2 )
-#define STONED ( 1u << 3 )
-#define INFRARED ( 1u << 4 )
-#define UWATER ( 1u << 5 )
+static const constexpr unsigned int TOMB   = ( ( 1u << 12 ) | ( 1u << 13 ) | ( 1u << 14 ) | ( 1u << 15 ) | ( 1u << 16 ) );
+static const constexpr unsigned int TOMB1  = ( 1u << 12 );
+static const constexpr unsigned int DEATH  = ( ( 1u << 17 ) | ( 1u << 18 ) | ( 1u << 19 ) | ( 1u << 20 ) | ( 1u << 21 ) );
+static const constexpr unsigned int DEATH1 = ( 1u << 17 );
 
-#define ISUSABLE ( 1u << 7 )
-#define ISITEM ( 1u << 8 )
-#define ISCHAR ( 1u << 9 )
-#define INVIS ( 1u << 10 )
-#define STUNNED ( 1u << 11 )
+static const constexpr unsigned int EMAGIC  = ( ( 1U << 22 ) | ( 1U << 23 ) | ( 1U << 24 ) );
+static const constexpr unsigned int EMAGIC1 = ( 1U << 22 );
+static const constexpr unsigned int GMAGIC  = ( ( 1U << 25 ) | ( 1U << 26 ) | ( 1U << 27 ) );
+static const constexpr unsigned int GMAGIC1 = ( 1U << 25 );
+static const constexpr unsigned int CMAGIC  = ( ( 1U << 28 ) | ( 1U << 29 ) | ( 1U << 30 ) );
+static const constexpr unsigned int CMAGIC1 = ( 1U << 28 );
 
-#define TOMB ( ( 1u << 12 ) | ( 1u << 13 ) | ( 1u << 14 ) | ( 1u << 15 ) | ( 1u << 16 ) )
-#define TOMB1 ( 1u << 12 )
-#define DEATH ( ( 1u << 17 ) | ( 1u << 18 ) | ( 1u << 19 ) | ( 1u << 20 ) | ( 1u << 21 ) )
-#define DEATH1 ( 1u << 17 )
+static const constexpr unsigned int MF_MOVEBLOCK  = 1U << 0;
+static const constexpr unsigned int MF_SIGHTBLOCK = 1U << 1;
+static const constexpr unsigned int MF_INDOORS    = 1U << 2;
+static const constexpr unsigned int MF_UWATER     = 1U << 3;
+static const constexpr unsigned int MF_NOLAG      = 1U << 4;
+static const constexpr unsigned int MF_NOMONST    = 1U << 5;
+static const constexpr unsigned int MF_BANK       = 1U << 6;
+static const constexpr unsigned int MF_TAVERN     = 1U << 7;
+static const constexpr unsigned int MF_NOMAGIC    = 1U << 8;
+static const constexpr unsigned int MF_DEATHTRAP  = 1U << 9;
 
-#define EMAGIC ( ( 1U << 22 ) | ( 1U << 23 ) | ( 1U << 24 ) )
-#define EMAGIC1 ( 1U << 22 )
-#define GMAGIC ( ( 1U << 25 ) | ( 1U << 26 ) | ( 1U << 27 ) )
-#define GMAGIC1 ( 1U << 25 )
-#define CMAGIC ( ( 1U << 28 ) | ( 1U << 29 ) | ( 1U << 30 ) )
-#define CMAGIC1 ( 1U << 28 )
+static const constexpr unsigned int MF_ARENA = 1U << 11;
 
-#define MF_MOVEBLOCK ( 1U << 0 )
-#define MF_SIGHTBLOCK ( 1U << 1 )
-#define MF_INDOORS ( 1U << 2 )
-#define MF_UWATER ( 1U << 3 )
-#define MF_NOLAG ( 1U << 4 )
-#define MF_NOMONST ( 1U << 5 )
-#define MF_BANK ( 1U << 6 )
-#define MF_TAVERN ( 1U << 7 )
-#define MF_NOMAGIC ( 1U << 8 )
-#define MF_DEATHTRAP ( 1U << 9 )
+static const constexpr unsigned int MF_NOEXPIRE = 1U << 13;
 
-#define MF_ARENA ( 1U << 11 )
+static const constexpr unsigned int HL_BUTTONBOX = 1;
+static const constexpr unsigned int HL_STATBOX   = 2;
+static const constexpr unsigned int HL_BACKPACK  = 3;
+static const constexpr unsigned int HL_EQUIPMENT = 4;
+static const constexpr unsigned int HL_SPELLBOX  = 5;
+static const constexpr unsigned int HL_CITEM     = 6;
+static const constexpr unsigned int HL_MONEY     = 7;
+static const constexpr unsigned int HL_MAP       = 8;
+static const constexpr unsigned int HL_SHOP      = 9;
+static const constexpr unsigned int HL_STATBOX2  = 10;
 
-#define MF_NOEXPIRE ( 1U << 13 )
+static const constexpr unsigned int SPR_INVISIBLE       = 0;
+static const constexpr unsigned int SPR_E1              = 1;
+static const constexpr unsigned int SPR_E2              = 2;
+static const constexpr unsigned int SPR_E3              = 3;
+static const constexpr unsigned int SPR_E4              = 4;
+static const constexpr unsigned int SPR_INV_MAP_PTR     = 5;
+static const constexpr unsigned int SPR_MAP_PTR         = 6;
+static const constexpr unsigned int SPR_FIGHT_PTR       = 7;
+static const constexpr unsigned int SPR_INV_FIGHT_PTR   = 8;
+static const constexpr unsigned int SPR_TAKE_PTR        = 9;
+static const constexpr unsigned int SPR_INV_TAKE_PTR    = 10;
+static const constexpr unsigned int SPR_INVALID_PTR     = 11;
+static const constexpr unsigned int SPR_MISSION_SELECT  = 12; // fills 8 slots
+static const constexpr unsigned int SPR_FIGHT_INT       = 20; // fills 48 slots
+static const constexpr unsigned int SPR_INV_FIGHT_INT   = 68; // fills 24 slots
+static const constexpr unsigned int SPR_LIGHT1          = 92;
+static const constexpr unsigned int SPR_LIGHT2          = 93;
+static const constexpr unsigned int SPR_LIGHT3          = 94;
+static const constexpr unsigned int SPR_LIGHT4          = 95;
+static const constexpr unsigned int SPR_LIGHT5          = 96;
+static const constexpr unsigned int SPR_LIGHT6          = 97;
+static const constexpr unsigned int SPR_EXIT            = 98;
+static const constexpr unsigned int SPR_WALL_LB         = 99;  // fills 2 slots
+static const constexpr unsigned int SPR_WALL_RB         = 101; // fills 2 slots
+static const constexpr unsigned int SPR_WALL_LT         = 103; // fills 2 slots
+static const constexpr unsigned int SPR_WALL_RT         = 105; // fills 2 slots
+static const constexpr unsigned int SPR_WALL_VERT       = 107;
+static const constexpr unsigned int SPR_WALL_HORIZ      = 108; // fills 2 slots
+static const constexpr unsigned int SPR_DUNGEON_INT     = 110; // fills 48 slots
+static const constexpr unsigned int SPR_INV_DUNGEON_INT = 158; // fills 24 slots
+static const constexpr unsigned int SPR_INVENTORY_INT   = 182; // fills 36 slots
+static const constexpr unsigned int SPR_MISSION_INT     = 218; // fills 48 slots
+static const constexpr unsigned int SPR_INV_MISSION_INT = 266; // fills 24 slots
+static const constexpr unsigned int SPR_STAT_INT        = 290; // fills 120 slots
+static const constexpr unsigned int SPR_RANK0           = 410; // fills 8 slots
+static const constexpr unsigned int SPR_RANK1           = 418; // fills 8 slots
+static const constexpr unsigned int SPR_RANK2           = 426; // fills 8 slots
+static const constexpr unsigned int SPR_RANK3           = 434; // fills 8 slots
+static const constexpr unsigned int SPR_RANK4           = 442; // fills 8 slots
+static const constexpr unsigned int SPR_RANK5           = 450; // fills 8 slots
+static const constexpr unsigned int SPR_RANK6           = 458; // fills 8 slots
+static const constexpr unsigned int SPR_RANK7           = 466; // fills 8 slots
+static const constexpr unsigned int SPR_RANK8           = 474; // fills 8 slots
+static const constexpr unsigned int SPR_RANK9           = 482; // fills 8 slots
+static const constexpr unsigned int SPR_RANK10          = 490; // fills 8 slots
+static const constexpr unsigned int SPR_RANK11          = 498; // fills 8 slots
+static const constexpr unsigned int SPR_RANK12          = 506; // fills 8 slots
+static const constexpr unsigned int SPR_RANK13          = 514; // fills 8 slots
+static const constexpr unsigned int SPR_RANK14          = 522; // fills 8 slots
+static const constexpr unsigned int SPR_RANK15          = 530; // fills 8 slots
+static const constexpr unsigned int SPR_RANK16          = 538; // fills 8 slots
+static const constexpr unsigned int SPR_RANK17          = 546; // fills 8 slots
+static const constexpr unsigned int SPR_RANK18          = 554; // fills 8 slots
+static const constexpr unsigned int SPR_RANK19          = 562; // fills 8 slots
+static const constexpr unsigned int SPR_RANK20          = 570; // fills 8 slots
+static const constexpr unsigned int SPR_SHOP_INT        = 578; // fills 48 slots
+static const constexpr unsigned int SPR_INV_SHOP_INT    = 626; // fills 24 slots
+static const constexpr unsigned int SPR_BUTTONBOX3      = 660; // fills 2 slots
 
-#define HL_BUTTONBOX 1
-#define HL_STATBOX 2
-#define HL_BACKPACK 3
-#define HL_EQUIPMENT 4
-#define HL_SPELLBOX 5
-#define HL_CITEM 6
-#define HL_MONEY 7
-#define HL_MAP 8
-#define HL_SHOP 9
-#define HL_STATBOX2 10
+static const constexpr unsigned int SPR_FONT     = 700; // fills 16 slots
+static const constexpr unsigned int SPR_LOOK_INT = 716; // fills 120 slots
 
-#define SPR_INVISIBLE 0
-#define SPR_E1 1
-#define SPR_E2 2
-#define SPR_E3 3
-#define SPR_E4 4
-#define SPR_INV_MAP_PTR 5
-#define SPR_MAP_PTR 6
-#define SPR_FIGHT_PTR 7
-#define SPR_INV_FIGHT_PTR 8
-#define SPR_TAKE_PTR 9
-#define SPR_INV_TAKE_PTR 10
-#define SPR_INVALID_PTR 11
-#define SPR_MISSION_SELECT 12 // fills 8 slots
-#define SPR_FIGHT_INT 20      // fills 48 slots
-#define SPR_INV_FIGHT_INT 68  // fills 24 slots
-#define SPR_LIGHT1 92
-#define SPR_LIGHT2 93
-#define SPR_LIGHT3 94
-#define SPR_LIGHT4 95
-#define SPR_LIGHT5 96
-#define SPR_LIGHT6 97
-#define SPR_EXIT 98
-#define SPR_WALL_LB 99  // fills 2 slots
-#define SPR_WALL_RB 101 // fills 2 slots
-#define SPR_WALL_LT 103 // fills 2 slots
-#define SPR_WALL_RT 105 // fills 2 slots
-#define SPR_WALL_VERT 107
-#define SPR_WALL_HORIZ 108      // fills 2 slots
-#define SPR_DUNGEON_INT 110     // fills 48 slots
-#define SPR_INV_DUNGEON_INT 158 // fills 24 slots
-#define SPR_INVENTORY_INT 182   // fills 36 slots
-#define SPR_MISSION_INT 218     // fills 48 slots
-#define SPR_INV_MISSION_INT 266 // fills 24 slots
-#define SPR_STAT_INT 290        // fills 120 slots
-#define SPR_RANK0 410           // fills 8 slots
-#define SPR_RANK1 418           // fills 8 slots
-#define SPR_RANK2 426           // fills 8 slots
-#define SPR_RANK3 434           // fills 8 slots
-#define SPR_RANK4 442           // fills 8 slots
-#define SPR_RANK5 450           // fills 8 slots
-#define SPR_RANK6 458           // fills 8 slots
-#define SPR_RANK7 466           // fills 8 slots
-#define SPR_RANK8 474           // fills 8 slots
-#define SPR_RANK9 482           // fills 8 slots
-#define SPR_RANK10 490          // fills 8 slots
-#define SPR_RANK11 498          // fills 8 slots
-#define SPR_RANK12 506          // fills 8 slots
-#define SPR_RANK13 514          // fills 8 slots
-#define SPR_RANK14 522          // fills 8 slots
-#define SPR_RANK15 530          // fills 8 slots
-#define SPR_RANK16 538          // fills 8 slots
-#define SPR_RANK17 546          // fills 8 slots
-#define SPR_RANK18 554          // fills 8 slots
-#define SPR_RANK19 562          // fills 8 slots
-#define SPR_RANK20 570          // fills 8 slots
-#define SPR_SHOP_INT 578        // fills 48 slots
-#define SPR_INV_SHOP_INT 626    // fills 24 slots
-#define SPR_BUTTONBOX3 660      // fills 2 slots
+static const constexpr unsigned int SPR_EMPTY         = 999;
+static const constexpr unsigned int SPR_TORCH3        = 1000;
+static const constexpr unsigned int SPR_GROUND2       = 1002;
+static const constexpr unsigned int SPR_HELMET        = 1003;
+static const constexpr unsigned int SPR_BODY_ARMOR    = 1004;
+static const constexpr unsigned int SPR_LEG_ARMOR     = 1005;
+static const constexpr unsigned int SPR_SWORD         = 1006;
+static const constexpr unsigned int SPR_DAGGER        = 1007;
+static const constexpr unsigned int SPR_GROUND1       = 1008;
+static const constexpr unsigned int SPR_CHEST_KEY     = 1009;
+static const constexpr unsigned int SPR_STONE_GROUND1 = 1010;
+static const constexpr unsigned int SPR_TORCH1        = 1011;
+static const constexpr unsigned int SPR_PACKET0       = 1012;
+static const constexpr unsigned int SPR_PACKET1       = 1013;
+static const constexpr unsigned int SPR_PACKET2       = 1014;
+static const constexpr unsigned int SPR_PACKET3       = 1015;
+static const constexpr unsigned int SPR_PACKET4       = 1016;
+static const constexpr unsigned int SPR_PACKET5       = 1017;
+static const constexpr unsigned int SPR_PACKET6       = 1018;
+static const constexpr unsigned int SPR_PACKET7       = 1019;
+static const constexpr unsigned int SPR_PACKET8       = 1020;
+static const constexpr unsigned int SPR_PACKET9       = 1021;
+static const constexpr unsigned int SPR_PACKET_OVR    = 1022;
+static const constexpr unsigned int SPR_PACKET_UDR    = 1023;
+static const constexpr unsigned int SPR_PACKET_BRAKES = 1024;
+static const constexpr unsigned int SPR_INT_BOX       = 1025;
+static const constexpr unsigned int SPR_TORCH2        = 1026; // fills eight slots;
 
-#define SPR_FONT 700     // fills 16 slots
-#define SPR_LOOK_INT 716 // fills 120 slots
+static const constexpr unsigned int SPR_NEWBIE = 2048;
+static const constexpr unsigned int SPR_CHAR0  = 2048; // fills 256 slots
+static const constexpr unsigned int SPR_CHAR1  = 2048; // fills 256 slots
 
-#define SPR_EMPTY 999
-#define SPR_TORCH3 1000
-#define SPR_GROUND2 1002
-#define SPR_HELMET 1003
-#define SPR_BODY_ARMOR 1004
-#define SPR_LEG_ARMOR 1005
-#define SPR_SWORD 1006
-#define SPR_DAGGER 1007
-#define SPR_GROUND1 1008
-#define SPR_CHEST_KEY 1009
-#define SPR_STONE_GROUND1 1010
-#define SPR_TORCH1 1011
-#define SPR_PACKET0 1012
-#define SPR_PACKET1 1013
-#define SPR_PACKET2 1014
-#define SPR_PACKET3 1015
-#define SPR_PACKET4 1016
-#define SPR_PACKET5 1017
-#define SPR_PACKET6 1018
-#define SPR_PACKET7 1019
-#define SPR_PACKET8 1020
-#define SPR_PACKET9 1021
-#define SPR_PACKET_OVR 1022
-#define SPR_PACKET_UDR 1023
-#define SPR_PACKET_BRAKES 1024
-#define SPR_INT_BOX 1025
-#define SPR_TORCH2 1026 // fills eight slots
-
-#define SPR_NEWBIE 2048
-#define SPR_CHAR0 2048 // fills 256 slots
-#define SPR_CHAR1 2048 // fills 256 slots
-
-#define DR_IDLE 0
-#define DR_DROP 1
-#define DR_PICKUP 2
-#define DR_GIVE 3
-#define DR_USE 4
-#define DR_BOW 5
-#define DR_WAVE 6
-#define DR_TURN 7
-#define DR_SINGLEBUILD 8
-#define DR_AREABUILD1 9
-#define DR_AREABUILD2 10
+static const constexpr unsigned int DR_IDLE        = 0;
+static const constexpr unsigned int DR_DROP        = 1;
+static const constexpr unsigned int DR_PICKUP      = 2;
+static const constexpr unsigned int DR_GIVE        = 3;
+static const constexpr unsigned int DR_USE         = 4;
+static const constexpr unsigned int DR_BOW         = 5;
+static const constexpr unsigned int DR_WAVE        = 6;
+static const constexpr unsigned int DR_TURN        = 7;
+static const constexpr unsigned int DR_SINGLEBUILD = 8;
+static const constexpr unsigned int DR_AREABUILD1  = 9;
+static const constexpr unsigned int DR_AREABUILD2  = 10;
 
 // wear positions
-#define WN_HEAD 0
-#define WN_NECK 1
-#define WN_BODY 2
-#define WN_ARMS 3
-#define WN_BELT 4
-#define WN_LEGS 5
-#define WN_FEET 6
-#define WN_LHAND 7 // shield
-#define WN_RHAND 8 // weapon
-#define WN_CLOAK 9
-#define WN_LRING 10
-#define WN_RRING 11
+static const constexpr unsigned int WN_HEAD  = 0;
+static const constexpr unsigned int WN_NECK  = 1;
+static const constexpr unsigned int WN_BODY  = 2;
+static const constexpr unsigned int WN_ARMS  = 3;
+static const constexpr unsigned int WN_BELT  = 4;
+static const constexpr unsigned int WN_LEGS  = 5;
+static const constexpr unsigned int WN_FEET  = 6;
+static const constexpr unsigned int WN_LHAND = 7; // shield
+static const constexpr unsigned int WN_RHAND = 8; // weapon
+static const constexpr unsigned int WN_CLOAK = 9;
+static const constexpr unsigned int WN_LRING = 10;
+static const constexpr unsigned int WN_RRING = 11;
 
 #endif // CONSTANT_IDENTIFIERS_H

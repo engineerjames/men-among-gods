@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "../ConstantIdentifiers.h"
 #include "ColorPalette.h"
 
 class SkillsAndAttributes : public sf::Drawable
@@ -16,13 +17,9 @@ public:
     sf::Text plus_;
     sf::Text minus_;
 
-    static const constexpr unsigned int FONT_SIZE = 12;
-
     SkillRow();
     ~SkillRow() = default;
   };
-
-  static const constexpr unsigned int MAX_SKILLS = 50;
 
   SkillsAndAttributes( const sf::Font& font );
   ~SkillsAndAttributes() = default;

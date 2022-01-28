@@ -3,19 +3,14 @@
 #include <fstream>
 #include <iostream>
 
+#include "../ConstantIdentifiers.h"
 #include "ColorPalette.h"
 
-TextBox::TextBox( )
+TextBox::TextBox()
     : sf::Drawable()
     , sf::Transformable()
-    , fontSize_( 12 )
     , messageLog_()
 {
-}
-
-unsigned int TextBox::getFontSize() const
-{
-  return fontSize_;
 }
 
 void TextBox::addMessage( const sf::Text& newMsg )
@@ -28,7 +23,7 @@ void TextBox::addMessage( const sf::Text& newMsg )
   unsigned int i = 1;
   for ( auto&& m = std::rbegin( messageLog_ ); m != std::rend( messageLog_ ); ++m )
   {
-    sf::Vector2f newPosition = startPosition - sf::Vector2f { 0.0f, static_cast< float >( i * fontSize_ ) };
+    sf::Vector2f newPosition = startPosition - sf::Vector2f { 0.0f, static_cast< float >( i * FONT_SIZE ) };
 
     // Need to handle the case where each message could take up multiple lines
     m->setPosition( newPosition );

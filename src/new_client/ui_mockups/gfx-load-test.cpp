@@ -21,9 +21,6 @@ int main()
   GraphicsCache cache {};
   cache.loadSprites( path, GraphicsCache::MAX_SPRITES );
 
-  // Import font with which to draw the filename
-  sf::Text text {};
-
   sf::Font font {};
   if ( ! font.loadFromFile( "fonts/onuava.ttf" ) )
   {
@@ -32,6 +29,7 @@ int main()
 
   unsigned int index = 0;
 
+  sf::Text text {};
   text.setFont( font );
   text.setString( std::to_string( index ) );
   text.setCharacterSize( 24 );

@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include "../ConstantIdentifiers.h"
 #include "ColorPalette.h"
 #include "GuiFormatters.h"
 #include "UiPositions.h"
@@ -68,23 +69,23 @@ MainUi::MainUi()
   manaCurrentValue_.setFont( font_ );
   manaMaxValue_.setFont( font_ );
 
-  goldDisplay_.setCharacterSize( msgBox_.getFontSize() );
-  textualRank_.setCharacterSize( msgBox_.getFontSize() );
-  avLabel_.setCharacterSize( msgBox_.getFontSize() );
-  avValue_.setCharacterSize( msgBox_.getFontSize() );
-  wvLabel_.setCharacterSize( msgBox_.getFontSize() );
-  wvValue_.setCharacterSize( msgBox_.getFontSize() );
-  expLabel_.setCharacterSize( msgBox_.getFontSize() );
-  expValue_.setCharacterSize( msgBox_.getFontSize() );
-  hpLabel_.setCharacterSize( msgBox_.getFontSize() );
-  hpCurrentValue_.setCharacterSize( msgBox_.getFontSize() );
-  hpMaxValue_.setCharacterSize( msgBox_.getFontSize() );
-  endLabel_.setCharacterSize( msgBox_.getFontSize() );
-  endCurrentValue_.setCharacterSize( msgBox_.getFontSize() );
-  endMaxValue_.setCharacterSize( msgBox_.getFontSize() );
-  manaLabel_.setCharacterSize( msgBox_.getFontSize() );
-  manaCurrentValue_.setCharacterSize( msgBox_.getFontSize() );
-  manaMaxValue_.setCharacterSize( msgBox_.getFontSize() );
+  goldDisplay_.setCharacterSize( FONT_SIZE );
+  textualRank_.setCharacterSize( FONT_SIZE );
+  avLabel_.setCharacterSize( FONT_SIZE );
+  avValue_.setCharacterSize( FONT_SIZE );
+  wvLabel_.setCharacterSize( FONT_SIZE );
+  wvValue_.setCharacterSize( FONT_SIZE );
+  expLabel_.setCharacterSize( FONT_SIZE );
+  expValue_.setCharacterSize( FONT_SIZE );
+  hpLabel_.setCharacterSize( FONT_SIZE );
+  hpCurrentValue_.setCharacterSize( FONT_SIZE );
+  hpMaxValue_.setCharacterSize( FONT_SIZE );
+  endLabel_.setCharacterSize( FONT_SIZE );
+  endCurrentValue_.setCharacterSize( FONT_SIZE );
+  endMaxValue_.setCharacterSize( FONT_SIZE );
+  manaLabel_.setCharacterSize( FONT_SIZE );
+  manaCurrentValue_.setCharacterSize( FONT_SIZE );
+  manaMaxValue_.setCharacterSize( FONT_SIZE );
 
   goldDisplay_.setFillColor( MenAmongGods::MsgYellow );
   textualRank_.setFillColor( MenAmongGods::MsgYellow );
@@ -143,7 +144,7 @@ MainUi::MainUi()
 
 void MainUi::addMessage( LogType type, std::string text )
 {
-  sf::Text  newMsg { text, font_, msgBox_.getFontSize() };
+  sf::Text  newMsg { text, font_, FONT_SIZE };
   sf::Color messageColor {};
 
   switch ( type )

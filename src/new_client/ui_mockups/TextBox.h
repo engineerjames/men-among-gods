@@ -12,13 +12,9 @@ public:
 
   void         addMessage( const sf::Text& newMsg );
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
-  unsigned int getFontSize() const;
-
-  void writeLogToFile( const std::string& pathToFile ) const;
+  void         writeLogToFile( const std::string& pathToFile ) const;
 
 private:
-  unsigned int fontSize_;
-
   std::vector< sf::Text > messageLog_;
 };
 
