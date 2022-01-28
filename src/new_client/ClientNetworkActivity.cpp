@@ -93,8 +93,6 @@ void ClientNetworkActivity::startNetworkActivity()
 
     tickBuffer.processTicks();
 
-    engineTick();
-
     if ( ! hasMoved )
     {
       std::cerr << "Moving!" << std::endl;
@@ -104,39 +102,4 @@ void ClientNetworkActivity::startNetworkActivity()
   }
 
   isRunning_ = false;
-}
-
-void ClientNetworkActivity::engineTick()
-{
-  playerData_.lock();
-
-  for ( unsigned int n = 0; n < TILEX * TILEY; n++ )
-  {
-    playerData_.getMap()[ n ].back     = 0;
-    playerData_.getMap()[ n ].obj1     = 0;
-    playerData_.getMap()[ n ].obj2     = 0;
-    playerData_.getMap()[ n ].ovl_xoff = 0;
-    playerData_.getMap()[ n ].ovl_yoff = 0;
-  }
-
-  for ( unsigned int n = 0; n < TILEX * TILEY; n++ )
-  {
-
-    playerData_.getMap()[ n ].back = playerData_.getMap()[ n ].ba_sprite;
-
-    // item
-    if ( playerData_.getMap()[ n ].it_sprite )
-    {
-      // tmp           = eng_item( n );
-      // map[ n ].obj1 = tmp;
-    }
-
-    // character
-    if ( playerData_.getMap()[ n ].ch_sprite )
-    {
-      // tmp           = eng_char( n );
-      // map[ n ].obj2 = tmp;
-    }
-  }
-  playerData_.unlock();
 }
