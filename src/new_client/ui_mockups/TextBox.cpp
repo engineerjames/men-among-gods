@@ -9,8 +9,24 @@
 TextBox::TextBox()
     : sf::Drawable()
     , sf::Transformable()
+    , MenAmongGods::Component()
     , messageLog_()
 {
+}
+
+void TextBox::update()
+{
+  // Do nothing for now.
+}
+
+void TextBox::onUserInput( const sf::Event& )
+{
+  // Do nothing for now.
+}
+
+void TextBox::finalize()
+{
+  // Do nothing for now.
 }
 
 void TextBox::addMessage( const sf::Text& newMsg )

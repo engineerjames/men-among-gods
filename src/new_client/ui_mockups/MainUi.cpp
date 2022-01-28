@@ -8,7 +8,9 @@
 #include "UiPositions.h"
 
 MainUi::MainUi()
-    : font_()
+    : sf::Drawable()
+    , MenAmongGods::Component()
+    , font_()
     , goldDisplay_()
     , textualRank_()
     , avLabel_()
@@ -168,7 +170,7 @@ void MainUi::addMessage( LogType type, std::string text )
 
   newMsg.setFillColor( messageColor );
   newMsg.setOutlineColor( sf::Color::Black );
-  newMsg.setLetterSpacing( 1.0f );
+  newMsg.setLetterSpacing( LETTER_SPACING );
 
   msgBox_.addMessage( newMsg );
 }
@@ -197,7 +199,19 @@ void MainUi::draw( sf::RenderTarget& target, sf::RenderStates states ) const
   target.draw( skillsAndAttributes_, states );
 }
 
-void MainUi::handleInput( sf::Event e )
+void MainUi::onUserInput( const sf::Event& e )
 {
-  userInput_.handleInput( e );
+  userInput_.onUserInput( e );
+}
+
+void MainUi::update()
+{
+  // Do nothing for now
+}
+
+void MainUi::finalize()
+{
+  // Do nothing for now
+  userInput_.finalize();
+  msgBox_.finalize();
 }

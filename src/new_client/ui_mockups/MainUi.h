@@ -3,11 +3,12 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "Component.h"
 #include "SkillsAndAttributes.h"
 #include "TextBox.h"
 #include "TextInput.h"
 
-class MainUi : public sf::Drawable
+class MainUi : public sf::Drawable, public MenAmongGods::Component
 {
 public:
   enum struct LogType
@@ -23,7 +24,9 @@ public:
 
   void         addMessage( LogType type, std::string text );
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
-  void         handleInput( sf::Event e );
+  virtual void update( ) override;
+  virtual void onUserInput(const sf::Event& e ) override;
+  virtual void finalize() override;
 
 private:
   sf::Font font_;

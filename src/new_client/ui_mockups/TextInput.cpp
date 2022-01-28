@@ -7,6 +7,7 @@
 
 TextInput::TextInput( const sf::Font& font )
     : sf::Text()
+    , MenAmongGods::Component()
     , maxCharacters_( 45 )
     , font_( font )
     , text_()
@@ -16,14 +17,19 @@ TextInput::TextInput( const sf::Font& font )
   this->setCharacterSize( FONT_SIZE );
   this->setFillColor( MenAmongGods::MsgYellow );
   this->setOutlineColor( sf::Color::Black );
-  this->setLetterSpacing( 1.0f );
+  this->setLetterSpacing( LETTER_SPACING );
   this->setString( "_" );
 }
 
-void TextInput::handleInput( sf::Event e )
+void TextInput::update()
 {
-  // Pessimistic check for now--who decides?
-  if ( e.type != sf::Event::TextEntered )
+  // Do nothing for now
+}
+
+void TextInput::onUserInput( const sf::Event& e )
+{
+  // Only want to act on text being entered--specifically ASCII characters
+  if ( e.type != sf::Event::TextEntered || e.text.unicode >= 128 )
   {
     return;
   }
@@ -52,6 +58,11 @@ void TextInput::handleInput( sf::Event e )
 void TextInput::setPosition( const sf::Vector2f& newPosition )
 {
   sf::Text::setPosition( newPosition );
+}
+
+void TextInput::finalize()
+{
+  // Do nothing for now
 }
 
 void TextInput::getAndClearCommands( std::vector< std::string >& outList )

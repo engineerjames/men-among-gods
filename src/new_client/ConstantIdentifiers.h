@@ -17,7 +17,9 @@ static const constexpr int AT_INT   = 2;
 static const constexpr int AT_AGIL  = 3;
 static const constexpr int AT_STREN = 4;
 
-static const constexpr int FONT_SIZE  = 10;
+static const constexpr int   FONT_SIZE      = 10;
+static const constexpr float LETTER_SPACING = 1.0f;
+
 static const constexpr int MAX_SKILLS = 50;
 
 static const constexpr int          TILEX     = 34;

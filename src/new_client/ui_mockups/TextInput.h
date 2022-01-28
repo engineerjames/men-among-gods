@@ -4,15 +4,20 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 
-class TextInput : public sf::Text
+#include "Component.h"
+
+class TextInput : public sf::Text, public MenAmongGods::Component
 {
 public:
   TextInput( const sf::Font& font );
   virtual ~TextInput() override = default;
 
-  void handleInput( sf::Event e );
   void setPosition( const sf::Vector2f& newPosition );
   void getAndClearCommands( std::vector< std::string >& outList );
+
+  virtual void update( ) override;
+  virtual void onUserInput(const sf::Event& e) override;
+  virtual void finalize() override;
 
 private:
   unsigned int               maxCharacters_;
