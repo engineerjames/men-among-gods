@@ -7,12 +7,6 @@
 #include "PlayerData.h"
 #include "ServerMessage.h"
 
-namespace
-{
-static unsigned int ctick = 0;
-static int          lastn = 0;
-} // namespace
-
 TickBuffer::TickBuffer( PlayerData& playerData )
     : compressor_()
     , playerData_( playerData )
@@ -20,6 +14,8 @@ TickBuffer::TickBuffer( PlayerData& playerData )
     , tickSize_( 0 )
     , tickStart_( 0 )
     , ticksInQueue_( 0 )
+    , ctick_( 0 )
+    , lastn_( 0 )
 {
 }
 
@@ -109,7 +105,7 @@ void TickBuffer::processTicks()
 
   utot += csize;
 
-  lastn = -1; // reset sv_setmap
+  lastn_ = -1; // reset sv_setmap
 
   while ( idx < csize )
   {
@@ -539,7 +535,7 @@ int TickBuffer::sv_setmap( const unsigned char* buf, int off )
 
   if ( off )
   {
-    n = lastn + off;
+    n = lastn_ + off;
     p = 2;
   }
   else
@@ -554,7 +550,7 @@ int TickBuffer::sv_setmap( const unsigned char* buf, int off )
     return -1;
   }
 
-  lastn = n;
+  lastn_ = n;
   if ( ! buf[ 1 ] )
   {
     std::cerr << "Warning: no flags in setmap!" << std::endl;
@@ -668,7 +664,7 @@ void TickBuffer::sv_setorigin( const unsigned char* buf )
 
 void TickBuffer::sv_tick( const unsigned char* buf )
 {
-  ctick = *( unsigned char* ) ( buf + 1 );
+  ctick_ = *( unsigned char* ) ( buf + 1 );
 }
 
 void TickBuffer::sv_log( const unsigned char* buf, int )

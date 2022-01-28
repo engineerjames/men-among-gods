@@ -80,6 +80,8 @@ private:
   unsigned int                      tickSize_;
   unsigned int                      tickStart_;
   unsigned int                      ticksInQueue_;
+  unsigned int                      ctick_;
+  int                               lastn_;
 };
 
 #endif
