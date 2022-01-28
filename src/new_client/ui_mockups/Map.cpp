@@ -5,11 +5,24 @@
 #include <iostream>
 
 #include "../ConstantIdentifiers.h"
+#include "../TickBuffer.h"
 #include "GraphicsCache.h"
 #include "GraphicsIndex.h"
 
 namespace
 {
+int autohide( int x, int y )
+{
+  if ( x >= ( TILEX / 2 ) || ( y <= TILEX / 2 ) )
+  {
+    return 0;
+  }
+  else
+  {
+    return 1;
+  }
+}
+
 const unsigned char speedtab[ 20 ][ 20 ] = {
     //  1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0
     { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }, // 20
@@ -63,15 +76,17 @@ const unsigned char speedtab[ 20 ][ 20 ] = {
 namespace MenAmongGods
 {
 
-Map::Map( const GraphicsCache& cache, const GraphicsIndex& index )
+Map::Map( const GraphicsCache& cache, const GraphicsIndex& index, const TickBuffer& tickBuffer )
     : sf::Drawable()
     , MenAmongGods::Component()
     , map_( std::make_unique< cmap[] >( MAPX * MAPY ) )
     , cache_( cache )
     , index_( index )
+    , tickBuffer_( tickBuffer )
     , spritesToDraw_()
     , ticker_()
     , needsToUpdate_( true )
+    , ctick_( 0 )
 {
 }
 
@@ -107,6 +122,8 @@ void Map::update()
   {
     ticker_++; // Should this be at the end?
     needsToUpdate_ = false;
+
+    ctick_ = tickBuffer_.getCTick();
 
     // Need to perform the regular "engine tick" here:
     for ( unsigned int n = 0; n < TILEX * TILEY; n++ )
@@ -236,7 +253,7 @@ void Map::update()
         }
 
         // object
-        if /* ( pdata.hide == 0 ||*/ ( map_[ m ].flags & ISITEM ) /* || autohide( x, y ) ) */
+        if /* ( pdata.hide == 0 ||*/ ( ( map_[ m ].flags & ISITEM ) || autohide( x, y ) )
         {
           int tmp2 {};
           ( void ) tmp2;
@@ -552,7 +569,7 @@ int Map::speedstep( int n, int d, int s, int update )
     return 32 * hard_step / s;
   }
 
-  z         = 0; // ctick
+  z         = ctick_;
   soft_step = 0;
   m         = hard_step;
 
@@ -583,7 +600,7 @@ int Map::speedstep( int n, int d, int s, int update )
     soft_step++;
   }
 
-  z          = 0; // ctick
+  z          = ctick_;
   total_step = soft_step;
   m          = s - hard_step;
 
@@ -1409,8 +1426,7 @@ int Map::interpolateCharacterSprite( int mapIndex )
 // eng_item
 int Map::interpolateItemSprite( int mapIndex )
 {
-  // TODO: Need ctick
-  unsigned int ctick  = 0;
+  unsigned int ctick = ctick_;
   switch ( map_[ mapIndex ].it_status )
   {
   case 0:

@@ -8,13 +8,14 @@
 
 class GraphicsCache;
 class GraphicsIndex;
+class TickBuffer;
 
 namespace MenAmongGods
 {
 class Map : public sf::Drawable, public MenAmongGods::Component
 {
 public:
-  Map( const GraphicsCache& cache, const GraphicsIndex& index );
+  Map( const GraphicsCache& cache, const GraphicsIndex& index, const TickBuffer& tickBuffer );
   virtual ~Map() = default;
 
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
@@ -28,9 +29,11 @@ private:
   std::unique_ptr< cmap[] > map_;
   const GraphicsCache&      cache_;
   const GraphicsIndex&      index_;
+  const TickBuffer&         tickBuffer_;
   std::vector< sf::Sprite > spritesToDraw_;
   std::size_t               ticker_;
   bool                      needsToUpdate_;
+  unsigned int              ctick_;
 
   void copysprite( int nr, int effect, int xpos, int ypos, int xoff, int yoff );
   int  interpolateItemSprite( int mapIndex );

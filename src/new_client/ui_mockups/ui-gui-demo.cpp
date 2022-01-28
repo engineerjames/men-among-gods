@@ -11,6 +11,7 @@
 
 #include "../ConstantIdentifiers.h"
 #include "../PlayerData.h"
+#include "../TickBuffer.h"
 #include "Component.h"
 #include "GraphicsCache.h"
 #include "GraphicsIndex.h"
@@ -53,7 +54,9 @@ int main()
     }
   }
 
-  auto mapPtr    = new MenAmongGods::Map( cache, index );
+  TickBuffer tickbuffer { pdata };
+
+  auto mapPtr    = new MenAmongGods::Map( cache, index, tickbuffer );
   auto mainUiPtr = new MainUi();
 
   mapPtr->loadFromFile( "test/mapfile.archive" );

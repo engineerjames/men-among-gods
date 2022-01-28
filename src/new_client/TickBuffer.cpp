@@ -667,6 +667,11 @@ void TickBuffer::sv_tick( const unsigned char* buf )
   ctick_ = *( unsigned char* ) ( buf + 1 );
 }
 
+unsigned int TickBuffer::getCTick() const
+{
+  return ctick_;
+}
+
 void TickBuffer::sv_log( const unsigned char* buf, int )
 {
   static char text[ 512 ];

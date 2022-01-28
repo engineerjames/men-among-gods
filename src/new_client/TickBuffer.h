@@ -21,6 +21,8 @@ public:
   bool          receive( const std::array< std::uint8_t, 1024 >* buffer, std::size_t bytesToReceive );
   void          processTicks();
 
+  unsigned int getCTick() const;
+
 private:
   int processServerCommand( const std::uint8_t* bufferStart );
 
