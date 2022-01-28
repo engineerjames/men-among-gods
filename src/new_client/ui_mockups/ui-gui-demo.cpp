@@ -11,6 +11,7 @@
 
 #include "../ConstantIdentifiers.h"
 #include "../PlayerData.h"
+#include "Component.h"
 #include "GraphicsCache.h"
 #include "GraphicsIndex.h"
 #include "MainUi.h"
@@ -19,7 +20,7 @@
 int main()
 {
   sf::RenderWindow window( sf::VideoMode( 800, 600 ), "Mercenaries of Astonia - New Client" );
-  window.setFramerateLimit( 60 );
+  window.setFramerateLimit( 10 );
 
   std::string path      = "gfx/gfx.zip";
   std::string indexPath = "gfx/gx00.idx";
@@ -30,18 +31,8 @@ int main()
   GraphicsIndex index { indexPath };
   index.load();
 
-  MainUi mainui {};
-
-  mainui.addMessage( MainUi::LogType::CHAT, "Mayest thou past the last gate." );
-  mainui.addMessage( MainUi::LogType::LOG, "A new player has entered the game." );
-  mainui.addMessage( MainUi::LogType::ERROR, "WARNING! This is an ERROR!!!" );
-  mainui.addMessage( MainUi::LogType::INFO, "You have taken 12 damage." );
-
   sf::Clock clock {};
   sf::Time  time = clock.getElapsedTime();
-
-  MenAmongGods::Map map { cache, index };
-  map.loadFromFile( "test/mapfile.archive" );
 
   sf::Sprite bg = cache.getSprite( 1 );
 
@@ -62,6 +53,21 @@ int main()
     }
   }
 
+  auto mapPtr    = new MenAmongGods::Map( cache, index );
+  auto mainUiPtr = new MainUi();
+
+  mapPtr->loadFromFile( "test/mapfile.archive" );
+
+  mainUiPtr->addMessage( MainUi::LogType::CHAT, "Mayest thou past the last gate." );
+  mainUiPtr->addMessage( MainUi::LogType::LOG, "A new player has entered the game." );
+  mainUiPtr->addMessage( MainUi::LogType::ERROR, "WARNING! This is an ERROR!!!" );
+  mainUiPtr->addMessage( MainUi::LogType::INFO, "You have taken 12 damage." );
+
+  std::vector< std::unique_ptr< MenAmongGods::Component > > components;
+
+  components.emplace_back( mapPtr );
+  components.emplace_back( mainUiPtr );
+
   while ( window.isOpen() )
   {
     sf::Event event;
@@ -72,31 +78,38 @@ int main()
         window.close();
       }
 
-      if ( event.type == sf::Event::TextEntered )
+      for ( auto& c : components )
       {
-        if ( event.text.unicode < 128 ) // ASCII only
-        {
-          mainui.handleInput( event );
-        }
+        c->onUserInput( event );
       }
     }
 
-    if ( ( clock.getElapsedTime() - time ).asSeconds() > 1.0f )
+    for ( auto& c : components )
+    {
+      c->update();
+    }
+
+    if ( ( clock.getElapsedTime() - time ).asSeconds() > 4.0f )
     {
       // Add new message
-      mainui.addMessage( MainUi::LogType::LOG, "Periodic update test message." );
+      mainUiPtr->addMessage( MainUi::LogType::LOG, "Periodic update test message." );
       time = clock.getElapsedTime();
     }
 
     window.clear();
-    window.draw( map );
+    window.draw( *mapPtr );
     window.draw( bg );
-    window.draw( mainui );
+    window.draw( *mainUiPtr );
     for ( const auto& i : inventorySpritesToRender )
     {
       window.draw( i );
     }
     window.display();
+
+    for ( auto& c : components )
+    {
+      c->finalize();
+    }
   }
 
   return 0;
