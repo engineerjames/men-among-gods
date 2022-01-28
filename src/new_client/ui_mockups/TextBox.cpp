@@ -5,11 +5,9 @@
 
 #include "ColorPalette.h"
 
-TextBox::TextBox( const sf::Font& font )
+TextBox::TextBox( )
     : sf::Drawable()
     , sf::Transformable()
-    , maxCharactersPerLine_( 45 )
-    , font_( font )
     , fontSize_( 12 )
     , messageLog_()
 {

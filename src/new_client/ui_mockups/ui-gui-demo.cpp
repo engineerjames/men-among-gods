@@ -21,8 +21,8 @@ int main()
   sf::RenderWindow window( sf::VideoMode( 800, 600 ), "Mercenaries of Astonia - New Client" );
   window.setFramerateLimit( 60 );
 
-  std::string path      = "/home/jarmes/git/men-among-gods/src/new_client/gfx/gfx.zip";
-  std::string indexPath = "/home/jarmes/git/men-among-gods/src/new_client/ui_mockups/gx00.idx";
+  std::string path      = "gfx/gfx.zip";
+  std::string indexPath = "gfx/gx00.idx";
 
   GraphicsCache cache {};
   cache.loadSprites( path, GraphicsCache::MAX_SPRITES );
@@ -38,17 +38,16 @@ int main()
   mainui.addMessage( MainUi::LogType::INFO, "You have taken 12 damage." );
 
   sf::Clock clock {};
-
-  sf::Time time = clock.getElapsedTime();
+  sf::Time  time = clock.getElapsedTime();
 
   MenAmongGods::Map map { cache, index };
-  map.loadFromFile( "/home/jarmes/git/men-among-gods/src/new_client/ui_mockups/mapfile.archive" );
+  map.loadFromFile( "test/mapfile.archive" );
 
   sf::Sprite bg = cache.getSprite( 1 );
 
   PlayerData pdata {};
+  pdata.loadFromFile( "test/player.archive" );
 
-  pdata.loadFromFile( "/home/jarmes/git/men-among-gods/src/new_client/ui_mockups/player.archive" );
   static int wntab[ 20 ] = { WN_HEAD, WN_CLOAK, WN_BODY, WN_ARMS, WN_NECK, WN_BELT, WN_RHAND, WN_LHAND, WN_RRING, WN_LRING,
                              WN_LEGS, WN_FEET,  0,       0,       0,       0,       0,        0,        0,        0 };
 

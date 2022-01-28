@@ -6,7 +6,7 @@
 
 int main()
 {
-  GraphicsIndex index { "/home/jarmes/git/men-among-gods/src/new_client/ui_mockups/gx00.idx" };
+  GraphicsIndex index { "gfx/gx00.idx" };
 
   index.load();
 

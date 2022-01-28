@@ -16,8 +16,8 @@ MainUi::MainUi()
     , wvValue_()
     , expLabel_()
     , expValue_()
-    , skillsAndAttributes_(font_)
-    , msgBox_( font_ )
+    , skillsAndAttributes_( font_ )
+    , msgBox_()
     , userInput_( font_ )
 {
   goldDisplay_.setPosition( sf::Vector2f { MenAmongGods::goldDisplayPosition } );
@@ -45,8 +45,7 @@ MainUi::MainUi()
   manaCurrentValue_.setPosition( sf::Vector2f { MenAmongGods::manaCurrentValuePosition } );
   manaMaxValue_.setPosition( sf::Vector2f { MenAmongGods::manaMaxValuePosition } );
 
-  // Temporarily hardcode the font
-  if ( ! font_.loadFromFile( "/usr/share/fonts/truetype/msttcorefonts/Times_New_Roman.ttf" ) )
+  if ( ! font_.loadFromFile( "fonts/onuava.ttf" ) )
   {
     std::cerr << "Unable to load font!" << std::endl;
   }
@@ -130,7 +129,7 @@ MainUi::MainUi()
   wvLabel_.setString( "Weapon Value" );
   wvValue_.setString( "0" );
   expLabel_.setString( "Experience" );
-  expValue_.setString( MenAmongGods::addThousandsSeparator(12412125u) );
+  expValue_.setString( MenAmongGods::addThousandsSeparator( 12412125u ) );
   hpLabel_.setString( "Hitpoints" );
   hpCurrentValue_.setString( "100" );
   hpMaxValue_.setString( "100" );
@@ -168,7 +167,7 @@ void MainUi::addMessage( LogType type, std::string text )
 
   newMsg.setFillColor( messageColor );
   newMsg.setOutlineColor( sf::Color::Black );
-  newMsg.setLetterSpacing( 1.5f );
+  newMsg.setLetterSpacing( 1.0f );
 
   msgBox_.addMessage( newMsg );
 }

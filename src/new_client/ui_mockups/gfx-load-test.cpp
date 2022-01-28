@@ -16,7 +16,7 @@ int main()
   sf::RenderWindow window( sf::VideoMode( 800, 600 ), "Mercenaries of Astonia - New Client" );
   window.setFramerateLimit( 60 );
 
-  std::string path = "/home/jarmes/git/men-among-gods/src/new_client/gfx/gfx.zip";
+  std::string path = "gfx/gfx.zip";
 
   GraphicsCache cache {};
   cache.loadSprites( path, GraphicsCache::MAX_SPRITES );
@@ -25,7 +25,7 @@ int main()
   sf::Text text {};
 
   sf::Font font {};
-  if ( ! font.loadFromFile( "/usr/share/fonts/truetype/msttcorefonts/Arial.ttf" ) )
+  if ( ! font.loadFromFile( "fonts/onuava.ttf" ) )
   {
     std::cerr << "Unable to load font!" << std::endl;
   };

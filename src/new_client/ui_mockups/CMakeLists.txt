@@ -40,3 +40,21 @@ add_executable(${target} gfx-idx-load.cpp)
 target_link_libraries(${target} PRIVATE MenAmongGodsGraphics)
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
+
+# Need the gfx files accessible / copied out to the server build directory so I can start using
+# relative directories instead of the hard coded ones.
+add_custom_command(
+            TARGET ${target}
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E make_directory  $<TARGET_FILE_DIR:${target}>/gfx
+            COMMAND ${CMAKE_COMMAND} -E make_directory  $<TARGET_FILE_DIR:${target}>/fonts
+            COMMAND ${CMAKE_COMMAND} -E make_directory  $<TARGET_FILE_DIR:${target}>/test
+
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../gfx/gfx.zip $<TARGET_FILE_DIR:${target}>/gfx
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/gx00.idx $<TARGET_FILE_DIR:${target}>/gfx
+            
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../fonts/onuava.ttf $<TARGET_FILE_DIR:${target}>/fonts
+
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/mapfile.archive $<TARGET_FILE_DIR:${target}>/test
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/player.archive $<TARGET_FILE_DIR:${target}>/test
+            )

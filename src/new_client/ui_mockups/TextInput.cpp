@@ -15,7 +15,7 @@ TextInput::TextInput( const sf::Font& font )
   this->setCharacterSize( 12 );
   this->setFillColor( MenAmongGods::MsgYellow );
   this->setOutlineColor( sf::Color::Black );
-  this->setLetterSpacing( 1.5f );
+  this->setLetterSpacing( 1.0f );
   this->setString( "_" );
 }
 
