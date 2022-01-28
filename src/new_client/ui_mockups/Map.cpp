@@ -101,7 +101,7 @@ void Map::loadFromFile( std::string filePath )
       }
     }
   }
-  // 497 to 530
+
   mapFile.close();
 
   // Need to perform the regular "engine tick" here:
@@ -118,8 +118,6 @@ void Map::loadFromFile( std::string filePath )
   {
 
     map_[ n ].back = map_[ n ].ba_sprite;
-
-    // TODO: Fix the eng_item and eng_char retrieval
 
     // item
     if ( map_[ n ].it_sprite != 0 )
@@ -139,18 +137,21 @@ void Map::loadFromFile( std::string filePath )
 
 int Map::speedstep( int n, int d, int s, int update )
 {
-  int hard_step;
-  int soft_step;
-  int total_step;
-  int speed;
-  int dist;
-  int z, m;
+  int hard_step{};
+  int soft_step{};
+  int total_step{};
+  int speed{};
+  int dist{};
+  int z{};
+  int m{};
 
   speed     = map_[ n ].ch_speed;
   hard_step = map_[ n ].ch_status - d;
 
   if ( ! update )
+  {
     return 32 * hard_step / s;
+  }
 
   z         = 0; // ctick
   soft_step = 0;
@@ -160,18 +161,26 @@ int Map::speedstep( int n, int d, int s, int update )
   {
     z--;
     if ( z < 0 )
+    {
       z = 19;
+    }
     soft_step++;
     if ( speedtab[ speed ][ z ] )
+    {
       m--;
+    }
   }
   while ( 1 )
   {
     z--;
     if ( z < 0 )
+    {
       z = 19;
+    }
     if ( speedtab[ speed ][ z ] )
+    {
       break;
+    }
     soft_step++;
   }
 
@@ -182,12 +191,18 @@ int Map::speedstep( int n, int d, int s, int update )
   while ( 1 )
   {
     if ( speedtab[ speed ][ z ] )
+    {
       m--;
+    }
     if ( m < 1 )
+    {
       break;
+    }
     z++;
     if ( z > 19 )
+    {
       z = 0;
+    }
     total_step++;
   }
   dist = 32 * ( soft_step ) / ( total_step + 1 );
@@ -205,7 +220,9 @@ int Map::interpolateCharacterSprite( int mapIndex )
   int tmp, update = 1;
 
   if ( map_[ mapIndex ].flags & STUNNED )
+  {
     update = 0;
+  }
 
   switch ( map_[ mapIndex ].ch_status )
   {
@@ -215,7 +232,9 @@ int Map::interpolateCharacterSprite( int mapIndex )
     map_[ mapIndex ].obj_yoff = 0;
     map_[ mapIndex ].idle_ani++;
     if ( map_[ mapIndex ].idle_ani > 7 )
+    {
       map_[ mapIndex ].idle_ani = 0;
+    }
     return map_[ mapIndex ].ch_sprite + 0 + do_idle( map_[ mapIndex ].idle_ani, map_[ mapIndex ].ch_sprite );
     // idle down
   case 1:
@@ -225,7 +244,9 @@ int Map::interpolateCharacterSprite( int mapIndex )
     {
       map_[ mapIndex ].idle_ani++;
       if ( map_[ mapIndex ].idle_ani > 7 )
+      {
         map_[ mapIndex ].idle_ani = 0;
+      }
     }
     return map_[ mapIndex ].ch_sprite + 8 + do_idle( map_[ mapIndex ].idle_ani, map_[ mapIndex ].ch_sprite );
     // idle left
@@ -236,7 +257,9 @@ int Map::interpolateCharacterSprite( int mapIndex )
     {
       map_[ mapIndex ].idle_ani++;
       if ( map_[ mapIndex ].idle_ani > 7 )
+      {
         map_[ mapIndex ].idle_ani = 0;
+      }
     }
     return map_[ mapIndex ].ch_sprite + 16 + do_idle( map_[ mapIndex ].idle_ani, map_[ mapIndex ].ch_sprite );
     // idle right
@@ -247,7 +270,9 @@ int Map::interpolateCharacterSprite( int mapIndex )
     {
       map_[ mapIndex ].idle_ani++;
       if ( map_[ mapIndex ].idle_ani > 7 )
+      {
         map_[ mapIndex ].idle_ani = 0;
+      }
     }
     return map_[ mapIndex ].ch_sprite + 24 + do_idle( map_[ mapIndex ].idle_ani, map_[ mapIndex ].ch_sprite );
 
@@ -259,7 +284,9 @@ int Map::interpolateCharacterSprite( int mapIndex )
     {
       map_[ mapIndex ].idle_ani++;
       if ( map_[ mapIndex ].idle_ani > 7 )
+      {
         map_[ mapIndex ].idle_ani = 0;
+      }
     }
     return map_[ mapIndex ].ch_sprite + 32 + do_idle( map_[ mapIndex ].idle_ani, map_[ mapIndex ].ch_sprite );
     // idle left-down
@@ -270,7 +297,9 @@ int Map::interpolateCharacterSprite( int mapIndex )
     {
       map_[ mapIndex ].idle_ani++;
       if ( map_[ mapIndex ].idle_ani > 7 )
+      {
         map_[ mapIndex ].idle_ani = 0;
+      }
     }
     return map_[ mapIndex ].ch_sprite + 40 + do_idle( map_[ mapIndex ].idle_ani, map_[ mapIndex ].ch_sprite );
     // idle right-up
@@ -281,7 +310,9 @@ int Map::interpolateCharacterSprite( int mapIndex )
     {
       map_[ mapIndex ].idle_ani++;
       if ( map_[ mapIndex ].idle_ani > 7 )
+      {
         map_[ mapIndex ].idle_ani = 0;
+      }
     }
     return map_[ mapIndex ].ch_sprite + 48 + do_idle( map_[ mapIndex ].idle_ani, map_[ mapIndex ].ch_sprite );
     // idle right-down
@@ -292,7 +323,9 @@ int Map::interpolateCharacterSprite( int mapIndex )
     {
       map_[ mapIndex ].idle_ani++;
       if ( map_[ mapIndex ].idle_ani > 7 )
+      {
         map_[ mapIndex ].idle_ani = 0;
+      }
     }
     return map_[ mapIndex ].ch_sprite + 56 + do_idle( map_[ mapIndex ].idle_ani, map_[ mapIndex ].ch_sprite );
 
@@ -308,14 +341,18 @@ int Map::interpolateCharacterSprite( int mapIndex )
     map_[ mapIndex ].obj_yoff = speedstep( mapIndex, 16, 8, update ) / 4;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 16 ) + 64;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status++;
+    }
     return tmp;
   case 23:
     map_[ mapIndex ].obj_xoff = -speedstep( mapIndex, 16, 8, update ) / 2;
     map_[ mapIndex ].obj_yoff = speedstep( mapIndex, 16, 8, update ) / 4;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 16 ) + 64;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status = 16;
+    }
     return tmp;
 
     // walk down
@@ -330,14 +367,18 @@ int Map::interpolateCharacterSprite( int mapIndex )
     map_[ mapIndex ].obj_yoff = -speedstep( mapIndex, 24, 8, update ) / 4;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 24 ) + 72;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status++;
+    }
     return tmp;
   case 31:
     map_[ mapIndex ].obj_xoff = speedstep( mapIndex, 24, 8, update ) / 2;
     map_[ mapIndex ].obj_yoff = -speedstep( mapIndex, 24, 8, update ) / 4;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 24 ) + 72;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status = 24;
+    }
     return tmp;
 
     // walk left
@@ -352,14 +393,18 @@ int Map::interpolateCharacterSprite( int mapIndex )
     map_[ mapIndex ].obj_yoff = -speedstep( mapIndex, 32, 8, update ) / 4;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 32 ) + 80;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status++;
+    }
     return tmp;
   case 39:
     map_[ mapIndex ].obj_xoff = -speedstep( mapIndex, 32, 8, update ) / 2;
     map_[ mapIndex ].obj_yoff = -speedstep( mapIndex, 32, 8, update ) / 4;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 32 ) + 80;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status = 32;
+    }
     return tmp;
 
     // walk right
@@ -374,14 +419,18 @@ int Map::interpolateCharacterSprite( int mapIndex )
     map_[ mapIndex ].obj_yoff = speedstep( mapIndex, 40, 8, update ) / 4;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 40 ) + 88;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status++;
+    }
     return tmp;
   case 47:
     map_[ mapIndex ].obj_xoff = speedstep( mapIndex, 40, 8, update ) / 2;
     map_[ mapIndex ].obj_yoff = speedstep( mapIndex, 40, 8, update ) / 4;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 40 ) + 88;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status = 40;
+    }
     return tmp;
 
     // left+up
@@ -400,14 +449,18 @@ int Map::interpolateCharacterSprite( int mapIndex )
     map_[ mapIndex ].obj_yoff = 0;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 48 ) * 8 / 12 + 96;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status++;
+    }
     return tmp;
   case 59:
     map_[ mapIndex ].obj_xoff = -speedstep( mapIndex, 48, 12, update );
     map_[ mapIndex ].obj_yoff = 0;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 48 ) * 8 / 12 + 96;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status = 48;
+    }
     return tmp;
 
     // left+down
@@ -426,14 +479,18 @@ int Map::interpolateCharacterSprite( int mapIndex )
     map_[ mapIndex ].obj_yoff = -speedstep( mapIndex, 60, 12, update ) / 2;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 60 ) * 8 / 12 + 104;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status++;
+    }
     return tmp;
   case 71:
     map_[ mapIndex ].obj_xoff = 0;
     map_[ mapIndex ].obj_yoff = -speedstep( mapIndex, 60, 12, update ) / 2;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 60 ) * 8 / 12 + 104;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status = 60;
+    }
     return tmp;
 
     // right+up
@@ -452,14 +509,18 @@ int Map::interpolateCharacterSprite( int mapIndex )
     map_[ mapIndex ].obj_yoff = speedstep( mapIndex, 72, 12, update ) / 2;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 72 ) * 8 / 12 + 112;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status++;
+    }
     return tmp;
   case 83:
     map_[ mapIndex ].obj_xoff = 0;
     map_[ mapIndex ].obj_yoff = speedstep( mapIndex, 72, 12, update ) / 2;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 72 ) * 8 / 12 + 112;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status = 72;
+    }
     return tmp;
 
     // right+down
@@ -478,14 +539,18 @@ int Map::interpolateCharacterSprite( int mapIndex )
     map_[ mapIndex ].obj_yoff = 0;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 84 ) * 8 / 12 + 120;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status++;
+    }
     return tmp;
   case 95:
     map_[ mapIndex ].obj_xoff = speedstep( mapIndex, 84, 12, update );
     map_[ mapIndex ].obj_yoff = 0;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 84 ) * 8 / 12 + 120;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status = 84;
+    }
     return tmp;
 
     // turn up to left-up
@@ -496,14 +561,18 @@ int Map::interpolateCharacterSprite( int mapIndex )
     map_[ mapIndex ].obj_yoff = 0;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 96 ) + 128;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status++;
+    }
     return tmp;
   case 99:
     map_[ mapIndex ].obj_xoff = 0;
     map_[ mapIndex ].obj_yoff = 0;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 96 ) + 128;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status = 96;
+    }
     return tmp;
 
     // turn left-up to up
@@ -514,14 +583,18 @@ int Map::interpolateCharacterSprite( int mapIndex )
     map_[ mapIndex ].obj_yoff = 0;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 100 ) + 132;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status++;
+    }
     return tmp;
   case 103:
     map_[ mapIndex ].obj_xoff = 0;
     map_[ mapIndex ].obj_yoff = 0;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 100 ) + 132;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status = 100;
+    }
     return tmp;
 
     // turn up to right-up
@@ -532,12 +605,16 @@ int Map::interpolateCharacterSprite( int mapIndex )
     map_[ mapIndex ].obj_yoff = 0;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 104 ) + 136;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status++;
+    }
     return tmp;
   case 107:
     tmp = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 104 ) + 136;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status = 104;
+    }
     return tmp;
 
     // turn right-up to right
@@ -548,12 +625,16 @@ int Map::interpolateCharacterSprite( int mapIndex )
     map_[ mapIndex ].obj_yoff = 0;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 108 ) + 140;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status++;
+    }
     return tmp;
   case 111:
     tmp = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 108 ) + 140;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status = 108;
+    }
     return tmp;
 
     // turn down to left-down
@@ -564,12 +645,16 @@ int Map::interpolateCharacterSprite( int mapIndex )
     map_[ mapIndex ].obj_yoff = 0;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 112 ) + 144;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status++;
+    }
     return tmp;
   case 115:
     tmp = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 112 ) + 144;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status = 112;
+    }
     return tmp;
 
     // turn left-down to left
@@ -580,14 +665,18 @@ int Map::interpolateCharacterSprite( int mapIndex )
     map_[ mapIndex ].obj_yoff = 0;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 116 ) + 148;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status++;
+    }
     return tmp;
   case 119:
     map_[ mapIndex ].obj_xoff = 0;
     map_[ mapIndex ].obj_yoff = 0;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 116 ) + 148;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status = 116;
+    }
     return tmp;
 
     // turn down to right-down
@@ -598,12 +687,16 @@ int Map::interpolateCharacterSprite( int mapIndex )
     map_[ mapIndex ].obj_yoff = 0;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 120 ) + 152;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status++;
+    }
     return tmp;
   case 123:
     tmp = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 120 ) + 152;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status = 120;
+    }
     return tmp;
 
     // turn right-down to down
@@ -614,14 +707,18 @@ int Map::interpolateCharacterSprite( int mapIndex )
     map_[ mapIndex ].obj_yoff = 0;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 124 ) + 156;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status++;
+    }
     return tmp;
   case 127:
     map_[ mapIndex ].obj_xoff = 0;
     map_[ mapIndex ].obj_yoff = 0;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 124 ) + 156;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status = 124;
+    }
     return tmp;
 
     // turn left to left-up
@@ -632,12 +729,16 @@ int Map::interpolateCharacterSprite( int mapIndex )
     map_[ mapIndex ].obj_yoff = 0;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 128 ) + 160;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status++;
+    }
     return tmp;
   case 131:
     tmp = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 128 ) + 160;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status = 128;
+    }
     return tmp;
 
     // turn left-up to up
@@ -648,14 +749,18 @@ int Map::interpolateCharacterSprite( int mapIndex )
     map_[ mapIndex ].obj_yoff = 0;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 132 ) + 164;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status++;
+    }
     return tmp;
   case 135:
     map_[ mapIndex ].obj_xoff = 0;
     map_[ mapIndex ].obj_yoff = 0;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 132 ) + 164;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status = 132;
+    }
     return tmp;
 
     // turn left to left-down
@@ -666,12 +771,16 @@ int Map::interpolateCharacterSprite( int mapIndex )
     map_[ mapIndex ].obj_yoff = 0;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 136 ) + 168;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status++;
+    }
     return tmp;
   case 139:
     tmp = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 136 ) + 168;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status = 136;
+    }
     return tmp;
 
     // turn left-down to down
@@ -682,14 +791,18 @@ int Map::interpolateCharacterSprite( int mapIndex )
     map_[ mapIndex ].obj_yoff = 0;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 140 ) + 172;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status++;
+    }
     return tmp;
   case 143:
     map_[ mapIndex ].obj_xoff = 0;
     map_[ mapIndex ].obj_yoff = 0;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 140 ) + 172;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status = 140;
+    }
     return tmp;
 
     // turn right to right-up
@@ -700,12 +813,16 @@ int Map::interpolateCharacterSprite( int mapIndex )
     map_[ mapIndex ].obj_yoff = 0;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 144 ) + 176;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status++;
+    }
     return tmp;
   case 147:
     tmp = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 144 ) + 176;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status = 144;
+    }
     return tmp;
 
     // turn right-up to up
@@ -716,14 +833,18 @@ int Map::interpolateCharacterSprite( int mapIndex )
     map_[ mapIndex ].obj_yoff = 0;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 148 ) + 180;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status++;
+    }
     return tmp;
   case 151:
     map_[ mapIndex ].obj_xoff = 0;
     map_[ mapIndex ].obj_yoff = 0;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 148 ) + 180;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status = 148;
+    }
     return tmp;
 
     // turn right to right-down
@@ -734,12 +855,16 @@ int Map::interpolateCharacterSprite( int mapIndex )
     map_[ mapIndex ].obj_yoff = 0;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 152 ) + 184;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status++;
+    }
     return tmp;
   case 155:
     tmp = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 152 ) + 184;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status = 152;
+    }
     return tmp;
 
     // turn right-down to down
@@ -750,14 +875,18 @@ int Map::interpolateCharacterSprite( int mapIndex )
     map_[ mapIndex ].obj_yoff = 0;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 156 ) + 188;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status++;
+    }
     return tmp;
   case 159:
     map_[ mapIndex ].obj_xoff = 0;
     map_[ mapIndex ].obj_yoff = 0;
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 156 ) + 188;
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status = 156;
+    }
     return tmp;
 
     // misc up
@@ -773,7 +902,9 @@ int Map::interpolateCharacterSprite( int mapIndex )
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 160 ) + 192 +
           ( ( int ) ( stattab[ map_[ mapIndex ].ch_stat_off ] ) << 5 );
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status++;
+    }
     return tmp;
   case 167:
     map_[ mapIndex ].obj_xoff = 0;
@@ -781,7 +912,9 @@ int Map::interpolateCharacterSprite( int mapIndex )
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 160 ) + 192 +
           ( ( int ) ( stattab[ map_[ mapIndex ].ch_stat_off ] ) << 5 );
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status = 160;
+    }
     return tmp;
 
     // misc down
@@ -797,7 +930,9 @@ int Map::interpolateCharacterSprite( int mapIndex )
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 168 ) + 200 +
           ( ( int ) ( stattab[ map_[ mapIndex ].ch_stat_off ] ) << 5 );
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status++;
+    }
     return tmp;
   case 175:
     map_[ mapIndex ].obj_xoff = 0;
@@ -805,7 +940,9 @@ int Map::interpolateCharacterSprite( int mapIndex )
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 168 ) + 200 +
           ( ( int ) ( stattab[ map_[ mapIndex ].ch_stat_off ] ) << 5 );
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status = 168;
+    }
     return tmp;
 
     // misc left
@@ -821,7 +958,9 @@ int Map::interpolateCharacterSprite( int mapIndex )
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 176 ) + 208 +
           ( ( int ) ( stattab[ map_[ mapIndex ].ch_stat_off ] ) << 5 );
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status++;
+    }
     return tmp;
   case 183:
     map_[ mapIndex ].obj_xoff = 0;
@@ -829,7 +968,9 @@ int Map::interpolateCharacterSprite( int mapIndex )
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 176 ) + 208 +
           ( ( int ) ( stattab[ map_[ mapIndex ].ch_stat_off ] ) << 5 );
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status = 176;
+    }
     return tmp;
 
     // misc right
@@ -845,7 +986,9 @@ int Map::interpolateCharacterSprite( int mapIndex )
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 184 ) + 216 +
           ( ( int ) ( stattab[ map_[ mapIndex ].ch_stat_off ] ) << 5 );
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status++;
+    }
     return tmp;
   case 191:
     map_[ mapIndex ].obj_xoff = 0;
@@ -853,7 +996,9 @@ int Map::interpolateCharacterSprite( int mapIndex )
     tmp                       = map_[ mapIndex ].ch_sprite + ( map_[ mapIndex ].ch_status - 184 ) + 216 +
           ( ( int ) ( stattab[ map_[ mapIndex ].ch_stat_off ] ) << 5 );
     if ( speedo( mapIndex ) && update )
+    {
       map_[ mapIndex ].ch_status = 184;
+    }
     return tmp;
 
   default:
