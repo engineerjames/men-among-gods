@@ -14,9 +14,13 @@ Map::Map()
   }
 }
 
-cmap* Map::getMap()
+void Map::lock()
 {
   mapMutex_.lock();
+}
+
+cmap* Map::getMap()
+{
   return map_.get();
 }
 

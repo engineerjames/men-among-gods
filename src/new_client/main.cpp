@@ -3,6 +3,7 @@
 
 #include "ClientNetworkActivity.h"
 #include "ConstantIdentifiers.h"
+#include "Map.h"
 #include "PlayerData.h"
 
 int main()
@@ -11,9 +12,10 @@ int main()
   sf::RenderWindow window( sf::VideoMode( MODEX, MODEY ), "Mercenaries of Astonia - New Client" );
   window.setFramerateLimit( 60 );
 
-  PlayerData playerData {};
+  MenAmongGods::Map map {};
+  PlayerData        playerData {};
 
-  auto client = std::make_unique< ClientNetworkActivity >( playerData, MHOST, MHOST_PORT );
+  auto client = std::make_unique< ClientNetworkActivity >( playerData, map, MHOST, MHOST_PORT );
   client->run();
 
   // Need to implement log_system_data()

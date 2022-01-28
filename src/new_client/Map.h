@@ -15,8 +15,9 @@ public:
   ~Map() = default;
 
   // We'll start by naively allowing access to the entirety of the map through
-  // public "lock/aka get" and "unlock" functions.
+  // public "lock" and "unlock" functions.
   void  unlock();
+  void  lock();
   cmap* getMap();
 
 private:

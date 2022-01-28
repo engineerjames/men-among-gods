@@ -8,6 +8,8 @@
 #include "PlayerTextInputDisplay.h"
 #include "SkillsAndAttributes.h"
 
+class PlayerData;
+
 namespace MenAmongGods
 {
 class MainUi : public MenAmongGods::Component
@@ -21,7 +23,7 @@ public:
     ERROR // Red
   };
 
-  MainUi();
+  MainUi( PlayerData& pdata );
   ~MainUi() = default;
 
   void         addMessage( LogType type, std::string text );
@@ -31,7 +33,8 @@ public:
   virtual void finalize() override;
 
 private:
-  sf::Font font_;
+  PlayerData& playerData_;
+  sf::Font    font_;
 
   sf::Text goldDisplay_;
   sf::Text textualRank_;

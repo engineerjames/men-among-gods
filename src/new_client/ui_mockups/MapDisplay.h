@@ -12,10 +12,12 @@ class TickBuffer;
 
 namespace MenAmongGods
 {
+class Map;
+
 class MapDisplay : public MenAmongGods::Component
 {
 public:
-  MapDisplay( const GraphicsCache& cache, const GraphicsIndex& index, TickBuffer& tickBuffer );
+  MapDisplay( MenAmongGods::Map& map, const GraphicsCache& cache, const GraphicsIndex& index, TickBuffer& tickBuffer );
   virtual ~MapDisplay() = default;
 
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
@@ -27,10 +29,10 @@ public:
   void saveToFile() const;
 
 private:
-  std::unique_ptr< cmap[] > map_;
+  MenAmongGods::Map&        map_;
   const GraphicsCache&      cache_;
   const GraphicsIndex&      index_;
-  TickBuffer&         tickBuffer_;
+  TickBuffer&               tickBuffer_;
   std::vector< sf::Sprite > spritesToDraw_;
   std::size_t               ticker_;
   bool                      needsToUpdate_;

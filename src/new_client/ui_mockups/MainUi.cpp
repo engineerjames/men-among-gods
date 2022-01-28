@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "../ConstantIdentifiers.h"
+#include "../PlayerData.h"
 #include "ColorPalette.h"
 #include "GuiFormatters.h"
 #include "UiPositions.h"
@@ -10,8 +11,9 @@
 namespace MenAmongGods
 {
 
-MainUi::MainUi()
+MainUi::MainUi( PlayerData& pdata )
     : MenAmongGods::Component()
+    , playerData_( pdata )
     , font_()
     , goldDisplay_()
     , textualRank_()
@@ -209,6 +211,9 @@ void MainUi::onUserInput( const sf::Event& e )
 void MainUi::update()
 {
   // Do nothing for now
+  playerData_.lock();
+
+  playerData_.unlock();
 }
 
 void MainUi::finalize()

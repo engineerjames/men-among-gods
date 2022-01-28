@@ -5,6 +5,7 @@
 
 #include "ClientMessage.h"
 #include "ConstantIdentifiers.h"
+#include "Map.h"
 #include "TickBuffer.h"
 
 ClientNetworkActivity::~ClientNetworkActivity()
@@ -22,12 +23,13 @@ ClientNetworkActivity::~ClientNetworkActivity()
   }
 }
 
-ClientNetworkActivity::ClientNetworkActivity( PlayerData& playerData, const std::string& hostIp, unsigned short hostPort )
+ClientNetworkActivity::ClientNetworkActivity( PlayerData& playerData, MenAmongGods::Map& map, const std::string& hostIp, unsigned short hostPort )
     : clientNetworkThread_()
     , clientConnection_( hostIp, hostPort )
     , cancellationRequested_( false )
     , isRunning_( false )
     , playerData_( playerData )
+    , map_( map )
 {
 }
 
@@ -62,7 +64,7 @@ void ClientNetworkActivity::startNetworkActivity()
 
   clientConnection_.sendHardwareInfo();
 
-  TickBuffer tickBuffer { playerData_ };
+  TickBuffer tickBuffer { playerData_, map_ };
 
   clientConnection_.setSocketMode( ClientConnection::SocketIOMode::NonBlocking );
 

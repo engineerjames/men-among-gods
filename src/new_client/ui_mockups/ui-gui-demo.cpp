@@ -10,6 +10,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "../ConstantIdentifiers.h"
+#include "../Map.h"
 #include "../PlayerData.h"
 #include "../TickBuffer.h"
 #include "Component.h"
@@ -54,10 +55,11 @@ int main()
     }
   }
 
-  TickBuffer tickbuffer { pdata };
+  MenAmongGods::Map map {};
+  TickBuffer        tickbuffer { pdata, map };
 
-  auto mapPtr    = new MenAmongGods::MapDisplay( cache, index, tickbuffer );
-  auto mainUiPtr = new MenAmongGods::MainUi();
+  auto mapPtr    = new MenAmongGods::MapDisplay( map, cache, index, tickbuffer );
+  auto mainUiPtr = new MenAmongGods::MainUi( pdata );
 
   mapPtr->loadFromFile( "test/mapfile.archive" );
 

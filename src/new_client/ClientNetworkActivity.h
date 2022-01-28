@@ -7,12 +7,18 @@
 
 #include "ClientConnection.h"
 #include "Compressor.h"
-#include "PlayerData.h"
+
+namespace MenAmongGods
+{
+class Map;
+}
+
+class PlayerData;
 
 class ClientNetworkActivity
 {
 public:
-  ClientNetworkActivity( PlayerData& playerData, const std::string& hostIp, unsigned short hostPort );
+  ClientNetworkActivity( PlayerData& playerData, MenAmongGods::Map& map, const std::string& hostIp, unsigned short hostPort );
   void run() noexcept;
   void stop() noexcept;
   ~ClientNetworkActivity();
@@ -25,6 +31,7 @@ private:
   std::atomic< bool > cancellationRequested_;
   bool                isRunning_;
   PlayerData&         playerData_;
+  MenAmongGods::Map&  map_;
 };
 
 #endif

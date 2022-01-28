@@ -7,15 +7,19 @@
 
 #include "Compressor.h"
 
+namespace MenAmongGods
+{
+class Map;
+}
+
 class PlayerData;
-struct cmap;
 
 class TickBuffer
 {
 public:
   static constexpr const unsigned int TSIZE = 131072;
 
-  TickBuffer( PlayerData& playerData );
+  TickBuffer( PlayerData& playerData, MenAmongGods::Map& map );
   ~TickBuffer() = default;
 
   std::uint8_t* getBufferStart() noexcept;
@@ -24,7 +28,6 @@ public:
   void          processTicks();
 
   unsigned int getCTick() const;
-  const cmap*  getMap() const;
 
 private:
   int processServerCommand( const std::uint8_t* bufferStart );
@@ -81,7 +84,7 @@ private:
 
   Compressor                        compressor_;
   PlayerData&                       playerData_;
-  std::unique_ptr< cmap[] >         map_;
+  MenAmongGods::Map&                map_;
   std::array< std::uint8_t, TSIZE > tickBuffer_;
   unsigned int                      tickSize_;
   unsigned int                      tickStart_;
