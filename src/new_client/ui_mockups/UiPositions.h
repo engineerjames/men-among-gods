@@ -11,7 +11,7 @@ static const sf::Vector2f goldDisplayPosition { 452.0f, 185.0f };
 static const sf::Vector2f textualRankPosition { 413.0f, 171.0f };
 
 // User input text box
-static const sf::Vector2f userInputPosition { 500.0f, 225.0f };
+static const sf::Vector2f userInputPosition { 500.0f, 227.0f };
 
 // Display beneath the message box with WV/AV/Exp
 static const sf::Vector2f avLabelPosition { 641.0f, 241.0f };
