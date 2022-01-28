@@ -241,4 +241,18 @@ enum struct PLACEMENT_BITS
 #define DR_AREABUILD1 9
 #define DR_AREABUILD2 10
 
+// wear positions
+#define WN_HEAD 0
+#define WN_NECK 1
+#define WN_BODY 2
+#define WN_ARMS 3
+#define WN_BELT 4
+#define WN_LEGS 5
+#define WN_FEET 6
+#define WN_LHAND 7 // shield
+#define WN_RHAND 8 // weapon
+#define WN_CLOAK 9
+#define WN_LRING 10
+#define WN_RRING 11
+
 #endif // CONSTANT_IDENTIFIERS_H

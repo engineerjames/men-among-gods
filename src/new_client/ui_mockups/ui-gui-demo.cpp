@@ -9,6 +9,8 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "../ConstantIdentifiers.h"
+#include "../PlayerData.h"
 #include "GraphicsCache.h"
 #include "GraphicsIndex.h"
 #include "MainUi.h"
@@ -44,6 +46,23 @@ int main()
 
   sf::Sprite bg = cache.getSprite( 1 );
 
+  PlayerData pdata {};
+
+  pdata.loadFromFile( "/home/jarmes/git/men-among-gods/src/new_client/ui_mockups/player.archive" );
+  static int wntab[ 20 ] = { WN_HEAD, WN_CLOAK, WN_BODY, WN_ARMS, WN_NECK, WN_BELT, WN_RHAND, WN_LHAND, WN_RRING, WN_LRING,
+                             WN_LEGS, WN_FEET,  0,       0,       0,       0,       0,        0,        0,        0 };
+
+  std::vector< sf::Sprite > inventorySpritesToRender {};
+  for ( unsigned int n = 0; n < 12; n++ )
+  {
+    if ( pdata.getClientSidePlayerInfo().worn[ wntab[ n ] ] != 0 )
+    {
+      sf::Sprite newSprite = cache.getSprite( pdata.getClientSidePlayerInfo().worn[ wntab[ n ] ] );
+      newSprite.setPosition( sf::Vector2f { static_cast< float >( 303 + ( n % 2 ) * 35 ), static_cast< float >( 2 + ( n / 2 ) * 35 ) } );
+      inventorySpritesToRender.push_back( newSprite );
+    }
+  }
+
   while ( window.isOpen() )
   {
     sf::Event event;
@@ -74,6 +93,10 @@ int main()
     window.draw( map );
     window.draw( bg );
     window.draw( mainui );
+    for ( const auto& i : inventorySpritesToRender )
+    {
+      window.draw( i );
+    }
     window.display();
   }
 
