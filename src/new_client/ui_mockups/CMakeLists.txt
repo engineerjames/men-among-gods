@@ -23,7 +23,7 @@ target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS})
 # Test Application For GUI
 set(target ui-gui-demo)
 add_executable(${target} ui-gui-demo.cpp)
-target_link_libraries(${target} PRIVATE sfml-graphics pthread MenAmongGodsGraphics Boost::serialization)
+target_link_libraries(${target} PRIVATE sfml-graphics pthread MenAmongGodsGraphics Boost::serialization client)
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
 

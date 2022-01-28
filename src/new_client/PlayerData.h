@@ -31,6 +31,8 @@ public:
   // Some initial debug-only functionality
   void printMapInformation() const;
 
+  void loadFromFile( const std::string& filePath );
+
 private:
   // Holds the name, description, and some client-related settings (split apart later)
   pdata                     playerInfo_; // This is more what initially gets sent to the server

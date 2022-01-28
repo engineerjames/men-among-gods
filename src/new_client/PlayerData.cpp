@@ -3,6 +3,8 @@
 #include <fstream>
 #include <iostream>
 
+#include <boost/archive/text_iarchive.hpp>
+
 namespace
 {
 
@@ -172,5 +174,15 @@ void PlayerData::printMapInformation() const
   {
     playeroa << clientSidePlayerInfo_;
   }
+  playerFile.close();
+}
+
+void PlayerData::loadFromFile( const std::string& filePath )
+{
+  std::ifstream                 playerFile( filePath );
+  boost::archive::text_iarchive ia { playerFile };
+
+  ia >> clientSidePlayerInfo_;
+
   playerFile.close();
 }
