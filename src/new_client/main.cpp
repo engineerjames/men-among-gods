@@ -32,7 +32,5 @@ int main()
     window.display();
   }
 
-  playerData.printMapInformation();
-
   return 0;
 }

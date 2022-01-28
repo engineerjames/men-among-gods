@@ -8,14 +8,14 @@ add_library(${target}
                 GraphicsIndex.cpp
                 MainUi.h
                 MainUi.cpp
-                Map.h
-                Map.cpp
+                MapDisplay.h
+                MapDisplay.cpp
                 SkillsAndAttributes.h
                 SkillsAndAttributes.cpp
-                TextBox.h
-                TextBox.cpp
-                TextInput.h
-                TextInput.cpp)
+                PlayerLogDisplay.h
+                PlayerLogDisplay.cpp
+                PlayerTextInputDisplay.h
+                PlayerTextInputDisplay.cpp)
 target_link_libraries(${target} PRIVATE sfml-graphics pthread Boost::serialization zip)
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS})
@@ -52,7 +52,7 @@ add_custom_command(
 
             COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../gfx/gfx.zip $<TARGET_FILE_DIR:${target}>/gfx
             COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/gx00.idx $<TARGET_FILE_DIR:${target}>/gfx
-            
+
             COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../fonts/onuava.ttf $<TARGET_FILE_DIR:${target}>/fonts
 
             COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/mapfile.archive $<TARGET_FILE_DIR:${target}>/test

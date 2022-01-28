@@ -82,14 +82,8 @@ PlayerData::PlayerData()
     , clientSidePlayerInfo_()
     , okey_()
     , skillsList_( &static_skilltab[ 0 ] )
-    , map_( std::make_unique< cmap[] >( MAPX * MAPY ) )
     , look_()
 {
-  for ( unsigned int i = 0; i < MAPX * MAPY; ++i )
-  {
-    map_[ i ].ba_sprite = SPR_EMPTY;
-  }
-
   for ( unsigned int i = 0; i < SKILLTAB_SIZE; ++i )
   {
     skillsList_[ i ].attrib[ 0 ] = 1;
@@ -126,11 +120,6 @@ pdata& PlayerData::getPlayerInfo()
   return playerInfo_;
 }
 
-cmap* PlayerData::getMap()
-{
-  return map_.get();
-}
-
 skilltab* PlayerData::getSkillList()
 {
   return skillsList_;
@@ -151,22 +140,8 @@ look& PlayerData::getLook()
   return look_;
 }
 
-void PlayerData::printMapInformation() const
+void PlayerData::saveToFile() const
 {
-  std::ofstream                 mapFile( "mapfile.archive" );
-  boost::archive::text_oarchive oa { mapFile };
-  if ( mapFile.is_open() )
-  {
-    for ( unsigned int x = 0; x < MAPX; ++x )
-    {
-      for ( unsigned int y = 0; y < MAPY; ++y )
-      {
-        oa << map_[ x + y * MAPX ];
-      }
-    }
-  }
-  mapFile.close();
-
   std::ofstream                 playerFile( "player.archive" );
   boost::archive::text_oarchive playeroa { playerFile };
 

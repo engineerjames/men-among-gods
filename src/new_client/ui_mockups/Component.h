@@ -1,6 +1,8 @@
 #ifndef MEN_AMONG_GODS_COMPONENT_H
 #define MEN_AMONG_GODS_COMPONENT_H
 
+#include <SFML/Graphics/Drawable.hpp>
+
 namespace sf
 {
 class Event;
@@ -8,7 +10,7 @@ class Event;
 
 namespace MenAmongGods
 {
-class Component
+class Component : public sf::Drawable
 {
 public:
   // Update is called *at least* once per frame--this means individual components

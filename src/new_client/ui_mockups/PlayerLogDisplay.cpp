@@ -1,4 +1,4 @@
-#include "TextBox.h"
+#include "PlayerLogDisplay.h"
 
 #include <fstream>
 #include <iostream>
@@ -6,30 +6,31 @@
 #include "../ConstantIdentifiers.h"
 #include "ColorPalette.h"
 
-TextBox::TextBox()
-    : sf::Drawable()
-    , sf::Transformable()
+namespace MenAmongGods
+{
+PlayerLogDisplay::PlayerLogDisplay()
+    : sf::Transformable()
     , MenAmongGods::Component()
     , messageLog_()
 {
 }
 
-void TextBox::update()
+void PlayerLogDisplay::update()
 {
   // Do nothing for now.
 }
 
-void TextBox::onUserInput( const sf::Event& )
+void PlayerLogDisplay::onUserInput( const sf::Event& )
 {
   // Do nothing for now.
 }
 
-void TextBox::finalize()
+void PlayerLogDisplay::finalize()
 {
   // Do nothing for now.
 }
 
-void TextBox::addMessage( const sf::Text& newMsg )
+void PlayerLogDisplay::addMessage( const sf::Text& newMsg )
 {
   messageLog_.push_back( newMsg );
 
@@ -47,7 +48,7 @@ void TextBox::addMessage( const sf::Text& newMsg )
   }
 }
 
-void TextBox::writeLogToFile( const std::string& pathToFile ) const
+void PlayerLogDisplay::writeLogToFile( const std::string& pathToFile ) const
 {
   std::ofstream fs { pathToFile };
 
@@ -60,7 +61,7 @@ void TextBox::writeLogToFile( const std::string& pathToFile ) const
   }
 }
 
-void TextBox::draw( sf::RenderTarget& target, sf::RenderStates states ) const
+void PlayerLogDisplay::draw( sf::RenderTarget& target, sf::RenderStates states ) const
 {
   const float minimumYPosition = 3.0f;
 
@@ -76,3 +77,4 @@ void TextBox::draw( sf::RenderTarget& target, sf::RenderStates states ) const
     target.draw( *msg, states );
   }
 }
+} // namespace MenAmongGods

@@ -3,10 +3,12 @@
 
 #include <array>
 #include <cstdint>
+#include <memory>
 
 #include "Compressor.h"
 
 class PlayerData;
+struct cmap;
 
 class TickBuffer
 {
@@ -22,6 +24,9 @@ public:
   void          processTicks();
 
   unsigned int getCTick() const;
+  const cmap*  getMap() const;
+
+  void loadMap( const cmap* map );
 
 private:
   int processServerCommand( const std::uint8_t* bufferStart );
@@ -78,6 +83,7 @@ private:
 
   Compressor                        compressor_;
   PlayerData&                       playerData_;
+  std::unique_ptr< cmap[] >         map_;
   std::array< std::uint8_t, TSIZE > tickBuffer_;
   unsigned int                      tickSize_;
   unsigned int                      tickStart_;

@@ -7,9 +7,11 @@
 #include "GuiFormatters.h"
 #include "UiPositions.h"
 
+namespace MenAmongGods
+{
+
 MainUi::MainUi()
-    : sf::Drawable()
-    , MenAmongGods::Component()
+    : MenAmongGods::Component()
     , font_()
     , goldDisplay_()
     , textualRank_()
@@ -215,3 +217,4 @@ void MainUi::finalize()
   userInput_.finalize();
   msgBox_.finalize();
 }
+} // namespace MenAmongGods

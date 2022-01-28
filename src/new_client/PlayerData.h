@@ -28,9 +28,7 @@ public:
   void lock();
   void unlock();
 
-  // Some initial debug-only functionality
-  void printMapInformation() const;
-
+  void saveToFile() const;
   void loadFromFile( const std::string& filePath );
 
 private:
@@ -40,7 +38,6 @@ private:
   cplayer                   clientSidePlayerInfo_; // This is more the truth of what your character is...
   key                       okey_;
   skilltab*                 skillsList_;
-  std::unique_ptr< cmap[] > map_;
   look                      look_;
   std::mutex                ioMutex_;
 };

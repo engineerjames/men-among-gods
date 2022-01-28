@@ -16,7 +16,7 @@
 #include "GraphicsCache.h"
 #include "GraphicsIndex.h"
 #include "MainUi.h"
-#include "Map.h"
+#include "MapDisplay.h"
 
 int main()
 {
@@ -56,15 +56,15 @@ int main()
 
   TickBuffer tickbuffer { pdata };
 
-  auto mapPtr    = new MenAmongGods::Map( cache, index, tickbuffer );
-  auto mainUiPtr = new MainUi();
+  auto mapPtr    = new MenAmongGods::MapDisplay( cache, index, tickbuffer );
+  auto mainUiPtr = new MenAmongGods::MainUi();
 
   mapPtr->loadFromFile( "test/mapfile.archive" );
 
-  mainUiPtr->addMessage( MainUi::LogType::CHAT, "Mayest thou past the last gate." );
-  mainUiPtr->addMessage( MainUi::LogType::LOG, "A new player has entered the game." );
-  mainUiPtr->addMessage( MainUi::LogType::ERROR, "WARNING! This is an ERROR!!!" );
-  mainUiPtr->addMessage( MainUi::LogType::INFO, "You have taken 12 damage." );
+  mainUiPtr->addMessage( MenAmongGods::MainUi::LogType::CHAT, "Mayest thou past the last gate." );
+  mainUiPtr->addMessage( MenAmongGods::MainUi::LogType::LOG, "A new player has entered the game." );
+  mainUiPtr->addMessage( MenAmongGods::MainUi::LogType::ERROR, "WARNING! This is an ERROR!!!" );
+  mainUiPtr->addMessage( MenAmongGods::MainUi::LogType::INFO, "You have taken 12 damage." );
 
   std::vector< std::unique_ptr< MenAmongGods::Component > > components;
 
@@ -95,7 +95,7 @@ int main()
     if ( ( clock.getElapsedTime() - time ).asSeconds() > 4.0f )
     {
       // Add new message
-      mainUiPtr->addMessage( MainUi::LogType::LOG, "Periodic update test message." );
+      mainUiPtr->addMessage( MenAmongGods::MainUi::LogType::LOG, "Periodic update test message." );
       time = clock.getElapsedTime();
     }
 

@@ -1,4 +1,4 @@
-#include "Map.h"
+#include "MapDisplay.h"
 
 #include <boost/archive/text_iarchive.hpp>
 #include <fstream>
@@ -76,9 +76,8 @@ const unsigned char speedtab[ 20 ][ 20 ] = {
 namespace MenAmongGods
 {
 
-Map::Map( const GraphicsCache& cache, const GraphicsIndex& index, const TickBuffer& tickBuffer )
-    : sf::Drawable()
-    , MenAmongGods::Component()
+MapDisplay::MapDisplay( const GraphicsCache& cache, const GraphicsIndex& index, TickBuffer& tickBuffer )
+    : MenAmongGods::Component()
     , map_( std::make_unique< cmap[] >( MAPX * MAPY ) )
     , cache_( cache )
     , index_( index )
@@ -88,14 +87,18 @@ Map::Map( const GraphicsCache& cache, const GraphicsIndex& index, const TickBuff
     , needsToUpdate_( true )
     , ctick_( 0 )
 {
+  for ( unsigned int i = 0; i < MAPX * MAPY; ++i )
+  {
+    map_[ i ].ba_sprite = SPR_EMPTY;
+  }
 }
 
-int Map::speedo( int n )
+int MapDisplay::speedo( int n )
 {
   return speedtab[ map_[ n ].ch_speed ][ 0 ]; // 0 -> ctick
 }
 
-void Map::draw( sf::RenderTarget& target, sf::RenderStates states ) const
+void MapDisplay::draw( sf::RenderTarget& target, sf::RenderStates states ) const
 {
   for ( const auto& tile : spritesToDraw_ )
   {
@@ -103,17 +106,17 @@ void Map::draw( sf::RenderTarget& target, sf::RenderStates states ) const
   }
 }
 
-void Map::finalize()
+void MapDisplay::finalize()
 {
   needsToUpdate_ = true;
 }
 
-void Map::onUserInput( const sf::Event& )
+void MapDisplay::onUserInput( const sf::Event& )
 {
   // Do nothing for now
 }
 
-void Map::update()
+void MapDisplay::update()
 {
   // TODO: Handle mouse events here? Maybe we should have a user input component instead...
 
@@ -124,6 +127,15 @@ void Map::update()
     needsToUpdate_ = false;
 
     ctick_ = tickBuffer_.getCTick();
+
+    // Copy from Tickbuffer -> here so we get the most
+    // updated copy.
+    // const cmap* tbMap = tickBuffer_.getMap();
+    // for ( unsigned int n = 0; n < TILEX * TILEY; ++n )
+    // {
+    //   map_[ n ] = tbMap[ n ];
+    // }
+    // TODO: Can't whole-sale copy... Maybe tickbuffer and mapDisplay should just share a Map instance?
 
     // Need to perform the regular "engine tick" here:
     for ( unsigned int n = 0; n < TILEX * TILEY; n++ )
@@ -530,7 +542,7 @@ void Map::update()
   }
 }
 
-void Map::loadFromFile( std::string filePath )
+void MapDisplay::loadFromFile( std::string filePath )
 {
   std::ifstream                 mapFile( filePath );
   boost::archive::text_iarchive ia( mapFile );
@@ -549,9 +561,11 @@ void Map::loadFromFile( std::string filePath )
   }
 
   mapFile.close();
+
+  tickBuffer_.loadMap( map_.get() );
 }
 
-int Map::speedstep( int n, int d, int s, int update )
+int MapDisplay::speedstep( int n, int d, int s, int update )
 {
   int hard_step {};
   int soft_step {};
@@ -631,7 +645,7 @@ static int stattab[] = { 0, 1, 1, 6, 6, 2, 3, 4, 5, 7, 4 };
 #define do_idle( ani, sprite ) ( sprite == 22480 ? ani : 0 )
 
 // eng_char
-int Map::interpolateCharacterSprite( int mapIndex )
+int MapDisplay::interpolateCharacterSprite( int mapIndex )
 {
   int tmp, update = 1;
 
@@ -1424,7 +1438,7 @@ int Map::interpolateCharacterSprite( int mapIndex )
 }
 
 // eng_item
-int Map::interpolateItemSprite( int mapIndex )
+int MapDisplay::interpolateItemSprite( int mapIndex )
 {
   unsigned int ctick = ctick_;
   switch ( map_[ mapIndex ].it_status )
@@ -1580,7 +1594,7 @@ int Map::interpolateItemSprite( int mapIndex )
   }
 }
 
-void Map::copysprite( int nr, int effect, int xpos, int ypos, int xoff, int yoff )
+void MapDisplay::copysprite( int nr, int effect, int xpos, int ypos, int xoff, int yoff )
 {
   if ( nr == 0 )
   {
@@ -1634,6 +1648,23 @@ void Map::copysprite( int nr, int effect, int xpos, int ypos, int xoff, int yoff
   }
   //   if ( sprtab[ nr ].alpha )
   //     display_alpha( sprtab[ nr ].alpha, sprtab[ nr ].alphacnt, rx, ry, effect );
+}
+
+void MapDisplay::saveToFile() const
+{
+  std::ofstream                 mapFile( "mapfile.archive" );
+  boost::archive::text_oarchive oa { mapFile };
+  if ( mapFile.is_open() )
+  {
+    for ( unsigned int x = 0; x < MAPX; ++x )
+    {
+      for ( unsigned int y = 0; y < MAPY; ++y )
+      {
+        oa << map_[ x + y * MAPX ];
+      }
+    }
+  }
+  mapFile.close();
 }
 
 } // namespace MenAmongGods

@@ -4,11 +4,13 @@
 #include <SFML/Graphics.hpp>
 
 #include "Component.h"
+#include "PlayerLogDisplay.h"
+#include "PlayerTextInputDisplay.h"
 #include "SkillsAndAttributes.h"
-#include "TextBox.h"
-#include "TextInput.h"
 
-class MainUi : public sf::Drawable, public MenAmongGods::Component
+namespace MenAmongGods
+{
+class MainUi : public MenAmongGods::Component
 {
 public:
   enum struct LogType
@@ -24,8 +26,8 @@ public:
 
   void         addMessage( LogType type, std::string text );
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
-  virtual void update( ) override;
-  virtual void onUserInput(const sf::Event& e ) override;
+  virtual void update() override;
+  virtual void onUserInput( const sf::Event& e ) override;
   virtual void finalize() override;
 
 private:
@@ -55,8 +57,8 @@ private:
 
   SkillsAndAttributes skillsAndAttributes_;
 
-  TextBox   msgBox_;
-  TextInput userInput_;
+  PlayerLogDisplay       msgBox_;
+  PlayerTextInputDisplay userInput_;
 };
-
+} // namespace MenAmongGods
 #endif

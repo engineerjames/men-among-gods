@@ -6,11 +6,13 @@
 
 #include "Component.h"
 
-class TextBox : public sf::Drawable, public sf::Transformable, public MenAmongGods::Component
+namespace MenAmongGods
+{
+class PlayerLogDisplay : public sf::Transformable, public MenAmongGods::Component
 {
 public:
-  TextBox();
-  ~TextBox() = default;
+  PlayerLogDisplay();
+  ~PlayerLogDisplay() = default;
 
   void         addMessage( const sf::Text& newMsg );
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
@@ -22,5 +24,5 @@ public:
 private:
   std::vector< sf::Text > messageLog_;
 };
-
+} // namespace MenAmongGods
 #endif

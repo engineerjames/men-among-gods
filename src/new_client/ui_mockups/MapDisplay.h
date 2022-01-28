@@ -1,5 +1,5 @@
-#ifndef MEN_AMONG_GODS_MAP_H
-#define MEN_AMONG_GODS_MAP_H
+#ifndef MEN_AMONG_GODS_MAP_DISPLAY_H
+#define MEN_AMONG_GODS_MAP_DISPLAY_H
 
 #include <SFML/Graphics.hpp>
 
@@ -12,11 +12,11 @@ class TickBuffer;
 
 namespace MenAmongGods
 {
-class Map : public sf::Drawable, public MenAmongGods::Component
+class MapDisplay : public MenAmongGods::Component
 {
 public:
-  Map( const GraphicsCache& cache, const GraphicsIndex& index, const TickBuffer& tickBuffer );
-  virtual ~Map() = default;
+  MapDisplay( const GraphicsCache& cache, const GraphicsIndex& index, TickBuffer& tickBuffer );
+  virtual ~MapDisplay() = default;
 
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
   virtual void update() override;
@@ -24,12 +24,13 @@ public:
   virtual void finalize() override;
 
   void loadFromFile( std::string filePath );
+  void saveToFile() const;
 
 private:
   std::unique_ptr< cmap[] > map_;
   const GraphicsCache&      cache_;
   const GraphicsIndex&      index_;
-  const TickBuffer&         tickBuffer_;
+  TickBuffer&         tickBuffer_;
   std::vector< sf::Sprite > spritesToDraw_;
   std::size_t               ticker_;
   bool                      needsToUpdate_;
