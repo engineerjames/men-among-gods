@@ -26,8 +26,6 @@ public:
   unsigned int getCTick() const;
   const cmap*  getMap() const;
 
-  void loadMap( const cmap* map );
-
 private:
   int processServerCommand( const std::uint8_t* bufferStart );
 

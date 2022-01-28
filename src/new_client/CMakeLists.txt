@@ -12,19 +12,21 @@ set( sources
     ClientMessage.cpp
     ClientNetworkActivity.cpp
     Compressor.cpp
+    Encoder.cpp
+    Map.cpp
     PlayerData.cpp
     ServerMessage.cpp
     TickBuffer.cpp
-    Encoder.cpp
 )
 set( headers
-    ConstantIdentifiers.h
     ClientConnection.h
     ClientMessage.h
     ClientNetworkActivity.h
     ClientTypes.h
     Compressor.h
+    ConstantIdentifiers.h
     Encoder.h
+    Map.h
     PlayerData.h
     ServerMessage.h
     TickBuffer.h

@@ -19,8 +19,7 @@ public:
   const char* getPlayerDescription() const;
 
   pdata&    getPlayerInfo();
-  cplayer&  getClientSidePlayerInfo();
-  cmap*     getMap();
+  cplayer&  getClientSidePlayerInfo();  
   skilltab* getSkillList();
   key&      getOkey();
   look&     getLook();

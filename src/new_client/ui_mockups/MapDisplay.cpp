@@ -561,8 +561,6 @@ void MapDisplay::loadFromFile( std::string filePath )
   }
 
   mapFile.close();
-
-  tickBuffer_.loadMap( map_.get() );
 }
 
 int MapDisplay::speedstep( int n, int d, int s, int update )

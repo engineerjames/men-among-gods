@@ -31,14 +31,6 @@ const cmap* TickBuffer::getMap() const
   return map_.get();
 }
 
-void TickBuffer::loadMap( const cmap* map )
-{
-  for ( unsigned int n = 0; n < TILEX * TILEY; ++n )
-  {
-    map_[ n ] = map[ n ];
-  }
-}
-
 std::uint8_t* TickBuffer::getBufferStart() noexcept
 {
   return &tickBuffer_.at( tickSize_ );
