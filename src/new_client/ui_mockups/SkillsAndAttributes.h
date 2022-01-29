@@ -33,11 +33,11 @@ public:
   virtual void finalize() override;
 
 private:
-  const sf::Font&                    font_;
-  PlayerData&                        playerData_;
-  std::array< SkillRow, 5 >          attributes_;
-  std::array< SkillRow, MAX_SKILLS > skills_;
-  sf::RectangleShape                 skillScrollBar_;
+  const sf::Font&                        font_;
+  PlayerData&                            playerData_;
+  std::array< SkillRow, MAX_ATTRIBUTES > attributes_;
+  std::array< SkillRow, MAX_SKILLS >     skills_;
+  sf::RectangleShape                     skillScrollBar_;
 };
 
 #endif

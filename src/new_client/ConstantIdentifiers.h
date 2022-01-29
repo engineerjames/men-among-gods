@@ -5,10 +5,10 @@
 #include <string>
 
 // Based heavily off of common.h
-static const std::string   MNAME      = "Asguard";
+static const std::string   MNAME      = "Men Among Gods";
 static const std::string   MHELP      = "http://mercaston.dnsalias.net/help.html";
 static const std::string   MNEWS      = "http://mercaston.dnsalias.net/news.html";
-static const std::string   MHOST      = "127.0.0.1";
+static const std::string   MHOST      = "ec2-3-90-219-226.compute-1.amazonaws.com";
 static const constexpr int MHOST_PORT = 5555;
 
 static const constexpr int AT_BRAVE = 0;
@@ -20,7 +20,8 @@ static const constexpr int AT_STREN = 4;
 static const constexpr int   FONT_SIZE      = 10;
 static const constexpr float LETTER_SPACING = 1.0f;
 
-static const constexpr int MAX_SKILLS = 50;
+static const constexpr int MAX_SKILLS     = 50;
+static const constexpr int MAX_ATTRIBUTES = 5;
 
 static const constexpr int          TILEX     = 34;
 static const constexpr int          TILEY     = 34;

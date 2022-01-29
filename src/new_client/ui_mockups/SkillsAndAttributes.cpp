@@ -253,7 +253,7 @@ void SkillsAndAttributes::update()
   cplayer& player = playerData_.getClientSidePlayerInfo();
 
   // Attributes
-  for ( unsigned int i = 0; i < 5; ++i ) // TODO: We should just have 5 attributes here
+  for ( unsigned int i = 0; i < MAX_ATTRIBUTES; ++i ) 
   {
     attributes_[ i ].displayValue_.setString( std::to_string( player.attrib[ i ][ 3 ] ) );
     attributes_[ i ].expRequired_.setString( std::to_string( attrib_needed( i, player.attrib[ i ][ 0 ], player ) ) );

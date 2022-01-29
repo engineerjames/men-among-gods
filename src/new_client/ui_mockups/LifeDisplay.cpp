@@ -18,7 +18,7 @@ LifeDisplay::LifeDisplay( const sf::Font& font, PlayerData& playerData )
 
   for ( unsigned int i = 0; i < lifeDisplay_.size(); ++i )
   {
-    const sf::Vector2f delta { 0.0f, ( 5 + i ) * 14.0f };
+    const sf::Vector2f delta { 0.0f, ( MAX_ATTRIBUTES + i ) * 14.0f };
     lifeDisplay_[ i ].name_.setPosition( MenAmongGods::initialAttributePosition + delta );
 
     lifeDisplay_[ i ].displayValue_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 115.0f, delta.y } );
