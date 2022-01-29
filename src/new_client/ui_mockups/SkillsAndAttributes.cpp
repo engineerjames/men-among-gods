@@ -1,12 +1,64 @@
 #include "SkillsAndAttributes.h"
 
 #include "GuiFormatters.h"
+#include "UiPositions.h"
 
 // TODO: Fix include directories
 #include "../ClientTypes.h"
+#include "../PlayerData.h"
 
 namespace
 {
+
+int attrib_needed( int n, int v, cplayer& pl )
+{
+  if ( v >= pl.attrib[ n ][ 2 ] )
+  {
+    return std::numeric_limits< int >::max();
+  }
+
+  return v * v * v * pl.attrib[ n ][ 3 ] / 20;
+}
+
+// int hp_needed( int v, cplayer& pl )
+// {
+//   if ( v >= pl.hp[ 2 ] )
+//   {
+//     return std::numeric_limits< int >::max();
+//   }
+
+//   return v * pl.hp[ 3 ];
+// }
+
+// int end_needed( int v, cplayer& pl )
+// {
+//   if ( v >= pl.end[ 2 ] )
+//   {
+//     return std::numeric_limits< int >::max();
+//   }
+
+//   return v * pl.end[ 3 ] / 2;
+// }
+
+// int mana_needed( int v, cplayer& pl )
+// {
+//   if ( v >= pl.mana[ 2 ] )
+//   {
+//     return std::numeric_limits< int >::max();
+//   }
+
+//   return v * pl.mana[ 3 ];
+// }
+
+int skill_needed( int n, int v, cplayer& pl )
+{
+  if ( v >= pl.skill[ n ][ 2 ] )
+  {
+    return std::numeric_limits< int >::max();
+  }
+
+  return std::max( v, v * v * v * pl.skill[ n ][ 3 ] / 40 );
+}
 
 // clang-format off
 skilltab static_skilltab[MAX_SKILLS]={
@@ -100,12 +152,11 @@ SkillsAndAttributes::SkillRow::SkillRow()
   minus_.setCharacterSize( FONT_SIZE );
 }
 
-SkillsAndAttributes::SkillsAndAttributes( const sf::Font& font )
+SkillsAndAttributes::SkillsAndAttributes( const sf::Font& font, PlayerData& playerData )
     : font_( font )
+    , playerData_( playerData )
     , attributes_()
     , skills_()
-    , initialAttributePosition_( 3, 1 )
-    , initialSkillPosition_( 3, 113 )
     , skillScrollBar_()
 {
 
@@ -130,11 +181,11 @@ SkillsAndAttributes::SkillsAndAttributes( const sf::Font& font )
     skills_[ i ].plus_.setFont( font_ );
     skills_[ i ].minus_.setFont( font_ );
 
-    skills_[ i ].name_.setPosition( initialSkillPosition_ + delta );
-    skills_[ i ].displayValue_.setPosition( initialSkillPosition_ + sf::Vector2f { 115.0f, delta.y } );
-    skills_[ i ].plus_.setPosition( initialSkillPosition_ + sf::Vector2f { 131.0f, delta.y } );
-    skills_[ i ].minus_.setPosition( initialSkillPosition_ + sf::Vector2f { 146.0f, delta.y } );
-    skills_[ i ].expRequired_.setPosition( initialSkillPosition_ + sf::Vector2f { 165.0f, delta.y } );
+    skills_[ i ].name_.setPosition( MenAmongGods::initialSkillPosition + delta );
+    skills_[ i ].displayValue_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 115.0f, delta.y } );
+    skills_[ i ].plus_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 131.0f, delta.y } );
+    skills_[ i ].minus_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 146.0f, delta.y } );
+    skills_[ i ].expRequired_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 165.0f, delta.y } );
   }
 
   attributes_[ 0 ].name_.setString( "Braveness" );
@@ -142,21 +193,18 @@ SkillsAndAttributes::SkillsAndAttributes( const sf::Font& font )
   attributes_[ 2 ].name_.setString( "Intuition" );
   attributes_[ 3 ].name_.setString( "Agility" );
   attributes_[ 4 ].name_.setString( "Strength" );
-  attributes_[ 5 ].name_.setString( "Hitpoints" );
-  attributes_[ 6 ].name_.setString( "Endurance" );
-  attributes_[ 7 ].name_.setString( "Mana" );
 
   // Position attributes according to legacy layout
   for ( unsigned int i = 0; i < attributes_.size(); ++i )
   {
     const sf::Vector2f delta { 0.0f, i * 14.0f };
 
-    attributes_[ i ].name_.setPosition( initialAttributePosition_ + delta );
+    attributes_[ i ].name_.setPosition( MenAmongGods::initialAttributePosition + delta );
 
-    attributes_[ i ].displayValue_.setPosition( initialAttributePosition_ + sf::Vector2f { 115.0f, delta.y } );
-    attributes_[ i ].plus_.setPosition( initialAttributePosition_ + sf::Vector2f { 131.0f, delta.y } );
-    attributes_[ i ].minus_.setPosition( initialAttributePosition_ + sf::Vector2f { 146.0f, delta.y } );
-    attributes_[ i ].expRequired_.setPosition( initialAttributePosition_ + sf::Vector2f { 165.0f, delta.y } );
+    attributes_[ i ].displayValue_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 115.0f, delta.y } );
+    attributes_[ i ].plus_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 131.0f, delta.y } );
+    attributes_[ i ].minus_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 146.0f, delta.y } );
+    attributes_[ i ].expRequired_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 165.0f, delta.y } );
 
     attributes_[ i ].displayValue_.setString( "0" );
     attributes_[ i ].expRequired_.setString( MenAmongGods::addThousandsSeparator( 1000u ) );
@@ -198,4 +246,32 @@ void SkillsAndAttributes::draw( sf::RenderTarget& target, sf::RenderStates state
 
   // Draw scrollbar
   target.draw( skillScrollBar_, states );
+}
+
+void SkillsAndAttributes::update()
+{
+  cplayer& player = playerData_.getClientSidePlayerInfo();
+
+  // Attributes
+  for ( unsigned int i = 0; i < 5; ++i ) // TODO: We should just have 5 attributes here
+  {
+    attributes_[ i ].displayValue_.setString( std::to_string( player.attrib[ i ][ 3 ] ) );
+    attributes_[ i ].expRequired_.setString( std::to_string( attrib_needed( i, player.attrib[ i ][ 0 ], player ) ) );
+  }
+
+  // Skills
+  for ( unsigned int i = 0; i < MAX_SKILLS; ++i )
+  {
+    skills_[ i ].displayValue_.setString( std::to_string( player.skill[ i ][ 3 ] ) );
+    skills_[ i ].expRequired_.setString( std::to_string( skill_needed( i, player.skill[ i ][ 0 ], player ) ) );
+  }
+}
+
+void SkillsAndAttributes::onUserInput( const sf::Event& )
+{
+  // Do nothing for now
+}
+
+void SkillsAndAttributes::finalize()
+{
 }

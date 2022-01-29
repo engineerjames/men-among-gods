@@ -5,8 +5,11 @@
 
 #include "../ConstantIdentifiers.h"
 #include "ColorPalette.h"
+#include "Component.h"
 
-class SkillsAndAttributes : public sf::Drawable
+class PlayerData;
+
+class SkillsAndAttributes : public MenAmongGods::Component
 {
 public:
   struct SkillRow
@@ -21,18 +24,20 @@ public:
     ~SkillRow() = default;
   };
 
-  SkillsAndAttributes( const sf::Font& font );
+  SkillsAndAttributes( const sf::Font& font, PlayerData& playerData );
   ~SkillsAndAttributes() = default;
 
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
+  virtual void update() override;
+  virtual void onUserInput( const sf::Event& e ) override;
+  virtual void finalize() override;
 
 private:
   const sf::Font&                    font_;
-  std::array< SkillRow, 8 >          attributes_;
+  PlayerData&                        playerData_;
+  std::array< SkillRow, 5 >          attributes_;
   std::array< SkillRow, MAX_SKILLS > skills_;
-  const sf::Vector2f                 initialAttributePosition_;
-  const sf::Vector2f                 initialSkillPosition_;
   sf::RectangleShape                 skillScrollBar_;
 };
-// Rectangle scroll bar: 207,149
+
 #endif
