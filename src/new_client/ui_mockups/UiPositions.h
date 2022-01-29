@@ -6,6 +6,10 @@
 namespace MenAmongGods
 {
 
+// Skill and attributes
+static const sf::Vector2f initialAttributePosition { 3.0f, 1.0f };
+static const sf::Vector2f initialSkillPosition { 3.0f, 113.0f };
+
 // Gold display and rank "Private" displayed below the 'self' view
 static const sf::Vector2f goldDisplayPosition { 452.0f, 185.0f };
 static const sf::Vector2f textualRankPosition { 413.0f, 171.0f };
