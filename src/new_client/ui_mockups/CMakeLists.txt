@@ -6,6 +6,8 @@ add_library(${target}
                 GraphicsCache.cpp
                 GraphicsIndex.h
                 GraphicsIndex.cpp
+                LifeDisplay.h
+                LifeDisplay.cpp
                 MainUi.h
                 MainUi.cpp
                 MapDisplay.h
