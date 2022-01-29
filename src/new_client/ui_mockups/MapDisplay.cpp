@@ -173,8 +173,6 @@ void MapDisplay::update()
     int yoff       = -map_.getMap()[ ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX ].obj_yoff;       //-176;
     int plr_sprite = map_.getMap()[ ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX ].obj2;
 
-    ( void ) xoff;
-    ( void ) yoff;
     ( void ) plr_sprite;
     ( void ) selected_visible;
 
