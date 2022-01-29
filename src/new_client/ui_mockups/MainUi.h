@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "Component.h"
+#include "LifeDisplay.h"
 #include "PlayerLogDisplay.h"
 #include "PlayerTextInputDisplay.h"
 #include "SkillsAndAttributes.h"
@@ -59,6 +60,7 @@ private:
   sf::Text manaMaxValue_;
 
   SkillsAndAttributes skillsAndAttributes_;
+  LifeDisplay         lifeDisplay_;
 
   PlayerLogDisplay       msgBox_;
   PlayerTextInputDisplay userInput_;

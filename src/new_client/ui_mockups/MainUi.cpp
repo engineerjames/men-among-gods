@@ -23,7 +23,8 @@ MainUi::MainUi( PlayerData& pdata )
     , wvValue_()
     , expLabel_()
     , expValue_()
-    , skillsAndAttributes_( font_ )
+    , skillsAndAttributes_( font_, pdata )
+    , lifeDisplay_( font_, pdata )
     , msgBox_()
     , userInput_( font_ )
 {
@@ -201,17 +202,42 @@ void MainUi::draw( sf::RenderTarget& target, sf::RenderStates states ) const
   target.draw( manaCurrentValue_, states );
   target.draw( manaMaxValue_, states );
   target.draw( skillsAndAttributes_, states );
+  target.draw( lifeDisplay_, states );
 }
 
 void MainUi::onUserInput( const sf::Event& e )
 {
   userInput_.onUserInput( e );
+  skillsAndAttributes_.onUserInput( e );
+  lifeDisplay_.onUserInput( e );
 }
 
 void MainUi::update()
 {
   // Do nothing for now
   playerData_.lock();
+
+  // Update UI from player data
+  cplayer& player = playerData_.getClientSidePlayerInfo();
+  avValue_.setString( std::to_string( player.armor ) );
+  wvValue_.setString( std::to_string( player.weapon ) );
+  hpCurrentValue_.setString( std::to_string( player.a_hp ) );
+  endCurrentValue_.setString( std::to_string( player.a_end ) );
+  manaCurrentValue_.setString( std::to_string( player.a_mana ) );
+
+  // TODO: This has to be wrong--does a_* represent the max or current
+  // values?
+  hpMaxValue_.setString( std::to_string( player.a_hp ) );
+  endMaxValue_.setString( std::to_string( player.a_end ) );
+  manaMaxValue_.setString( std::to_string( player.a_mana ) );
+
+  goldDisplay_.setString( MenAmongGods::goldToString( player.gold ) );
+
+  expValue_.setString( std::to_string( player.points_tot ) );
+
+  skillsAndAttributes_.update();
+
+  lifeDisplay_.update();
 
   playerData_.unlock();
 }
@@ -221,5 +247,6 @@ void MainUi::finalize()
   // Do nothing for now
   userInput_.finalize();
   msgBox_.finalize();
+  lifeDisplay_.finalize();
 }
 } // namespace MenAmongGods
