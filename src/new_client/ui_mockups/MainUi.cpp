@@ -152,7 +152,7 @@ MainUi::MainUi( PlayerData& pdata, const GraphicsCache& gfxCache )
 
 void MainUi::addMessage( LogType type, std::string text )
 {
-  sf::Text  newMsg { text, font_, FONT_SIZE };
+  sf::Text  newMsg { text, font_, static_cast< unsigned int >( FONT_SIZE ) };
   sf::Color messageColor {};
 
   switch ( type )

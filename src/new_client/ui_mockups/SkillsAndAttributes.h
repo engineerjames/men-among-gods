@@ -1,6 +1,7 @@
 #ifndef SKILL_DISPLAY_H
 #define SKILL_DISPLAY_H
 
+#include <array>
 #include <SFML/Graphics.hpp>
 
 #include "../ConstantIdentifiers.h"

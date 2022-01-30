@@ -32,13 +32,22 @@ set( headers
     TickBuffer.h
 )
 add_library(${target} ${sources} ${headers})
-target_link_libraries(${target} PRIVATE sfml-graphics sfml-network pthread z Boost::serialization)
+target_link_libraries(${target} PRIVATE sfml-graphics sfml-network Boost::serialization)
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
+target_link_directories(${target} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/zlib)
+target_include_directories(${target} SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/zlib)
+target_compile_definitions(${target} PUBLIC ${PROJECT_CXX_DEFINITIONS})
+
+if(NOT WIN32)
+target_link_libraries(${target} PUBLIC pthread zip)
+else()
+target_link_libraries(${target} PUBLIC zlib.lib)
+endif()
 
 set(target MenAmongGods)
 add_executable(${target} main.cpp)
-target_link_libraries(${target} PRIVATE client sfml-graphics sfml-network pthread z Boost::serialization)
+target_link_libraries(${target} PRIVATE client sfml-graphics sfml-network Boost::serialization)
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
 

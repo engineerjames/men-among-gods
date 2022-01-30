@@ -20,21 +20,30 @@ add_library(${target}
                 PlayerLogDisplay.cpp
                 PlayerTextInputDisplay.h
                 PlayerTextInputDisplay.cpp)
-target_link_libraries(${target} PRIVATE sfml-graphics pthread Boost::serialization zip)
+target_link_libraries(${target} PRIVATE sfml-graphics Boost::serialization )
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS})
+target_include_directories(${target} SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../zlib)
+target_link_directories(${target} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../zlib)
+target_compile_definitions(${target} PUBLIC ${PROJECT_CXX_DEFINITIONS})
+
+if(NOT WIN32)
+target_link_libraries(${target} PUBLIC pthread zip)
+else()
+target_link_libraries(${target} PUBLIC )
+endif()
 
 # Test Application For GUI
 set(target ui-gui-demo)
 add_executable(${target} ui-gui-demo.cpp)
-target_link_libraries(${target} PRIVATE sfml-graphics pthread MenAmongGodsGraphics Boost::serialization client)
+target_link_libraries(${target} PRIVATE sfml-graphics MenAmongGodsGraphics Boost::serialization client)
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
 
 # Test Application For Loading Legacy Sprites
 set(target gfx-load-test)
 add_executable(${target} gfx-load-test.cpp)
-target_link_libraries(${target} PRIVATE sfml-graphics pthread MenAmongGodsGraphics)
+target_link_libraries(${target} PRIVATE sfml-graphics MenAmongGodsGraphics)
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
 

@@ -4,8 +4,13 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+
+#ifdef _WIN32
+
+#else
 #include <unistd.h>
 #include <zip.h>
+#endif
 
 #include <SFML/Graphics/Sprite.hpp>
 
@@ -16,6 +21,13 @@ GraphicsCache::GraphicsCache()
     , sprites_( MAX_ID )
 {
 }
+
+#ifdef _WIN32
+void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int howMany )
+{
+  std::cerr << "LOADING SPRITES NOT SUPPORTED YET!" << filePath << ", " << howMany << std::endl;
+}
+#else
 
 void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int howMany )
 {
@@ -105,6 +117,7 @@ void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int
 
   isLoaded_ = true;
 }
+#endif
 
 sf::Sprite GraphicsCache::getSprite( std::size_t id ) const
 {
