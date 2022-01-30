@@ -11,7 +11,7 @@
 namespace MenAmongGods
 {
 
-MainUi::MainUi( PlayerData& pdata )
+MainUi::MainUi( PlayerData& pdata, const GraphicsCache& gfxCache )
     : MenAmongGods::Component()
     , playerData_( pdata )
     , font_()
@@ -27,6 +27,7 @@ MainUi::MainUi( PlayerData& pdata )
     , lifeDisplay_( font_, pdata )
     , msgBox_()
     , userInput_( font_ )
+    , playerInventory_( pdata, gfxCache )
 {
   goldDisplay_.setPosition( sf::Vector2f { MenAmongGods::goldDisplayPosition } );
   textualRank_.setPosition( sf::Vector2f { MenAmongGods::textualRankPosition } );
@@ -203,6 +204,7 @@ void MainUi::draw( sf::RenderTarget& target, sf::RenderStates states ) const
   target.draw( manaMaxValue_, states );
   target.draw( skillsAndAttributes_, states );
   target.draw( lifeDisplay_, states );
+  target.draw( playerInventory_, states );
 }
 
 void MainUi::onUserInput( const sf::Event& e )
@@ -210,6 +212,7 @@ void MainUi::onUserInput( const sf::Event& e )
   userInput_.onUserInput( e );
   skillsAndAttributes_.onUserInput( e );
   lifeDisplay_.onUserInput( e );
+  playerInventory_.onUserInput( e );
 }
 
 void MainUi::update()
@@ -239,6 +242,8 @@ void MainUi::update()
 
   lifeDisplay_.update();
 
+  playerInventory_.update();
+
   playerData_.unlock();
 }
 
@@ -248,5 +253,6 @@ void MainUi::finalize()
   userInput_.finalize();
   msgBox_.finalize();
   lifeDisplay_.finalize();
+  playerInventory_.finalize();
 }
 } // namespace MenAmongGods

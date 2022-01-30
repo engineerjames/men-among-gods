@@ -59,7 +59,7 @@ int main()
   TickBuffer        tickbuffer { pdata, map };
 
   auto mapPtr    = new MenAmongGods::MapDisplay( map, pdata, cache, index, tickbuffer );
-  auto mainUiPtr = new MenAmongGods::MainUi( pdata );
+  auto mainUiPtr = new MenAmongGods::MainUi( pdata, cache );
 
   mapPtr->loadFromFile( "test/mapfile.archive" );
 

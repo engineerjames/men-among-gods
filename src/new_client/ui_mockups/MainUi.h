@@ -5,6 +5,7 @@
 
 #include "Component.h"
 #include "LifeDisplay.h"
+#include "PlayerInventoryDisplay.h"
 #include "PlayerLogDisplay.h"
 #include "PlayerTextInputDisplay.h"
 #include "SkillsAndAttributes.h"
@@ -24,7 +25,7 @@ public:
     ERROR // Red
   };
 
-  MainUi( PlayerData& pdata );
+  MainUi( PlayerData& pdata, const GraphicsCache& gfxCache );
   ~MainUi() = default;
 
   void         addMessage( LogType type, std::string text );
@@ -64,6 +65,7 @@ private:
 
   PlayerLogDisplay       msgBox_;
   PlayerTextInputDisplay userInput_;
+  PlayerInventoryDisplay playerInventory_;
 };
 } // namespace MenAmongGods
 #endif

@@ -175,6 +175,11 @@ cplayer& PlayerData::getClientSidePlayerInfo()
   return clientSidePlayerInfo_;
 }
 
+const cplayer& PlayerData::getClientSidePlayerInfo() const
+{
+  return clientSidePlayerInfo_;
+}
+
 key& PlayerData::getOkey()
 {
   return okey_;

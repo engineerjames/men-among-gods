@@ -12,6 +12,8 @@ add_library(${target}
                 MainUi.cpp
                 MapDisplay.h
                 MapDisplay.cpp
+                PlayerInventoryDisplay.h
+                PlayerInventoryDisplay.cpp
                 SkillsAndAttributes.h
                 SkillsAndAttributes.cpp
                 PlayerLogDisplay.h

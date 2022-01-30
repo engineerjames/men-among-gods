@@ -29,8 +29,10 @@ public:
   int          clientShouldShowPercentHealth() const;
   int          getAttackTarget() const;
 
-  pdata&    getPlayerInfo();
-  cplayer&  getClientSidePlayerInfo();
+  pdata&         getPlayerInfo();
+  cplayer&       getClientSidePlayerInfo();
+  const cplayer& getClientSidePlayerInfo() const;
+
   skilltab* getSkillList();
   key&      getOkey();
   look&     getLook();
