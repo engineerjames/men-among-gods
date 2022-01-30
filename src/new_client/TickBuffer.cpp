@@ -318,36 +318,6 @@ int TickBuffer::processServerCommand( const std::uint8_t* bufferStart )
   return 16;
 }
 
-// Begin server message processing implementation
-int TickBuffer::skill_cmp( const void* a, const void* b )
-{
-  const skilltab *c, *d;
-  int             m1, m2;
-
-  c = static_cast< const skilltab* >( a );
-  d = static_cast< const skilltab* >( b );
-
-  m1 = c->nr;
-  m2 = d->nr;
-
-  if ( m1 == 99 && m2 != 99 )
-    return 1;
-  if ( m2 == 99 && m1 != 99 )
-    return -1;
-
-  if ( playerData_.getClientSidePlayerInfo().skill[ m1 ][ 0 ] == 0 && playerData_.getClientSidePlayerInfo().skill[ m2 ][ 0 ] != 0 )
-    return 1;
-  if ( playerData_.getClientSidePlayerInfo().skill[ m2 ][ 0 ] == 0 && playerData_.getClientSidePlayerInfo().skill[ m1 ][ 0 ] != 0 )
-    return -1;
-
-  if ( c->sortkey > d->sortkey )
-    return 1;
-  if ( c->sortkey < d->sortkey )
-    return -1;
-
-  return strcmp( c->name, d->name );
-}
-
 const char* logout_reason[] = {
     "unknown",                                                                              // 0
     "Client failed challenge.",                                                             // 1
@@ -449,8 +419,25 @@ void TickBuffer::sv_setchar_skill( const unsigned char* buf )
   playerData_.getClientSidePlayerInfo().skill[ n ][ 4 ] = buf[ 6 ];
   playerData_.getClientSidePlayerInfo().skill[ n ][ 5 ] = buf[ 7 ];
 
-  // TODO: Re-evaluate this
-  // qsort( playerData_.getSkillList(), 50, sizeof( skilltab ), skill_cmp );
+  std::sort( playerData_.getSkillList(), playerData_.getSkillList() + MAX_SKILLS,
+             []( const skilltab& lhs, const skilltab& rhs )
+             {
+               // Begin server message processing implementation
+               int m1 = lhs.nr;
+               int m2 = rhs.nr;
+
+               if ( m1 == 99 && m2 != 99 )
+                 return true;
+               if ( m2 == 99 && m1 != 99 )
+                 return false;
+
+               if ( lhs.sortkey > rhs.sortkey )
+                 return true;
+               if ( lhs.sortkey < rhs.sortkey )
+                 return false;
+
+               return strcmp( lhs.name, rhs.name ) > 0;
+             } );
 }
 
 void TickBuffer::sv_setchar_ahp( const unsigned char* buf )
