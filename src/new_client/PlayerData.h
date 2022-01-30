@@ -8,18 +8,29 @@
 #include "ClientTypes.h"
 #include "ConstantIdentifiers.h"
 
+#include <SFML/Graphics.hpp>
+
 class PlayerData
 {
 public:
   PlayerData();
   ~PlayerData() = default;
 
-  bool        hasPlayerDataChanged() const;
-  const char* getPlayerName() const;
-  const char* getPlayerDescription() const;
+  bool         hasPlayerDataChanged() const;
+  const char*  getPlayerName() const;
+  const char*  getPlayerDescription() const;
+  std::uint8_t areWallsHidden() const;
+  int          getPlayerDirection() const;
+  sf::Vector2i getGotoPosition() const;
+  int          getPlayerAction() const;
+  int          getFirstTarget() const;
+  int          getSecondTarget() const;
+  int          clientShouldShowNames() const;
+  int          clientShouldShowPercentHealth() const;
+  int          getAttackTarget() const;
 
   pdata&    getPlayerInfo();
-  cplayer&  getClientSidePlayerInfo();  
+  cplayer&  getClientSidePlayerInfo();
   skilltab* getSkillList();
   key&      getOkey();
   look&     getLook();
@@ -32,13 +43,13 @@ public:
 
 private:
   // Holds the name, description, and some client-related settings (split apart later)
-  pdata                     playerInfo_; // This is more what initially gets sent to the server
-  bool                      playerDataHasChanged_;
-  cplayer                   clientSidePlayerInfo_; // This is more the truth of what your character is...
-  key                       okey_;
-  skilltab*                 skillsList_;
-  look                      look_;
-  std::mutex                ioMutex_;
+  pdata      playerInfo_; // This is more what initially gets sent to the server
+  bool       playerDataHasChanged_;
+  cplayer    clientSidePlayerInfo_; // This is more the truth of what your character is...
+  key        okey_;
+  skilltab*  skillsList_;
+  look       look_;
+  std::mutex ioMutex_;
 };
 
 #endif

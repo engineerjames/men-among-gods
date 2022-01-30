@@ -6,6 +6,7 @@
 
 #include "../ConstantIdentifiers.h"
 #include "../Map.h"
+#include "../PlayerData.h"
 #include "../TickBuffer.h"
 #include "GraphicsCache.h"
 #include "GraphicsIndex.h"
@@ -22,6 +23,28 @@ int autohide( int x, int y )
   {
     return 1;
   }
+}
+
+int facing( int x, int y, int dir )
+{
+  if ( dir == 1 && x == TILEX / 2 + 1 && y == TILEY / 2 )
+  {
+    return 1;
+  }
+  if ( dir == 2 && x == TILEX / 2 - 1 && y == TILEY / 2 )
+  {
+    return 1;
+  }
+  if ( dir == 4 && x == TILEX / 2 && y == TILEY / 2 + 1 )
+  {
+    return 1;
+  }
+  if ( dir == 3 && x == TILEX / 2 && y == TILEY / 2 - 1 )
+  {
+    return 1;
+  }
+
+  return 0;
 }
 
 const unsigned char speedtab[ 20 ][ 20 ] = {
@@ -48,38 +71,16 @@ const unsigned char speedtab[ 20 ][ 20 ] = {
     { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }  // 1
 };
 
-// const unsigned char speedsteptab[ 20 ][ 20 ] = {
-//     //  1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0
-//     { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 }, // 20
-//     { 4, 4, 4, 4, 4, 4, 4, 4, 4, 2, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 }, // 19
-//     { 4, 4, 4, 4, 4, 2, 4, 4, 4, 4, 4, 4, 4, 4, 2, 4, 4, 4, 4, 4 }, // 18
-//     { 4, 4, 4, 2, 4, 4, 4, 4, 4, 2, 4, 4, 4, 4, 4, 4, 2, 4, 4, 4 }, // 17
-//     { 4, 4, 2, 4, 4, 4, 4, 2, 4, 4, 4, 4, 2, 4, 4, 4, 4, 2, 4, 4 }, // 16
-//     { 4, 4, 2, 4, 4, 4, 2, 4, 4, 4, 2, 4, 4, 4, 2, 4, 4, 4, 2, 4 }, // 15
-//     { 4, 2, 4, 4, 2, 4, 4, 4, 2, 4, 4, 2, 4, 4, 2, 4, 4, 2, 4, 4 }, // 14
-//     { 4, 2, 4, 4, 2, 4, 4, 2, 4, 4, 2, 4, 4, 2, 4, 4, 2, 4, 4, 2 }, // 13
-//     { 2, 4, 4, 2, 4, 4, 2, 4, 2, 4, 4, 2, 4, 4, 2, 4, 2, 4, 2, 4 }, // 12
-//     { 2, 4, 2, 4, 2, 4, 2, 4, 4, 2, 4, 2, 4, 2, 4, 2, 4, 4, 2, 4 }, // 11
-//     { 4, 2, 4, 2, 4, 2, 4, 2, 4, 2, 4, 2, 4, 2, 4, 2, 4, 2, 4, 2 }, // 10
-//     { 4, 2, 4, 2, 4, 2, 4, 1, 3, 4, 2, 4, 2, 4, 2, 4, 1, 2, 4, 2 }, // 9
-//     { 4, 1, 2, 4, 1, 3, 4, 2, 4, 1, 2, 4, 1, 3, 4, 2, 4, 2, 4, 2 }, // 8
-//     { 2, 4, 1, 3, 4, 1, 3, 4, 1, 3, 4, 1, 3, 4, 1, 3, 4, 1, 3, 4 }, // 7
-//     { 3, 4, 1, 3, 4, 1, 2, 3, 4, 1, 3, 4, 1, 3, 4, 1, 3, 4, 1, 2 }, // 6
-//     { 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1 }, // 5
-//     { 2, 3, 4, 1, 1, 2, 3, 4, 1, 1, 2, 3, 4, 1, 1, 2, 3, 4, 1, 1 }, // 4
-//     { 2, 3, 4, 4, 1, 1, 2, 2, 3, 4, 1, 1, 2, 2, 3, 4, 4, 1, 1, 2 }, // 3
-//     { 2, 3, 3, 4, 4, 4, 1, 1, 1, 2, 2, 2, 3, 3, 4, 1, 1, 1, 2, 2 }, // 2
-//     { 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2 }  // 1
-// };
-
 } // namespace
 
 namespace MenAmongGods
 {
 
-MapDisplay::MapDisplay( MenAmongGods::Map& map, const GraphicsCache& cache, const GraphicsIndex& index, TickBuffer& tickBuffer )
+MapDisplay::MapDisplay( MenAmongGods::Map& map, const PlayerData& playerData, const GraphicsCache& cache, const GraphicsIndex& index,
+                        TickBuffer& tickBuffer )
     : MenAmongGods::Component()
     , map_( map )
+    , playerData_( playerData )
     , cache_( cache )
     , index_( index )
     , tickBuffer_( tickBuffer )
@@ -213,20 +214,10 @@ void MapDisplay::update()
         // by using ba_sprite instead; we fixed the intermittent "blank" sprite issue
         copysprite( map_.getMap()[ m ].back, map_.getMap()[ m ].light | tmp, x * 32, y * 32, xoff, yoff );
 
-        //   if ( map_.getMap()[ m ].x < 1024 && map_.getMap()[ m ].y < 1024 && ! ( map_.getMap()[ m ].flags & INVIS ) )
-        //   {
-        //     if ( ! xmap_.getMap()[ map_.getMap()[ m ].y + map_.getMap()[ m ].x * 1024 ] || xmap_.getMap()[ map_.getMap()[ m ].y +
-        //     map_.getMap()[ m ].x * 1024 ] == 0xffff )
-
-        //       xmap_.getMap()[ map_.getMap()[ m ].y + map_.getMap()[ m ].x * 1024 ] = ( unsigned short ) get_avgcol( map_.getMap()[ m
-        //       ].back );
-        //   }
-
-        // TODO: We do need this part--highlight the tile that the user has selected
-        //   if ( pl.goto_x == map_.getMap()[ m ].x && pl.goto_y == map_.getMap()[ m ].y )
-        //   {
-        //     // copysprite( 31, 0, x * 32, y * 32, xoff, yoff );
-        //   }
+        if ( playerData_.getGotoPosition().x == map_.getMap()[ m ].x && playerData_.getGotoPosition().y == map_.getMap()[ m ].y )
+        {
+          copysprite( 31, 0, x * 32, y * 32, xoff, yoff );
+        }
       }
     }
 
@@ -238,8 +229,8 @@ void MapDisplay::update()
 
         if ( map_.getMap()[ x + y * MAPX ].flags & INVIS )
         {
-          continue;
-        } // tmp=128;
+          tmp = 128;
+        }
         else
         {
           tmp = 0;
@@ -255,7 +246,7 @@ void MapDisplay::update()
         }
 
         // object
-        if /* ( pdata.hide == 0 ||*/ ( ( map_.getMap()[ m ].flags & ISITEM ) || autohide( x, y ) )
+        if ( playerData_.areWallsHidden() == 0 || ( map_.getMap()[ m ].flags & ISITEM ) || autohide( x, y ) )
         {
           int tmp2 {};
           ( void ) tmp2;
@@ -263,9 +254,9 @@ void MapDisplay::update()
           if ( map_.getMap()[ m ].obj1 > 16335 && map_.getMap()[ m ].obj1 < 16422 && map_.getMap()[ m ].obj1 != 16357 &&
                map_.getMap()[ m ].obj1 != 16365 && map_.getMap()[ m ].obj1 != 16373 && map_.getMap()[ m ].obj1 != 16381 &&
                map_.getMap()[ m ].obj1 != 16357 && map_.getMap()[ m ].obj1 != 16389 && map_.getMap()[ m ].obj1 != 16397 &&
-               map_.getMap()[ m ].obj1 != 16405 && map_.getMap()[ m ].obj1 != 16413 && map_.getMap()[ m ].obj1 != 16421 ) /* &&
-! facing( x, y, pl.dir ) && ! autohide( x, y ) && pdata.hide ) */
-          {                                                                                                               // mine hack
+               map_.getMap()[ m ].obj1 != 16405 && map_.getMap()[ m ].obj1 != 16413 && map_.getMap()[ m ].obj1 != 16421 &&
+               ! facing( x, y, playerData_.getPlayerDirection() ) && ! autohide( x, y ) && playerData_.areWallsHidden() )
+          { // mine hack
             if ( map_.getMap()[ m ].obj1 < 16358 )
             {
               tmp2 = 457;
@@ -372,36 +363,40 @@ void MapDisplay::update()
           copysprite( map_.getMap()[ m ].obj2, map_.getMap()[ m ].light | tmp, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff,
                       yoff + map_.getMap()[ m ].obj_yoff );
         }
-        //   if ( pl.attack_cn && pl.attack_cn == map_.getMap()[ m ].ch_nr )
-        //   {
-        //     copysprite( 34, 0, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff );
-        //   }
 
-        //   if ( pl.misc_action == DR_GIVE && pl.misc_target1 == map_.getMap()[ m ].ch_id )
-        //   {
-        //     copysprite( 45, 0, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff );
-        //   }
+        if ( playerData_.getAttackTarget() != 0 && playerData_.getAttackTarget() == map_.getMap()[ m ].ch_nr )
+        {
+          copysprite( 34, 0, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff );
+        }
 
-        //   if ( ( pdata.show_names | pdata.show_proz ) && map_.getMap()[ m ].ch_nr )
-        //   {
-        //     set_look_proz( map_.getMap()[ m ].ch_nr, map_.getMap()[ m ].ch_id, map_.getMap()[ m ].ch_proz );
-        //     dd_gputtext( x * 32, y * 32, 1, lookup( map_.getMap()[ m ].ch_nr, map_.getMap()[ m ].ch_id ), xoff + map_.getMap()[ m
-        //     ].obj_xoff, yoff + map_.getMap()[ m
-        //     ].obj_yoff );
-        //   }
+        if ( playerData_.getPlayerAction() == DR_GIVE && playerData_.getFirstTarget() == map_.getMap()[ m ].ch_id )
+        {
+          copysprite( 45, 0, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff );
+        }
 
-        //   if ( pl.misc_action == DR_DROP && pl.misc_target1 == map_.getMap()[ m ].x && pl.misc_target2 == map_.getMap()[ m ].y )
-        //   {
-        //     copysprite( 32, 0, x * 32, y * 32, xoff, yoff );
-        //   }
-        //   if ( pl.misc_action == DR_PICKUP && pl.misc_target1 == map_.getMap()[ m ].x && pl.misc_target2 == map_.getMap()[ m ].y )
-        //   {
-        //     copysprite( 33, 0, x * 32, y * 32, xoff, yoff );
-        //   }
-        //   if ( pl.misc_action == DR_USE && pl.misc_target1 == map_.getMap()[ m ].x && pl.misc_target2 == map_.getMap()[ m ].y )
-        //   {
-        //     copysprite( 45, 0, x * 32, y * 32, xoff, yoff );
-        //   }
+        if ( ( playerData_.clientShouldShowNames() | playerData_.clientShouldShowPercentHealth() ) && map_.getMap()[ m ].ch_nr )
+        {
+          // set_look_proz( map_.getMap()[ m ].ch_nr, map_.getMap()[ m ].ch_id, map_.getMap()[ m ].ch_proz );
+          // dd_gputtext( x * 32, y * 32, 1, lookup( map_.getMap()[ m ].ch_nr, map_.getMap()[ m ].ch_id ), xoff + map_.getMap()[ m
+          // ].obj_xoff,
+          //              yoff + map_.getMap()[ m ].obj_yoff );
+        }
+
+        if ( playerData_.getPlayerAction() == DR_DROP && playerData_.getFirstTarget() == map_.getMap()[ m ].x &&
+             playerData_.getSecondTarget() == map_.getMap()[ m ].y )
+        {
+          copysprite( 32, 0, x * 32, y * 32, xoff, yoff );
+        }
+        if ( playerData_.getPlayerAction() == DR_PICKUP && playerData_.getFirstTarget() == map_.getMap()[ m ].x &&
+             playerData_.getSecondTarget() == map_.getMap()[ m ].y )
+        {
+          copysprite( 33, 0, x * 32, y * 32, xoff, yoff );
+        }
+        if ( playerData_.getPlayerAction() == DR_USE && playerData_.getFirstTarget() == map_.getMap()[ m ].x &&
+             playerData_.getSecondTarget() == map_.getMap()[ m ].y )
+        {
+          copysprite( 45, 0, x * 32, y * 32, xoff, yoff );
+        }
 
         // effects
         if ( map_.getMap()[ m ].flags2 & MF_MOVEBLOCK )
@@ -420,7 +415,6 @@ void MapDisplay::update()
         {
           copysprite( 75, 0, x * 32, y * 32, xoff, yoff );
         }
-        //				if (map_.getMap()[m].flags2&MF_NOFIGHT) copysprite(58,0,x*32,y*32,xoff,yoff);
         if ( map_.getMap()[ m ].flags2 & MF_NOMONST )
         {
           copysprite( 59, 0, x * 32, y * 32, xoff, yoff );
@@ -449,7 +443,6 @@ void MapDisplay::update()
         {
           copysprite( 76, 0, x * 32, y * 32, xoff, yoff );
         }
-        //				if (map_.getMap()[m].flags2&MF_TELEPORT2) copysprite(77,0,x*32,y*32,xoff,yoff);
         if ( map_.getMap()[ m ].flags2 & MF_NOEXPIRE )
         {
           copysprite( 82, 0, x * 32, y * 32, xoff, yoff );

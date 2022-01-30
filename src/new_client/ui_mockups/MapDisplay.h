@@ -8,6 +8,7 @@
 
 class GraphicsCache;
 class GraphicsIndex;
+class PlayerData;
 class TickBuffer;
 
 namespace MenAmongGods
@@ -17,7 +18,8 @@ class Map;
 class MapDisplay : public MenAmongGods::Component
 {
 public:
-  MapDisplay( MenAmongGods::Map& map, const GraphicsCache& cache, const GraphicsIndex& index, TickBuffer& tickBuffer );
+  MapDisplay( MenAmongGods::Map& map, const PlayerData& playerData, const GraphicsCache& cache, const GraphicsIndex& index,
+              TickBuffer& tickBuffer );
   virtual ~MapDisplay() = default;
 
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
@@ -30,6 +32,7 @@ public:
 
 private:
   MenAmongGods::Map&        map_;
+  const PlayerData&         playerData_;
   const GraphicsCache&      cache_;
   const GraphicsIndex&      index_;
   TickBuffer&               tickBuffer_;

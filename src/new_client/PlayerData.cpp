@@ -95,6 +95,51 @@ bool PlayerData::hasPlayerDataChanged() const
   return playerDataHasChanged_;
 }
 
+int PlayerData::getPlayerDirection() const
+{
+  return clientSidePlayerInfo_.dir;
+}
+
+std::uint8_t PlayerData::areWallsHidden() const
+{
+  return playerInfo_.hide;
+}
+
+sf::Vector2i PlayerData::getGotoPosition() const
+{
+  return sf::Vector2i { clientSidePlayerInfo_.goto_x, clientSidePlayerInfo_.goto_y };
+}
+
+int PlayerData::getPlayerAction() const
+{
+  return clientSidePlayerInfo_.misc_action;
+}
+
+int PlayerData::getFirstTarget() const
+{
+  return clientSidePlayerInfo_.misc_target1;
+}
+
+int PlayerData::getSecondTarget() const
+{
+  return clientSidePlayerInfo_.misc_target2;
+}
+
+int PlayerData::clientShouldShowNames() const
+{
+  return playerInfo_.show_names;
+}
+
+int PlayerData::clientShouldShowPercentHealth() const
+{
+  return playerInfo_.show_proz;
+}
+
+int PlayerData::getAttackTarget() const
+{
+  return clientSidePlayerInfo_.attack_cn;
+}
+
 const char* PlayerData::getPlayerName() const
 {
   return playerInfo_.cname;
