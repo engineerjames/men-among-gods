@@ -77,13 +77,14 @@ namespace MenAmongGods
 {
 
 MapDisplay::MapDisplay( MenAmongGods::Map& map, const PlayerData& playerData, const GraphicsCache& cache, const GraphicsIndex& index,
-                        TickBuffer& tickBuffer )
+                        TickBuffer& tickBuffer, const sf::Window& window )
     : MenAmongGods::Component()
     , map_( map )
     , playerData_( playerData )
     , cache_( cache )
     , index_( index )
     , tickBuffer_( tickBuffer )
+    , window_( window )
     , spritesToDraw_()
     , ticker_()
     , needsToUpdate_( true )
@@ -106,429 +107,433 @@ void MapDisplay::draw( sf::RenderTarget& target, sf::RenderStates states ) const
 
 void MapDisplay::finalize()
 {
-  needsToUpdate_ = true;
 }
 
 void MapDisplay::onUserInput( const sf::Event& )
 {
-  // Do nothing for now
 }
 
 void MapDisplay::update()
 {
-  // TODO: Handle mouse events here? Maybe we should have a user input component instead...
+  map_.lock();
 
-  // Perform once-per-frame updates
-  if ( needsToUpdate_ )
+  ticker_++; // Should this be at the end?
+  needsToUpdate_ = false;
+
+  ctick_ = tickBuffer_.getCTick();
+
+  // Need to perform the regular "engine tick" here:
+  for ( unsigned int n = 0; n < TILEX * TILEY; n++ )
   {
-    map_.lock();
+    map_.getMap()[ n ].back     = 0;
+    map_.getMap()[ n ].obj1     = 0;
+    map_.getMap()[ n ].obj2     = 0;
+    map_.getMap()[ n ].ovl_xoff = 0;
+    map_.getMap()[ n ].ovl_yoff = 0;
+  }
 
-    ticker_++; // Should this be at the end?
-    needsToUpdate_ = false;
+  for ( unsigned int n = 0; n < TILEX * TILEY; n++ )
+  {
 
-    ctick_ = tickBuffer_.getCTick();
+    map_.getMap()[ n ].back = map_.getMap()[ n ].ba_sprite;
 
-    // Need to perform the regular "engine tick" here:
-    for ( unsigned int n = 0; n < TILEX * TILEY; n++ )
+    // item
+    if ( map_.getMap()[ n ].it_sprite != 0 )
     {
-      map_.getMap()[ n ].back     = 0;
-      map_.getMap()[ n ].obj1     = 0;
-      map_.getMap()[ n ].obj2     = 0;
-      map_.getMap()[ n ].ovl_xoff = 0;
-      map_.getMap()[ n ].ovl_yoff = 0;
+      map_.getMap()[ n ].obj1 = interpolateItemSprite( n );
     }
 
-    for ( unsigned int n = 0; n < TILEX * TILEY; n++ )
+    // character
+    if ( map_.getMap()[ n ].ch_sprite != 0 )
     {
+      map_.getMap()[ n ].obj2 = interpolateCharacterSprite( n );
+    }
+  }
 
-      map_.getMap()[ n ].back = map_.getMap()[ n ].ba_sprite;
+  spritesToDraw_.clear();
 
-      // item
-      if ( map_.getMap()[ n ].it_sprite != 0 )
+  int x {};
+  int y {};
+  int tmp {};
+  int selected_visible {};
+  int alpha {};
+  int alphastr {};
+  int hightlight {};
+  int tile_type {};
+  int tile_x {}; // user goto?
+  int tile_y {}; // user goto value?
+  int selected_char {};
+
+  int xoff       = -map_.getMap()[ ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX ].obj_xoff - 176; //-176;
+  int yoff       = -map_.getMap()[ ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX ].obj_yoff;       //-176;
+  int plr_sprite = map_.getMap()[ ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX ].obj2;
+
+  ( void ) plr_sprite;
+  ( void ) selected_visible;
+
+  for ( y = TILEY - 1; y >= 0; y-- )
+  {
+    for ( x = 0; x < TILEX; x++ )
+    {
+      // background
+      int m = x + y * MAPX;
+
+      if ( hightlight == HL_MAP && tile_type == 0 && tile_x == x && tile_y == y )
       {
-        map_.getMap()[ n ].obj1 = interpolateItemSprite( n );
+        tmp = 16;
+      }
+      else
+      {
+        tmp = 0;
+      }
+      if ( map_.getMap()[ m ].flags & INVIS )
+      {
+        tmp |= 64;
+      }
+      if ( map_.getMap()[ m ].flags & INFRARED )
+      {
+        tmp |= 256;
+      }
+      if ( map_.getMap()[ m ].flags & UWATER )
+      {
+        tmp |= 512;
+      }
+
+      // Most of the floor tiles are 32x32 images
+      // The tile itself is on the lower portion of the image
+      // 32 px wide and 22px tall approximately
+      // xs / ys are the x and y size in tiles (width / 32), and height / 32 respectively
+
+      // What is the difference between ba_sprite and back? Can I always use ba_sprite?
+      // by using ba_sprite instead; we fixed the intermittent "blank" sprite issue
+      copysprite( map_.getMap()[ m ].back, map_.getMap()[ m ].light | tmp, x * 32, y * 32, xoff, yoff );
+
+      if ( playerData_.getGotoPosition().x == map_.getMap()[ m ].x && playerData_.getGotoPosition().y == map_.getMap()[ m ].y )
+      {
+        copysprite( 31, 0, x * 32, y * 32, xoff, yoff );
+      }
+    }
+  }
+
+  for ( y = TILEY - 1; y >= 0; y-- )
+  {
+    for ( x = 0; x < TILEX; x++ )
+    {
+      int m = x + y * MAPX;
+
+      if ( map_.getMap()[ x + y * MAPX ].flags & INVIS )
+      {
+        tmp = 128;
+      }
+      else
+      {
+        tmp = 0;
+      }
+
+      if ( map_.getMap()[ m ].flags & INFRARED )
+      {
+        tmp |= 256;
+      }
+      if ( map_.getMap()[ m ].flags & UWATER )
+      {
+        tmp |= 512;
+      }
+
+      // object
+      if ( playerData_.areWallsHidden() == 0 || ( map_.getMap()[ m ].flags & ISITEM ) || autohide( x, y ) )
+      {
+        int tmp2 {};
+        ( void ) tmp2;
+
+        if ( map_.getMap()[ m ].obj1 > 16335 && map_.getMap()[ m ].obj1 < 16422 && map_.getMap()[ m ].obj1 != 16357 &&
+             map_.getMap()[ m ].obj1 != 16365 && map_.getMap()[ m ].obj1 != 16373 && map_.getMap()[ m ].obj1 != 16381 &&
+             map_.getMap()[ m ].obj1 != 16357 && map_.getMap()[ m ].obj1 != 16389 && map_.getMap()[ m ].obj1 != 16397 &&
+             map_.getMap()[ m ].obj1 != 16405 && map_.getMap()[ m ].obj1 != 16413 && map_.getMap()[ m ].obj1 != 16421 &&
+             ! facing( x, y, playerData_.getPlayerDirection() ) && ! autohide( x, y ) && playerData_.areWallsHidden() )
+        { // mine hack
+          if ( map_.getMap()[ m ].obj1 < 16358 )
+          {
+            tmp2 = 457;
+          }
+          else if ( map_.getMap()[ m ].obj1 < 16366 )
+          {
+            tmp2 = 456;
+          }
+          else if ( map_.getMap()[ m ].obj1 < 16374 )
+          {
+            tmp2 = 455;
+          }
+          else if ( map_.getMap()[ m ].obj1 < 16382 )
+          {
+            tmp2 = 466;
+          }
+          else if ( map_.getMap()[ m ].obj1 < 16390 )
+          {
+            tmp2 = 459;
+          }
+          else if ( map_.getMap()[ m ].obj1 < 16398 )
+          {
+            tmp2 = 458;
+          }
+          else if ( map_.getMap()[ m ].obj1 < 16398 )
+          {
+            tmp2 = 449;
+          }
+          else if ( map_.getMap()[ m ].obj1 < 16406 )
+          {
+            tmp2 = 468;
+          }
+          else
+          {
+            tmp2 = 467;
+          }
+
+          if ( hightlight == HL_MAP && tile_type == 1 && tile_x == x && tile_y == y )
+          {
+            copysprite( tmp2, map_.getMap()[ m ].light | 16 | tmp, x * 32, y * 32, xoff, yoff );
+          }
+          else
+          {
+            copysprite( tmp2, map_.getMap()[ m ].light | tmp, x * 32, y * 32, xoff, yoff );
+          }
+        }
+        else
+        {
+          if ( hightlight == HL_MAP && tile_type == 1 && tile_x == x && tile_y == y )
+          {
+            copysprite( map_.getMap()[ m ].obj1, map_.getMap()[ m ].light | 16 | tmp, x * 32, y * 32, xoff, yoff );
+          }
+          else
+          {
+            copysprite( map_.getMap()[ m ].obj1, map_.getMap()[ m ].light | tmp, x * 32, y * 32, xoff, yoff );
+          }
+        }
+      }
+      else if ( map_.getMap()[ m ].obj1 )
+      {
+        copysprite( map_.getMap()[ m ].obj1 + 1, map_.getMap()[ m ].light | tmp, x * 32, y * 32, xoff, yoff );
       }
 
       // character
-      if ( map_.getMap()[ n ].ch_sprite != 0 )
+      if ( tile_type == 2 && tile_x == x && tile_y == y )
       {
-        map_.getMap()[ n ].obj2 = interpolateCharacterSprite( n );
+        tmp = 16;
       }
-    }
-
-    spritesToDraw_.clear();
-
-    int x {};
-    int y {};
-    int tmp {};
-    int selected_visible {};
-    int alpha {};
-    int alphastr {};
-    int hightlight {};
-    int tile_type {};
-    int tile_x {}; // user goto?
-    int tile_y {}; // user goto value?
-    int selected_char {};
-
-    int xoff       = -map_.getMap()[ ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX ].obj_xoff - 176; //-176;
-    int yoff       = -map_.getMap()[ ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX ].obj_yoff;       //-176;
-    int plr_sprite = map_.getMap()[ ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX ].obj2;
-
-    ( void ) plr_sprite;
-    ( void ) selected_visible;
-
-    for ( y = TILEY - 1; y >= 0; y-- )
-    {
-      for ( x = 0; x < TILEX; x++ )
+      else
       {
-        // background
-        int m = x + y * MAPX;
-
-        if ( hightlight == HL_MAP && tile_type == 0 && tile_x == x && tile_y == y )
-        {
-          tmp = 16;
-        }
-        else
-        {
-          tmp = 0;
-        }
-        if ( map_.getMap()[ m ].flags & INVIS )
-        {
-          tmp |= 64;
-        }
-        if ( map_.getMap()[ m ].flags & INFRARED )
-        {
-          tmp |= 256;
-        }
-        if ( map_.getMap()[ m ].flags & UWATER )
-        {
-          tmp |= 512;
-        }
-
-        // Most of the floor tiles are 32x32 images
-        // The tile itself is on the lower portion of the image
-        // 32 px wide and 22px tall approximately
-        // xs / ys are the x and y size in tiles (width / 32), and height / 32 respectively
-
-        // What is the difference between ba_sprite and back? Can I always use ba_sprite?
-        // by using ba_sprite instead; we fixed the intermittent "blank" sprite issue
-        copysprite( map_.getMap()[ m ].back, map_.getMap()[ m ].light | tmp, x * 32, y * 32, xoff, yoff );
-
-        if ( playerData_.getGotoPosition().x == map_.getMap()[ m ].x && playerData_.getGotoPosition().y == map_.getMap()[ m ].y )
-        {
-          copysprite( 31, 0, x * 32, y * 32, xoff, yoff );
-        }
+        tmp = 0;
       }
-    }
 
-    for ( y = TILEY - 1; y >= 0; y-- )
-    {
-      for ( x = 0; x < TILEX; x++ )
+      if ( map_.getMap()[ m ].ch_nr == selected_char )
       {
-        int m = x + y * MAPX;
+        tmp |= 32;
+        selected_visible = 1;
+      }
 
-        if ( map_.getMap()[ x + y * MAPX ].flags & INVIS )
-        {
-          tmp = 128;
-        }
-        else
-        {
-          tmp = 0;
-        }
+      if ( map_.getMap()[ m ].flags & INVIS )
+      {
+        tmp |= 64;
+      }
+      if ( map_.getMap()[ m ].flags & STONED )
+      {
+        tmp |= 128;
+      }
+      if ( map_.getMap()[ m ].flags & INFRARED )
+      {
+        tmp |= 256;
+      }
+      if ( map_.getMap()[ m ].flags & UWATER )
+      {
+        tmp |= 512;
+      }
 
-        if ( map_.getMap()[ m ].flags & INFRARED )
-        {
-          tmp |= 256;
-        }
-        if ( map_.getMap()[ m ].flags & UWATER )
-        {
-          tmp |= 512;
-        }
+      //   if ( do_shadow )
+      //     {
+      //     // dd_shadow( map_.getMap()[ m ].obj2, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff
+      //     + 4 );
+      //     }
+      if ( map_.getMap()[ m ].obj2 != 0 )
+      {
+        copysprite( map_.getMap()[ m ].obj2, map_.getMap()[ m ].light | tmp, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff,
+                    yoff + map_.getMap()[ m ].obj_yoff );
+      }
 
-        // object
-        if ( playerData_.areWallsHidden() == 0 || ( map_.getMap()[ m ].flags & ISITEM ) || autohide( x, y ) )
-        {
-          int tmp2 {};
-          ( void ) tmp2;
+      if ( playerData_.getAttackTarget() != 0 && playerData_.getAttackTarget() == map_.getMap()[ m ].ch_nr )
+      {
+        copysprite( 34, 0, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff );
+      }
 
-          if ( map_.getMap()[ m ].obj1 > 16335 && map_.getMap()[ m ].obj1 < 16422 && map_.getMap()[ m ].obj1 != 16357 &&
-               map_.getMap()[ m ].obj1 != 16365 && map_.getMap()[ m ].obj1 != 16373 && map_.getMap()[ m ].obj1 != 16381 &&
-               map_.getMap()[ m ].obj1 != 16357 && map_.getMap()[ m ].obj1 != 16389 && map_.getMap()[ m ].obj1 != 16397 &&
-               map_.getMap()[ m ].obj1 != 16405 && map_.getMap()[ m ].obj1 != 16413 && map_.getMap()[ m ].obj1 != 16421 &&
-               ! facing( x, y, playerData_.getPlayerDirection() ) && ! autohide( x, y ) && playerData_.areWallsHidden() )
-          { // mine hack
-            if ( map_.getMap()[ m ].obj1 < 16358 )
-            {
-              tmp2 = 457;
-            }
-            else if ( map_.getMap()[ m ].obj1 < 16366 )
-            {
-              tmp2 = 456;
-            }
-            else if ( map_.getMap()[ m ].obj1 < 16374 )
-            {
-              tmp2 = 455;
-            }
-            else if ( map_.getMap()[ m ].obj1 < 16382 )
-            {
-              tmp2 = 466;
-            }
-            else if ( map_.getMap()[ m ].obj1 < 16390 )
-            {
-              tmp2 = 459;
-            }
-            else if ( map_.getMap()[ m ].obj1 < 16398 )
-            {
-              tmp2 = 458;
-            }
-            else if ( map_.getMap()[ m ].obj1 < 16398 )
-            {
-              tmp2 = 449;
-            }
-            else if ( map_.getMap()[ m ].obj1 < 16406 )
-            {
-              tmp2 = 468;
-            }
-            else
-            {
-              tmp2 = 467;
-            }
+      if ( playerData_.getPlayerAction() == DR_GIVE && playerData_.getFirstTarget() == map_.getMap()[ m ].ch_id )
+      {
+        copysprite( 45, 0, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff );
+      }
 
-            if ( hightlight == HL_MAP && tile_type == 1 && tile_x == x && tile_y == y )
-            {
-              copysprite( tmp2, map_.getMap()[ m ].light | 16 | tmp, x * 32, y * 32, xoff, yoff );
-            }
-            else
-            {
-              copysprite( tmp2, map_.getMap()[ m ].light | tmp, x * 32, y * 32, xoff, yoff );
-            }
-          }
-          else
-          {
-            if ( hightlight == HL_MAP && tile_type == 1 && tile_x == x && tile_y == y )
-            {
-              copysprite( map_.getMap()[ m ].obj1, map_.getMap()[ m ].light | 16 | tmp, x * 32, y * 32, xoff, yoff );
-            }
-            else
-            {
-              copysprite( map_.getMap()[ m ].obj1, map_.getMap()[ m ].light | tmp, x * 32, y * 32, xoff, yoff );
-            }
-          }
-        }
-        else if ( map_.getMap()[ m ].obj1 )
-        {
-          copysprite( map_.getMap()[ m ].obj1 + 1, map_.getMap()[ m ].light | tmp, x * 32, y * 32, xoff, yoff );
-        }
+      if ( ( playerData_.clientShouldShowNames() | playerData_.clientShouldShowPercentHealth() ) && map_.getMap()[ m ].ch_nr )
+      {
+        // set_look_proz( map_.getMap()[ m ].ch_nr, map_.getMap()[ m ].ch_id, map_.getMap()[ m ].ch_proz );
+        // dd_gputtext( x * 32, y * 32, 1, lookup( map_.getMap()[ m ].ch_nr, map_.getMap()[ m ].ch_id ), xoff + map_.getMap()[ m
+        // ].obj_xoff,
+        //              yoff + map_.getMap()[ m ].obj_yoff );
+      }
 
-        // character
-        if ( tile_type == 2 && tile_x == x && tile_y == y )
-        {
-          tmp = 16;
-        }
-        else
-        {
-          tmp = 0;
-        }
+      if ( playerData_.getPlayerAction() == DR_DROP && playerData_.getFirstTarget() == map_.getMap()[ m ].x &&
+           playerData_.getSecondTarget() == map_.getMap()[ m ].y )
+      {
+        copysprite( 32, 0, x * 32, y * 32, xoff, yoff );
+      }
+      if ( playerData_.getPlayerAction() == DR_PICKUP && playerData_.getFirstTarget() == map_.getMap()[ m ].x &&
+           playerData_.getSecondTarget() == map_.getMap()[ m ].y )
+      {
+        copysprite( 33, 0, x * 32, y * 32, xoff, yoff );
+      }
+      if ( playerData_.getPlayerAction() == DR_USE && playerData_.getFirstTarget() == map_.getMap()[ m ].x &&
+           playerData_.getSecondTarget() == map_.getMap()[ m ].y )
+      {
+        copysprite( 45, 0, x * 32, y * 32, xoff, yoff );
+      }
 
-        if ( map_.getMap()[ m ].ch_nr == selected_char )
-        {
-          tmp |= 32;
-          selected_visible = 1;
-        }
+      // effects
+      if ( map_.getMap()[ m ].flags2 & MF_MOVEBLOCK )
+      {
+        copysprite( 55, 0, x * 32, y * 32, xoff, yoff );
+      }
+      if ( map_.getMap()[ m ].flags2 & MF_SIGHTBLOCK )
+      {
+        copysprite( 84, 0, x * 32, y * 32, xoff, yoff );
+      }
+      if ( map_.getMap()[ m ].flags2 & MF_INDOORS )
+      {
+        copysprite( 56, 0, x * 32, y * 32, xoff, yoff );
+      }
+      if ( map_.getMap()[ m ].flags2 & MF_UWATER )
+      {
+        copysprite( 75, 0, x * 32, y * 32, xoff, yoff );
+      }
+      if ( map_.getMap()[ m ].flags2 & MF_NOMONST )
+      {
+        copysprite( 59, 0, x * 32, y * 32, xoff, yoff );
+      }
+      if ( map_.getMap()[ m ].flags2 & MF_BANK )
+      {
+        copysprite( 60, 0, x * 32, y * 32, xoff, yoff );
+      }
+      if ( map_.getMap()[ m ].flags2 & MF_TAVERN )
+      {
+        copysprite( 61, 0, x * 32, y * 32, xoff, yoff );
+      }
+      if ( map_.getMap()[ m ].flags2 & MF_NOMAGIC )
+      {
+        copysprite( 62, 0, x * 32, y * 32, xoff, yoff );
+      }
+      if ( map_.getMap()[ m ].flags2 & MF_DEATHTRAP )
+      {
+        copysprite( 73, 0, x * 32, y * 32, xoff, yoff );
+      }
+      if ( map_.getMap()[ m ].flags2 & MF_NOLAG )
+      {
+        copysprite( 57, 0, x * 32, y * 32, xoff, yoff );
+      }
+      if ( map_.getMap()[ m ].flags2 & MF_ARENA )
+      {
+        copysprite( 76, 0, x * 32, y * 32, xoff, yoff );
+      }
+      if ( map_.getMap()[ m ].flags2 & MF_NOEXPIRE )
+      {
+        copysprite( 82, 0, x * 32, y * 32, xoff, yoff );
+      }
+      if ( map_.getMap()[ m ].flags2 & 0x80000000 )
+      {
+        copysprite( 72, 0, x * 32, y * 32, xoff, yoff );
+      }
 
-        if ( map_.getMap()[ m ].flags & INVIS )
-        {
-          tmp |= 64;
-        }
-        if ( map_.getMap()[ m ].flags & STONED )
-        {
-          tmp |= 128;
-        }
-        if ( map_.getMap()[ m ].flags & INFRARED )
-        {
-          tmp |= 256;
-        }
-        if ( map_.getMap()[ m ].flags & UWATER )
-        {
-          tmp |= 512;
-        }
+      if ( ( map_.getMap()[ m ].flags & ( INJURED | INJURED1 | INJURED2 ) ) == INJURED )
+      {
+        copysprite( 1079, 0, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff );
+      }
+      if ( ( map_.getMap()[ m ].flags & ( INJURED | INJURED1 | INJURED2 ) ) == ( INJURED | INJURED1 ) )
+      {
+        copysprite( 1080, 0, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff );
+      }
+      if ( ( map_.getMap()[ m ].flags & ( INJURED | INJURED1 | INJURED2 ) ) == ( INJURED | INJURED2 ) )
+      {
+        copysprite( 1081, 0, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff );
+      }
+      if ( ( map_.getMap()[ m ].flags & ( INJURED | INJURED1 | INJURED2 ) ) == ( INJURED | INJURED1 | INJURED2 ) )
+      {
+        copysprite( 1082, 0, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff );
+      }
 
-        //   if ( do_shadow )
-        //     {
-        //     // dd_shadow( map_.getMap()[ m ].obj2, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff
-        //     + 4 );
-        //     }
-        if ( map_.getMap()[ m ].obj2 != 0 )
+      if ( map_.getMap()[ m ].flags & DEATH )
+      {
+        if ( map_.getMap()[ m ].obj2 )
         {
-          copysprite( map_.getMap()[ m ].obj2, map_.getMap()[ m ].light | tmp, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff,
+          copysprite( 280 + ( ( map_.getMap()[ m ].flags & DEATH ) >> 17 ) - 1, 0, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff,
                       yoff + map_.getMap()[ m ].obj_yoff );
         }
-
-        if ( playerData_.getAttackTarget() != 0 && playerData_.getAttackTarget() == map_.getMap()[ m ].ch_nr )
+        else
         {
-          copysprite( 34, 0, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff );
-        }
-
-        if ( playerData_.getPlayerAction() == DR_GIVE && playerData_.getFirstTarget() == map_.getMap()[ m ].ch_id )
-        {
-          copysprite( 45, 0, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff );
-        }
-
-        if ( ( playerData_.clientShouldShowNames() | playerData_.clientShouldShowPercentHealth() ) && map_.getMap()[ m ].ch_nr )
-        {
-          // set_look_proz( map_.getMap()[ m ].ch_nr, map_.getMap()[ m ].ch_id, map_.getMap()[ m ].ch_proz );
-          // dd_gputtext( x * 32, y * 32, 1, lookup( map_.getMap()[ m ].ch_nr, map_.getMap()[ m ].ch_id ), xoff + map_.getMap()[ m
-          // ].obj_xoff,
-          //              yoff + map_.getMap()[ m ].obj_yoff );
-        }
-
-        if ( playerData_.getPlayerAction() == DR_DROP && playerData_.getFirstTarget() == map_.getMap()[ m ].x &&
-             playerData_.getSecondTarget() == map_.getMap()[ m ].y )
-        {
-          copysprite( 32, 0, x * 32, y * 32, xoff, yoff );
-        }
-        if ( playerData_.getPlayerAction() == DR_PICKUP && playerData_.getFirstTarget() == map_.getMap()[ m ].x &&
-             playerData_.getSecondTarget() == map_.getMap()[ m ].y )
-        {
-          copysprite( 33, 0, x * 32, y * 32, xoff, yoff );
-        }
-        if ( playerData_.getPlayerAction() == DR_USE && playerData_.getFirstTarget() == map_.getMap()[ m ].x &&
-             playerData_.getSecondTarget() == map_.getMap()[ m ].y )
-        {
-          copysprite( 45, 0, x * 32, y * 32, xoff, yoff );
-        }
-
-        // effects
-        if ( map_.getMap()[ m ].flags2 & MF_MOVEBLOCK )
-        {
-          copysprite( 55, 0, x * 32, y * 32, xoff, yoff );
-        }
-        if ( map_.getMap()[ m ].flags2 & MF_SIGHTBLOCK )
-        {
-          copysprite( 84, 0, x * 32, y * 32, xoff, yoff );
-        }
-        if ( map_.getMap()[ m ].flags2 & MF_INDOORS )
-        {
-          copysprite( 56, 0, x * 32, y * 32, xoff, yoff );
-        }
-        if ( map_.getMap()[ m ].flags2 & MF_UWATER )
-        {
-          copysprite( 75, 0, x * 32, y * 32, xoff, yoff );
-        }
-        if ( map_.getMap()[ m ].flags2 & MF_NOMONST )
-        {
-          copysprite( 59, 0, x * 32, y * 32, xoff, yoff );
-        }
-        if ( map_.getMap()[ m ].flags2 & MF_BANK )
-        {
-          copysprite( 60, 0, x * 32, y * 32, xoff, yoff );
-        }
-        if ( map_.getMap()[ m ].flags2 & MF_TAVERN )
-        {
-          copysprite( 61, 0, x * 32, y * 32, xoff, yoff );
-        }
-        if ( map_.getMap()[ m ].flags2 & MF_NOMAGIC )
-        {
-          copysprite( 62, 0, x * 32, y * 32, xoff, yoff );
-        }
-        if ( map_.getMap()[ m ].flags2 & MF_DEATHTRAP )
-        {
-          copysprite( 73, 0, x * 32, y * 32, xoff, yoff );
-        }
-        if ( map_.getMap()[ m ].flags2 & MF_NOLAG )
-        {
-          copysprite( 57, 0, x * 32, y * 32, xoff, yoff );
-        }
-        if ( map_.getMap()[ m ].flags2 & MF_ARENA )
-        {
-          copysprite( 76, 0, x * 32, y * 32, xoff, yoff );
-        }
-        if ( map_.getMap()[ m ].flags2 & MF_NOEXPIRE )
-        {
-          copysprite( 82, 0, x * 32, y * 32, xoff, yoff );
-        }
-        if ( map_.getMap()[ m ].flags2 & 0x80000000 )
-        {
-          copysprite( 72, 0, x * 32, y * 32, xoff, yoff );
-        }
-
-        if ( ( map_.getMap()[ m ].flags & ( INJURED | INJURED1 | INJURED2 ) ) == INJURED )
-        {
-          copysprite( 1079, 0, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff );
-        }
-        if ( ( map_.getMap()[ m ].flags & ( INJURED | INJURED1 | INJURED2 ) ) == ( INJURED | INJURED1 ) )
-        {
-          copysprite( 1080, 0, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff );
-        }
-        if ( ( map_.getMap()[ m ].flags & ( INJURED | INJURED1 | INJURED2 ) ) == ( INJURED | INJURED2 ) )
-        {
-          copysprite( 1081, 0, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff );
-        }
-        if ( ( map_.getMap()[ m ].flags & ( INJURED | INJURED1 | INJURED2 ) ) == ( INJURED | INJURED1 | INJURED2 ) )
-        {
-          copysprite( 1082, 0, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff );
-        }
-
-        if ( map_.getMap()[ m ].flags & DEATH )
-        {
-          if ( map_.getMap()[ m ].obj2 )
-          {
-            copysprite( 280 + ( ( map_.getMap()[ m ].flags & DEATH ) >> 17 ) - 1, 0, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff,
-                        yoff + map_.getMap()[ m ].obj_yoff );
-          }
-          else
-          {
-            copysprite( 280 + ( ( map_.getMap()[ m ].flags & DEATH ) >> 17 ) - 1, 0, x * 32, y * 32, xoff, yoff );
-          }
-        }
-        if ( map_.getMap()[ m ].flags & TOMB )
-        {
-          copysprite( 240 + ( ( map_.getMap()[ m ].flags & TOMB ) >> 12 ) - 1, map_.getMap()[ m ].light, x * 32, y * 32, xoff, yoff );
-        }
-
-        alpha    = 0;
-        alphastr = 0;
-
-        if ( map_.getMap()[ m ].flags & EMAGIC )
-        {
-          alpha |= 1;
-          alphastr = std::max( ( unsigned ) alphastr, ( ( map_.getMap()[ m ].flags & EMAGIC ) >> 22 ) );
-        }
-
-        if ( map_.getMap()[ m ].flags & GMAGIC )
-        {
-          alpha |= 2;
-          alphastr = std::max( ( unsigned ) alphastr, ( ( map_.getMap()[ m ].flags & GMAGIC ) >> 25 ) );
-        }
-
-        if ( map_.getMap()[ m ].flags & CMAGIC )
-        {
-          alpha |= 4;
-          alphastr = std::max( ( unsigned ) alphastr, ( ( map_.getMap()[ m ].flags & CMAGIC ) >> 28 ) );
-        }
-        if ( alpha )
-        {
-          // dd_alphaeffect_magic( alpha, alphastr, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff
-          // );
+          copysprite( 280 + ( ( map_.getMap()[ m ].flags & DEATH ) >> 17 ) - 1, 0, x * 32, y * 32, xoff, yoff );
         }
       }
+      if ( map_.getMap()[ m ].flags & TOMB )
+      {
+        copysprite( 240 + ( ( map_.getMap()[ m ].flags & TOMB ) >> 12 ) - 1, map_.getMap()[ m ].light, x * 32, y * 32, xoff, yoff );
+      }
+
+      alpha    = 0;
+      alphastr = 0;
+
+      if ( map_.getMap()[ m ].flags & EMAGIC )
+      {
+        alpha |= 1;
+        alphastr = std::max( ( unsigned ) alphastr, ( ( map_.getMap()[ m ].flags & EMAGIC ) >> 22 ) );
+      }
+
+      if ( map_.getMap()[ m ].flags & GMAGIC )
+      {
+        alpha |= 2;
+        alphastr = std::max( ( unsigned ) alphastr, ( ( map_.getMap()[ m ].flags & GMAGIC ) >> 25 ) );
+      }
+
+      if ( map_.getMap()[ m ].flags & CMAGIC )
+      {
+        alpha |= 4;
+        alphastr = std::max( ( unsigned ) alphastr, ( ( map_.getMap()[ m ].flags & CMAGIC ) >> 28 ) );
+      }
+      if ( alpha )
+      {
+        // dd_alphaeffect_magic( alpha, alphastr, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff
+        // );
+      }
     }
-
-    // eng_display_win( plr_sprite, init );
-
-    // ********************
-    // display cursors etc.
-    // ********************
-
-    //   if ( init && pl.citem )
-    //   {
-    //     if ( cursor_type == CT_DROP || cursor_type == CT_SWAP || cursor_type == CT_USE )
-    //       copyspritex( pl.citem, mouse_x - 16, mouse_y - 16, 16 );
-    //     else
-    //       copyspritex( pl.citem, mouse_x - 16, mouse_y - 16, 0 );
-    //   }
   }
 
+  // eng_display_win( plr_sprite, init );
+
+  // ********************
+  // display cursors etc.
+  // ********************
+
+  //   if ( init && pl.citem )
+  //   {
+  //     if ( cursor_type == CT_DROP || cursor_type == CT_SWAP || cursor_type == CT_USE )
+  //       copyspritex( pl.citem, mouse_x - 16, mouse_y - 16, 16 );
+  //     else
+  //       copyspritex( pl.citem, mouse_x - 16, mouse_y - 16, 0 );
+  //   }
+  sf::Vector2i mousePosition = sf::Mouse::getPosition( window_ );
+  if ( mousePosition.x > 0 && mousePosition.y > 0 )
+  {
+    for ( auto& tile : spritesToDraw_ )
+    {
+      if ( tile.getGlobalBounds().contains(
+               sf::Vector2f { static_cast< float >( mousePosition.x ), static_cast< float >( mousePosition.y ) } ) )
+      {
+        tile.setColor( sf::Color { tile.getColor().r, tile.getColor().g, tile.getColor().b, 200 } );
+        break;
+      }
+    }
+  }
   map_.unlock();
 }
 
