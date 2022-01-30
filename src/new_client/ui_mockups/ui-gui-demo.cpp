@@ -24,8 +24,13 @@ int main()
   sf::RenderWindow window( sf::VideoMode( 800, 600 ), "Mercenaries of Astonia - New Client" );
   window.setFramerateLimit( 10 );
 
+#ifdef _WIN32
+  std::string path      = ".\\gfx\\";
+  std::string indexPath = ".\\gfx\\gfx00.idx";
+#else
   std::string path      = "gfx/gfx.zip";
   std::string indexPath = "gfx/gx00.idx";
+#endif
 
   GraphicsCache cache {};
   cache.loadSprites( path, GraphicsCache::MAX_SPRITES );

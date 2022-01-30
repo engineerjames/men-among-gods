@@ -56,6 +56,26 @@ target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
 
 # Need the gfx files accessible / copied out to the server build directory so I can start using
 # relative directories instead of the hard coded ones.
+
+if (WIN32)
+
+add_custom_command(
+            TARGET ${target}
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E make_directory  $<TARGET_FILE_DIR:${target}>/gfx
+            COMMAND ${CMAKE_COMMAND} -E make_directory  $<TARGET_FILE_DIR:${target}>/fonts
+            COMMAND ${CMAKE_COMMAND} -E make_directory  $<TARGET_FILE_DIR:${target}>/test
+
+            COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/../gfx $<TARGET_FILE_DIR:${target}>/gfx
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/gx00.idx $<TARGET_FILE_DIR:${target}>/gfx
+
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../fonts/onuava.ttf $<TARGET_FILE_DIR:${target}>/fonts
+
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/mapfile.archive $<TARGET_FILE_DIR:${target}>/test
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/player.archive $<TARGET_FILE_DIR:${target}>/test
+            )
+else()
+
 add_custom_command(
             TARGET ${target}
             POST_BUILD
@@ -71,3 +91,23 @@ add_custom_command(
             COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/mapfile.archive $<TARGET_FILE_DIR:${target}>/test
             COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/player.archive $<TARGET_FILE_DIR:${target}>/test
             )
+endif()
+
+if (WIN32)
+    add_custom_command(
+        TARGET ${target}
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/player.archive $<TARGET_FILE_DIR:${target}>/test
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../lib/openal32.dll $<TARGET_FILE_DIR:${target}>
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../lib/sfml-audio-2.dll $<TARGET_FILE_DIR:${target}>
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../lib/sfml-audio-d-2.dll $<TARGET_FILE_DIR:${target}>
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../lib/sfml-graphics-2.dll $<TARGET_FILE_DIR:${target}>
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../lib/sfml-graphics-d-2.dll $<TARGET_FILE_DIR:${target}>
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../lib/sfml-network-2.dll $<TARGET_FILE_DIR:${target}>
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../lib/sfml-network-d-2.dll $<TARGET_FILE_DIR:${target}>
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../lib/sfml-system-2.dll $<TARGET_FILE_DIR:${target}>
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../lib/sfml-system-d-2.dll $<TARGET_FILE_DIR:${target}>
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../lib/sfml-window-2.dll $<TARGET_FILE_DIR:${target}>
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../lib/sfml-window-d-2.dll $<TARGET_FILE_DIR:${target}>
+        )
+endif()

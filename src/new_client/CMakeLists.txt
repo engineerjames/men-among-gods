@@ -3,7 +3,7 @@ if(WIN32)
   set(SFML_DIR C:/SFML/lib/cmake/SFML)
 endif()
 
-set(SFML_STATIC_LIBRARIES FALSE)
+set(SFML_STATIC_LIBRARIES TRUE)
 find_package(SFML 2.5 COMPONENTS graphics network REQUIRED)
 
 set(target client)
@@ -42,7 +42,7 @@ target_compile_definitions(${target} PUBLIC ${PROJECT_CXX_DEFINITIONS})
 if(NOT WIN32)
 target_link_libraries(${target} PUBLIC pthread zip)
 else()
-target_link_libraries(${target} PUBLIC zlib.lib)
+target_link_libraries(${target} PUBLIC zlib)
 endif()
 
 set(target MenAmongGods)

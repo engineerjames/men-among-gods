@@ -25,7 +25,71 @@ GraphicsCache::GraphicsCache()
 #ifdef _WIN32
 void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int howMany )
 {
-  std::cerr << "LOADING SPRITES NOT SUPPORTED YET!" << filePath << ", " << howMany << std::endl;
+  std::vector< std::filesystem::path > imageFiles {};
+  for ( const auto& entry : std::filesystem::recursive_directory_iterator( filePath ) )
+  {
+    if ( ! entry.path().has_extension() )
+    {
+      continue;
+    }
+
+    if ( entry.path().extension() == ".png" || entry.path().extension() == ".bmp" )
+    {
+      imageFiles.push_back( entry.path() );
+    }
+  }
+
+  std::sort( std::begin( imageFiles ), std::end( imageFiles ), []( const std::filesystem::path& a, const std::filesystem::path& b ) {
+    return a.filename() < b.filename();
+  } );
+
+  for ( unsigned int i = 0; i < imageFiles.size(); ++i )
+  {
+    // bmp/00001.bmp - example of sb.name
+    // But we want the index in the vector to align with the filename itself.
+    // For example... we want 00001.bmp to be sprites_[1];
+    //                        00047.bmp to be sprites_[47];
+    std::filesystem::path gfxFile { imageFiles[ i ] };
+    if ( ! gfxFile.has_filename() )
+    {
+      continue;
+    }
+
+    auto         gfxName = gfxFile.filename();
+    int          index   = std::stoi( gfxName.string() );
+    unsigned int offSet  = index - i;
+
+    sf::Image&   newImage   = images_[ offSet ];
+    sf::Texture& newTexture = textures_[ offSet ];
+    sf::Sprite&  newSprite  = sprites_[ offSet ];
+
+    if ( ! newImage.loadFromFile( imageFiles[ i ].string() ) )
+    {
+      std::cerr << "Error loading image from memory." << std::endl;
+    }
+    else
+    {
+      // Great, some images have masks of 254 0 254 as well
+      newImage.createMaskFromColor( sf::Color { 0xFF00FFFF } );
+      newImage.createMaskFromColor( sf::Color { 0xFE00FEFF } );
+
+      // Load in textures and sprites for now, though this is probably unnecessary work
+      newTexture.loadFromImage( newImage );
+
+      newSprite.setTexture( newTexture );
+
+      if ( ( i + offSet ) > images_.capacity() )
+      {
+        std::cerr << "Underallocated buffers - need at least a capacity of " << ( i + offSet ) << std::endl;
+        return;
+      }
+
+      if ( i == howMany )
+      {
+        break;
+      }
+    }
+  }
 }
 #else
 
