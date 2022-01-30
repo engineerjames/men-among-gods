@@ -13,11 +13,12 @@ template < typename T > std::string goldToString( T goldValue )
 {
   std::stringstream ss {};
 
-  // 200 is 20s
-  // 1200 is 1 gold 20s
-  int         goldAmount        = goldValue / 1000;
+  // 20 is 20s
+  // 200 is 2g 00s
+  // 1200 is 12 gold 00s
+  int         goldAmount        = goldValue / 100;
   std::string silverAmount      = std::to_string( goldValue );
-  std::string finalSilverAmount = silverAmount.substr( silverAmount.length() - 3, 2 );
+  std::string finalSilverAmount = silverAmount.substr( silverAmount.length() - 2, 2 );
 
   ss << goldAmount << "g " << finalSilverAmount << "s";
 
@@ -26,7 +27,7 @@ template < typename T > std::string goldToString( T goldValue )
 
 template < typename T > std::string addThousandsSeparator( T value )
 {
-  if constexpr ( std::is_unsigned_v< T > )
+  if constexpr ( std::is_integral_v< T > )
   {
     if ( value < 1000 )
     {
