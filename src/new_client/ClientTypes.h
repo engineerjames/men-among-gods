@@ -149,6 +149,11 @@ struct cplayer
 
   // character attributes+abilities
   // [0]=bare value, [1]=modifier, [2]=total value
+  // ^ Originally documented--at least partially wrong
+  // Below are the correct notations
+  // [0]=Base value (unmodified)
+  // [3]=Cost multiplier (in terms of experience points)
+  // [5]=Total value (displayed to user)
   int attrib[ 5 ][ 6 ];
   int skill[ 100 ][ 6 ];
   int hp[ 6 ];
@@ -195,7 +200,7 @@ struct cplayer
 };
 static_assert( sizeof( cplayer ) == 3348 );
 
-template < class Archive > void serialize( Archive& ar, cplayer& thePlayer, const unsigned int  )
+template < class Archive > void serialize( Archive& ar, cplayer& thePlayer, const unsigned int )
 {
   ar& thePlayer.name;
   ar& thePlayer.mode;

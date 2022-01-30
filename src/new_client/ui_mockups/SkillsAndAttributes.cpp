@@ -20,36 +20,6 @@ int attrib_needed( int n, int v, cplayer& pl )
   return v * v * v * pl.attrib[ n ][ 3 ] / 20;
 }
 
-// int hp_needed( int v, cplayer& pl )
-// {
-//   if ( v >= pl.hp[ 2 ] )
-//   {
-//     return std::numeric_limits< int >::max();
-//   }
-
-//   return v * pl.hp[ 3 ];
-// }
-
-// int end_needed( int v, cplayer& pl )
-// {
-//   if ( v >= pl.end[ 2 ] )
-//   {
-//     return std::numeric_limits< int >::max();
-//   }
-
-//   return v * pl.end[ 3 ] / 2;
-// }
-
-// int mana_needed( int v, cplayer& pl )
-// {
-//   if ( v >= pl.mana[ 2 ] )
-//   {
-//     return std::numeric_limits< int >::max();
-//   }
-
-//   return v * pl.mana[ 3 ];
-// }
-
 int skill_needed( int n, int v, cplayer& pl )
 {
   if ( v >= pl.skill[ n ][ 2 ] )
@@ -157,6 +127,7 @@ SkillsAndAttributes::SkillsAndAttributes( const sf::Font& font, PlayerData& play
     , playerData_( playerData )
     , attributes_()
     , skills_()
+    , skillsToDisplay_()
     , skillScrollBar_()
 {
 
@@ -230,18 +201,19 @@ void SkillsAndAttributes::draw( sf::RenderTarget& target, sf::RenderStates state
     target.draw( attributes_[ i ].minus_, states );
   }
 
-  for ( unsigned int i = 0; i < skills_.size(); ++i )
+  for ( unsigned int i = 0; i < skillsToDisplay_.size(); ++i )
   {
     // TODO: Accomodate scrolling behavior
-    if ( i == 10 )
+    if ( i == 10 || skillsToDisplay_[ i ] == nullptr )
     {
       break;
     }
-    target.draw( skills_[ i ].name_, states );
-    target.draw( skills_[ i ].displayValue_, states );
-    target.draw( skills_[ i ].expRequired_, states );
-    target.draw( skills_[ i ].plus_, states );
-    target.draw( skills_[ i ].minus_, states );
+
+    target.draw( skillsToDisplay_[ i ]->name_, states );
+    target.draw( skillsToDisplay_[ i ]->displayValue_, states );
+    target.draw( skillsToDisplay_[ i ]->expRequired_, states );
+    target.draw( skillsToDisplay_[ i ]->plus_, states );
+    target.draw( skillsToDisplay_[ i ]->minus_, states );
   }
 
   // Draw scrollbar
@@ -253,17 +225,41 @@ void SkillsAndAttributes::update()
   cplayer& player = playerData_.getClientSidePlayerInfo();
 
   // Attributes
-  for ( unsigned int i = 0; i < MAX_ATTRIBUTES; ++i ) 
+  for ( unsigned int i = 0; i < MAX_ATTRIBUTES; ++i )
   {
-    attributes_[ i ].displayValue_.setString( std::to_string( player.attrib[ i ][ 3 ] ) );
+    attributes_[ i ].displayValue_.setString( std::to_string( player.attrib[ i ][ 5 ] ) );
     attributes_[ i ].expRequired_.setString( std::to_string( attrib_needed( i, player.attrib[ i ][ 0 ], player ) ) );
   }
 
   // Skills
+  // We iterate across all skills, but only set the position of the ones we're going to render,
+  // since not all skills are displayed at all times (only when you get 'Bless' for instance, is the
+  // skill displayed.)
+
+  skillsToDisplay_.fill( nullptr );
+  unsigned int j = 0;
   for ( unsigned int i = 0; i < MAX_SKILLS; ++i )
   {
-    skills_[ i ].displayValue_.setString( std::to_string( player.skill[ i ][ 3 ] ) );
+    // Player does not have the inspected skill
+    if ( player.skill[ i ][ 0 ] == 0 )
+    {
+      continue;
+    }
+
+    // Player DOES have the skill, so appropriately set the delta value (based on how many skills)
+    // we've added to the skillstodisplay list.
+    skillsToDisplay_[ j ] = &skills_[ i ];
+    const sf::Vector2f delta { 0.0f, j * 14.0f };
+    j++;
+
+    skills_[ i ].displayValue_.setString( std::to_string( player.skill[ i ][ 5 ] ) );
     skills_[ i ].expRequired_.setString( std::to_string( skill_needed( i, player.skill[ i ][ 0 ], player ) ) );
+    skills_[ i ].name_.setPosition( MenAmongGods::initialSkillPosition + delta );
+
+    skills_[ i ].displayValue_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 115.0f, delta.y } );
+    skills_[ i ].plus_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 131.0f, delta.y } );
+    skills_[ i ].minus_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 146.0f, delta.y } );
+    skills_[ i ].expRequired_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 165.0f, delta.y } );
   }
 }
 

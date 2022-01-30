@@ -37,6 +37,7 @@ private:
   PlayerData&                            playerData_;
   std::array< SkillRow, MAX_ATTRIBUTES > attributes_;
   std::array< SkillRow, MAX_SKILLS >     skills_;
+  std::array< SkillRow*, MAX_SKILLS >    skillsToDisplay_;
   sf::RectangleShape                     skillScrollBar_;
 };
 

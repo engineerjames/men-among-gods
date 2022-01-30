@@ -4,6 +4,40 @@
 #include "GuiFormatters.h"
 #include "UiPositions.h"
 
+namespace
+{
+
+int hp_needed( int v, cplayer& pl )
+{
+  if ( v >= pl.hp[ 2 ] )
+  {
+    return std::numeric_limits< int >::max();
+  }
+
+  return v * pl.hp[ 3 ];
+}
+
+int end_needed( int v, cplayer& pl )
+{
+  if ( v >= pl.end[ 2 ] )
+  {
+    return std::numeric_limits< int >::max();
+  }
+
+  return v * pl.end[ 3 ] / 2;
+}
+
+int mana_needed( int v, cplayer& pl )
+{
+  if ( v >= pl.mana[ 2 ] )
+  {
+    return std::numeric_limits< int >::max();
+  }
+
+  return v * pl.mana[ 3 ];
+}
+} // namespace
+
 namespace MenAmongGods
 {
 
@@ -53,14 +87,18 @@ void LifeDisplay::draw( sf::RenderTarget& target, sf::RenderStates states ) cons
 
 void LifeDisplay::update()
 {
+  cplayer& player = playerData_.getClientSidePlayerInfo();
   // Update HP
   lifeDisplay_[ 0 ].displayValue_.setString( std::to_string( playerData_.getClientSidePlayerInfo().a_hp ) );
+  lifeDisplay_[ 0 ].expRequired_.setString( MenAmongGods::addThousandsSeparator( hp_needed( player.hp[ 0 ], player ) ) );
 
   // Update End
   lifeDisplay_[ 1 ].displayValue_.setString( std::to_string( playerData_.getClientSidePlayerInfo().a_end ) );
+  lifeDisplay_[ 1 ].expRequired_.setString( MenAmongGods::addThousandsSeparator( end_needed( player.end[ 0 ], player ) ) );
 
   // Update Mana
   lifeDisplay_[ 2 ].displayValue_.setString( std::to_string( playerData_.getClientSidePlayerInfo().a_mana ) );
+  lifeDisplay_[ 2 ].expRequired_.setString( MenAmongGods::addThousandsSeparator( mana_needed( player.mana[ 0 ], player ) ) );
 }
 
 void LifeDisplay::onUserInput( const sf::Event& )
