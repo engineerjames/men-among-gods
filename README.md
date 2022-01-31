@@ -28,5 +28,13 @@ Once you have made yourself a god, you can create items via `/createitem`:
 833 - gpot
 768 - Ankh Amulet
 1201 - ring of prophet
+
 ### Useful Positions
 607,499 - Entrance to labrynth
+
+### Building on Windows
+1. Install MSYS, follow the instructions here: https://www.msys2.org/
+2. Use `pacman` to install all dependencies--TODO: add package list here
+3. Install CMake and add to system path
+4. Use CMake from a regular command prompt to generate MinGW makefiles
+5. Run from MSYS terminal

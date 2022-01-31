@@ -24,16 +24,12 @@ int main()
   sf::RenderWindow window( sf::VideoMode( 800, 600 ), "Mercenaries of Astonia - New Client" );
   window.setFramerateLimit( 10 );
 
-#ifdef _WIN32
-  std::string path      = ".\\gfx\\";
-  std::string indexPath = ".\\gfx\\gfx00.idx";
-#else
+  std::cerr << "AHHH" << std::endl;
   std::string path      = "gfx/gfx.zip";
   std::string indexPath = "gfx/gx00.idx";
-#endif
 
-  GraphicsCache cache {};
-  cache.loadSprites( path, GraphicsCache::MAX_SPRITES );
+  auto cache = std::make_unique<GraphicsCache>();
+  cache->loadSprites( path, GraphicsCache::MAX_SPRITES );
 
   GraphicsIndex index { indexPath };
   index.load();
@@ -41,7 +37,7 @@ int main()
   sf::Clock clock {};
   sf::Time  time = clock.getElapsedTime();
 
-  sf::Sprite bg = cache.getSprite( 1 );
+  sf::Sprite bg = cache->getSprite( 1 );
 
   PlayerData pdata {};
   pdata.loadFromFile( "test/player.archive" );
@@ -49,8 +45,8 @@ int main()
   MenAmongGods::Map map {};
   TickBuffer        tickbuffer { pdata, map };
 
-  auto mapPtr    = new MenAmongGods::MapDisplay( map, pdata, cache, index, tickbuffer, window );
-  auto mainUiPtr = new MenAmongGods::MainUi( pdata, cache );
+  auto mapPtr    = new MenAmongGods::MapDisplay( map, pdata, *cache, index, tickbuffer, window );
+  auto mainUiPtr = new MenAmongGods::MainUi( pdata, *cache );
 
   mapPtr->loadFromFile( "test/mapfile.archive" );
 

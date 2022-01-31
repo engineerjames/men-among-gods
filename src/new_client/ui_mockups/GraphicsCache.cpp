@@ -5,12 +5,8 @@
 #include <fstream>
 #include <iostream>
 
-#ifdef _WIN32
-
-#else
 #include <unistd.h>
 #include <zip.h>
-#endif
 
 #include <SFML/Graphics/Sprite.hpp>
 
@@ -22,82 +18,11 @@ GraphicsCache::GraphicsCache()
 {
 }
 
-#ifdef _WIN32
-void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int howMany )
-{
-  std::vector< std::filesystem::path > imageFiles {};
-  for ( const auto& entry : std::filesystem::recursive_directory_iterator( filePath ) )
-  {
-    if ( ! entry.path().has_extension() )
-    {
-      continue;
-    }
-
-    if ( entry.path().extension() == ".png" || entry.path().extension() == ".bmp" )
-    {
-      imageFiles.push_back( entry.path() );
-    }
-  }
-
-  std::sort( std::begin( imageFiles ), std::end( imageFiles ), []( const std::filesystem::path& a, const std::filesystem::path& b ) {
-    return a.filename() < b.filename();
-  } );
-
-  for ( unsigned int i = 0; i < imageFiles.size(); ++i )
-  {
-    // bmp/00001.bmp - example of sb.name
-    // But we want the index in the vector to align with the filename itself.
-    // For example... we want 00001.bmp to be sprites_[1];
-    //                        00047.bmp to be sprites_[47];
-    std::filesystem::path gfxFile { imageFiles[ i ] };
-    if ( ! gfxFile.has_filename() )
-    {
-      continue;
-    }
-
-    auto         gfxName = gfxFile.filename();
-    int          index   = std::stoi( gfxName.string() );
-    unsigned int offSet  = index - i;
-
-    sf::Image&   newImage   = images_[ offSet ];
-    sf::Texture& newTexture = textures_[ offSet ];
-    sf::Sprite&  newSprite  = sprites_[ offSet ];
-
-    if ( ! newImage.loadFromFile( imageFiles[ i ].string() ) )
-    {
-      std::cerr << "Error loading image from memory." << std::endl;
-    }
-    else
-    {
-      // Great, some images have masks of 254 0 254 as well
-      newImage.createMaskFromColor( sf::Color { 0xFF00FFFF } );
-      newImage.createMaskFromColor( sf::Color { 0xFE00FEFF } );
-
-      // Load in textures and sprites for now, though this is probably unnecessary work
-      newTexture.loadFromImage( newImage );
-
-      newSprite.setTexture( newTexture );
-
-      if ( ( i + offSet ) > images_.capacity() )
-      {
-        std::cerr << "Underallocated buffers - need at least a capacity of " << ( i + offSet ) << std::endl;
-        return;
-      }
-
-      if ( i == howMany )
-      {
-        break;
-      }
-    }
-  }
-}
-#else
-
 void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int howMany )
 {
   struct zip*      za = nullptr;
   struct zip_file* zf = nullptr;
-  char             buf[ 2 * 1024 * 1024 ]; // 2MB
+  auto buf = std::make_unique<char[]>(2*1024*1024); // 2MB
 
   int errors {};
   za = zip_open( filePath.c_str(), 0, &errors );
@@ -141,12 +66,12 @@ void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int
       sf::Texture& newTexture = textures_[ i + offSet ];
       sf::Sprite&  newSprite  = sprites_[ i + offSet ];
 
-      if ( static_cast< unsigned long >( zip_fread( zf, buf, sb.size ) ) != sb.size )
+      if ( static_cast< unsigned long >( zip_fread( zf, buf.get(), sb.size ) ) != sb.size )
       {
         std::cerr << "Unable to read entire zip file." << std::endl;
       }
 
-      if ( ! newImage.loadFromMemory( buf, sb.size ) )
+      if ( ! newImage.loadFromMemory( buf.get(), sb.size ) )
       {
         std::cerr << "Error loading image from memory." << std::endl;
       }
@@ -181,7 +106,6 @@ void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int
 
   isLoaded_ = true;
 }
-#endif
 
 sf::Sprite GraphicsCache::getSprite( std::size_t id ) const
 {
