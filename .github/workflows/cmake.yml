@@ -23,7 +23,7 @@ jobs:
     - name: Install Dependencies
       run: |
         sudo apt update
-        sudo apt install libsfml-dev libboost-serialization1.71-dev libzip-dev libz1g-dev libzstd-dev
+        sudo apt install libsfml-dev libboost-serialization1.71-dev libzip-dev libzstd-dev libzstd-dev libx11-dev libxrandr-dev libopengl-dev libgl-dev libfreetype-dev libopenal-dev libvorbis-dev libflac-dev
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
