@@ -77,7 +77,7 @@ namespace MenAmongGods
 {
 
 MapDisplay::MapDisplay( MenAmongGods::Map& map, const PlayerData& playerData, const GraphicsCache& cache, const GraphicsIndex& index,
-                        TickBuffer& tickBuffer, const sf::Window& window )
+                        TickBuffer& tickBuffer, const sf::RenderWindow& window )
     : MenAmongGods::Component()
     , map_( map )
     , playerData_( playerData )
@@ -521,13 +521,19 @@ void MapDisplay::update()
   //     else
   //       copyspritex( pl.citem, mouse_x - 16, mouse_y - 16, 0 );
   //   }
-  sf::Vector2i mousePosition = sf::Mouse::getPosition( window_ );
+  sf::Vector2f mousePosition    = sf::Vector2f { static_cast< float >( sf::Mouse::getPosition( window_ ).x ),
+                                              static_cast< float >( sf::Mouse::getPosition( window_ ).y ) };
+  sf::Vector2f windowSize       = window_.getView().getSize();
+  sf::Vector2f windowResolution = sf::Vector2f { static_cast< float >( window_.getSize().x ), static_cast< float >( window_.getSize().y ) };
+
+  sf::Vector2f multiplicationFactor = sf::Vector2f { windowSize.x / windowResolution.x, windowSize.y / windowResolution.y };
+
   if ( mousePosition.x > 0 && mousePosition.y > 0 )
   {
     for ( auto& tile : spritesToDraw_ )
     {
-      if ( tile.getGlobalBounds().contains(
-               sf::Vector2f { static_cast< float >( mousePosition.x ), static_cast< float >( mousePosition.y ) } ) )
+      if ( tile.getGlobalBounds().contains( sf::Vector2f { static_cast< float >( mousePosition.x ) * multiplicationFactor.x,
+                                                           static_cast< float >( mousePosition.y ) * multiplicationFactor.y } ) )
       {
         tile.setColor( sf::Color { tile.getColor().r, tile.getColor().g, tile.getColor().b, 200 } );
         break;

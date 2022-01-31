@@ -6,6 +6,8 @@ add_library(${target}
                 GraphicsCache.cpp
                 GraphicsIndex.h
                 GraphicsIndex.cpp
+                JustifiableText.h
+                JustifiableText.cpp
                 LifeDisplay.h
                 LifeDisplay.cpp
                 MainUi.h
@@ -42,6 +44,13 @@ target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
 # Test Application for reading the graphics-related .idx file
 set(target gfx-idx-load)
 add_executable(${target} gfx-idx-load.cpp)
+target_link_libraries(${target} PRIVATE MenAmongGodsGraphics)
+target_compile_features(${target} PRIVATE cxx_std_17)
+target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
+
+# Test Application for text-related demos only
+set(target gfx-text-test)
+add_executable(${target} gfx-text-test.cpp)
 target_link_libraries(${target} PRIVATE MenAmongGodsGraphics)
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )

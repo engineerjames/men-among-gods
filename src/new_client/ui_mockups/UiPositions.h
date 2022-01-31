@@ -20,8 +20,10 @@ static const sf::Vector2f userInputPosition { 500.0f, 227.0f };
 // Display beneath the message box with WV/AV/Exp
 static const sf::Vector2f avLabelPosition { 641.0f, 255.0f };
 static const sf::Vector2f avValuePosition { 730.0f, 255.0f };
+
 static const sf::Vector2f wvLabelPosition { 641.0f, 241.0f };
-static const sf::Vector2f wvValuePosition { 730.0f, 241.0f };
+static const sf::Vector2f wvValuePosition { 792.0f, 241.0f };
+
 static const sf::Vector2f expLabelPosition { 641.0f, 269.0f };
 static const sf::Vector2f expValuePosition { 730.0f, 269.0f };
 

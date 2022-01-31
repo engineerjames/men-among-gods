@@ -24,11 +24,10 @@ int main()
   sf::RenderWindow window( sf::VideoMode( 800, 600 ), "Mercenaries of Astonia - New Client" );
   window.setFramerateLimit( 10 );
 
-  std::cerr << "AHHH" << std::endl;
   std::string path      = "gfx/gfx.zip";
   std::string indexPath = "gfx/gx00.idx";
 
-  auto cache = std::make_unique<GraphicsCache>();
+  auto cache = std::make_unique< GraphicsCache >();
   cache->loadSprites( path, GraphicsCache::MAX_SPRITES );
 
   GraphicsIndex index { indexPath };
@@ -60,6 +59,7 @@ int main()
   components.emplace_back( mapPtr );
   components.emplace_back( mainUiPtr );
 
+  // Note: As the window is re-sized--the WindowSize parameter increases, while the ViewSize stays the same
   while ( window.isOpen() )
   {
     sf::Event event;

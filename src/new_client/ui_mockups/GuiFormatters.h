@@ -2,6 +2,7 @@
 #define GUI_FORMATTERS_H
 
 #include <cmath>
+#include <iostream>
 #include <sstream>
 #include <string>
 #include <type_traits>
@@ -49,7 +50,7 @@ template < typename T > std::string addThousandsSeparator( T value )
   }
   else
   {
-    return "UNSUPPORTED DATA TYPE"; // You are attempting to use this function with the wrong type--should be a uint of some variety.
+    return "UNSUPPORTED DATA TYPE"; // You are attempting to use this function with the wrong type--should be a int of some variety.
   }
 }
 } // namespace MenAmongGods

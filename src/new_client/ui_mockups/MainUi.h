@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "Component.h"
+#include "JustifiableText.h"
 #include "LifeDisplay.h"
 #include "PlayerInventoryDisplay.h"
 #include "PlayerLogDisplay.h"
@@ -44,8 +45,8 @@ private:
   sf::Text avLabel_;
   sf::Text avValue_;
 
-  sf::Text wvLabel_;
-  sf::Text wvValue_;
+  sf::Text                      wvLabel_;
+  MenAmongGods::JustifiableText wvValue_;
 
   sf::Text expLabel_;
   sf::Text expValue_;
