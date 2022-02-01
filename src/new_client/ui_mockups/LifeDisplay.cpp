@@ -55,10 +55,10 @@ LifeDisplay::LifeDisplay( const sf::Font& font, PlayerData& playerData )
     const sf::Vector2f delta { 0.0f, ( MAX_ATTRIBUTES + i ) * 14.0f };
     lifeDisplay_[ i ].name_.setPosition( MenAmongGods::initialAttributePosition + delta );
 
-    lifeDisplay_[ i ].displayValue_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 115.0f, delta.y } );
+    lifeDisplay_[ i ].displayValue_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 127.0f, delta.y } );
     lifeDisplay_[ i ].plus_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 131.0f, delta.y } );
     lifeDisplay_[ i ].minus_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 146.0f, delta.y } );
-    lifeDisplay_[ i ].expRequired_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 165.0f, delta.y } );
+    lifeDisplay_[ i ].expRequired_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 200.0f, delta.y } );
 
     lifeDisplay_[ i ].displayValue_.setString( "0" );
     lifeDisplay_[ i ].expRequired_.setString( MenAmongGods::addThousandsSeparator( 1000u ) );
@@ -70,6 +70,9 @@ LifeDisplay::LifeDisplay( const sf::Font& font, PlayerData& playerData )
     lifeDisplay_[ i ].expRequired_.setFont( font_ );
     lifeDisplay_[ i ].plus_.setFont( font_ );
     lifeDisplay_[ i ].minus_.setFont( font_ );
+
+    lifeDisplay_[ i ].displayValue_.setJustification( MenAmongGods::JustifiableText::TextJustification::RIGHT );
+    lifeDisplay_[ i ].expRequired_.setJustification( MenAmongGods::JustifiableText::TextJustification::RIGHT );
   }
 }
 
@@ -91,14 +94,20 @@ void LifeDisplay::update()
   // Update HP
   lifeDisplay_[ 0 ].displayValue_.setString( std::to_string( playerData_.getClientSidePlayerInfo().a_hp ) );
   lifeDisplay_[ 0 ].expRequired_.setString( MenAmongGods::addThousandsSeparator( hp_needed( player.hp[ 0 ], player ) ) );
+  lifeDisplay_[ 0 ].displayValue_.update();
+  lifeDisplay_[ 0 ].expRequired_.update();
 
   // Update End
   lifeDisplay_[ 1 ].displayValue_.setString( std::to_string( playerData_.getClientSidePlayerInfo().a_end ) );
   lifeDisplay_[ 1 ].expRequired_.setString( MenAmongGods::addThousandsSeparator( end_needed( player.end[ 0 ], player ) ) );
+  lifeDisplay_[ 1 ].displayValue_.update();
+  lifeDisplay_[ 1 ].expRequired_.update();
 
   // Update Mana
   lifeDisplay_[ 2 ].displayValue_.setString( std::to_string( playerData_.getClientSidePlayerInfo().a_mana ) );
   lifeDisplay_[ 2 ].expRequired_.setString( MenAmongGods::addThousandsSeparator( mana_needed( player.mana[ 0 ], player ) ) );
+  lifeDisplay_[ 2 ].displayValue_.update();
+  lifeDisplay_[ 2 ].expRequired_.update();
 }
 
 void LifeDisplay::onUserInput( const sf::Event& )

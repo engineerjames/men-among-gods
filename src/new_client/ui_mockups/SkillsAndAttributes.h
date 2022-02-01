@@ -1,12 +1,13 @@
 #ifndef SKILL_DISPLAY_H
 #define SKILL_DISPLAY_H
 
-#include <array>
 #include <SFML/Graphics.hpp>
+#include <array>
 
 #include "../ConstantIdentifiers.h"
 #include "ColorPalette.h"
 #include "Component.h"
+#include "JustifiableText.h"
 
 class PlayerData;
 
@@ -15,11 +16,11 @@ class SkillsAndAttributes : public MenAmongGods::Component
 public:
   struct SkillRow
   {
-    sf::Text name_;
-    sf::Text displayValue_;
-    sf::Text expRequired_;
-    sf::Text plus_;
-    sf::Text minus_;
+    sf::Text                      name_;
+    MenAmongGods::JustifiableText displayValue_;
+    MenAmongGods::JustifiableText expRequired_;
+    sf::Text                      plus_;
+    sf::Text                      minus_;
 
     SkillRow();
     ~SkillRow() = default;

@@ -153,10 +153,13 @@ SkillsAndAttributes::SkillsAndAttributes( const sf::Font& font, PlayerData& play
     skills_[ i ].minus_.setFont( font_ );
 
     skills_[ i ].name_.setPosition( MenAmongGods::initialSkillPosition + delta );
-    skills_[ i ].displayValue_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 115.0f, delta.y } );
+    skills_[ i ].displayValue_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 127.0f, delta.y } );
     skills_[ i ].plus_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 131.0f, delta.y } );
     skills_[ i ].minus_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 146.0f, delta.y } );
-    skills_[ i ].expRequired_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 165.0f, delta.y } );
+    skills_[ i ].expRequired_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 200.0f, delta.y } );
+
+    skills_[ i ].displayValue_.setJustification( MenAmongGods::JustifiableText::TextJustification::RIGHT );
+    skills_[ i ].expRequired_.setJustification( MenAmongGods::JustifiableText::TextJustification::RIGHT );
   }
 
   attributes_[ 0 ].name_.setString( "Braveness" );
@@ -172,10 +175,10 @@ SkillsAndAttributes::SkillsAndAttributes( const sf::Font& font, PlayerData& play
 
     attributes_[ i ].name_.setPosition( MenAmongGods::initialAttributePosition + delta );
 
-    attributes_[ i ].displayValue_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 115.0f, delta.y } );
+    attributes_[ i ].displayValue_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 127.0f, delta.y } );
     attributes_[ i ].plus_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 131.0f, delta.y } );
     attributes_[ i ].minus_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 146.0f, delta.y } );
-    attributes_[ i ].expRequired_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 165.0f, delta.y } );
+    attributes_[ i ].expRequired_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 200.0f, delta.y } );
 
     attributes_[ i ].displayValue_.setString( "0" );
     attributes_[ i ].expRequired_.setString( MenAmongGods::addThousandsSeparator( 1000u ) );
@@ -187,6 +190,9 @@ SkillsAndAttributes::SkillsAndAttributes( const sf::Font& font, PlayerData& play
     attributes_[ i ].expRequired_.setFont( font_ );
     attributes_[ i ].plus_.setFont( font_ );
     attributes_[ i ].minus_.setFont( font_ );
+
+    attributes_[ i ].displayValue_.setJustification( MenAmongGods::JustifiableText::TextJustification::RIGHT );
+    attributes_[ i ].expRequired_.setJustification( MenAmongGods::JustifiableText::TextJustification::RIGHT );
   }
 }
 
@@ -229,6 +235,8 @@ void SkillsAndAttributes::update()
   {
     attributes_[ i ].displayValue_.setString( std::to_string( player.attrib[ i ][ 5 ] ) );
     attributes_[ i ].expRequired_.setString( std::to_string( attrib_needed( i, player.attrib[ i ][ 0 ], player ) ) );
+    attributes_[ i ].displayValue_.update();
+    attributes_[ i ].expRequired_.update();
   }
 
   // Skills
@@ -256,10 +264,13 @@ void SkillsAndAttributes::update()
     skills_[ i ].expRequired_.setString( std::to_string( skill_needed( i, player.skill[ i ][ 0 ], player ) ) );
     skills_[ i ].name_.setPosition( MenAmongGods::initialSkillPosition + delta );
 
-    skills_[ i ].displayValue_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 115.0f, delta.y } );
+    skills_[ i ].displayValue_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 127.0f, delta.y } );
     skills_[ i ].plus_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 131.0f, delta.y } );
     skills_[ i ].minus_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 146.0f, delta.y } );
-    skills_[ i ].expRequired_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 165.0f, delta.y } );
+    skills_[ i ].expRequired_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 200.0f, delta.y } );
+
+    skills_[ i ].displayValue_.update();
+    skills_[ i ].expRequired_.update();
   }
 }
 

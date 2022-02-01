@@ -150,6 +150,8 @@ MainUi::MainUi( PlayerData& pdata, const GraphicsCache& gfxCache )
   manaMaxValue_.setString( "100" );
 
   wvValue_.setJustification( MenAmongGods::JustifiableText::TextJustification::RIGHT );
+  avValue_.setJustification( MenAmongGods::JustifiableText::TextJustification::RIGHT );
+  expValue_.setJustification( MenAmongGods::JustifiableText::TextJustification::RIGHT );
 }
 
 void MainUi::addMessage( LogType type, std::string text )
@@ -250,6 +252,8 @@ void MainUi::update()
 
   // Update JustifiableText
   wvValue_.update();
+  avValue_.update();
+  expValue_.update();
 }
 
 void MainUi::finalize()
@@ -259,5 +263,7 @@ void MainUi::finalize()
   lifeDisplay_.finalize();
   playerInventory_.finalize();
   wvValue_.finalize();
+  avValue_.finalize();
+  expValue_.finalize();
 }
 } // namespace MenAmongGods

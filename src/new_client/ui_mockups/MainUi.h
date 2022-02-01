@@ -42,14 +42,14 @@ private:
   sf::Text goldDisplay_;
   sf::Text textualRank_;
 
-  sf::Text avLabel_;
-  sf::Text avValue_;
+  sf::Text                      avLabel_;
+  MenAmongGods::JustifiableText avValue_;
 
   sf::Text                      wvLabel_;
   MenAmongGods::JustifiableText wvValue_;
 
-  sf::Text expLabel_;
-  sf::Text expValue_;
+  sf::Text                      expLabel_;
+  MenAmongGods::JustifiableText expValue_;
 
   sf::Text hpLabel_;
   sf::Text hpCurrentValue_;
