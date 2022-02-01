@@ -1,3 +1,5 @@
+[![CMake](https://github.com/engineerjames/men-among-gods/actions/workflows/cmake.yml/badge.svg)](https://github.com/engineerjames/men-among-gods/actions/workflows/cmake.yml)
+
 # men-among-gods
 
 Men Among Gods is based on the Mercenaries of Astonia engine by Daniel Brockhaus
