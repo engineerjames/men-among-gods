@@ -24,6 +24,11 @@ cmap* Map::getMap()
   return map_.get();
 }
 
+const cmap* Map::getMap() const
+{
+  return map_.get();
+}
+
 void Map::unlock()
 {
   mapMutex_.unlock();

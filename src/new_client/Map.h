@@ -16,9 +16,10 @@ public:
 
   // We'll start by naively allowing access to the entirety of the map through
   // public "lock" and "unlock" functions.
-  void  unlock();
-  void  lock();
-  cmap* getMap();
+  void        unlock();
+  void        lock();
+  cmap*       getMap();
+  const cmap* getMap() const;
 
 private:
   std::unique_ptr< cmap[] > map_;

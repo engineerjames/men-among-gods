@@ -89,6 +89,9 @@ MapDisplay::MapDisplay( MenAmongGods::Map& map, const PlayerData& playerData, co
     , ticker_()
     , needsToUpdate_( true )
     , ctick_( 0 )
+    , tileType_()
+    , tileX_()
+    , tileY_()
 {
 }
 
@@ -109,8 +112,33 @@ void MapDisplay::finalize()
 {
 }
 
-void MapDisplay::onUserInput( const sf::Event& )
+void MapDisplay::onUserInput( const sf::Event& e )
 {
+  if ( e.type == sf::Event::MouseButtonReleased && e.mouseButton.button == sf::Mouse::Button::Left )
+  {
+    // Attempting to port similar logic from inter.c::mouse_mapbox()
+    sf::Vector2i mousePosition = sf::Mouse::getPosition( window_ );
+
+    mousePosition = sf::Vector2i { mousePosition.x + ( 176 - 16 ), mousePosition.y + 8 };
+
+    int mx = 2 * mousePosition.y + mousePosition.x - ( YPOS * 2 ) - XPOS + ( ( TILEX - 34 ) / 2 * 32 );
+    int my = mousePosition.x - 2 * mousePosition.y + ( YPOS * 2 ) - XPOS + ( ( TILEX - 34 ) / 2 * 32 );
+
+    mx /= 32;
+    my /= 32;
+
+    // Map index
+    int m = mx + my * TILEX;
+
+    // This seems to give us an off-by-one error...
+    tileType_ = 0;
+    tileX_    = mx;
+    tileY_    = my;
+
+    // TODO: Remove this filthy evil hack
+    const_cast< PlayerData& >( playerData_ ).getClientSidePlayerInfo().goto_x = map_.getMap()[ m ].x;
+    const_cast< PlayerData& >( playerData_ ).getClientSidePlayerInfo().goto_y = map_.getMap()[ m ].y;
+  }
 }
 
 void MapDisplay::update()
@@ -159,9 +187,6 @@ void MapDisplay::update()
   int alpha {};
   int alphastr {};
   int hightlight {};
-  int tile_type {};
-  int tile_x {}; // user goto?
-  int tile_y {}; // user goto value?
   int selected_char {};
 
   int xoff       = -map_.getMap()[ ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX ].obj_xoff - 176; //-176;
@@ -178,7 +203,7 @@ void MapDisplay::update()
       // background
       int m = x + y * MAPX;
 
-      if ( hightlight == HL_MAP && tile_type == 0 && tile_x == x && tile_y == y )
+      if ( hightlight == HL_MAP && tileType_ == 0 && tileX_ == x && tileY_ == y )
       {
         tmp = 16;
       }
@@ -288,7 +313,7 @@ void MapDisplay::update()
             tmp2 = 467;
           }
 
-          if ( hightlight == HL_MAP && tile_type == 1 && tile_x == x && tile_y == y )
+          if ( hightlight == HL_MAP && tileType_ == 1 && tileX_ == x && tileY_ == y )
           {
             copysprite( tmp2, map_.getMap()[ m ].light | 16 | tmp, x * 32, y * 32, xoff, yoff );
           }
@@ -299,7 +324,7 @@ void MapDisplay::update()
         }
         else
         {
-          if ( hightlight == HL_MAP && tile_type == 1 && tile_x == x && tile_y == y )
+          if ( hightlight == HL_MAP && tileType_ == 1 && tileX_ == x && tileY_ == y )
           {
             copysprite( map_.getMap()[ m ].obj1, map_.getMap()[ m ].light | 16 | tmp, x * 32, y * 32, xoff, yoff );
           }
@@ -315,7 +340,7 @@ void MapDisplay::update()
       }
 
       // character
-      if ( tile_type == 2 && tile_x == x && tile_y == y )
+      if ( tileType_ == 2 && tileX_ == x && tileY_ == y )
       {
         tmp = 16;
       }
@@ -535,7 +560,7 @@ void MapDisplay::update()
       if ( tile.getGlobalBounds().contains( sf::Vector2f { static_cast< float >( mousePosition.x ) * multiplicationFactor.x,
                                                            static_cast< float >( mousePosition.y ) * multiplicationFactor.y } ) )
       {
-        tile.setColor( sf::Color { tile.getColor().r, tile.getColor().g, tile.getColor().b, 200 } );
+        tile.setColor( sf::Color { 255, 255, 255, 200 } );
         break;
       }
     }

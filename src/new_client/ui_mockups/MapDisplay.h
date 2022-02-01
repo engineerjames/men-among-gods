@@ -41,6 +41,9 @@ private:
   std::size_t               ticker_;
   bool                      needsToUpdate_;
   unsigned int              ctick_;
+  int                       tileType_;
+  int                       tileX_;
+  int                       tileY_;
 
   void copysprite( int nr, int effect, int xpos, int ypos, int xoff, int yoff );
   int  interpolateItemSprite( int mapIndex );
