@@ -10,6 +10,7 @@
 #include "../TickBuffer.h"
 #include "GraphicsCache.h"
 #include "GraphicsIndex.h"
+#include "UtilityFunctions.h"
 
 namespace
 {
@@ -117,9 +118,9 @@ void MapDisplay::onUserInput( const sf::Event& e )
   if ( e.type == sf::Event::MouseButtonReleased && e.mouseButton.button == sf::Mouse::Button::Left )
   {
     // Attempting to port similar logic from inter.c::mouse_mapbox()
-    sf::Vector2i mousePosition = sf::Mouse::getPosition( window_ );
+    sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
 
-    mousePosition = sf::Vector2i { mousePosition.x + ( 176 - 16 ), mousePosition.y + 8 };
+    mousePosition = sf::Vector2f { mousePosition.x + ( 176 - 16 ), mousePosition.y + 8 };
 
     int mx = 2 * mousePosition.y + mousePosition.x - ( YPOS * 2 ) - XPOS + ( ( TILEX - 34 ) / 2 * 32 );
     int my = mousePosition.x - 2 * mousePosition.y + ( YPOS * 2 ) - XPOS + ( ( TILEX - 34 ) / 2 * 32 );
@@ -130,7 +131,6 @@ void MapDisplay::onUserInput( const sf::Event& e )
     // Map index
     int m = mx + my * TILEX;
 
-    // This seems to give us an off-by-one error...
     tileType_ = 0;
     tileX_    = mx;
     tileY_    = my;
@@ -546,19 +546,13 @@ void MapDisplay::update()
   //     else
   //       copyspritex( pl.citem, mouse_x - 16, mouse_y - 16, 0 );
   //   }
-  sf::Vector2f mousePosition    = sf::Vector2f { static_cast< float >( sf::Mouse::getPosition( window_ ).x ),
-                                              static_cast< float >( sf::Mouse::getPosition( window_ ).y ) };
-  sf::Vector2f windowSize       = window_.getView().getSize();
-  sf::Vector2f windowResolution = sf::Vector2f { static_cast< float >( window_.getSize().x ), static_cast< float >( window_.getSize().y ) };
-
-  sf::Vector2f multiplicationFactor = sf::Vector2f { windowSize.x / windowResolution.x, windowSize.y / windowResolution.y };
+  sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
 
   if ( mousePosition.x > 0 && mousePosition.y > 0 )
   {
     for ( auto& tile : spritesToDraw_ )
     {
-      if ( tile.getGlobalBounds().contains( sf::Vector2f { static_cast< float >( mousePosition.x ) * multiplicationFactor.x,
-                                                           static_cast< float >( mousePosition.y ) * multiplicationFactor.y } ) )
+      if ( tile.getGlobalBounds().contains( mousePosition ) )
       {
         tile.setColor( sf::Color { 255, 255, 255, 200 } );
         break;
@@ -1625,8 +1619,6 @@ void MapDisplay::copysprite( int nr, int effect, int xpos, int ypos, int xoff, i
     return;
   }
 
-  ( void ) effect;
-
   // xs / ys are the x and y size in tiles (width / 32), and height / 32 respectively
   GraphicsIndex::Index gfxIndex = index_.getIndex( nr );
   unsigned char        xs       = gfxIndex.xs / 32;
@@ -1656,22 +1648,17 @@ void MapDisplay::copysprite( int nr, int effect, int xpos, int ypos, int xoff, i
   rx += xoff;
   ry += yoff;
 
-  // std::cerr << rx << ", " << ry << std::endl;
-
   for ( unsigned int y = 0; y < 1; y++ )
   {
     for ( unsigned int x = 0; x < 1; x++ ) // TODO: Why does only `1` work here, vs. the legacy xs ys values?
     {
-      // n = gettile( nr, effect, x, y, xs );
-
       // This is where we have all the data we need now to copy sprites out to a.. draw list?
       spritesToDraw_.push_back( cache_.getSprite( nr ) );
       sf::Sprite& newSprite = *( spritesToDraw_.end() - 1 );
       newSprite.setPosition( sf::Vector2f { static_cast< float >( rx + x * 32 ), static_cast< float >( ry + y * 32 ) } );
+      ( void ) effect;
     }
   }
-  //   if ( sprtab[ nr ].alpha )
-  //     display_alpha( sprtab[ nr ].alpha, sprtab[ nr ].alphacnt, rx, ry, effect );
 }
 
 void MapDisplay::saveToFile() const
