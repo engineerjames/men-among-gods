@@ -2,7 +2,9 @@
 #define MEN_AMONG_GODS_LOGIN_UI_H
 
 #include "Component.h"
+#include "PasswordTextInputDisplay.h"
 #include "RadioButtonDisplay.h"
+#include "SubmitButtonDisplay.h"
 #include "TextInputDisplay.h"
 
 #include <SFML/Graphics.hpp>
@@ -15,7 +17,7 @@ namespace MenAmongGods
 class LoginUi : public MenAmongGods::Component
 {
 public:
-  LoginUi( const sf::RenderWindow& window, const sf::Font& font );
+  LoginUi( const sf::RenderWindow& window, const sf::Font& font, unsigned int fontSize );
   ~LoginUi() = default;
 
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
@@ -29,8 +31,13 @@ private:
   TextInputDisplay                  nameEntry_;
   sf::Text                          descriptionLabel_;
   TextInputDisplay                  descriptionEntry_;
+  sf::Text                          passwordLabel_;
+  PasswordTextInputDisplay          passwordEntry_;
   std::vector< RadioButtonDisplay > raceSelection_;
   std::vector< RadioButtonDisplay > sexSelection_;
+  SubmitButtonDisplay               submitButton_;
+
+  std::vector< MenAmongGods::Component* > components_;
 };
 } // namespace MenAmongGods
 

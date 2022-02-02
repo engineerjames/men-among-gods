@@ -12,7 +12,8 @@ namespace MenAmongGods
 class RadioButtonDisplay : public MenAmongGods::Component
 {
 public:
-  RadioButtonDisplay( const sf::Font& font, const std::string& labelText, float circleRadius );
+  RadioButtonDisplay( const sf::RenderWindow& window, const sf::Font& font, const std::string& labelText, float circleRadius,
+                      unsigned int fontSize );
   ~RadioButtonDisplay() = default;
 
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
@@ -20,11 +21,15 @@ public:
   virtual void onUserInput( const sf::Event& e ) override;
   virtual void finalize() override;
 
+  void setPosition( const sf::Vector2f& newPosition );
+  bool isSelected() const;
+
 private:
-  sf::CircleShape outerCircle_;
-  sf::CircleShape innerCircle_;
-  bool            isSelected_;
-  sf::Text        labelText_;
+  const sf::RenderWindow& window_;
+  sf::CircleShape         outerCircle_;
+  sf::CircleShape         innerCircle_;
+  bool                    isSelected_;
+  sf::Text                labelText_;
 };
 } // namespace MenAmongGods
 

@@ -22,10 +22,14 @@ add_library(${target}
                 RadioButtonDisplay.cpp
                 SkillsAndAttributesDisplay.h
                 SkillsAndAttributesDisplay.cpp
+                PasswordTextInputDisplay.h
+                PasswordTextInputDisplay.cpp
                 PlayerLogDisplay.h
                 PlayerLogDisplay.cpp
                 PlayerTextInputDisplay.h
                 PlayerTextInputDisplay.cpp
+                SubmitButtonDisplay.h
+                SubmitButtonDisplay.cpp
                 TextInputDisplay.h
                 TextInputDisplay.cpp
                 )

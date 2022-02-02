@@ -15,7 +15,7 @@ int main()
     std::cerr << "Unable to load font!" << std::endl;
   };
 
-  MenAmongGods::LoginUi loginUi { window, font };
+  MenAmongGods::LoginUi loginUi { window, font, 16 };
 
   while ( window.isOpen() )
   {
@@ -35,6 +35,8 @@ int main()
     window.clear();
     window.draw( loginUi );
     window.display();
+
+    loginUi.finalize();
   }
 
   return 0;

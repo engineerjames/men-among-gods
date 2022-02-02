@@ -10,8 +10,8 @@ namespace MenAmongGods
 class TextInputDisplay : public MenAmongGods::Component
 {
 public:
-  TextInputDisplay( const sf::RenderWindow& window, const sf::Font& font );
-  ~TextInputDisplay() = default;
+  TextInputDisplay( const sf::RenderWindow& window, const sf::Font& font, unsigned int fontSize );
+  virtual ~TextInputDisplay() = default;
 
   virtual void update() override;
   virtual void onUserInput( const sf::Event& e ) override;
@@ -22,7 +22,7 @@ public:
 
   void deselect();
 
-private:
+protected:
   const sf::RenderWindow& window_;
   sf::Text                text_;
   bool                    isSelected_;
