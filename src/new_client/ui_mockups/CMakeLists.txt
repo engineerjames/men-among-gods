@@ -10,18 +10,25 @@ add_library(${target}
                 JustifiableText.cpp
                 LifeDisplay.h
                 LifeDisplay.cpp
+                LoginUi.h
+                LoginUi.cpp
                 MainUi.h
                 MainUi.cpp
                 MapDisplay.h
                 MapDisplay.cpp
                 PlayerInventoryDisplay.h
                 PlayerInventoryDisplay.cpp
-                SkillsAndAttributes.h
-                SkillsAndAttributes.cpp
+                RadioButtonDisplay.h
+                RadioButtonDisplay.cpp
+                SkillsAndAttributesDisplay.h
+                SkillsAndAttributesDisplay.cpp
                 PlayerLogDisplay.h
                 PlayerLogDisplay.cpp
                 PlayerTextInputDisplay.h
-                PlayerTextInputDisplay.cpp)
+                PlayerTextInputDisplay.cpp
+                TextInputDisplay.h
+                TextInputDisplay.cpp
+                )
 target_link_libraries(${target} PRIVATE sfml-graphics Boost::serialization z zip pthread )
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS})
@@ -51,6 +58,13 @@ target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
 # Test Application for text-related demos only
 set(target gfx-text-test)
 add_executable(${target} gfx-text-test.cpp)
+target_link_libraries(${target} PRIVATE MenAmongGodsGraphics)
+target_compile_features(${target} PRIVATE cxx_std_17)
+target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
+
+# Test Application for login-related ui demos only
+set(target gfx-login-ui)
+add_executable(${target} gfx-login-ui.cpp)
 target_link_libraries(${target} PRIVATE MenAmongGodsGraphics)
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
