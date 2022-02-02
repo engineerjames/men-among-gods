@@ -2,7 +2,7 @@
 #define LIFE_DISPLAY_H
 
 #include "Component.h"
-#include "SkillsAndAttributes.h"
+#include "SkillsAndAttributesDisplay.h"
 
 namespace sf
 {
@@ -27,7 +27,7 @@ public:
 private:
   const sf::Font&                                font_;
   PlayerData&                                    playerData_;
-  std::array< SkillsAndAttributes::SkillRow, 3 > lifeDisplay_;
+  std::array< SkillsAndAttributesDisplay::SkillRow, 3 > lifeDisplay_;
 };
 } // namespace MenAmongGods
 

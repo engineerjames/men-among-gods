@@ -9,7 +9,7 @@
 #include "PlayerInventoryDisplay.h"
 #include "PlayerLogDisplay.h"
 #include "PlayerTextInputDisplay.h"
-#include "SkillsAndAttributes.h"
+#include "SkillsAndAttributesDisplay.h"
 
 class PlayerData;
 
@@ -61,7 +61,7 @@ private:
   sf::Text manaCurrentValue_;
   sf::Text manaMaxValue_;
 
-  SkillsAndAttributes skillsAndAttributes_;
+  SkillsAndAttributesDisplay skillsAndAttributes_;
   LifeDisplay         lifeDisplay_;
 
   PlayerLogDisplay       msgBox_;
