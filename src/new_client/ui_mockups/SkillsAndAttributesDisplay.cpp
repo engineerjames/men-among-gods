@@ -1,4 +1,4 @@
-#include "SkillsAndAttributes.h"
+#include "SkillsAndAttributesDisplay.h"
 
 #include "GuiFormatters.h"
 #include "UiPositions.h"
@@ -96,7 +96,7 @@ skilltab static_skilltab[MAX_SKILLS]={
 }
 // clang-format on
 
-SkillsAndAttributes::SkillRow::SkillRow()
+SkillsAndAttributesDisplay::SkillRow::SkillRow()
     : name_()
     , displayValue_()
     , expRequired_()
@@ -122,7 +122,7 @@ SkillsAndAttributes::SkillRow::SkillRow()
   minus_.setCharacterSize( FONT_SIZE );
 }
 
-SkillsAndAttributes::SkillsAndAttributes( const sf::Font& font, PlayerData& playerData )
+SkillsAndAttributesDisplay::SkillsAndAttributesDisplay( const sf::Font& font, PlayerData& playerData )
     : font_( font )
     , playerData_( playerData )
     , attributes_()
@@ -196,7 +196,7 @@ SkillsAndAttributes::SkillsAndAttributes( const sf::Font& font, PlayerData& play
   }
 }
 
-void SkillsAndAttributes::draw( sf::RenderTarget& target, sf::RenderStates states ) const
+void SkillsAndAttributesDisplay::draw( sf::RenderTarget& target, sf::RenderStates states ) const
 {
   for ( unsigned int i = 0; i < attributes_.size(); ++i )
   {
@@ -226,7 +226,7 @@ void SkillsAndAttributes::draw( sf::RenderTarget& target, sf::RenderStates state
   target.draw( skillScrollBar_, states );
 }
 
-void SkillsAndAttributes::update()
+void SkillsAndAttributesDisplay::update()
 {
   cplayer& player = playerData_.getClientSidePlayerInfo();
 
@@ -274,11 +274,11 @@ void SkillsAndAttributes::update()
   }
 }
 
-void SkillsAndAttributes::onUserInput( const sf::Event& )
+void SkillsAndAttributesDisplay::onUserInput( const sf::Event& )
 {
   // Do nothing for now
 }
 
-void SkillsAndAttributes::finalize()
+void SkillsAndAttributesDisplay::finalize()
 {
 }

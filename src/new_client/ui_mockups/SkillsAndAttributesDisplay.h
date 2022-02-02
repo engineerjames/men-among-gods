@@ -11,7 +11,7 @@
 
 class PlayerData;
 
-class SkillsAndAttributes : public MenAmongGods::Component
+class SkillsAndAttributesDisplay : public MenAmongGods::Component
 {
 public:
   struct SkillRow
@@ -26,8 +26,8 @@ public:
     ~SkillRow() = default;
   };
 
-  SkillsAndAttributes( const sf::Font& font, PlayerData& playerData );
-  ~SkillsAndAttributes() = default;
+  SkillsAndAttributesDisplay( const sf::Font& font, PlayerData& playerData );
+  ~SkillsAndAttributesDisplay() = default;
 
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
   virtual void update() override;
