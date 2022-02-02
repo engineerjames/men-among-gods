@@ -2,6 +2,7 @@
 #define TEXT_INPUT_DISPLAY_H
 
 #include <SFML/Graphics.hpp>
+#include <string>
 
 #include "Component.h"
 
@@ -18,7 +19,8 @@ public:
   virtual void finalize() override;
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
 
-  void setPosition( sf::Vector2f newPosition );
+  void                setPosition( sf::Vector2f newPosition );
+  virtual std::string getText() const;
 
   void deselect();
 

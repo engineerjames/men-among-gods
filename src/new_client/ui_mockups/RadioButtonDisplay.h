@@ -21,8 +21,10 @@ public:
   virtual void onUserInput( const sf::Event& e ) override;
   virtual void finalize() override;
 
-  void setPosition( const sf::Vector2f& newPosition );
-  bool isSelected() const;
+  void        setPosition( const sf::Vector2f& newPosition );
+  bool        isSelected() const;
+  void        setSelected( bool isNowSelected );
+  std::string getLabelText() const;
 
 private:
   const sf::RenderWindow& window_;

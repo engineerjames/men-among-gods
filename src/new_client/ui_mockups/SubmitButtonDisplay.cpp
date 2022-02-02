@@ -7,6 +7,7 @@ SubmitButtonDisplay::SubmitButtonDisplay( const sf::RenderWindow& window, const 
     : window_( window )
     , buttonShape_( buttonSize )
     , buttonText_( "Submit", font, fontSize )
+    , submitCallback_()
     , isActivated_( false )
     , isEnabled_( true )
 {
@@ -16,12 +17,21 @@ SubmitButtonDisplay::SubmitButtonDisplay( const sf::RenderWindow& window, const 
 void SubmitButtonDisplay::setPosition( const sf::Vector2f& newPosition )
 {
   buttonShape_.setPosition( newPosition );
-  buttonText_.setPosition( sf::Vector2f { newPosition.x + 0.25f * buttonText_.getLocalBounds().width,
-                                          newPosition.y + 0.25f * buttonShape_.getLocalBounds().height } );
+  buttonText_.setPosition( sf::Vector2f { newPosition.x + 0.15f * buttonText_.getLocalBounds().width,
+                                          newPosition.y + 0.33f * buttonShape_.getLocalBounds().height } );
 }
 
 void SubmitButtonDisplay::update()
 {
+  if ( ! isEnabled_ )
+  {
+    buttonShape_.setFillColor( sf::Color::Green );
+  }
+}
+
+void SubmitButtonDisplay::setCallBack( std::function< void() > callBack )
+{
+  submitCallback_ = callBack;
 }
 
 void SubmitButtonDisplay::onUserInput( const sf::Event& e )
@@ -30,6 +40,11 @@ void SubmitButtonDisplay::onUserInput( const sf::Event& e )
   {
     if ( buttonShape_.getGlobalBounds().contains( sf::Mouse::getPosition( window_ ).x, sf::Mouse::getPosition( window_ ).y ) )
     {
+      if ( submitCallback_ != nullptr && isEnabled_ )
+      {
+        submitCallback_();
+      }
+
       isActivated_ = true;
       isEnabled_   = false;
     }

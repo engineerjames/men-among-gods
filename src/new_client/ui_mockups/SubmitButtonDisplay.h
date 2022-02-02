@@ -22,6 +22,8 @@ public:
   virtual void onUserInput( const sf::Event& e ) override;
   virtual void finalize() override;
 
+  void setCallBack( std::function< void() > callBack );
+
   // sf::Drawable interface
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
 

@@ -66,6 +66,12 @@ void TextInputDisplay::onUserInput( const sf::Event& e )
   }
 }
 
+std::string TextInputDisplay::getText() const
+{
+  // Don't return the _ that ends each string (display purposes only)
+  return text_.getString().substring( 0, text_.getString().getSize() - 1 );
+}
+
 void TextInputDisplay::setPosition( sf::Vector2f newPosition )
 {
   boundingBox_.setPosition( newPosition );

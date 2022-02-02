@@ -46,6 +46,16 @@ bool RadioButtonDisplay::isSelected() const
   return isSelected_;
 }
 
+void RadioButtonDisplay::setSelected( bool isNowSelected )
+{
+  isSelected_ = isNowSelected;
+}
+
+std::string RadioButtonDisplay::getLabelText() const
+{
+  return labelText_.getString();
+}
+
 void RadioButtonDisplay::onUserInput( const sf::Event& e )
 {
   if ( e.type == sf::Event::MouseButtonReleased && e.mouseButton.button == sf::Mouse::Button::Left )
@@ -53,10 +63,6 @@ void RadioButtonDisplay::onUserInput( const sf::Event& e )
     if ( outerCircle_.getGlobalBounds().contains( sf::Mouse::getPosition( window_ ).x, sf::Mouse::getPosition( window_ ).y ) )
     {
       isSelected_ = true;
-    }
-    else
-    {
-      isSelected_ = false;
     }
   }
 }
