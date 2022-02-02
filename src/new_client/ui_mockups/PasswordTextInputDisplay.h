@@ -5,6 +5,8 @@
 
 #include "TextInputDisplay.h"
 
+#include <string>
+
 namespace MenAmongGods
 {
 class PasswordTextInputDisplay : public MenAmongGods::TextInputDisplay
@@ -13,7 +15,8 @@ public:
   PasswordTextInputDisplay( const sf::RenderWindow& window, const sf::Font& font, unsigned int fontSize );
   virtual ~PasswordTextInputDisplay() = default;
 
-  virtual void onUserInput( const sf::Event& e ) override;
+  virtual void        onUserInput( const sf::Event& e ) override;
+  virtual std::string getText() const override;
 };
 } // namespace MenAmongGods
 

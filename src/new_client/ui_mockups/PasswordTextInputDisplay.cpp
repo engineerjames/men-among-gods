@@ -12,6 +12,11 @@ PasswordTextInputDisplay::PasswordTextInputDisplay( const sf::RenderWindow& wind
 {
 }
 
+std::string PasswordTextInputDisplay::getText() const
+{
+  return backingText_;
+}
+
 void PasswordTextInputDisplay::onUserInput( const sf::Event& e )
 {
   // Only want to act on text being entered--specifically ASCII characters
