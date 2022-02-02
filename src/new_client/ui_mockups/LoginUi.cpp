@@ -1,5 +1,8 @@
 #include "LoginUi.h"
 
+#include <iostream>
+#include <string.h>
+
 namespace MenAmongGods
 {
 LoginUi::LoginUi( const sf::RenderWindow& window, const sf::Font& font, unsigned int fontSize )
@@ -37,7 +40,13 @@ LoginUi::LoginUi( const sf::RenderWindow& window, const sf::Font& font, unsigned
   descriptionEntry_.setPosition( sf::Vector2f { 10.0f, 140.0f } );
 
   // Set up the submit button
+  auto callBack = [ this ]()
+  {
+    this->printValues();
+  };
+
   submitButton_.setPosition( sf::Vector2f { 10.0f, 200.0f } );
+  submitButton_.setCallBack( callBack );
 
   // Register components
   components_.push_back( &nameEntry_ );
@@ -78,6 +87,49 @@ void LoginUi::finalize()
   {
     c->finalize();
   }
+}
+
+void LoginUi::printValues() const
+{
+  std::cerr << "Name: " << nameEntry_.getText() << std::endl;
+  std::cerr << "Password: " << passwordEntry_.getText() << std::endl;
+  std::cerr << "Description: " << descriptionEntry_.getText() << std::endl;
+
+  std::string race {};
+  for ( const auto& r : raceSelection_ )
+  {
+    if ( r.isSelected() )
+    {
+      race = r.getLabelText();
+      break;
+    }
+  }
+
+  std::string sex {};
+  for ( const auto& s : sexSelection_ )
+  {
+    if ( s.isSelected() )
+    {
+      sex = s.getLabelText();
+      break;
+    }
+  }
+
+  std::cerr << "Race: " << race << std::endl;
+  std::cerr << "Sex: " << sex << std::endl;
+}
+
+pdata LoginUi::getPlayerData() const
+{
+  pdata data {};
+
+  strcpy( data.cname, nameEntry_.getText().c_str() );
+  strcpy( data.desc, descriptionEntry_.getText().c_str() );
+
+  data.show_proz = 0;
+  data.hide      = 1;
+
+  return data;
 }
 
 void LoginUi::draw( sf::RenderTarget& target, sf::RenderStates states ) const

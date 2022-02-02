@@ -1,6 +1,7 @@
 #ifndef MEN_AMONG_GODS_LOGIN_UI_H
 #define MEN_AMONG_GODS_LOGIN_UI_H
 
+#include "../ClientTypes.h"
 #include "Component.h"
 #include "PasswordTextInputDisplay.h"
 #include "RadioButtonDisplay.h"
@@ -26,7 +27,11 @@ public:
   virtual void onUserInput( const sf::Event& e ) override;
   virtual void finalize() override;
 
+  pdata getPlayerData() const;
+
 private:
+  void printValues() const;
+
   sf::Text                          nameLabel_;
   TextInputDisplay                  nameEntry_;
   sf::Text                          descriptionLabel_;
