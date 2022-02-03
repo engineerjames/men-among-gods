@@ -18,8 +18,6 @@ int main()
   auto client = std::make_unique< ClientNetworkActivity >( playerData, map, MHOST, MHOST_PORT );
   client->run();
 
-  // Need to implement log_system_data()
-  // Also, look at rec_player and send_player--these are the main I/O pathways to the client
   while ( window.isOpen() )
   {
     sf::Event event;

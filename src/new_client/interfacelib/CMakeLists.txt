@@ -13,6 +13,7 @@ set( sources
     PlayerInventoryDisplay.cpp
     PlayerLogDisplay.cpp
     PlayerTextInputDisplay.cpp
+    ProgressBarDisplay.cpp
     RadioButtonDisplay.cpp
     SkillsAndAttributesDisplay.cpp
     SubmitButtonDisplay.cpp
@@ -34,6 +35,7 @@ set( headers
     PlayerInventoryDisplay.h
     PlayerLogDisplay.h
     PlayerTextInputDisplay.h
+    ProgressBarDisplay.h
     RadioButtonDisplay.h
     SkillsAndAttributesDisplay.h
     SubmitButtonDisplay.h
@@ -81,6 +83,13 @@ target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
 set(target gfx-login-ui)
 add_executable(${target} test_applications/gfx-login-ui.cpp)
 target_link_libraries(${target} PRIVATE MenAmongGodsGraphics client)
+target_compile_features(${target} PRIVATE cxx_std_17)
+target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
+
+# Test Application for login-related ui demos only
+set(target gfx-progress-bar)
+add_executable(${target} test_applications/gfx-progress-bar.cpp)
+target_link_libraries(${target} PRIVATE MenAmongGodsGraphics)
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
 
