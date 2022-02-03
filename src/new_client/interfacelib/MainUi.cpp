@@ -2,8 +2,8 @@
 
 #include <iostream>
 
-#include "../ConstantIdentifiers.h"
-#include "../PlayerData.h"
+#include "ConstantIdentifiers.h"
+#include "PlayerData.h"
 #include "ColorPalette.h"
 #include "GuiFormatters.h"
 #include "UiPositions.h"

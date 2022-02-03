@@ -4,10 +4,10 @@
 #include <fstream>
 #include <iostream>
 
-#include "../ConstantIdentifiers.h"
-#include "../Map.h"
-#include "../PlayerData.h"
-#include "../TickBuffer.h"
+#include "ConstantIdentifiers.h"
+#include "Map.h"
+#include "PlayerData.h"
+#include "TickBuffer.h"
 #include "GraphicsCache.h"
 #include "GraphicsIndex.h"
 #include "UtilityFunctions.h"

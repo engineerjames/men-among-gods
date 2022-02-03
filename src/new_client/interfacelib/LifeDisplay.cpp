@@ -1,6 +1,6 @@
 #include "LifeDisplay.h"
 
-#include "../PlayerData.h"
+#include "PlayerData.h"
 #include "GuiFormatters.h"
 #include "UiPositions.h"
 

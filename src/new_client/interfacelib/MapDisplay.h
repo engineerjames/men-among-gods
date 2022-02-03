@@ -3,7 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "../ClientTypes.h"
+#include "ClientTypes.h"
 #include "Component.h"
 
 class GraphicsCache;

@@ -1,7 +1,7 @@
 #include "PlayerInventoryDisplay.h"
 
-#include "../ConstantIdentifiers.h"
-#include "../PlayerData.h"
+#include "ConstantIdentifiers.h"
+#include "PlayerData.h"
 #include "GraphicsCache.h"
 
 namespace

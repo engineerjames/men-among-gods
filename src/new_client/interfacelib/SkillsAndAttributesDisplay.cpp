@@ -3,9 +3,8 @@
 #include "GuiFormatters.h"
 #include "UiPositions.h"
 
-// TODO: Fix include directories
-#include "../ClientTypes.h"
-#include "../PlayerData.h"
+#include "ClientTypes.h"
+#include "PlayerData.h"
 
 namespace
 {

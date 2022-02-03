@@ -6,9 +6,9 @@
 #include "ClientTypes.h"
 #include "ConstantIdentifiers.h"
 #include "Map.h"
+#include "MapDisplay.h"
 #include "PlayerData.h"
 #include "ServerMessage.h"
-#include "ui_mockups/MapDisplay.h"
 
 TickBuffer::TickBuffer( PlayerData& playerData, MenAmongGods::Map& map )
     : compressor_()
@@ -419,23 +419,25 @@ void TickBuffer::sv_setchar_skill( const unsigned char* buf )
   playerData_.getClientSidePlayerInfo().skill[ n ][ 4 ] = buf[ 6 ];
   playerData_.getClientSidePlayerInfo().skill[ n ][ 5 ] = buf[ 7 ];
 
-  std::sort( playerData_.getSkillList(), playerData_.getSkillList() + MAX_SKILLS, []( const skilltab& lhs, const skilltab& rhs ) {
-    // Begin server message processing implementation
-    int m1 = lhs.nr;
-    int m2 = rhs.nr;
+  std::sort( playerData_.getSkillList(), playerData_.getSkillList() + MAX_SKILLS,
+             []( const skilltab& lhs, const skilltab& rhs )
+             {
+               // Begin server message processing implementation
+               int m1 = lhs.nr;
+               int m2 = rhs.nr;
 
-    if ( m1 == 99 && m2 != 99 )
-      return true;
-    if ( m2 == 99 && m1 != 99 )
-      return false;
+               if ( m1 == 99 && m2 != 99 )
+                 return true;
+               if ( m2 == 99 && m1 != 99 )
+                 return false;
 
-    if ( lhs.sortkey > rhs.sortkey )
-      return true;
-    if ( lhs.sortkey < rhs.sortkey )
-      return false;
+               if ( lhs.sortkey > rhs.sortkey )
+                 return true;
+               if ( lhs.sortkey < rhs.sortkey )
+                 return false;
 
-    return strcmp( lhs.name, rhs.name ) > 0;
-  } );
+               return strcmp( lhs.name, rhs.name ) > 0;
+             } );
 }
 
 void TickBuffer::sv_setchar_ahp( const unsigned char* buf )

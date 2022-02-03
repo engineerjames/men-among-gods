@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "../ConstantIdentifiers.h"
+#include "ConstantIdentifiers.h"
 #include "ColorPalette.h"
 
 namespace MenAmongGods

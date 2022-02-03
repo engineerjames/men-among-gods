@@ -9,10 +9,10 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "../ConstantIdentifiers.h"
-#include "../Map.h"
-#include "../PlayerData.h"
-#include "../TickBuffer.h"
+#include "ConstantIdentifiers.h"
+#include "Map.h"
+#include "PlayerData.h"
+#include "TickBuffer.h"
 #include "Component.h"
 #include "GraphicsCache.h"
 #include "GraphicsIndex.h"

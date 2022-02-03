@@ -1,7 +1,7 @@
 #ifndef MEN_AMONG_GODS_LOGIN_UI_H
 #define MEN_AMONG_GODS_LOGIN_UI_H
 
-#include "../ClientTypes.h"
+#include "ClientTypes.h"
 #include "Component.h"
 #include "PasswordTextInputDisplay.h"
 #include "RadioButtonDisplay.h"

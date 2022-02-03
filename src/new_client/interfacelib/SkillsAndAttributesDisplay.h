@@ -4,7 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <array>
 
-#include "../ConstantIdentifiers.h"
+#include "ConstantIdentifiers.h"
 #include "ColorPalette.h"
 #include "Component.h"
 #include "JustifiableText.h"
