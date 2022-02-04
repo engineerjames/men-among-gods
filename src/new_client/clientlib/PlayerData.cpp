@@ -135,6 +135,8 @@ int getOkeyRaceValue( MenAmongGods::Race race, MenAmongGods::Sex sex )
       break;
     }
   }
+
+  return -1;
 }
 
 } // namespace
