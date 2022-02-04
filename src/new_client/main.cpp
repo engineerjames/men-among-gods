@@ -4,6 +4,7 @@
 #include "ClientNetworkActivity.h"
 #include "Component.h"
 #include "ConstantIdentifiers.h"
+#include "FontCache.h"
 #include "GraphicsCache.h"
 #include "GraphicsIndex.h"
 #include "LoginUi.h"
@@ -11,6 +12,7 @@
 #include "Map.h"
 #include "MapDisplay.h"
 #include "PlayerData.h"
+#include "ResourceLocations.h"
 #include "TickBuffer.h"
 
 #include <memory>
@@ -22,18 +24,13 @@ int main()
   window.setFramerateLimit( 10 );
   window.requestFocus();
 
-  sf::Font font {};
-  if ( ! font.loadFromFile( "ui_mockups/fonts/onuava.ttf" ) )
-  {
-    std::cerr << "Unable to load font!" << std::endl;
-    return -1;
-  }
+  std::string fontPath  = MenAmongGods::FONT_ROOT + "onuava.ttf";
+  std::string path      = MenAmongGods::GFX_ROOT + "gfx.zip";
+  std::string indexPath = MenAmongGods::GFX_ROOT + "gx00.idx";
 
-  std::string path      = "ui_mockups/gfx/gfx.zip";
-  std::string indexPath = "ui_mockups/gfx/gx00.idx";
-
-  auto gfxCache = std::make_unique< GraphicsCache >();
-  auto idxCache = std::make_unique< GraphicsIndex >( indexPath );
+  auto fontCache = std::make_unique< MenAmongGods::FontCache >( fontPath );
+  auto gfxCache  = std::make_unique< GraphicsCache >();
+  auto idxCache  = std::make_unique< GraphicsIndex >( indexPath );
 
   gfxCache->loadSprites( path, GraphicsCache::MAX_SPRITES );
   idxCache->load();
@@ -46,8 +43,8 @@ int main()
   // client->run();
 
   auto mapPtr     = std::make_shared< MenAmongGods::MapDisplay >( map, playerData, *gfxCache, *idxCache, *tickBufferPtr, window );
-  auto mainUiPtr  = std::make_shared< MenAmongGods::MainUi >( playerData, *gfxCache );
-  auto loginUiPtr = std::make_shared< MenAmongGods::LoginUi >( playerData, window, font, 16 );
+  auto mainUiPtr  = std::make_shared< MenAmongGods::MainUi >( playerData, *gfxCache, *fontCache );
+  auto loginUiPtr = std::make_shared< MenAmongGods::LoginUi >( playerData, window, *fontCache, 16 );
 
   // Populate components
   std::vector< std::shared_ptr< MenAmongGods::Component > > components;

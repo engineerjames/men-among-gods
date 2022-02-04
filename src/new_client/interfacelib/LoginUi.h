@@ -17,10 +17,12 @@ class PlayerData;
 
 namespace MenAmongGods
 {
+class FontCache;
+
 class LoginUi : public MenAmongGods::Component
 {
 public:
-  LoginUi( PlayerData& playerData, const sf::RenderWindow& window, const sf::Font& font, unsigned int fontSize );
+  LoginUi( PlayerData& playerData, const sf::RenderWindow& window, const FontCache& fontCache, unsigned int fontSize );
   ~LoginUi() = default;
 
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;

@@ -3,33 +3,34 @@
 #include <iostream>
 #include <string.h>
 
+#include "FontCache.h"
 #include "PlayerData.h"
 
 namespace MenAmongGods
 {
-LoginUi::LoginUi( PlayerData& playerData, const sf::RenderWindow& window, const sf::Font& font, unsigned int fontSize )
+LoginUi::LoginUi( PlayerData& playerData, const sf::RenderWindow& window, const FontCache& fontCache, unsigned int fontSize )
     : playerData_( playerData )
-    , nameLabel_( "Name:", font, fontSize )
-    , nameEntry_( window, font, fontSize )
-    , descriptionLabel_( "Description:", font, fontSize )
-    , descriptionEntry_( window, font, fontSize )
-    , passwordLabel_( "Password:", font, fontSize )
-    , passwordEntry_( window, font, fontSize )
+    , nameLabel_( "Name:", fontCache.getFont(), fontSize )
+    , nameEntry_( window, fontCache.getFont(), fontSize )
+    , descriptionLabel_( "Description:", fontCache.getFont(), fontSize )
+    , descriptionEntry_( window, fontCache.getFont(), fontSize )
+    , passwordLabel_( "Password:", fontCache.getFont(), fontSize )
+    , passwordEntry_( window, fontCache.getFont(), fontSize )
     , raceSelection_()
     , sexSelection_()
-    , submitButton_( window, font, fontSize, sf::Vector2f { 75, 50 } )
+    , submitButton_( window, fontCache.getFont(), fontSize, sf::Vector2f { 75, 50 } )
     , components_()
 {
-  raceSelection_.emplace_back( window, font, "Harakim", 10.0f, fontSize );
-  raceSelection_.emplace_back( window, font, "Templar", 10.0f, fontSize );
-  raceSelection_.emplace_back( window, font, "Mercenary", 10.0f, fontSize );
+  raceSelection_.emplace_back( window, fontCache.getFont(), "Harakim", 10.0f, fontSize );
+  raceSelection_.emplace_back( window, fontCache.getFont(), "Templar", 10.0f, fontSize );
+  raceSelection_.emplace_back( window, fontCache.getFont(), "Mercenary", 10.0f, fontSize );
 
   raceSelection_[ 0 ].setPosition( sf::Vector2f { 500.0f, 10.0f } );
   raceSelection_[ 1 ].setPosition( sf::Vector2f { 500.0f, 60.0f } );
   raceSelection_[ 2 ].setPosition( sf::Vector2f { 500.0f, 110.0f } );
 
-  sexSelection_.emplace_back( window, font, "Male", 10.0f, fontSize );
-  sexSelection_.emplace_back( window, font, "Female", 10.0f, fontSize );
+  sexSelection_.emplace_back( window, fontCache.getFont(), "Male", 10.0f, fontSize );
+  sexSelection_.emplace_back( window, fontCache.getFont(), "Female", 10.0f, fontSize );
 
   sexSelection_[ 0 ].setPosition( sf::Vector2f { 500.0f, 200.0f } );
   sexSelection_[ 1 ].setPosition( sf::Vector2f { 500.0f, 250.0f } );

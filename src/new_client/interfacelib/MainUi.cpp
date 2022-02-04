@@ -4,6 +4,7 @@
 
 #include "ColorPalette.h"
 #include "ConstantIdentifiers.h"
+#include "FontCache.h"
 #include "GraphicsCache.h"
 #include "GuiFormatters.h"
 #include "PlayerData.h"
@@ -12,10 +13,10 @@
 namespace MenAmongGods
 {
 
-MainUi::MainUi( PlayerData& pdata, const GraphicsCache& gfxCache )
+MainUi::MainUi( PlayerData& pdata, const GraphicsCache& gfxCache, const FontCache& fontCache )
     : MenAmongGods::Component()
     , playerData_( pdata )
-    , font_()
+    , font_( fontCache.getFont() )
     , goldDisplay_()
     , textualRank_()
     , avLabel_()
@@ -55,11 +56,6 @@ MainUi::MainUi( PlayerData& pdata, const GraphicsCache& gfxCache )
   manaLabel_.setPosition( sf::Vector2f { MenAmongGods::manaLabelPosition } );
   manaCurrentValue_.setPosition( sf::Vector2f { MenAmongGods::manaCurrentValuePosition } );
   manaMaxValue_.setPosition( sf::Vector2f { MenAmongGods::manaMaxValuePosition } );
-
-  if ( ! font_.loadFromFile( "ui_mockups/fonts/onuava.ttf" ) )
-  {
-    std::cerr << "Unable to load font!" << std::endl;
-  }
 
   goldDisplay_.setFont( font_ );
   textualRank_.setFont( font_ );

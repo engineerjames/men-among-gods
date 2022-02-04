@@ -36,7 +36,7 @@ template < typename T > std::string addThousandsSeparator( T value )
 {
   if constexpr ( std::is_integral_v< T > )
   {
-    if ( value < 1000 )
+    if ( value < 1000 && value > 0 )
     {
       return std::to_string( value );
     }
@@ -49,6 +49,15 @@ template < typename T > std::string addThousandsSeparator( T value )
         {
           newString.insert( newString.length() - i, 1, ',' );
         }
+      }
+
+      // At this phase, the earlier algorithm produces
+      // an extra ',' right after the negative sign currently. Long term
+      // we should do this in a more sane fashion, but for now just make it work.
+      if ( value < 0 && newString[ 1 ] == ',' )
+      {
+        newString = newString.substr( 2, newString.length() - 2 );
+        newString = "-" + newString;
       }
 
       return newString;

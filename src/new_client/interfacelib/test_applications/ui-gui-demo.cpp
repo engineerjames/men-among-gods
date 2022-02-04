@@ -9,15 +9,16 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "ConstantIdentifiers.h"
-#include "Map.h"
-#include "PlayerData.h"
-#include "TickBuffer.h"
 #include "Component.h"
+#include "ConstantIdentifiers.h"
+#include "FontCache.h"
 #include "GraphicsCache.h"
 #include "GraphicsIndex.h"
 #include "MainUi.h"
+#include "Map.h"
 #include "MapDisplay.h"
+#include "PlayerData.h"
+#include "TickBuffer.h"
 
 int main()
 {
@@ -44,8 +45,10 @@ int main()
   MenAmongGods::Map map {};
   TickBuffer        tickbuffer { pdata, map };
 
+  auto fontCache = std::make_unique< MenAmongGods::FontCache >( "res/fonts/onuava.ttf" );
+
   auto mapPtr    = new MenAmongGods::MapDisplay( map, pdata, *cache, index, tickbuffer, window );
-  auto mainUiPtr = new MenAmongGods::MainUi( pdata, *cache );
+  auto mainUiPtr = new MenAmongGods::MainUi( pdata, *cache, *fontCache );
 
   mapPtr->loadFromFile( "test/mapfile.archive" );
 

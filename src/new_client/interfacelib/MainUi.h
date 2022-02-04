@@ -12,9 +12,12 @@
 #include "SkillsAndAttributesDisplay.h"
 
 class PlayerData;
+class GraphicsCache;
 
 namespace MenAmongGods
 {
+class FontCache;
+
 class MainUi : public MenAmongGods::Component
 {
 public:
@@ -26,7 +29,7 @@ public:
     ERROR // Red
   };
 
-  MainUi( PlayerData& pdata, const GraphicsCache& gfxCache );
+  MainUi( PlayerData& pdata, const GraphicsCache& gfxCache, const FontCache& fontCache );
   ~MainUi() = default;
 
   void         addMessage( LogType type, std::string text );
