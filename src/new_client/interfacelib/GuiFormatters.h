@@ -14,7 +14,7 @@ template < typename T > std::string goldToString( T goldValue )
 {
   if ( goldValue == 0 )
   {
-    return "0g 0s";
+    return "0g 00s";
   }
 
   std::stringstream ss {};
@@ -25,7 +25,6 @@ template < typename T > std::string goldToString( T goldValue )
   int         goldAmount   = goldValue / 100;
   std::string silverAmount = std::to_string( goldValue );
 
-  // TODO: Fix check when silver = "0"
   std::string finalSilverAmount = silverAmount.substr( silverAmount.length() - 2, 2 );
 
   ss << goldAmount << "g " << finalSilverAmount << "s";
