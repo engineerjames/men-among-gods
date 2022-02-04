@@ -38,6 +38,6 @@ jobs:
 
     - name: Test
       run: | 
-        cd ${{github.workspace}}
+        cd ${{github.workspace}}/build
         ctest -C ${{env.BUILD_TYPE}} -V
       
