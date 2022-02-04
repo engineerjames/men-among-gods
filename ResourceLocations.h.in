@@ -1,0 +1,15 @@
+#ifndef RESOURCE_LOCATIONS_IN_H
+#define RESOURCE_LOCATIONS_IN_H
+
+#include <string>
+
+namespace MenAmongGods
+{
+static const std::string GIT_REVISION  = "@GIT_REVISION@";
+static const std::string RESOURCE_ROOT = "@RESOURCE_OUTPUT_DIRECTORY@";
+static const std::string GFX_ROOT      = RESOURCE_ROOT + "/gfx/";
+static const std::string FONT_ROOT     = RESOURCE_ROOT + "/fonts/";
+static const std::string TEST_ROOT     = RESOURCE_ROOT + "/test/";
+} // namespace MenAmongGods
+
+#endif
