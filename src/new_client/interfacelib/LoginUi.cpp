@@ -65,6 +65,11 @@ LoginUi::LoginUi( const sf::RenderWindow& window, const sf::Font& font, unsigned
   }
 }
 
+bool LoginUi::hasSubmitted() const
+{
+  return submitButton_.hasSubmitted();
+}
+
 void LoginUi::update()
 {
   for ( auto& c : components_ )

@@ -12,13 +12,20 @@ namespace MenAmongGods
 
 template < typename T > std::string goldToString( T goldValue )
 {
+  if ( goldValue == 0 )
+  {
+    return "0g 0s";
+  }
+
   std::stringstream ss {};
 
   // 20 is 20s
   // 200 is 2g 00s
   // 1200 is 12 gold 00s
-  int         goldAmount        = goldValue / 100;
-  std::string silverAmount      = std::to_string( goldValue );
+  int         goldAmount   = goldValue / 100;
+  std::string silverAmount = std::to_string( goldValue );
+
+  // TODO: Fix check when silver = "0"
   std::string finalSilverAmount = silverAmount.substr( silverAmount.length() - 2, 2 );
 
   ss << goldAmount << "g " << finalSilverAmount << "s";

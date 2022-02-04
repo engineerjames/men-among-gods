@@ -2,10 +2,11 @@
 
 #include <iostream>
 
-#include "ConstantIdentifiers.h"
-#include "PlayerData.h"
 #include "ColorPalette.h"
+#include "ConstantIdentifiers.h"
+#include "GraphicsCache.h"
 #include "GuiFormatters.h"
+#include "PlayerData.h"
 #include "UiPositions.h"
 
 namespace MenAmongGods
@@ -28,6 +29,7 @@ MainUi::MainUi( PlayerData& pdata, const GraphicsCache& gfxCache )
     , msgBox_()
     , userInput_( font_ )
     , playerInventory_( pdata, gfxCache )
+    , background_()
 {
   goldDisplay_.setPosition( sf::Vector2f { MenAmongGods::goldDisplayPosition } );
   textualRank_.setPosition( sf::Vector2f { MenAmongGods::textualRankPosition } );
@@ -54,7 +56,7 @@ MainUi::MainUi( PlayerData& pdata, const GraphicsCache& gfxCache )
   manaCurrentValue_.setPosition( sf::Vector2f { MenAmongGods::manaCurrentValuePosition } );
   manaMaxValue_.setPosition( sf::Vector2f { MenAmongGods::manaMaxValuePosition } );
 
-  if ( ! font_.loadFromFile( "fonts/onuava.ttf" ) )
+  if ( ! font_.loadFromFile( "ui_mockups/fonts/onuava.ttf" ) )
   {
     std::cerr << "Unable to load font!" << std::endl;
   }
@@ -152,6 +154,9 @@ MainUi::MainUi( PlayerData& pdata, const GraphicsCache& gfxCache )
   wvValue_.setJustification( MenAmongGods::JustifiableText::TextJustification::RIGHT );
   avValue_.setJustification( MenAmongGods::JustifiableText::TextJustification::RIGHT );
   expValue_.setJustification( MenAmongGods::JustifiableText::TextJustification::RIGHT );
+
+  background_ = gfxCache.getSprite( 1 );
+  background_.setPosition( sf::Vector2f { 0.0f, 0.0f } );
 }
 
 void MainUi::addMessage( LogType type, std::string text )
@@ -187,6 +192,9 @@ void MainUi::addMessage( LogType type, std::string text )
 
 void MainUi::draw( sf::RenderTarget& target, sf::RenderStates states ) const
 {
+  // Draw the background first
+  target.draw( background_, states );
+
   target.draw( goldDisplay_, states );
   target.draw( textualRank_, states );
   target.draw( msgBox_, states );

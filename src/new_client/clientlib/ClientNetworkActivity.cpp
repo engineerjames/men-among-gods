@@ -23,13 +23,14 @@ ClientNetworkActivity::~ClientNetworkActivity()
   }
 }
 
-ClientNetworkActivity::ClientNetworkActivity( PlayerData& playerData, MenAmongGods::Map& map, const std::string& hostIp, unsigned short hostPort )
+ClientNetworkActivity::ClientNetworkActivity( TickBuffer& tickBuffer, PlayerData& playerData, const std::string& hostIp,
+                                              unsigned short hostPort )
     : clientNetworkThread_()
     , clientConnection_( hostIp, hostPort )
     , cancellationRequested_( false )
     , isRunning_( false )
     , playerData_( playerData )
-    , map_( map )
+    , tickBuffer_( tickBuffer )
 {
 }
 
@@ -64,8 +65,6 @@ void ClientNetworkActivity::startNetworkActivity()
 
   clientConnection_.sendHardwareInfo();
 
-  TickBuffer tickBuffer { playerData_, map_ };
-
   clientConnection_.setSocketMode( ClientConnection::SocketIOMode::NonBlocking );
 
   sf::Clock clock {};
@@ -88,12 +87,12 @@ void ClientNetworkActivity::startNetworkActivity()
       timeSinceLastTickSent = clock.getElapsedTime();
     }
 
-    if ( ! clientConnection_.receiveTick( tickBuffer ) )
+    if ( ! clientConnection_.receiveTick( tickBuffer_ ) )
     {
       std::cerr << "Unable to receive tick!" << std::endl;
     }
 
-    tickBuffer.processTicks();
+    tickBuffer_.processTicks();
 
     if ( ! hasMoved )
     {

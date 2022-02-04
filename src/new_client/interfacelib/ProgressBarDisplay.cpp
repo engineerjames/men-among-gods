@@ -35,11 +35,6 @@ void ProgressBarDisplay::setPercentComplete( float percentComplete )
   {
     percentComplete_ = 100.0f;
   }
-
-  if ( isComplete() )
-  {
-    std::cerr << "COMPLETE!" << std::endl;
-  }
 }
 
 bool ProgressBarDisplay::isComplete() const

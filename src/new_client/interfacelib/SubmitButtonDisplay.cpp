@@ -29,6 +29,11 @@ void SubmitButtonDisplay::update()
   }
 }
 
+bool SubmitButtonDisplay::hasSubmitted() const
+{
+  return ! isEnabled_;
+}
+
 void SubmitButtonDisplay::setCallBack( std::function< void() > callBack )
 {
   submitCallback_ = callBack;

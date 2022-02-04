@@ -62,11 +62,13 @@ private:
   sf::Text manaMaxValue_;
 
   SkillsAndAttributesDisplay skillsAndAttributes_;
-  LifeDisplay         lifeDisplay_;
+  LifeDisplay                lifeDisplay_;
 
   PlayerLogDisplay       msgBox_;
   PlayerTextInputDisplay userInput_;
   PlayerInventoryDisplay playerInventory_;
+
+  sf::Sprite background_;
 };
 } // namespace MenAmongGods
 #endif

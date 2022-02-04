@@ -28,6 +28,7 @@ public:
   virtual void finalize() override;
 
   pdata getPlayerData() const;
+  bool  hasSubmitted() const;
 
 private:
   void printValues() const;
