@@ -18,6 +18,7 @@
 #include "Map.h"
 #include "MapDisplay.h"
 #include "PlayerData.h"
+#include "ResourceLocations.h"
 #include "TickBuffer.h"
 
 int main()
@@ -25,8 +26,8 @@ int main()
   sf::RenderWindow window( sf::VideoMode( 800, 600 ), "Mercenaries of Astonia - New Client" );
   window.setFramerateLimit( 10 );
 
-  std::string path      = "gfx/gfx.zip";
-  std::string indexPath = "gfx/gx00.idx";
+  std::string path      = MenAmongGods::GFX_ROOT + "gfx.zip";
+  std::string indexPath = MenAmongGods::GFX_ROOT + "gx00.idx";
 
   auto cache = std::make_unique< GraphicsCache >();
   cache->loadSprites( path, GraphicsCache::MAX_SPRITES );
@@ -45,7 +46,7 @@ int main()
   MenAmongGods::Map map {};
   TickBuffer        tickbuffer { pdata, map };
 
-  auto fontCache = std::make_unique< MenAmongGods::FontCache >( "res/fonts/onuava.ttf" );
+  auto fontCache = std::make_unique< MenAmongGods::FontCache >( MenAmongGods::FONT_ROOT + "onuava.ttf" );
 
   auto mapPtr    = new MenAmongGods::MapDisplay( map, pdata, *cache, index, tickbuffer, window );
   auto mainUiPtr = new MenAmongGods::MainUi( pdata, *cache, *fontCache );

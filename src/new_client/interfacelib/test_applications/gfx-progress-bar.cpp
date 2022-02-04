@@ -10,6 +10,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "ProgressBarDisplay.h"
+#include "ResourceLocations.h"
 
 int main()
 {
@@ -17,7 +18,7 @@ int main()
   window.setFramerateLimit( 60 );
 
   sf::Font font {};
-  if ( ! font.loadFromFile( "fonts/onuava.ttf" ) )
+  if ( ! font.loadFromFile( MenAmongGods::FONT_ROOT + "onuava.ttf" ) )
   {
     std::cerr << "Unable to load font!" << std::endl;
   };

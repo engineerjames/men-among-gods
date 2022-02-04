@@ -10,20 +10,21 @@
 #include <SFML/Graphics.hpp>
 
 #include "GraphicsCache.h"
+#include "ResourceLocations.h"
 
 int main()
 {
   sf::RenderWindow window( sf::VideoMode( 800, 600 ), "Mercenaries of Astonia - New Client" );
   window.setFramerateLimit( 60 );
 
-  std::string path      = "gfx/gfx.zip";
-  std::string indexPath = "gfx/gx00.idx";
+  std::string path      = MenAmongGods::GFX_ROOT + "gfx.zip";
+  std::string indexPath = MenAmongGods::GFX_ROOT + "gx00.idx";
 
   GraphicsCache cache {};
   cache.loadSprites( path, GraphicsCache::MAX_SPRITES );
 
   sf::Font font {};
-  if ( ! font.loadFromFile( "fonts/onuava.ttf" ) )
+  if ( ! font.loadFromFile( MenAmongGods::FONT_ROOT + "onuava.ttf" ) )
   {
     std::cerr << "Unable to load font!" << std::endl;
   };

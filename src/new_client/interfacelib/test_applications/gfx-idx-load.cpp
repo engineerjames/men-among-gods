@@ -3,10 +3,11 @@
 #include <vector>
 
 #include "GraphicsIndex.h"
+#include "ResourceLocations.h"
 
 int main()
 {
-  GraphicsIndex index { "gfx/gx00.idx" };
+  GraphicsIndex index { MenAmongGods::GFX_ROOT + "gx00.idx" };
 
   index.load();
 
