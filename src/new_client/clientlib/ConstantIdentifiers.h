@@ -255,4 +255,25 @@ static const constexpr unsigned int WN_CLOAK = 9;
 static const constexpr unsigned int WN_LRING = 10;
 static const constexpr unsigned int WN_RRING = 11;
 
+namespace MenAmongGods
+{
+enum struct Sex
+{
+  Male,
+  Female
+};
+
+enum struct Race
+{
+  Templar,
+  Mercenary,
+  Harakim,
+  Seyan,
+  God,
+  ArchTemplar,
+  ArchHarakim,
+  Sorceror,
+  Warrior
+};
+} // namespace MenAmongGods
 #endif // CONSTANT_IDENTIFIERS_H

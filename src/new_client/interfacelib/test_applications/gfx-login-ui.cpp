@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "LoginUi.h"
+#include "PlayerData.h"
 
 int main()
 {
@@ -15,7 +16,8 @@ int main()
     std::cerr << "Unable to load font!" << std::endl;
   };
 
-  MenAmongGods::LoginUi loginUi { window, font, 16 };
+  PlayerData            playerData {};
+  MenAmongGods::LoginUi loginUi { playerData, window, font, 16 };
 
   while ( window.isOpen() )
   {

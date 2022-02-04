@@ -5,6 +5,8 @@
 
 #include <boost/archive/text_iarchive.hpp>
 
+#include "ConstantIdentifiers.h"
+
 namespace
 {
 
@@ -73,8 +75,69 @@ skilltab static_skilltab[SKILLTAB_SIZE]={
 	{47,   'Z',   "", "", {0,0,0,}},
 	{48,   'Z',   "", "", {0,0,0,}},
 	{49,   'Z',   "", "", {0,0,0,}}};
-}
 // clang-format on
+
+int getOkeyRaceValue( MenAmongGods::Race race, MenAmongGods::Sex sex )
+{
+  if ( sex == MenAmongGods::Sex::Male )
+  {
+    switch ( race )
+    {
+    case MenAmongGods::Race::Templar:
+      return 3;
+    case MenAmongGods::Race::Mercenary:
+      return 2;
+    case MenAmongGods::Race::Harakim:
+      return 4;
+    case MenAmongGods::Race::Seyan:
+      return 13;
+    case MenAmongGods::Race::God:
+      return 543;
+    case MenAmongGods::Race::ArchTemplar:
+      return 544;
+    case MenAmongGods::Race::ArchHarakim:
+      return 545;
+    case MenAmongGods::Race::Sorceror:
+      return 546;
+    case MenAmongGods::Race::Warrior:
+      return 547;
+
+    default:
+      std::cerr << "Invalid race and sex combination for male.\n";
+      break;
+    }
+  }
+  else // Female
+  {
+    switch ( race )
+    {
+    case MenAmongGods::Race::Templar:
+      return 77;
+    case MenAmongGods::Race::Mercenary:
+      return 76;
+    case MenAmongGods::Race::Harakim:
+      return 78;
+    case MenAmongGods::Race::Seyan:
+      return 79;
+    case MenAmongGods::Race::God:
+      return 548;
+    case MenAmongGods::Race::ArchTemplar:
+      return 549;
+    case MenAmongGods::Race::ArchHarakim:
+      return 550;
+    case MenAmongGods::Race::Sorceror:
+      return 551;
+    case MenAmongGods::Race::Warrior:
+      return 552;
+
+    default:
+      std::cerr << "Invalid race and sex combination for female.\n";
+      break;
+    }
+  }
+}
+
+} // namespace
 
 PlayerData::PlayerData()
     : playerInfo_()
@@ -83,6 +146,7 @@ PlayerData::PlayerData()
     , okey_()
     , skillsList_( &static_skilltab[ 0 ] )
     , look_()
+    , password_()
 {
   for ( unsigned int i = 0; i < SKILLTAB_SIZE; ++i )
   {
@@ -188,6 +252,46 @@ key& PlayerData::getOkey()
 look& PlayerData::getLook()
 {
   return look_;
+}
+
+void PlayerData::setName( std::string newName )
+{
+  std::strcpy( okey_.name, newName.c_str() );
+}
+
+void PlayerData::setPassword( std::string password )
+{
+  password_ = password;
+}
+
+void PlayerData::setDescription( std::string description )
+{
+  std::strcpy( playerInfo_.desc, description.c_str() );
+}
+
+void PlayerData::setRaceAndSex( std::string race, std::string sex )
+{
+  MenAmongGods::Race raceEnum = MenAmongGods::Race::Mercenary;
+  if ( race == "Harakim" )
+  {
+    raceEnum = MenAmongGods::Race::Harakim;
+  }
+  else if ( race == "Templar" )
+  {
+    raceEnum = MenAmongGods::Race::Templar;
+  }
+  else if ( race == "Mercenary" )
+  {
+    raceEnum = MenAmongGods::Race::Mercenary;
+  }
+
+  MenAmongGods::Sex sexEnum = MenAmongGods::Sex::Male;
+  if ( sex == "Female" )
+  {
+    sexEnum = MenAmongGods::Sex::Male;
+  }
+
+  okey_.race = getOkeyRaceValue( raceEnum, sexEnum );
 }
 
 void PlayerData::saveToFile() const

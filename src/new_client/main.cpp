@@ -47,7 +47,7 @@ int main()
 
   auto mapPtr     = std::make_shared< MenAmongGods::MapDisplay >( map, playerData, *gfxCache, *idxCache, *tickBufferPtr, window );
   auto mainUiPtr  = std::make_shared< MenAmongGods::MainUi >( playerData, *gfxCache );
-  auto loginUiPtr = std::make_shared< MenAmongGods::LoginUi >( window, font, 16 );
+  auto loginUiPtr = std::make_shared< MenAmongGods::LoginUi >( playerData, window, font, 16 );
 
   // Populate components
   std::vector< std::shared_ptr< MenAmongGods::Component > > components;

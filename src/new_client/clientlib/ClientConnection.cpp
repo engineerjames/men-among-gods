@@ -33,7 +33,6 @@ bool ClientConnection::login()
 {
   if ( ! isConnected_ )
   {
-    // TODO: Need better error handling
     std::cerr << "Attempting to login while not connected!" << std::endl;
     return false;
   }
@@ -99,7 +98,7 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( const st
     outputBuffer[ 0 ]                               = ClientMessages::getValue( ClientMessages::MessageTypes::CHALLENGE );
     *( unsigned long* ) ( outputBuffer.data() + 1 ) = tmp;
     *( unsigned long* ) ( outputBuffer.data() + 5 ) = VERSION;
-    *( unsigned long* ) ( outputBuffer.data() + 9 ) = 1;
+    *( unsigned long* ) ( outputBuffer.data() + 9 ) = 1; // race
     std::cerr << "Sending CL_CHALLENGE...\n";
     clientSocket_.send( outputBuffer.data(), outputBuffer.size() );
 

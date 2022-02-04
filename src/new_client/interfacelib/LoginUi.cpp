@@ -3,10 +3,13 @@
 #include <iostream>
 #include <string.h>
 
+#include "PlayerData.h"
+
 namespace MenAmongGods
 {
-LoginUi::LoginUi( const sf::RenderWindow& window, const sf::Font& font, unsigned int fontSize )
-    : nameLabel_( "Name:", font, fontSize )
+LoginUi::LoginUi( PlayerData& playerData, const sf::RenderWindow& window, const sf::Font& font, unsigned int fontSize )
+    : playerData_( playerData )
+    , nameLabel_( "Name:", font, fontSize )
     , nameEntry_( window, font, fontSize )
     , descriptionLabel_( "Description:", font, fontSize )
     , descriptionEntry_( window, font, fontSize )
@@ -42,7 +45,7 @@ LoginUi::LoginUi( const sf::RenderWindow& window, const sf::Font& font, unsigned
   // Set up the submit button
   auto callBack = [ this ]()
   {
-    this->printValues();
+    this->populatePlayerData();
   };
 
   submitButton_.setPosition( sf::Vector2f { 10.0f, 200.0f } );
@@ -92,6 +95,37 @@ void LoginUi::finalize()
   {
     c->finalize();
   }
+}
+
+void LoginUi::populatePlayerData() const
+{
+  playerData_.setName( nameEntry_.getText() );
+  playerData_.setPassword( passwordEntry_.getText() );
+  playerData_.setDescription( descriptionEntry_.getText() );
+
+  std::string race {};
+  for ( const auto& r : raceSelection_ )
+  {
+    if ( r.isSelected() )
+    {
+      race = r.getLabelText();
+      break;
+    }
+  }
+
+  std::string sex {};
+  for ( const auto& s : sexSelection_ )
+  {
+    if ( s.isSelected() )
+    {
+      sex = s.getLabelText();
+      break;
+    }
+  }
+
+  playerData_.setRaceAndSex( race, sex );
+
+  printValues();
 }
 
 void LoginUi::printValues() const

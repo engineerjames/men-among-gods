@@ -13,12 +13,14 @@
 // Consider creating a radio button group class
 #include <vector>
 
+class PlayerData;
+
 namespace MenAmongGods
 {
 class LoginUi : public MenAmongGods::Component
 {
 public:
-  LoginUi( const sf::RenderWindow& window, const sf::Font& font, unsigned int fontSize );
+  LoginUi( PlayerData& playerData, const sf::RenderWindow& window, const sf::Font& font, unsigned int fontSize );
   ~LoginUi() = default;
 
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
@@ -32,6 +34,9 @@ public:
 
 private:
   void printValues() const;
+  void populatePlayerData() const;
+
+  PlayerData& playerData_;
 
   sf::Text                          nameLabel_;
   TextInputDisplay                  nameEntry_;
