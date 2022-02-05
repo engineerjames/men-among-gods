@@ -31,8 +31,8 @@ public:
   virtual void onUserInput( const sf::Event& e ) override;
   virtual void finalize() override;
 
-  pdata getPlayerData() const;
-  bool  hasSubmitted() const;
+  PlayerData& getPlayerData() const;
+  bool        hasSubmitted() const;
 
 private:
   void printValues() const;

@@ -40,8 +40,6 @@ int main()
   auto              tickBufferPtr = std::make_shared< TickBuffer >( playerData, map );
   auto              client        = std::make_shared< ClientNetworkActivity >( *tickBufferPtr, playerData, MHOST, MHOST_PORT );
 
-  // client->run();
-
   auto mapPtr     = std::make_shared< MenAmongGods::MapDisplay >( map, playerData, *gfxCache, *idxCache, *tickBufferPtr, window );
   auto mainUiPtr  = std::make_shared< MenAmongGods::MainUi >( playerData, *gfxCache, *fontCache );
   auto loginUiPtr = std::make_shared< MenAmongGods::LoginUi >( playerData, window, *fontCache, 16 );
@@ -54,7 +52,8 @@ int main()
   std::vector< std::shared_ptr< MenAmongGods::Component > > loginComponents;
   loginComponents.push_back( loginUiPtr );
 
-  bool isLoggingIn = true;
+  bool isLoggingIn                = true;
+  bool hasKickStartedNetworkComms = false;
 
   while ( window.isOpen() )
   {
@@ -62,6 +61,15 @@ int main()
     if ( isLoggingIn && ! loginUiPtr->hasSubmitted() )
     {
       currentComponents = &loginComponents;
+    }
+    else
+    {
+      if ( ! hasKickStartedNetworkComms )
+      {
+        hasKickStartedNetworkComms = true;
+        client->run();
+        std::cerr << "Starting client communication!" << std::endl;
+      }
     }
 
     sf::Event event;

@@ -159,17 +159,9 @@ void LoginUi::printValues() const
   std::cerr << "Sex: " << sex << std::endl;
 }
 
-pdata LoginUi::getPlayerData() const
+PlayerData& LoginUi::getPlayerData() const
 {
-  pdata data {};
-
-  strcpy( data.cname, nameEntry_.getText().c_str() );
-  strcpy( data.desc, descriptionEntry_.getText().c_str() );
-
-  data.show_proz = 0;
-  data.hide      = 1;
-
-  return data;
+  return playerData_;
 }
 
 void LoginUi::draw( sf::RenderTarget& target, sf::RenderStates states ) const
