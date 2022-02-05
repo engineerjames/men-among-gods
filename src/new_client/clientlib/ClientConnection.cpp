@@ -4,10 +4,32 @@
 #include <iostream>
 
 #include "ClientMessage.h"
+#include "ConversionUtilities.h"
 #include "Encoder.h"
 #include "PlayerData.h"
 #include "ServerMessage.h"
 #include "TickBuffer.h"
+
+namespace
+{
+static const char* logout_reason[] = {
+    "unknown",                                                                              // 0
+    "Client failed challenge.",                                                             // 1
+    "Client was idle too long.",                                                            // 2
+    "No room to drop character.",                                                           // 3
+    "Invalid parameters.",                                                                  // 4
+    "Character already active or no player character.",                                     // 5
+    "Invalid password.",                                                                    // 6
+    "Client too slow.",                                                                     // 7
+    "Receive failure.",                                                                     // 8
+    "Server is being shutdown.",                                                            // 9
+    "You entered a Tavern.",                                                                // 10
+    "Client version too old. Update needed.",                                               // 11
+    "Aborting on user request.",                                                            // 12
+    "this should never show up",                                                            // 13
+    "You have been banned for an hour. Enhance your social behaviour before you come back." // 14
+};
+}
 
 ClientConnection::ClientConnection( std::string hostIp, unsigned short hostPort )
     : clientSocket_()
@@ -17,8 +39,8 @@ ClientConnection::ClientConnection( std::string hostIp, unsigned short hostPort 
     , unique1_( 0 )
     , unique2_( 0 )
     , serverVersion_( 0 )
-    , clientData_()
     , tickCount_( 0 )
+    , messageOfTheDay_()
 {
 }
 
@@ -29,7 +51,7 @@ bool ClientConnection::connect()
   return isConnected_;
 }
 
-bool ClientConnection::login()
+bool ClientConnection::login( PlayerData& playerData )
 {
   if ( ! isConnected_ )
   {
@@ -39,12 +61,8 @@ bool ClientConnection::login()
 
   std::array< std::uint8_t, 16 > buffer {};
 
-  // Send password infomation
-  // Hard-code an empty password for now, but no need to send it
-  // since the legacy code just sent a 0-initialized byte buffer if
-  // the password was empty... I think.
   std::cerr << "Sending initial password...\n";
-  const std::string myEmptyPassword = "";
+  const std::string myEmptyPassword = playerData.getPassword();
   buffer[ 0 ]                       = ClientMessages::getValue( ClientMessages::MessageTypes::PASSWD );
   clientSocket_.send( buffer.data(), buffer.size() );
 
@@ -67,7 +85,7 @@ bool ClientConnection::login()
       return false;
     }
 
-    procStatus = processLoginResponse( buffer );
+    procStatus = processLoginResponse( playerData, buffer );
     if ( procStatus == ProcessStatus::ERROR )
     {
       std::cerr << "Error logging in!" << std::endl;
@@ -78,12 +96,17 @@ bool ClientConnection::login()
   return true;
 }
 
-// Returns 0 1, -1; TODO: Add checks for if connected...
-ClientConnection::ProcessStatus ClientConnection::processLoginResponse( const std::array< std::uint8_t, 16 >& buffer )
+ClientConnection::ProcessStatus ClientConnection::processLoginResponse( PlayerData&                           playerData,
+                                                                        const std::array< std::uint8_t, 16 >& buffer )
 {
+  if ( ! isConnected_ )
+  {
+    std::cerr << "Can't execute processLoginResponse - Socket is not connected!" << std::endl;
+    return ClientConnection::ProcessStatus::ERROR;
+  }
+
   unsigned int                   tmp {};
   std::array< std::uint8_t, 16 > outputBuffer {};
-  std::array< char, 256 >        messageOfTheDay {};
   static int                     capcnt {};
 
   ServerMessages::MessageTypes serverMsgType = ServerMessages::getType( buffer[ 0 ] );
@@ -98,30 +121,45 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( const st
     outputBuffer[ 0 ]                               = ClientMessages::getValue( ClientMessages::MessageTypes::CHALLENGE );
     *( unsigned long* ) ( outputBuffer.data() + 1 ) = tmp;
     *( unsigned long* ) ( outputBuffer.data() + 5 ) = VERSION;
-    *( unsigned long* ) ( outputBuffer.data() + 9 ) = 1; // race
+    *( unsigned long* ) ( outputBuffer.data() + 9 ) = playerData.getRaceAndSex();
     std::cerr << "Sending CL_CHALLENGE...\n";
+    std::cerr << "tmp: " << tmp << std::endl;
+    std::cerr << "VERSION: " << VERSION << std::endl;
+    std::cerr << "OkeyRaceInt: " << playerData.getRaceAndSex();
+
     clientSocket_.send( outputBuffer.data(), outputBuffer.size() );
 
     outputBuffer[ 0 ]                               = ClientMessages::getValue( ClientMessages::MessageTypes::CMD_UNIQUE );
     *( unsigned long* ) ( outputBuffer.data() + 1 ) = unique1_;
     *( unsigned long* ) ( outputBuffer.data() + 5 ) = unique2_;
     std::cerr << "Sending CL_CMD_UNIQUE...\n";
+    std::cerr << "unique1_ = " << unique1_ << std::endl;
+    std::cerr << "unique2_ = " << unique2_ << std::endl;
+
     clientSocket_.send( outputBuffer.data(), outputBuffer.size() );
 
     return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::NEWPLAYER )
   {
-    clientData_.usnr  = *( unsigned long* ) ( buffer.data() + 1 ); // Unique player ID
-    clientData_.pass1 = *( unsigned long* ) ( buffer.data() + 5 );
-    clientData_.pass2 = *( unsigned long* ) ( buffer.data() + 9 );
-    serverVersion_    = *( unsigned char* ) ( buffer.data() + 13 );
+    // Unique player ID
+    unsigned long clientDataUserNumber = *( unsigned long* ) ( buffer.data() + 1 );
+    unsigned long clientDataPass1      = *( unsigned long* ) ( buffer.data() + 5 );
+    unsigned long clientDataPass2      = *( unsigned long* ) ( buffer.data() + 9 );
+
+    playerData.setUserNumber( clientDataUserNumber );
+    playerData.setPassword( clientDataPass1, clientDataPass2 );
+
+    serverVersion_ = *( unsigned char* ) ( buffer.data() + 13 );
     serverVersion_ += ( int ) ( ( *( unsigned char* ) ( buffer.data() + 14 ) ) ) << 8;
     serverVersion_ += ( int ) ( ( *( unsigned char* ) ( buffer.data() + 15 ) ) ) << 16;
+
     std::cerr << "Server Response: NEWPLAYER...\n";
-    std::cerr << "received usnr:" << clientData_.usnr << std::endl;
-    std::cerr << "received pass1:" << clientData_.pass1 << std::endl;
-    std::cerr << "received pass2:" << clientData_.pass2 << std::endl;
+    std::cerr << "received usnr:" << playerData.getUserNumber() << std::endl;
+    auto [ storedPass1, storedPass2 ] = playerData.getPasswordOkeyValues();
+    std::cerr << "received pass1:" << storedPass1 << std::endl;
+    std::cerr << "received pass2:" << storedPass2 << std::endl;
+
     return ProcessStatus::DONE;
   }
   else if ( serverMsgType == MessageTypes::LOGIN_OK )
@@ -133,8 +171,9 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( const st
   else if ( serverMsgType == MessageTypes::EXIT )
   {
     tmp = *( unsigned int* ) ( buffer.data() + 1 );
-    // TODO: Add reason from tmp
+
     std::cerr << "STATUS: Server demands exit.\n";
+    std::cerr << "REASON: " << logout_reason[ tmp ] << std::endl;
 
     return ProcessStatus::ERROR;
   }
@@ -147,49 +186,49 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( const st
   }
   else if ( serverMsgType == MessageTypes::MOD1 )
   {
-    std::memcpy( messageOfTheDay.data(), buffer.data() + 1, 15 );
+    std::memcpy( messageOfTheDay_.data(), buffer.data() + 1, 15 );
     std::cerr << "Server Response: MOD1...\n";
     return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD2 )
   {
-    std::memcpy( messageOfTheDay.data() + 15, buffer.data() + 1, 15 );
+    std::memcpy( messageOfTheDay_.data() + 15, buffer.data() + 1, 15 );
     std::cerr << "Server Response: MOD2...\n";
     return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD3 )
   {
-    std::memcpy( messageOfTheDay.data() + 30, buffer.data() + 1, 15 );
+    std::memcpy( messageOfTheDay_.data() + 30, buffer.data() + 1, 15 );
     std::cerr << "Server Response: MOD3...\n";
     return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD4 )
   {
-    std::memcpy( messageOfTheDay.data() + 45, buffer.data() + 1, 15 );
+    std::memcpy( messageOfTheDay_.data() + 45, buffer.data() + 1, 15 );
     std::cerr << "Server Response: MOD4...\n";
     return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD5 )
   {
-    std::memcpy( messageOfTheDay.data() + 60, buffer.data() + 1, 15 );
+    std::memcpy( messageOfTheDay_.data() + 60, buffer.data() + 1, 15 );
     std::cerr << "Server Response: MOD5...\n";
     return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD6 )
   {
-    std::memcpy( messageOfTheDay.data() + 75, buffer.data() + 1, 15 );
+    std::memcpy( messageOfTheDay_.data() + 75, buffer.data() + 1, 15 );
     std::cerr << "Server Response: MOD6...\n";
     return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD7 )
   {
-    std::memcpy( messageOfTheDay.data() + 90, buffer.data() + 1, 15 );
+    std::memcpy( messageOfTheDay_.data() + 90, buffer.data() + 1, 15 );
     std::cerr << "Server Response: MOD7...\n";
     return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD8 )
   {
-    std::memcpy( messageOfTheDay.data() + 105, buffer.data() + 1, 15 );
+    std::memcpy( messageOfTheDay_.data() + 105, buffer.data() + 1, 15 );
     std::cerr << "Server Response: MOD8...\n";
     return ProcessStatus::CONTINUE;
   }
@@ -197,6 +236,11 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( const st
   {
     return ProcessStatus::CONTINUE;
   }
+}
+
+std::string ClientConnection::getMessageOfTheDay() const
+{
+  return MenAmongGods::convertArrayToStdString( messageOfTheDay_ );
 }
 
 void ClientConnection::moveOnce()

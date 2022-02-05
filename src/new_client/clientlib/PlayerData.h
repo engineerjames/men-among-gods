@@ -4,6 +4,7 @@
 #include <array>
 #include <memory>
 #include <mutex>
+#include <tuple>
 
 #include "ClientTypes.h"
 #include "ConstantIdentifiers.h"
@@ -15,6 +16,8 @@ class PlayerData
 public:
   PlayerData();
   ~PlayerData() = default;
+
+  typedef std::tuple< long unsigned int, long unsigned int > OkeyPasswordType;
 
   bool         hasPlayerDataChanged() const;
   const char*  getPlayerName() const;
@@ -29,13 +32,15 @@ public:
   int          clientShouldShowPercentHealth() const;
   int          getAttackTarget() const;
 
+  // TODO: Eliminate this series of "get" calls--need just a plethora of get/set commands
+  // for the underlying data values so they can be properly protected from multi-threaded
+  // collisions.
   pdata&         getPlayerInfo();
   cplayer&       getClientSidePlayerInfo();
   const cplayer& getClientSidePlayerInfo() const;
-
-  skilltab* getSkillList();
-  key&      getOkey();
-  look&     getLook();
+  skilltab*      getSkillList();
+  key&           getOkey();
+  look&          getLook();
 
   void lock();
   void unlock();
@@ -45,8 +50,15 @@ public:
 
   void setName( std::string newName );
   void setPassword( std::string password );
+  void setPassword( long unsigned int pass1, long unsigned int pass2 );
   void setDescription( std::string description );
   void setRaceAndSex( std::string race, std::string sex );
+  void setUserNumber( long unsigned int usnr );
+
+  long unsigned int getRaceAndSex() const;
+  std::string       getPassword() const;
+  OkeyPasswordType  getPasswordOkeyValues() const;
+  long unsigned int getUserNumber() const;
 
 private:
   // Holds the name, description, and some client-related settings (split apart later)

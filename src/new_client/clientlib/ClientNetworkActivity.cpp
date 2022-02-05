@@ -59,7 +59,7 @@ void ClientNetworkActivity::stop() noexcept
 void ClientNetworkActivity::startNetworkActivity()
 {
   clientConnection_.connect();
-  clientConnection_.login();
+  clientConnection_.login( playerData_ );
 
   clientConnection_.sendPlayerData( playerData_ );
 

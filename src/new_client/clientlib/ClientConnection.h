@@ -26,7 +26,7 @@ public:
   ~ClientConnection();
 
   bool connect();
-  bool login();
+  bool login( PlayerData& playerData );
   bool sendPlayerData( const PlayerData& playerData );
   void setSocketMode( SocketIOMode newMode );
   void sendHardwareInfo();
@@ -34,6 +34,8 @@ public:
   bool sendTick();
   bool receiveTick( TickBuffer& tickBuffer );
   void moveOnce(); // TODO: Remove this
+
+  std::string getMessageOfTheDay() const;
 
 private:
   enum struct ProcessStatus
@@ -43,8 +45,8 @@ private:
     ERROR    = -1
   };
 
-  ProcessStatus processLoginResponse( const std::array< std::uint8_t, 16 >& buffer );
-  void say( const char* input );
+  ProcessStatus processLoginResponse( PlayerData& playerData, const std::array< std::uint8_t, 16 >& buffer );
+  void          say( const char* input );
 
   sf::TcpSocket                       clientSocket_;
   std::string                         hostIpAddress_;
@@ -53,10 +55,10 @@ private:
   int                                 unique1_;
   int                                 unique2_;
   int                                 serverVersion_;
-  key                                 clientData_;
   static const constexpr unsigned int VERSION = 0x020E06;
   // TODO: Re-evaluate where these members are used
-  unsigned int tickCount_;
+  unsigned int            tickCount_;
+  std::array< char, 256 > messageOfTheDay_;
 };
 
 #endif

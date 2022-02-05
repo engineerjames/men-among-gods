@@ -266,6 +266,17 @@ void PlayerData::setPassword( std::string password )
   password_ = password;
 }
 
+std::string PlayerData::getPassword() const
+{
+  return password_;
+}
+
+void PlayerData::setPassword( long unsigned int pass1, long unsigned int pass2 )
+{
+  okey_.pass1 = pass1;
+  okey_.pass2 = pass2;
+}
+
 void PlayerData::setDescription( std::string description )
 {
   std::strcpy( playerInfo_.desc, description.c_str() );
@@ -294,6 +305,26 @@ void PlayerData::setRaceAndSex( std::string race, std::string sex )
   }
 
   okey_.race = getOkeyRaceValue( raceEnum, sexEnum );
+}
+
+long unsigned int PlayerData::getRaceAndSex() const
+{
+  return okey_.race;
+}
+
+long unsigned int PlayerData::getUserNumber() const
+{
+  return okey_.usnr;
+}
+
+PlayerData::OkeyPasswordType PlayerData::getPasswordOkeyValues() const
+{
+  return std::make_tuple< long unsigned int, long unsigned int >( okey_.pass1, okey_.pass2 );
+}
+
+void PlayerData::setUserNumber( long unsigned int usnr )
+{
+  okey_.usnr = usnr;
 }
 
 void PlayerData::saveToFile() const
