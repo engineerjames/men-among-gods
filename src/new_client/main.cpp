@@ -24,9 +24,9 @@ int main()
   window.setFramerateLimit( 10 );
   window.requestFocus();
 
-  std::string fontPath  = MenAmongGods::FONT_ROOT + "onuava.ttf";
-  std::string path      = MenAmongGods::GFX_ROOT + "gfx.zip";
-  std::string indexPath = MenAmongGods::GFX_ROOT + "gx00.idx";
+  std::string fontPath  = MenAmongGods::getFontRoot() + "onuava.ttf";
+  std::string path      = MenAmongGods::getGfxRoot() + "gfx.zip";
+  std::string indexPath = MenAmongGods::getGfxRoot() + "gx00.idx";
 
   auto fontCache = std::make_unique< MenAmongGods::FontCache >( fontPath );
   auto gfxCache  = std::make_unique< GraphicsCache >();

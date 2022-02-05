@@ -12,7 +12,7 @@ int main()
   sf::RenderWindow window( sf::VideoMode( 800, 600 ), "Mercenaries of Astonia - New Client" );
   window.setFramerateLimit( 60 );
 
-  auto                  fontCache = std::make_unique< MenAmongGods::FontCache >( MenAmongGods::FONT_ROOT + "onuava.ttf" );
+  auto                  fontCache = std::make_unique< MenAmongGods::FontCache >( MenAmongGods::getFontRoot() + "onuava.ttf" );
   PlayerData            playerData {};
   MenAmongGods::LoginUi loginUi { playerData, window, *fontCache, 16 };
 

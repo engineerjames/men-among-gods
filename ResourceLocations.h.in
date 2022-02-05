@@ -1,15 +1,39 @@
 #ifndef RESOURCE_LOCATIONS_IN_H
 #define RESOURCE_LOCATIONS_IN_H
 
+#include <filesystem>
 #include <string>
 
 namespace MenAmongGods
 {
+
 static const std::string GIT_REVISION  = "@GIT_REVISION@";
 static const std::string RESOURCE_ROOT = "@RESOURCE_OUTPUT_DIRECTORY@";
-static const std::string GFX_ROOT      = RESOURCE_ROOT + "/gfx/";
-static const std::string FONT_ROOT     = RESOURCE_ROOT + "/fonts/";
-static const std::string TEST_ROOT     = RESOURCE_ROOT + "/test/";
+
+inline std::string getGfxRoot()
+{
+  static const std::string GFX_ROOT     = RESOURCE_ROOT + "/gfx/";
+  static const std::string ALT_GFX_ROOT = "./res/gfx/";
+
+  return std::filesystem::exists( GFX_ROOT ) ? GFX_ROOT : ALT_GFX_ROOT;
+}
+
+inline std::string getFontRoot()
+{
+  static const std::string FONT_ROOT     = RESOURCE_ROOT + "/fonts/";
+  static const std::string ALT_FONT_ROOT = "./res/fonts/";
+
+  return std::filesystem::exists( FONT_ROOT ) ? FONT_ROOT : ALT_FONT_ROOT;
+}
+
+inline std::string getTestRoot()
+{
+  static const std::string TEST_ROOT     = RESOURCE_ROOT + "/test/";
+  static const std::string ALT_TEST_ROOT = "./res/test/";
+
+  return std::filesystem::exists( TEST_ROOT ) ? TEST_ROOT : ALT_TEST_ROOT;
+}
+
 } // namespace MenAmongGods
 
 #endif

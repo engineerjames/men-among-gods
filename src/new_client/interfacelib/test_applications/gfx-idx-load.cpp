@@ -7,7 +7,7 @@
 
 int main()
 {
-  GraphicsIndex index { MenAmongGods::GFX_ROOT + "gx00.idx" };
+  GraphicsIndex index { MenAmongGods::getGfxRoot() + "gx00.idx" };
 
   index.load();
 

@@ -18,7 +18,7 @@ int main()
   window.setFramerateLimit( 60 );
 
   sf::Font font {};
-  if ( ! font.loadFromFile( MenAmongGods::FONT_ROOT + "onuava.ttf" ) )
+  if ( ! font.loadFromFile( MenAmongGods::getFontRoot() + "onuava.ttf" ) )
   {
     std::cerr << "Unable to load font!" << std::endl;
   };
