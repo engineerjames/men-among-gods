@@ -36,7 +36,21 @@ Once you have made yourself a god, you can create items via `/createitem`:
 
 ### Building on Windows
 1. Install MSYS, follow the instructions here: https://www.msys2.org/
-2. Use `pacman` to install all dependencies--TODO: add package list here
-3. Install CMake and add to system path
-4. Use CMake from a regular command prompt to generate MinGW makefiles
-5. Run from MSYS terminal
+2. Add <MSYS_INSTALL_DIR>/usr/bin and <MSYS_INSTALL_DIR>/mingw64/bin to your path in Windows
+3. Use `pacman` to install all dependencies:
+```bash
+pacman -Syu # After this command, restart the MSYS executable
+pacman -Su
+pacman -S --needed base-devel mingw-w64-x86_64-toolchain # Hit enter to select all packages, ~1GB
+
+# Remainder of build dependencies
+pacman -S mingw-w64-x86_64-cmake mingw-w64-x86_64-boost git mingw-w64-x86_64-sfml mingw-w64-x86_64-libzip
+```
+4. Install CMake (in Windows), and add its binary directory to the Windows system path
+5. Use CMake from a regular command prompt at the top level of the repository to build via:
+```bash
+cmake -G"MinGW Makefiles" -S ./ -B ./build
+cmake --build ./build --parallel
+```
+> Note: Do not attempt to run "Make" from the build directory as you normally could do; it will not work.
+6. Run from MSYS terminal

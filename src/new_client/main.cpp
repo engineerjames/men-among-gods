@@ -72,6 +72,9 @@ int main()
       }
     }
 
+    //
+    // Process events--aka input by the user
+    //
     sf::Event event;
     while ( window.pollEvent( event ) )
     {
@@ -86,11 +89,17 @@ int main()
       }
     }
 
+    //
+    // Run per-frame update logic
+    //
     for ( auto& c : *currentComponents )
     {
       c->update();
     }
 
+    //
+    // Draw stuff to the screen after clearing previous frame
+    //
     window.clear();
 
     for ( auto& c : *currentComponents )
@@ -100,6 +109,9 @@ int main()
 
     window.display();
 
+    //
+    // Run finalization logic for all registered components
+    //
     for ( auto& c : *currentComponents )
     {
       c->finalize();
