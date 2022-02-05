@@ -53,4 +53,6 @@ cmake -G"MinGW Makefiles" -S ./ -B ./build
 cmake --build ./build --parallel
 ```
 > Note: Do not attempt to run "Make" from the build directory as you normally could do; it will not work.
-6. Run from MSYS terminal
+6. Run the executable as you normally would.
+
+Alternatively, you can install WSL2 (Windows Subsystem for Linux - 2) via [this guide](https://www.digitalocean.com/community/tutorials/how-to-install-the-windows-subsystem-for-linux-2-on-microsoft-windows-10).  Note, you will need to install Xming (and follow the instructions outlined [here](https://stackoverflow.com/questions/61110603/how-to-set-up-working-x11-forwarding-on-wsl2)) in order to display the GUI to your Windows desktop via the X11 server.
