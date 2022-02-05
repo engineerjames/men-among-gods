@@ -154,6 +154,14 @@ PlayerData::PlayerData()
   {
     skillsList_[ i ].attrib[ 0 ] = 1;
   }
+
+  setClientShouldShowNames( true );
+  setClientShouldShowPercentHealth( true );
+}
+
+void PlayerData::setRaceAndSex( long unsigned int race )
+{
+  okey_.race = race;
 }
 
 bool PlayerData::hasPlayerDataChanged() const
@@ -201,6 +209,21 @@ int PlayerData::clientShouldShowPercentHealth() const
   return playerInfo_.show_proz;
 }
 
+void PlayerData::setClientShouldShowNames( bool shouldShowNames )
+{
+  playerInfo_.show_names = shouldShowNames ? 1 : 0;
+}
+
+void PlayerData::setClientShouldShowPercentHealth( bool shouldShowPercentHealth )
+{
+  playerInfo_.show_proz = shouldShowPercentHealth ? 1 : 0;
+}
+
+void PlayerData::setClientShouldHideWalls( bool shouldHideWalls )
+{
+  playerInfo_.hide = shouldHideWalls ? 1 : 0;
+}
+
 int PlayerData::getAttackTarget() const
 {
   return clientSidePlayerInfo_.attack_cn;
@@ -244,11 +267,6 @@ cplayer& PlayerData::getClientSidePlayerInfo()
 const cplayer& PlayerData::getClientSidePlayerInfo() const
 {
   return clientSidePlayerInfo_;
-}
-
-key& PlayerData::getOkey()
-{
-  return okey_;
 }
 
 look& PlayerData::getLook()
@@ -304,7 +322,7 @@ void PlayerData::setRaceAndSex( std::string race, std::string sex )
     sexEnum = MenAmongGods::Sex::Male;
   }
 
-  okey_.race = getOkeyRaceValue( raceEnum, sexEnum );
+  setRaceAndSex( getOkeyRaceValue( raceEnum, sexEnum ) );
 }
 
 long unsigned int PlayerData::getRaceAndSex() const
@@ -315,6 +333,11 @@ long unsigned int PlayerData::getRaceAndSex() const
 long unsigned int PlayerData::getUserNumber() const
 {
   return okey_.usnr;
+}
+
+void PlayerData::setOkeyName( char ( &pdataName )[ 40 ] )
+{
+  std::strcpy( okey_.name, pdataName );
 }
 
 PlayerData::OkeyPasswordType PlayerData::getPasswordOkeyValues() const

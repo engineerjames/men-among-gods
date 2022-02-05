@@ -349,8 +349,9 @@ void TickBuffer::sv_setchar_name2( const unsigned char* buf )
 void TickBuffer::sv_setchar_name3( const unsigned char* buf )
 {
   std::memcpy( playerData_.getClientSidePlayerInfo().name + 30, buf + 1, 10 );
-  strcpy( playerData_.getOkey().name, playerData_.getClientSidePlayerInfo().name );
-  playerData_.getOkey().race = *( unsigned long* ) ( buf + 11 );
+
+  playerData_.setOkeyName( playerData_.getClientSidePlayerInfo().name );
+  playerData_.setRaceAndSex( *( unsigned long* ) ( buf + 11 ) );
   // save_options();
 }
 

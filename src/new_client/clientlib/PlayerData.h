@@ -39,7 +39,6 @@ public:
   cplayer&       getClientSidePlayerInfo();
   const cplayer& getClientSidePlayerInfo() const;
   skilltab*      getSkillList();
-  key&           getOkey();
   look&          getLook();
 
   void lock();
@@ -53,7 +52,12 @@ public:
   void setPassword( long unsigned int pass1, long unsigned int pass2 );
   void setDescription( std::string description );
   void setRaceAndSex( std::string race, std::string sex );
+  void setRaceAndSex( long unsigned int race );
   void setUserNumber( long unsigned int usnr );
+  void setClientShouldShowNames( bool shouldShowNames );
+  void setClientShouldShowPercentHealth( bool shouldShowPercentHealth );
+  void setClientShouldHideWalls( bool shouldHideWalls );
+  void setOkeyName( char ( &pdataName )[ 40 ] );
 
   long unsigned int getRaceAndSex() const;
   std::string       getPassword() const;
