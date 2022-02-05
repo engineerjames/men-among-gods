@@ -31,7 +31,11 @@ else()
 endif()
 
 add_subdirectory(src/new_client)
-add_subdirectory(src/test)
+
+# Currently the unit tests won't link with MinGW for some reason
+if (NOT MINGW)
+  add_subdirectory(src/test)
+endif()
 
 if (NOT WIN32)
   add_subdirectory(src/server)
