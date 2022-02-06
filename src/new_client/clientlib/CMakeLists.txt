@@ -10,21 +10,45 @@ set( sources
     ServerMessage.cpp
     TickBuffer.cpp
 
-    commands/DropCommand.h
-    commands/DropCommand.cpp
-    commands/LookItemCommand.h
-    commands/LookItemCommand.cpp
-    commands/ModeCommand.h
-    commands/ModeCommand.cpp
-    commands/MoveCommand.h
-    commands/MoveCommand.cpp
+    commands/AttackCommand.cpp
+    commands/AttackCommand.h
+    commands/AutoLookCommand.cpp
+    commands/AutoLookCommand.h
     commands/ClientCommand.h
-    commands/PickupCommand.h
+    commands/DropCommand.cpp
+    commands/DropCommand.h
+    commands/ExitCommand.cpp
+    commands/ExitCommand.h
+    commands/GiveCommand.cpp
+    commands/GiveCommand.h
+    commands/InventoryCommand.cpp
+    commands/InventoryCommand.h
+    commands/InventoryLookCommand.cpp
+    commands/InventoryLookCommand.h
+    commands/LookCommand.cpp
+    commands/LookCommand.h
+    commands/LookItemCommand.cpp
+    commands/LookItemCommand.h
+    commands/ModeCommand.cpp
+    commands/ModeCommand.h
+    commands/MoveCommand.cpp
+    commands/MoveCommand.h
     commands/PickupCommand.cpp
-    commands/TurnCommand.h
+    commands/PickupCommand.h
+    commands/ResetCommand.cpp
+    commands/ResetCommand.h
+    commands/ShopCommand.cpp
+    commands/ShopCommand.h
+    commands/SkillCommand.cpp
+    commands/SkillCommand.h
+    commands/StatCommand.cpp
+    commands/StatCommand.h
+    commands/TickCommand.cpp
+    commands/TickCommand.h
     commands/TurnCommand.cpp
-    commands/UseCommand.h
+    commands/TurnCommand.h
     commands/UseCommand.cpp
+    commands/UseCommand.h
 )
 set( headers
     ClientConnection.h
