@@ -56,6 +56,12 @@
         "typeinfo": "cpp",
         "codecvt": "cpp",
         "condition_variable": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "strstream": "cpp",
+        "bitset": "cpp",
+        "complex": "cpp",
+        "list": "cpp",
+        "typeindex": "cpp",
+        "variant": "cpp"
     }
 }
