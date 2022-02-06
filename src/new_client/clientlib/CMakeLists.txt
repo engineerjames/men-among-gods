@@ -45,6 +45,8 @@ set( sources
     commands/StatCommand.h
     commands/TickCommand.cpp
     commands/TickCommand.h
+    commands/SayCommand.cpp
+    commands/SayCommand.h
     commands/TurnCommand.cpp
     commands/TurnCommand.h
     commands/UseCommand.cpp
