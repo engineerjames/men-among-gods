@@ -75,8 +75,8 @@ public:
   OkeyPasswordType  getPasswordOkeyValues() const;
   long unsigned int getUserNumber() const;
 
-  void                             addLogMessage( LogType type, const std::string& msg );
-  const std::vector< LogMessage >& getLogMessages() const;
+  void                      addLogMessage( LogType type, const std::string& msg );
+  std::vector< LogMessage > getAndClearLogMessages();
 
 private:
   // Holds the name, description, and some client-related settings (split apart later)

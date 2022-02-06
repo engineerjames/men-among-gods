@@ -277,9 +277,15 @@ void PlayerData::addLogMessage( LogType type, const std::string& msg )
   messages_.emplace_back( type, msg );
 }
 
-const std::vector< PlayerData::LogMessage >& PlayerData::getLogMessages() const
+std::vector< PlayerData::LogMessage > PlayerData::getAndClearLogMessages()
 {
-  return messages_;
+  // First, copy the vector that has all the new messages, then move it out of the
+  // the function.  We then clear the internal data structure so we're only
+  // sending the new messages each time.
+  std::vector< PlayerData::LogMessage > messagesToReturn = messages_;
+  messages_.clear();
+
+  return messagesToReturn;
 }
 
 cplayer& PlayerData::getClientSidePlayerInfo()

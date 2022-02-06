@@ -258,6 +258,12 @@ void MainUi::update()
   wvValue_.update();
   avValue_.update();
   expValue_.update();
+
+  // Get new message values
+  for ( const auto& m : playerData_.getAndClearLogMessages() )
+  {
+    addMessage( m.type, m.msg );
+  }
 }
 
 void MainUi::finalize()
