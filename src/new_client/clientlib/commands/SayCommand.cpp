@@ -10,13 +10,13 @@ namespace
 // clang-format off
 std::map< CommandType, unsigned int > offSetToInputMap = { 
   { CommandType::CL_CMD_INPUT1, 0 },
-  { CommandType::CL_CMD_INPUT1, 15 },
-  { CommandType::CL_CMD_INPUT1, 30 },
-  { CommandType::CL_CMD_INPUT1, 45 },
-  { CommandType::CL_CMD_INPUT1, 60 },
-  { CommandType::CL_CMD_INPUT1, 75 },
-  { CommandType::CL_CMD_INPUT1, 90 },
-  { CommandType::CL_CMD_INPUT1, 105 } 
+  { CommandType::CL_CMD_INPUT2, 15 },
+  { CommandType::CL_CMD_INPUT3, 30 },
+  { CommandType::CL_CMD_INPUT4, 45 },
+  { CommandType::CL_CMD_INPUT5, 60 },
+  { CommandType::CL_CMD_INPUT6, 75 },
+  { CommandType::CL_CMD_INPUT7, 90 },
+  { CommandType::CL_CMD_INPUT8, 105 } 
   };
 // clang-format on
 } // namespace
