@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "ClientTypes.h"
 #include "Component.h"
 #include "JustifiableText.h"
 #include "LifeDisplay.h"
@@ -21,14 +22,6 @@ class FontCache;
 class MainUi : public MenAmongGods::Component
 {
 public:
-  enum struct LogType
-  {
-    INFO, // Yellow
-    CHAT, // Blue
-    LOG,  // Green
-    ERROR // Red
-  };
-
   MainUi( PlayerData& pdata, const GraphicsCache& gfxCache, const FontCache& fontCache );
   ~MainUi() = default;
 

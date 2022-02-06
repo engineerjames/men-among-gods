@@ -249,14 +249,37 @@ void PlayerData::unlock()
   ioMutex_.unlock();
 }
 
-pdata& PlayerData::getPlayerInfo()
+void PlayerData::sortSkills()
 {
-  return playerInfo_;
+  std::sort( skillsList_, skillsList_ + MAX_SKILLS,
+             []( const skilltab& lhs, const skilltab& rhs )
+             {
+               // Begin server message processing implementation
+               int m1 = lhs.nr;
+               int m2 = rhs.nr;
+
+               if ( m1 == 99 && m2 != 99 )
+                 return true;
+               if ( m2 == 99 && m1 != 99 )
+                 return false;
+
+               if ( lhs.sortkey > rhs.sortkey )
+                 return true;
+               if ( lhs.sortkey < rhs.sortkey )
+                 return false;
+
+               return strcmp( lhs.name, rhs.name ) > 0;
+             } );
 }
 
-skilltab* PlayerData::getSkillList()
+void PlayerData::addLogMessage( LogType type, const std::string& msg )
 {
-  return skillsList_;
+  messages_.emplace_back( type, msg );
+}
+
+const std::vector< PlayerData::LogMessage >& PlayerData::getLogMessages() const
+{
+  return messages_;
 }
 
 cplayer& PlayerData::getClientSidePlayerInfo()

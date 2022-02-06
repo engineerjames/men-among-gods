@@ -17,6 +17,18 @@ public:
   PlayerData();
   ~PlayerData() = default;
 
+  struct LogMessage
+  {
+    LogType     type;
+    std::string msg;
+
+    LogMessage( LogType theType, const std::string& theMsg )
+        : type( theType )
+        , msg( theMsg )
+    {
+    }
+  };
+
   typedef std::tuple< long unsigned int, long unsigned int > OkeyPasswordType;
 
   bool         hasPlayerDataChanged() const;
@@ -35,11 +47,10 @@ public:
   // TODO: Eliminate this series of "get" calls--need just a plethora of get/set commands
   // for the underlying data values so they can be properly protected from multi-threaded
   // collisions.
-  pdata&         getPlayerInfo();
   cplayer&       getClientSidePlayerInfo();
   const cplayer& getClientSidePlayerInfo() const;
-  skilltab*      getSkillList();
   look&          getLook();
+  void           sortSkills();
 
   void lock();
   void unlock();
@@ -64,16 +75,20 @@ public:
   OkeyPasswordType  getPasswordOkeyValues() const;
   long unsigned int getUserNumber() const;
 
+  void                             addLogMessage( LogType type, const std::string& msg );
+  const std::vector< LogMessage >& getLogMessages() const;
+
 private:
   // Holds the name, description, and some client-related settings (split apart later)
-  pdata       playerInfo_; // This is more what initially gets sent to the server
-  bool        playerDataHasChanged_;
-  cplayer     clientSidePlayerInfo_; // This is more the truth of what your character is...
-  key         okey_;
-  skilltab*   skillsList_;
-  look        look_;
-  std::mutex  ioMutex_;
-  std::string password_; // TODO: This is super insecure to store it like this long-term
+  pdata                     playerInfo_; // This is more what initially gets sent to the server
+  bool                      playerDataHasChanged_;
+  cplayer                   clientSidePlayerInfo_; // This is more the truth of what your character is...
+  key                       okey_;
+  skilltab*                 skillsList_;
+  look                      look_;
+  std::mutex                ioMutex_;
+  std::string               password_; // TODO: This is super insecure to store it like this long-term
+  std::vector< LogMessage > messages_;
 };
 
 #endif

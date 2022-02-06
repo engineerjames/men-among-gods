@@ -114,6 +114,14 @@ struct cmap
 };
 static_assert( sizeof( cmap ) == 64 );
 
+enum struct LogType
+{
+  INFO, // Yellow
+  CHAT, // Blue
+  LOG,  // Green
+  ERROR // Red
+};
+
 template < class Archive > void serialize( Archive& ar, cmap& theMap, const unsigned int )
 {
   ar& theMap.x;

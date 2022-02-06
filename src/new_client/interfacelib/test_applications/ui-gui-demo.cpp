@@ -53,10 +53,10 @@ int main()
 
   mapPtr->loadFromFile( "test/mapfile.archive" );
 
-  mainUiPtr->addMessage( MenAmongGods::MainUi::LogType::CHAT, "Mayest thou past the last gate." );
-  mainUiPtr->addMessage( MenAmongGods::MainUi::LogType::LOG, "A new player has entered the game." );
-  mainUiPtr->addMessage( MenAmongGods::MainUi::LogType::ERROR, "WARNING! This is an ERROR!!!" );
-  mainUiPtr->addMessage( MenAmongGods::MainUi::LogType::INFO, "You have taken 12 damage." );
+  mainUiPtr->addMessage( LogType::CHAT, "Mayest thou past the last gate." );
+  mainUiPtr->addMessage( LogType::LOG, "A new player has entered the game." );
+  mainUiPtr->addMessage( LogType::ERROR, "WARNING! This is an ERROR!!!" );
+  mainUiPtr->addMessage( LogType::INFO, "You have taken 12 damage." );
 
   std::vector< std::unique_ptr< MenAmongGods::Component > > components;
 
@@ -88,7 +88,7 @@ int main()
     if ( ( clock.getElapsedTime() - time ).asSeconds() > 4.0f )
     {
       // Add new message
-      mainUiPtr->addMessage( MenAmongGods::MainUi::LogType::LOG, "Periodic update test message." );
+      mainUiPtr->addMessage( LogType::LOG, "Periodic update test message." );
       time = clock.getElapsedTime();
     }
 
