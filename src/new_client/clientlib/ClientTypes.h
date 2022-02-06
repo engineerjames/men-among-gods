@@ -122,6 +122,19 @@ enum struct LogType
   ERROR // Red
 };
 
+inline LogType getLogType( int value )
+{
+  if ( value >= 0 && value <= 3 )
+  {
+    return static_cast< LogType >( value );
+  }
+  else
+  {
+    std::cerr << "UNABLE TO PARSE LOG TYPE!\n" << std::endl;
+    return LogType::ERROR;
+  }
+}
+
 template < class Archive > void serialize( Archive& ar, cmap& theMap, const unsigned int )
 {
   ar& theMap.x;
@@ -242,5 +255,49 @@ template < class Archive > void serialize( Archive& ar, cplayer& thePlayer, cons
   ar& thePlayer.misc_target2;
   ar& thePlayer.dir;
 }
+
+enum struct CommandType : unsigned char
+{
+  // Unused
+  CL_EMPTY = 0,
+
+  // Login only
+  CL_NEWLOGIN  = 1,
+  CL_LOGIN     = 2,
+  CL_CHALLENGE = 3,
+  // end Login only section
+
+  CL_PERF_REPORT   = 4,  // Sent differently, but uses 2 arguments
+  CL_CMD_MOVE      = 5,  // 2 arguments
+  CL_CMD_PICKUP    = 6,  // 2 arguments
+  CL_CMD_ATTACK    = 7,  // 1 argument
+  CL_CMD_MODE      = 8,  // 2 arguments
+  CL_CMD_INV       = 9,  // 3 arguments
+  CL_CMD_STAT      = 10, // 2 arguments
+  CL_CMD_DROP      = 11, // 2 arguments
+  CL_CMD_GIVE      = 12, // 1 argument
+  CL_CMD_LOOK      = 13, // 1 argument
+  CL_CMD_INPUT1    = 14, // All chained together
+  CL_CMD_INPUT2    = 15, // All chained together
+  CL_CMD_INV_LOOK  = 16, // 3 arguments
+  CL_CMD_LOOK_ITEM = 17, // 2 arguments
+  CL_CMD_USE       = 18, // 2 arguments
+  CL_CMD_SETUSER   = 19, // Used during Login as well
+  CL_CMD_TURN      = 20, // 2 arguments
+  CL_CMD_AUTOLOOK  = 21, // 1 argument
+  CL_CMD_INPUT3    = 22, // All chained together
+  CL_CMD_INPUT4    = 23, // All chained together
+  CL_CMD_RESET     = 24, // 2 arguments
+  CL_CMD_SHOP      = 25, // 2 arguments
+  CL_CMD_SKILL     = 26, // 3 arguments
+  CL_CMD_INPUT5    = 27, // All chained together
+  CL_CMD_INPUT6    = 28, // All chained together
+  CL_CMD_INPUT7    = 29, // All chained together
+  CL_CMD_INPUT8    = 30, // All chained together
+  CL_CMD_EXIT      = 31, // 1 argument
+  CL_CMD_UNIQUE    = 32, // Used during login
+  CL_PASSWD        = 33, // Used during login
+  CL_CMD_CTICK     = 255 // 1 argument - tick value
+};
 
 #endif

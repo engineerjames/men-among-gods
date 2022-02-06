@@ -658,11 +658,11 @@ unsigned int TickBuffer::getCTick() const
   return ctick_;
 }
 
-void TickBuffer::sv_log( const unsigned char* buf, int )
+void TickBuffer::sv_log( const unsigned char* buf, int font )
 {
   static char text[ 512 ];
   static int  cnt = 0;
-  int         n;
+  int         n {};
 
   std::memcpy( text + cnt, buf + 1, 15 );
 
@@ -670,7 +670,8 @@ void TickBuffer::sv_log( const unsigned char* buf, int )
     if ( text[ n ] == 10 )
     {
       text[ n ] = 0;
-      std::cerr << text << std::endl;
+
+      playerData_.addLogMessage( getLogType( font ), text );
       cnt = 0;
       return;
     }
@@ -888,8 +889,11 @@ void TickBuffer::sv_unique( const unsigned char* )
 
 int TickBuffer::sv_ignore( const unsigned char* buf )
 {
-  int        size, d;
-  static int cnt = 0, got = 0, start = 0;
+  int        size {};
+  int        d {};
+  static int cnt {};
+  static int got {};
+  static int start {};
 
   size = *( unsigned int* ) ( buf + 1 );
   got += size;
