@@ -44,7 +44,7 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: CMake Configuration
-        run: msys2 -c 'cmake -G"MinGW Makefiles" -S ./ -B ./build'
+        run: msys2 -c 'cmake -S ./ -B ./build'
       
       - name: CMake Build
         shell: bash
