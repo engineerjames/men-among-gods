@@ -15,6 +15,8 @@ set( sources
     commands/AutoLookCommand.cpp
     commands/AutoLookCommand.h
     commands/ClientCommand.h
+    commands/ChallengeCommand.h
+    commands/ChallengeCommand.cpp
     commands/DropCommand.cpp
     commands/DropCommand.h
     commands/ExitCommand.cpp
@@ -49,6 +51,8 @@ set( sources
     commands/SayCommand.h
     commands/TurnCommand.cpp
     commands/TurnCommand.h
+    commands/UniqueCommand.h
+    commands/UniqueCommand.cpp
     commands/UseCommand.cpp
     commands/UseCommand.h
 )

@@ -9,6 +9,7 @@
 #include "PlayerData.h"
 #include "ServerMessage.h"
 #include "TickBuffer.h"
+#include "TickCommand.h"
 
 namespace
 {
@@ -500,17 +501,14 @@ void ClientConnection::say( const char* input )
 
 bool ClientConnection::sendTick()
 {
-  std::array< uint8_t, 16 > buf {};
-  buf[ 0 ]                              = ClientMessages::getValue( ClientMessages::MessageTypes::CMD_CTICK );
-  *( unsigned int* ) ( buf.data() + 1 ) = tickCount_;
+  MenAmongGods::TickCommand tickCommand { tickCount_ };
 
   // Increment tickCount
   tickCount_ += 16;
 
-  std::size_t        dataSent {};
-  sf::Socket::Status status = clientSocket_.send( buf.data(), buf.size(), dataSent );
+  bool success = tickCommand.send( clientSocket_ );
 
-  return status == sf::Socket::Status::Done;
+  return success;
 }
 
 bool ClientConnection::receiveTick( TickBuffer& tickBuffer )
