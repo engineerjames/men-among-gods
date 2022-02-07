@@ -4,6 +4,7 @@
 #include "ClientTypes.h"
 
 #include <SFML/Network.hpp>
+#include <array>
 
 namespace MenAmongGods
 {
@@ -17,18 +18,18 @@ public:
 protected:
   bool sendOneArgument( sf::TcpSocket& socket, std::uint32_t x ) const
   {
-    unsigned char buf[ 16 ] {};
+    std::array< uint8_t, 16 > buf {};
 
     buf[ 0 ] = static_cast< unsigned char >( CmdVal );
 
-    *( std::uint32_t* ) ( buf + 1 ) = x;
+    *( std::uint32_t* ) ( buf.data() + 1 ) = x;
 
     std::size_t bytesSent = 0;
 
     sf::Socket::Status status = sf::Socket::Status::Done;
     while ( bytesSent != 16 )
     {
-      status = socket.send( buf, sizeof( buf ), bytesSent );
+      status = socket.send( buf.data(), sizeof( buf ), bytesSent );
     }
 
     return status == sf::Socket::Status::Done;
@@ -36,19 +37,19 @@ protected:
 
   bool sendTwoArguments( sf::TcpSocket& socket, std::uint16_t x, std::uint32_t y ) const
   {
-    unsigned char buf[ 16 ] {};
+    std::array< uint8_t, 16 > buf {};
 
     buf[ 0 ] = static_cast< unsigned char >( CmdVal );
 
-    *( std::uint16_t* ) ( buf + 1 ) = x;
-    *( std::uint32_t* ) ( buf + 3 ) = y;
+    *( std::uint16_t* ) ( buf.data() + 1 ) = x;
+    *( std::uint32_t* ) ( buf.data() + 3 ) = y;
 
     std::size_t bytesSent = 0;
 
     sf::Socket::Status status = sf::Socket::Status::Done;
     while ( bytesSent != 16 )
     {
-      status = socket.send( buf, sizeof( buf ), bytesSent );
+      status = socket.send( buf.data(), sizeof( buf ), bytesSent );
     }
 
     return status == sf::Socket::Status::Done;
@@ -56,20 +57,20 @@ protected:
 
   bool sendThreeArguments( sf::TcpSocket& socket, std::uint32_t x, std::uint32_t y, std::uint32_t z ) const
   {
-    unsigned char buf[ 16 ] {};
+    std::array< uint8_t, 16 > buf {};
 
     buf[ 0 ] = static_cast< unsigned char >( CmdVal );
 
-    *( std::uint32_t* ) ( buf + 1 ) = x;
-    *( std::uint32_t* ) ( buf + 5 ) = y;
-    *( std::uint32_t* ) ( buf + 9 ) = z;
+    *( std::uint32_t* ) ( buf.data() + 1 ) = x;
+    *( std::uint32_t* ) ( buf.data() + 5 ) = y;
+    *( std::uint32_t* ) ( buf.data() + 9 ) = z;
 
     std::size_t bytesSent = 0;
 
     sf::Socket::Status status = sf::Socket::Status::Done;
     while ( bytesSent != 16 )
     {
-      status = socket.send( buf, sizeof( buf ), bytesSent );
+      status = socket.send( buf.data(), sizeof( buf ), bytesSent );
     }
 
     return status == sf::Socket::Status::Done;
