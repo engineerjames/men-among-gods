@@ -39,6 +39,8 @@ set( sources
     commands/PickupCommand.h
     commands/ResetCommand.cpp
     commands/ResetCommand.h
+    commands/SetUserCommand.h
+    commands/SetUserCommand.cpp
     commands/ShopCommand.cpp
     commands/ShopCommand.h
     commands/SkillCommand.cpp
