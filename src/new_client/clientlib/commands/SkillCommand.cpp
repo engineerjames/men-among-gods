@@ -13,8 +13,8 @@ SkillCommand::SkillCommand( std::uint32_t x, std::uint32_t selectedCharacter, st
 {
 }
 
-void SkillCommand::send( sf::TcpSocket& socket ) const
+bool SkillCommand::send( sf::TcpSocket& socket ) const
 {
-  SkillCommand::sendThreeArguments( socket, x_, selectedCharacter_, y_ );
+  return SkillCommand::sendThreeArguments( socket, x_, selectedCharacter_, y_ );
 }
 } // namespace MenAmongGods

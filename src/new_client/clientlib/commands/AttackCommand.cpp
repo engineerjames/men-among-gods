@@ -11,8 +11,8 @@ AttackCommand::AttackCommand( std::uint32_t characterNumber )
 {
 }
 
-void AttackCommand::send( sf::TcpSocket& socket ) const
+bool AttackCommand::send( sf::TcpSocket& socket ) const
 {
-  AttackCommand::sendOneArgument( socket, characterNumber_ );
+  return AttackCommand::sendOneArgument( socket, characterNumber_ );
 }
 } // namespace MenAmongGods

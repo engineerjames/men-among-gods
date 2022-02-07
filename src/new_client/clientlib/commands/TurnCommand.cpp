@@ -12,8 +12,8 @@ TurnCommand::TurnCommand( std::uint16_t x, std::uint32_t y )
 {
 }
 
-void TurnCommand::send( sf::TcpSocket& socket ) const
+bool TurnCommand::send( sf::TcpSocket& socket ) const
 {
-  TurnCommand::sendTwoArguments( socket, x_, y_ );
+  return TurnCommand::sendTwoArguments( socket, x_, y_ );
 }
 } // namespace MenAmongGods

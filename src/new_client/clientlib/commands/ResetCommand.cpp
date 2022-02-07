@@ -10,8 +10,8 @@ ResetCommand::ResetCommand()
 {
 }
 
-void ResetCommand::send( sf::TcpSocket& socket ) const
+bool ResetCommand::send( sf::TcpSocket& socket ) const
 {
-  ResetCommand::sendTwoArguments( socket, 0, 0 );
+  return ResetCommand::sendTwoArguments( socket, 0, 0 );
 }
 } // namespace MenAmongGods

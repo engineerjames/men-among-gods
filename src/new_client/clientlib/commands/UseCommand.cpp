@@ -12,8 +12,8 @@ UseCommand::UseCommand( std::uint16_t x, std::uint32_t y )
 {
 }
 
-void UseCommand::send( sf::TcpSocket& socket ) const
+bool UseCommand::send( sf::TcpSocket& socket ) const
 {
-  UseCommand::sendTwoArguments( socket, x_, y_ );
+  return UseCommand::sendTwoArguments( socket, x_, y_ );
 }
 } // namespace MenAmongGods

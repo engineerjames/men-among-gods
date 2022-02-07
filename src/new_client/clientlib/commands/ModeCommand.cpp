@@ -16,8 +16,8 @@ ModeCommand::ModeCommand( std::uint16_t newMode )
   }
 }
 
-void ModeCommand::send( sf::TcpSocket& socket ) const
+bool ModeCommand::send( sf::TcpSocket& socket ) const
 {
-  ModeCommand::sendTwoArguments( socket, newMode_, 0 );
+  return ModeCommand::sendTwoArguments( socket, newMode_, 0 );
 }
 } // namespace MenAmongGods

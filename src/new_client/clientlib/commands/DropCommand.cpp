@@ -12,8 +12,8 @@ DropCommand::DropCommand( std::uint16_t x, std::uint32_t y )
 {
 }
 
-void DropCommand::send( sf::TcpSocket& socket ) const
+bool DropCommand::send( sf::TcpSocket& socket ) const
 {
-  DropCommand::sendTwoArguments( socket, x_, y_ );
+  return DropCommand::sendTwoArguments( socket, x_, y_ );
 }
 } // namespace MenAmongGods

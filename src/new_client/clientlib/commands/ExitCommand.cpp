@@ -10,8 +10,8 @@ ExitCommand::ExitCommand( )
 {
 }
 
-void ExitCommand::send( sf::TcpSocket& socket ) const
+bool ExitCommand::send( sf::TcpSocket& socket ) const
 {
-  ExitCommand::sendOneArgument( socket, 0 );
+  return ExitCommand::sendOneArgument( socket, 0 );
 }
 } // namespace MenAmongGods

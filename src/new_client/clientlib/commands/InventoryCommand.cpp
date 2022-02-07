@@ -13,8 +13,8 @@ InventoryCommand::InventoryCommand( std::uint32_t x, std::uint32_t y, std::uint3
 {
 }
 
-void InventoryCommand::send( sf::TcpSocket& socket ) const
+bool InventoryCommand::send( sf::TcpSocket& socket ) const
 {
-  InventoryCommand::sendThreeArguments( socket, x_, y_, selectedCharacter_ );
+  return InventoryCommand::sendThreeArguments( socket, x_, y_, selectedCharacter_ );
 }
 } // namespace MenAmongGods

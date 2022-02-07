@@ -12,8 +12,8 @@ ShopCommand::ShopCommand( std::uint16_t shopNumber, std::uint32_t itemNumber )
 {
 }
 
-void ShopCommand::send( sf::TcpSocket& socket ) const
+bool ShopCommand::send( sf::TcpSocket& socket ) const
 {
-  ShopCommand::sendTwoArguments( socket, shopNumber_, itemNumber_ );
+  return ShopCommand::sendTwoArguments( socket, shopNumber_, itemNumber_ );
 }
 } // namespace MenAmongGods

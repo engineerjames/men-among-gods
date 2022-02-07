@@ -11,7 +11,7 @@ public:
   ExitCommand();
   virtual ~ExitCommand() = default;
 
-  virtual void send( sf::TcpSocket& socket ) const override;
+  virtual bool send( sf::TcpSocket& socket ) const override;
 
 private:
   // Nothing for now

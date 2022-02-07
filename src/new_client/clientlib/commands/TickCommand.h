@@ -11,7 +11,7 @@ public:
   TickCommand( std::uint32_t tickValue );
   virtual ~TickCommand() = default;
 
-  virtual void send( sf::TcpSocket& socket ) const override;
+  virtual bool send( sf::TcpSocket& socket ) const override;
 
 private:
   std::uint32_t tickValue_;

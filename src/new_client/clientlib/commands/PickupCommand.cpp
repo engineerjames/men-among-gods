@@ -12,8 +12,8 @@ PickupCommand::PickupCommand( std::uint16_t x, std::uint32_t y )
 {
 }
 
-void PickupCommand::send( sf::TcpSocket& socket ) const
+bool PickupCommand::send( sf::TcpSocket& socket ) const
 {
-  PickupCommand::sendTwoArguments( socket, x_, y_ );
+  return PickupCommand::sendTwoArguments( socket, x_, y_ );
 }
 } // namespace MenAmongGods

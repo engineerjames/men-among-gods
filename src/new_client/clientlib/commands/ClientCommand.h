@@ -12,10 +12,10 @@ template < typename CmdType, CmdType CmdVal > class ClientCommand
 public:
   CmdType type                                     = CmdVal;
   virtual ~ClientCommand()                         = default;
-  virtual void send( sf::TcpSocket& socket ) const = 0;
+  virtual bool send( sf::TcpSocket& socket ) const = 0;
 
 protected:
-  void sendOneArgument( sf::TcpSocket& socket, std::uint32_t x ) const
+  bool sendOneArgument( sf::TcpSocket& socket, std::uint32_t x ) const
   {
     unsigned char buf[ 16 ] {};
 
@@ -25,13 +25,16 @@ protected:
 
     std::size_t bytesSent = 0;
 
+    sf::Socket::Status status = sf::Socket::Status::Done;
     while ( bytesSent != 16 )
     {
-      socket.send( buf, sizeof( buf ), bytesSent );
+      status = socket.send( buf, sizeof( buf ), bytesSent );
     }
+
+    return status == sf::Socket::Status::Done;
   }
 
-  void sendTwoArguments( sf::TcpSocket& socket, std::uint16_t x, std::uint32_t y ) const
+  bool sendTwoArguments( sf::TcpSocket& socket, std::uint16_t x, std::uint32_t y ) const
   {
     unsigned char buf[ 16 ] {};
 
@@ -42,13 +45,16 @@ protected:
 
     std::size_t bytesSent = 0;
 
+    sf::Socket::Status status = sf::Socket::Status::Done;
     while ( bytesSent != 16 )
     {
-      socket.send( buf, sizeof( buf ), bytesSent );
+      status = socket.send( buf, sizeof( buf ), bytesSent );
     }
+
+    return status == sf::Socket::Status::Done;
   }
 
-  void sendThreeArguments( sf::TcpSocket& socket, std::uint32_t x, std::uint32_t y, std::uint32_t z ) const
+  bool sendThreeArguments( sf::TcpSocket& socket, std::uint32_t x, std::uint32_t y, std::uint32_t z ) const
   {
     unsigned char buf[ 16 ] {};
 
@@ -60,10 +66,13 @@ protected:
 
     std::size_t bytesSent = 0;
 
+    sf::Socket::Status status = sf::Socket::Status::Done;
     while ( bytesSent != 16 )
     {
-      socket.send( buf, sizeof( buf ), bytesSent );
+      status = socket.send( buf, sizeof( buf ), bytesSent );
     }
+
+    return status == sf::Socket::Status::Done;
   }
 };
 } // namespace MenAmongGods

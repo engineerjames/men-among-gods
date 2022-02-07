@@ -11,7 +11,7 @@ public:
   PickupCommand( std::uint16_t x, std::uint32_t y );
   virtual ~PickupCommand() = default;
 
-  virtual void send( sf::TcpSocket& socket ) const override;
+  virtual bool send( sf::TcpSocket& socket ) const override;
 
 private:
   std::uint16_t x_;

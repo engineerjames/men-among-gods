@@ -12,8 +12,8 @@ InventoryLookCommand::InventoryLookCommand( std::uint32_t x, std::uint32_t selec
 {
 }
 
-void InventoryLookCommand::send( sf::TcpSocket& socket ) const
+bool InventoryLookCommand::send( sf::TcpSocket& socket ) const
 {
-  InventoryLookCommand::sendThreeArguments( socket, x_, 0, selectedCharacter_ );
+  return InventoryLookCommand::sendThreeArguments( socket, x_, 0, selectedCharacter_ );
 }
 } // namespace MenAmongGods

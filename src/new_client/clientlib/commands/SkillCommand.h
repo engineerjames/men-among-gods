@@ -11,7 +11,7 @@ public:
   SkillCommand( std::uint32_t x, std::uint32_t selectedCharacter, std::uint32_t y );
   virtual ~SkillCommand() = default;
 
-  virtual void send( sf::TcpSocket& socket ) const override;
+  virtual bool send( sf::TcpSocket& socket ) const override;
 
 private:
   std::uint32_t x_;

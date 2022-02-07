@@ -11,7 +11,7 @@ public:
   ModeCommand( std::uint16_t newMode );
   virtual ~ModeCommand() = default;
 
-  virtual void send( sf::TcpSocket& socket ) const override;
+  virtual bool send( sf::TcpSocket& socket ) const override;
 
 private:
   std::uint16_t newMode_;

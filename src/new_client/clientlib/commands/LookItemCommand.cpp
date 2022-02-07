@@ -12,8 +12,8 @@ LookItemCommand::LookItemCommand( std::uint16_t x, std::uint32_t y )
 {
 }
 
-void LookItemCommand::send( sf::TcpSocket& socket ) const
+bool LookItemCommand::send( sf::TcpSocket& socket ) const
 {
-  LookItemCommand::sendTwoArguments( socket, x_, y_ );
+  return LookItemCommand::sendTwoArguments( socket, x_, y_ );
 }
 } // namespace MenAmongGods

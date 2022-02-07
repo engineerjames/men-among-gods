@@ -12,8 +12,8 @@ MoveCommand::MoveCommand( std::uint16_t x, std::uint32_t y )
 {
 }
 
-void MoveCommand::send( sf::TcpSocket& socket ) const
+bool MoveCommand::send( sf::TcpSocket& socket ) const
 {
-  MoveCommand::sendTwoArguments( socket, x_, y_ );
+  return MoveCommand::sendTwoArguments( socket, x_, y_ );
 }
 } // namespace MenAmongGods

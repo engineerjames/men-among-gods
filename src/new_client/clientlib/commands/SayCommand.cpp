@@ -29,7 +29,7 @@ SayCommand::SayCommand( const std::string& statement )
 {
 }
 
-void SayCommand::sendPartialMessage( sf::TcpSocket& socket, const std::array< char, 250 >& stringBuffer, CommandType inputType ) const
+bool SayCommand::sendPartialMessage( sf::TcpSocket& socket, const std::array< char, 250 >& stringBuffer, CommandType inputType ) const
 {
   std::size_t bytesSent = 0;
   char        buf[ 16 ] {};
@@ -40,17 +40,20 @@ void SayCommand::sendPartialMessage( sf::TcpSocket& socket, const std::array< ch
     buf[ n + 1 ] = stringBuffer[ n + offSetToInputMap.at( inputType ) ];
   }
 
+  sf::Socket::Status status = sf::Socket::Status::Done;
   while ( bytesSent != 16 )
   {
-    socket.send( buf, sizeof( buf ), bytesSent );
+    status = socket.send( buf, sizeof( buf ), bytesSent );
   }
+
+  return status == sf::Socket::Status::Done;
 }
 
 // For the "say" command, we need to do things a little differently.
 // Essentially, we chop up the input string into 16 byte chunks (with
 // the first byte devoted to the CL_CMD_INPUT#) each time.  We then
 // send each piece in order.
-void SayCommand::send( sf::TcpSocket& socket ) const
+bool SayCommand::send( sf::TcpSocket& socket ) const
 {
   // First, copy the source string into a local buffer that guarantees
   // we don't end up reading beyond the length of the string.  The current
@@ -58,13 +61,17 @@ void SayCommand::send( sf::TcpSocket& socket ) const
   std::array< char, 250 > stringBuffer {};
   std::strcpy( stringBuffer.data(), statement_.c_str() );
 
-  sendPartialMessage( socket, stringBuffer, CommandType::CL_CMD_INPUT1 );
-  sendPartialMessage( socket, stringBuffer, CommandType::CL_CMD_INPUT2 );
-  sendPartialMessage( socket, stringBuffer, CommandType::CL_CMD_INPUT3 );
-  sendPartialMessage( socket, stringBuffer, CommandType::CL_CMD_INPUT4 );
-  sendPartialMessage( socket, stringBuffer, CommandType::CL_CMD_INPUT5 );
-  sendPartialMessage( socket, stringBuffer, CommandType::CL_CMD_INPUT6 );
-  sendPartialMessage( socket, stringBuffer, CommandType::CL_CMD_INPUT7 );
-  sendPartialMessage( socket, stringBuffer, CommandType::CL_CMD_INPUT8 );
+  bool inputSent = true;
+
+  inputSent &= sendPartialMessage( socket, stringBuffer, CommandType::CL_CMD_INPUT1 );
+  inputSent &= sendPartialMessage( socket, stringBuffer, CommandType::CL_CMD_INPUT2 );
+  inputSent &= sendPartialMessage( socket, stringBuffer, CommandType::CL_CMD_INPUT3 );
+  inputSent &= sendPartialMessage( socket, stringBuffer, CommandType::CL_CMD_INPUT4 );
+  inputSent &= sendPartialMessage( socket, stringBuffer, CommandType::CL_CMD_INPUT5 );
+  inputSent &= sendPartialMessage( socket, stringBuffer, CommandType::CL_CMD_INPUT6 );
+  inputSent &= sendPartialMessage( socket, stringBuffer, CommandType::CL_CMD_INPUT7 );
+  inputSent &= sendPartialMessage( socket, stringBuffer, CommandType::CL_CMD_INPUT8 );
+
+  return inputSent;
 }
 } // namespace MenAmongGods

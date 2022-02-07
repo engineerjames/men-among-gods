@@ -243,24 +243,6 @@ std::string ClientConnection::getMessageOfTheDay() const
   return MenAmongGods::convertArrayToStdString( messageOfTheDay_ );
 }
 
-void ClientConnection::moveOnce()
-{
-  unsigned char buf[ 16 ] {};
-
-  buf[ 0 ]                         = ClientMessages::getValue( ClientMessages::MessageTypes::CMD_MOVE );
-  *( unsigned short* ) ( buf + 1 ) = ( short ) 514;
-  *( unsigned long* ) ( buf + 3 )  = ( long ) 514;
-
-  std::size_t bytesSent = 0;
-
-  while ( bytesSent != 16 )
-  {
-    clientSocket_.send( buf, sizeof( buf ), bytesSent );
-  }
-
-  std::cerr << "Done sending move command!" << std::endl;
-}
-
 bool ClientConnection::sendPlayerData( const PlayerData& playerData )
 {
   int                            state = 0;

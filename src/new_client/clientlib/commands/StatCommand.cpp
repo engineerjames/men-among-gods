@@ -12,8 +12,8 @@ StatCommand::StatCommand( std::uint16_t x, std::uint32_t y )
 {
 }
 
-void StatCommand::send( sf::TcpSocket& socket ) const
+bool StatCommand::send( sf::TcpSocket& socket ) const
 {
-  StatCommand::sendTwoArguments( socket, x_, y_ );
+  return StatCommand::sendTwoArguments( socket, x_, y_ );
 }
 } // namespace MenAmongGods

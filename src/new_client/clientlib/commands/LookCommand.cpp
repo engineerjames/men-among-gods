@@ -11,8 +11,8 @@ LookCommand::LookCommand( std::uint32_t characterNumber )
 {
 }
 
-void LookCommand::send( sf::TcpSocket& socket ) const
+bool LookCommand::send( sf::TcpSocket& socket ) const
 {
-  LookCommand::sendOneArgument( socket, characterNumber_ );
+  return LookCommand::sendOneArgument( socket, characterNumber_ );
 }
 } // namespace MenAmongGods

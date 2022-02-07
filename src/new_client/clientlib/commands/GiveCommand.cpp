@@ -11,8 +11,8 @@ GiveCommand::GiveCommand( std::uint32_t characterNumber )
 {
 }
 
-void GiveCommand::send( sf::TcpSocket& socket ) const
+bool GiveCommand::send( sf::TcpSocket& socket ) const
 {
-  GiveCommand::sendOneArgument( socket, characterNumber_ );
+  return GiveCommand::sendOneArgument( socket, characterNumber_ );
 }
 } // namespace MenAmongGods

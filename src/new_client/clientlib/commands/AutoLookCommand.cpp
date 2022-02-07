@@ -11,8 +11,8 @@ AutoLookCommand::AutoLookCommand( std::uint32_t characterNumber )
 {
 }
 
-void AutoLookCommand::send( sf::TcpSocket& socket ) const
+bool AutoLookCommand::send( sf::TcpSocket& socket ) const
 {
-  AutoLookCommand::sendOneArgument( socket, characterNumber_ );
+  return AutoLookCommand::sendOneArgument( socket, characterNumber_ );
 }
 } // namespace MenAmongGods

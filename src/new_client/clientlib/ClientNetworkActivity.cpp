@@ -70,9 +70,6 @@ void ClientNetworkActivity::startNetworkActivity()
   sf::Clock clock {};
   sf::Time  timeSinceLastTickSent = clock.getElapsedTime();
 
-  // Filthy hack to have the character move once to populate map fully.
-  static bool hasMoved = false;
-
   // Main network loop
   while ( ! cancellationRequested_.load() )
   {
@@ -93,13 +90,6 @@ void ClientNetworkActivity::startNetworkActivity()
     }
 
     tickBuffer_.processTicks();
-
-    if ( ! hasMoved )
-    {
-      std::cerr << "Moving!" << std::endl;
-      clientConnection_.moveOnce();
-      hasMoved = true;
-    }
   }
 
   isRunning_ = false;

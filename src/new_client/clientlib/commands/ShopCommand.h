@@ -11,7 +11,7 @@ public:
   ShopCommand( std::uint16_t shopNumber, std::uint32_t itemNumber );
   virtual ~ShopCommand() = default;
 
-  virtual void send( sf::TcpSocket& socket ) const override;
+  virtual bool send( sf::TcpSocket& socket ) const override;
 
 private:
   std::uint16_t shopNumber_;
