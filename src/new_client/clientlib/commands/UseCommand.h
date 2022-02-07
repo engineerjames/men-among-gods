@@ -5,7 +5,7 @@
 
 namespace MenAmongGods
 {
-class UseCommand : public ClientCommand< ClientMessages::MessageTypes, ClientMessages::MessageTypes::CMD_USE >
+class UseCommand : public ClientCommand
 {
 public:
   UseCommand( std::uint16_t x, std::uint32_t y );

@@ -5,7 +5,7 @@
 
 namespace MenAmongGods
 {
-class LookItemCommand : public ClientCommand< ClientMessages::MessageTypes, ClientMessages::MessageTypes::CMD_LOOK_ITEM >
+class LookItemCommand : public ClientCommand
 {
 public:
   LookItemCommand( std::uint16_t x, std::uint32_t y );

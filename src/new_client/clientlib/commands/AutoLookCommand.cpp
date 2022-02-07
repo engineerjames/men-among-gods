@@ -6,7 +6,7 @@
 namespace MenAmongGods
 {
 AutoLookCommand::AutoLookCommand( std::uint32_t characterNumber )
-    : ClientCommand()
+    : ClientCommand( ClientMessages::MessageTypes::CMD_AUTOLOOK )
     , characterNumber_( characterNumber )
 {
 }

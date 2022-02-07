@@ -5,7 +5,7 @@
 
 namespace MenAmongGods // TODO: Still need to implement this class
 {
-class NewLoginCommand : public ClientCommand< ClientMessages::MessageTypes, ClientMessages::MessageTypes::NEWLOGIN >
+class NewLoginCommand : public ClientCommand
 {
 public:
   NewLoginCommand( std::uint32_t newloginHash, std::uint32_t version, std::uint32_t raceAndSex );

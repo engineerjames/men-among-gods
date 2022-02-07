@@ -5,7 +5,7 @@
 
 namespace MenAmongGods
 {
-class LookCommand : public ClientCommand< ClientMessages::MessageTypes, ClientMessages::MessageTypes::CMD_LOOK >
+class LookCommand : public ClientCommand
 {
 public:
   LookCommand( std::uint32_t characterNumber );

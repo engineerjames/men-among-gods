@@ -6,7 +6,7 @@
 namespace MenAmongGods
 {
 StatCommand::StatCommand( std::uint16_t x, std::uint32_t y )
-    : ClientCommand()
+    : ClientCommand( ClientMessages::MessageTypes::CMD_STAT )
     , x_( x )
     , y_( y )
 {

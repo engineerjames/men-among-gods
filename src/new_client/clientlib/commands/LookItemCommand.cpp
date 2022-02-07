@@ -6,7 +6,7 @@
 namespace MenAmongGods
 {
 LookItemCommand::LookItemCommand( std::uint16_t x, std::uint32_t y )
-    : ClientCommand()
+    : ClientCommand( ClientMessages::MessageTypes::CMD_LOOK_ITEM )
     , x_( x )
     , y_( y )
 {

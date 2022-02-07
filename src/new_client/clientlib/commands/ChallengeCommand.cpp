@@ -7,7 +7,7 @@
 namespace MenAmongGods
 {
 ChallengeCommand::ChallengeCommand( std::uint32_t challengeHash, std::uint32_t version, std::uint32_t raceAndSex )
-    : ClientCommand()
+    : ClientCommand( ClientMessages::MessageTypes::CHALLENGE )
     , challengeHash_( challengeHash )
     , version_( version )
     , raceAndSex_( raceAndSex )

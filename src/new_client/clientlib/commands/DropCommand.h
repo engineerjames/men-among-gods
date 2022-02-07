@@ -5,7 +5,7 @@
 
 namespace MenAmongGods
 {
-class DropCommand : public ClientCommand< ClientMessages::MessageTypes, ClientMessages::MessageTypes::CMD_DROP >
+class DropCommand : public ClientCommand
 {
 public:
   DropCommand( std::uint16_t x, std::uint32_t y );

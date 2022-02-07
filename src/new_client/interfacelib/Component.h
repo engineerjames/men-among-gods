@@ -2,6 +2,10 @@
 #define MEN_AMONG_GODS_COMPONENT_H
 
 #include <SFML/Graphics/Drawable.hpp>
+#include <memory>
+#include <vector>
+
+#include "ClientCommand.h"
 
 namespace sf
 {
@@ -22,6 +26,13 @@ public:
 
   // Finalize is called once at the end of every frame
   virtual void finalize() = 0;
+
+  // Grab commands to send to our networking thread
+  virtual std::vector< std::unique_ptr< ClientCommand > > getCommands() const;
+
+  Component();
+  Component( const Component& ) = default;
+  Component& operator=( const Component& ) = default;
 
   virtual ~Component() = default;
 };

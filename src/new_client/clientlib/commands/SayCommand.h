@@ -7,7 +7,7 @@
 
 namespace MenAmongGods
 {
-class SayCommand : public ClientCommand< ClientMessages::MessageTypes, ClientMessages::MessageTypes::EMPTY >
+class SayCommand : public ClientCommand
 {
 public:
   SayCommand( const std::string& statement );

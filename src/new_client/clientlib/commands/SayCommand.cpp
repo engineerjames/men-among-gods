@@ -24,12 +24,13 @@ std::map< ClientMessages::MessageTypes, unsigned int > offSetToInputMap = {
 namespace MenAmongGods
 {
 SayCommand::SayCommand( const std::string& statement )
-    : ClientCommand()
+    : ClientCommand( ClientMessages::MessageTypes::EMPTY )
     , statement_( statement )
 {
 }
 
-bool SayCommand::sendPartialMessage( sf::TcpSocket& socket, const std::array< char, 250 >& stringBuffer, ClientMessages::MessageTypes inputType ) const
+bool SayCommand::sendPartialMessage( sf::TcpSocket& socket, const std::array< char, 250 >& stringBuffer,
+                                     ClientMessages::MessageTypes inputType ) const
 {
   std::size_t bytesSent = 0;
   char        buf[ 16 ] {};

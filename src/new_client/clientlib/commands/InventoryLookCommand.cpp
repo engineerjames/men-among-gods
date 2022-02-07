@@ -6,7 +6,7 @@
 namespace MenAmongGods
 {
 InventoryLookCommand::InventoryLookCommand( std::uint32_t x, std::uint32_t selectedCharacter )
-    : ClientCommand()
+    : ClientCommand( ClientMessages::MessageTypes::CMD_INV_LOOK )
     , x_( x )
     , selectedCharacter_( selectedCharacter )
 {

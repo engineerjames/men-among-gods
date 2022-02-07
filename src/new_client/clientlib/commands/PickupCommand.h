@@ -5,7 +5,7 @@
 
 namespace MenAmongGods
 {
-class PickupCommand : public ClientCommand< ClientMessages::MessageTypes, ClientMessages::MessageTypes::CMD_PICKUP >
+class PickupCommand : public ClientCommand
 {
 public:
   PickupCommand( std::uint16_t x, std::uint32_t y );

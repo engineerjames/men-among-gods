@@ -5,7 +5,7 @@
 
 namespace MenAmongGods
 {
-class ShopCommand : public ClientCommand< ClientMessages::MessageTypes, ClientMessages::MessageTypes::CMD_SHOP >
+class ShopCommand : public ClientCommand
 {
 public:
   ShopCommand( std::uint16_t shopNumber, std::uint32_t itemNumber );

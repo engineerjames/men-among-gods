@@ -5,7 +5,7 @@
 
 namespace MenAmongGods
 {
-class UniqueCommand : public ClientCommand< ClientMessages::MessageTypes, ClientMessages::MessageTypes::CMD_UNIQUE >
+class UniqueCommand : public ClientCommand
 {
 public:
   UniqueCommand( std::uint32_t unique1, std::uint32_t unique2 );

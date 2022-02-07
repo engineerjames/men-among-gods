@@ -2,6 +2,7 @@
 set(target MenAmongGodsGraphics)
 
 set( sources 
+    Component.cpp
     FontCache.cpp
     GraphicsCache.cpp
     GraphicsIndex.cpp
@@ -91,7 +92,7 @@ target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
 # Test Application for login-related ui demos only
 set(target gfx-progress-bar)
 add_executable(${target} test_applications/gfx-progress-bar.cpp)
-target_link_libraries(${target} PRIVATE MenAmongGodsGraphics)
+target_link_libraries(${target} PRIVATE MenAmongGodsGraphics client)
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
 

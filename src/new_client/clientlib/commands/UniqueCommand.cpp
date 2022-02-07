@@ -7,7 +7,7 @@
 namespace MenAmongGods
 {
 UniqueCommand::UniqueCommand( std::uint32_t unique1, std::uint32_t unique2 )
-    : ClientCommand()
+    : ClientCommand( ClientMessages::MessageTypes::CMD_UNIQUE )
     , unique1_( unique1 )
     , unique2_( unique2 )
 {

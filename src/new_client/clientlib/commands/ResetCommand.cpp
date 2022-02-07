@@ -6,7 +6,7 @@
 namespace MenAmongGods
 {
 ResetCommand::ResetCommand()
-    : ClientCommand()
+    : ClientCommand( ClientMessages::MessageTypes::CMD_RESET )
 {
 }
 

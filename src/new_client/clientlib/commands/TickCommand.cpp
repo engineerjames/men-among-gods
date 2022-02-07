@@ -6,7 +6,7 @@
 namespace MenAmongGods
 {
 TickCommand::TickCommand( std::uint32_t tickValue )
-    : ClientCommand()
+    : ClientCommand( ClientMessages::MessageTypes::CMD_CTICK )
     , tickValue_( tickValue )
 {
 }

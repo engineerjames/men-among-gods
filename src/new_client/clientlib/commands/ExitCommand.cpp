@@ -5,8 +5,8 @@
 
 namespace MenAmongGods
 {
-ExitCommand::ExitCommand( )
-    : ClientCommand()
+ExitCommand::ExitCommand()
+    : ClientCommand( ClientMessages::MessageTypes::CMD_EXIT )
 {
 }
 

@@ -7,7 +7,7 @@
 namespace MenAmongGods
 {
 ModeCommand::ModeCommand( std::uint16_t newMode )
-    : ClientCommand()
+    : ClientCommand( ClientMessages::MessageTypes::CMD_MODE )
     , newMode_( newMode )
 {
   // TODO: Update to an enum

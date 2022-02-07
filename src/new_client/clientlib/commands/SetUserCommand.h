@@ -7,7 +7,7 @@
 
 namespace MenAmongGods
 {
-class SetUserCommand : public ClientCommand< ClientMessages::MessageTypes, ClientMessages::MessageTypes::CMD_SETUSER >
+class SetUserCommand : public ClientCommand
 {
 public:
   SetUserCommand( const std::string& playerName, const std::string& playerDescription );

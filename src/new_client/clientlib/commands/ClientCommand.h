@@ -8,23 +8,27 @@
 
 namespace MenAmongGods
 {
-template < typename CmdType, CmdType CmdVal > class ClientCommand
+class ClientCommand
 {
 public:
-  CmdType type                                     = CmdVal;
   virtual ~ClientCommand()                         = default;
   virtual bool send( sf::TcpSocket& socket ) const = 0;
 
-  ClientCommand()                       = default;
-  ClientCommand( const ClientCommand& ) = delete;
-  ClientCommand& operator=( const ClientCommand& ) = delete;
+  ClientCommand( ClientMessages::MessageTypes type )
+      : type_( type )
+  {
+  }
+  ClientCommand( const ClientCommand& ) = default;
+  ClientCommand& operator=( const ClientCommand& ) = default;
 
 protected:
+  ClientMessages::MessageTypes type_;
+
   bool sendOneArgument( sf::TcpSocket& socket, std::uint32_t x ) const
   {
     std::array< uint8_t, 16 > buf {};
 
-    buf[ 0 ] = ClientMessages::getValue( CmdVal );
+    buf[ 0 ] = ClientMessages::getValue( type_ );
 
     *( std::uint32_t* ) ( buf.data() + 1 ) = x;
 
@@ -43,7 +47,7 @@ protected:
   {
     std::array< uint8_t, 16 > buf {};
 
-    buf[ 0 ] = ClientMessages::getValue( CmdVal );
+    buf[ 0 ] = ClientMessages::getValue( type_ );
 
     *( std::uint16_t* ) ( buf.data() + 1 ) = x;
     *( std::uint32_t* ) ( buf.data() + 3 ) = y;
@@ -63,7 +67,7 @@ protected:
   {
     std::array< uint8_t, 16 > buf {};
 
-    buf[ 0 ] = ClientMessages::getValue( CmdVal );
+    buf[ 0 ] = ClientMessages::getValue( type_ );
 
     *( std::uint32_t* ) ( buf.data() + 1 ) = x;
     *( std::uint32_t* ) ( buf.data() + 5 ) = y;

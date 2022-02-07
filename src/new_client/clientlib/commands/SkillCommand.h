@@ -5,7 +5,7 @@
 
 namespace MenAmongGods
 {
-class SkillCommand : public ClientCommand< ClientMessages::MessageTypes, ClientMessages::MessageTypes::CMD_INV >
+class SkillCommand : public ClientCommand
 {
 public:
   SkillCommand( std::uint32_t x, std::uint32_t selectedCharacter, std::uint32_t y );

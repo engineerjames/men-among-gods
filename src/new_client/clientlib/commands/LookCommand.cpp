@@ -6,7 +6,7 @@
 namespace MenAmongGods
 {
 LookCommand::LookCommand( std::uint32_t characterNumber )
-    : ClientCommand()
+    : ClientCommand( ClientMessages::MessageTypes::CMD_LOOK )
     , characterNumber_( characterNumber )
 {
 }

@@ -7,7 +7,7 @@
 namespace MenAmongGods
 {
 PasswordCommand::PasswordCommand( std::uint32_t passwordHash, std::uint32_t version, std::uint32_t raceAndSex )
-    : ClientCommand()
+    : ClientCommand( ClientMessages::MessageTypes::PASSWD )
     , passwordHash_( passwordHash )
     , version_( version )
     , raceAndSex_( raceAndSex )

@@ -5,7 +5,7 @@
 
 namespace MenAmongGods
 {
-class ChallengeCommand : public ClientCommand< ClientMessages::MessageTypes, ClientMessages::MessageTypes::CHALLENGE >
+class ChallengeCommand : public ClientCommand
 {
 public:
   ChallengeCommand( std::uint32_t challengeHash, std::uint32_t version, std::uint32_t raceAndSex );

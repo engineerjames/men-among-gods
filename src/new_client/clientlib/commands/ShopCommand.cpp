@@ -6,7 +6,7 @@
 namespace MenAmongGods
 {
 ShopCommand::ShopCommand( std::uint16_t shopNumber, std::uint32_t itemNumber )
-    : ClientCommand()
+    : ClientCommand( ClientMessages::MessageTypes::CMD_SHOP )
     , shopNumber_( shopNumber )
     , itemNumber_( itemNumber )
 {

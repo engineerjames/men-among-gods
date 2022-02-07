@@ -7,7 +7,7 @@
 namespace MenAmongGods
 {
 NewLoginCommand::NewLoginCommand( std::uint32_t newloginHash, std::uint32_t version, std::uint32_t raceAndSex )
-    : ClientCommand()
+    : ClientCommand( ClientMessages::MessageTypes::NEWLOGIN )
     , newloginHash_( newloginHash )
     , version_( version )
     , raceAndSex_( raceAndSex )

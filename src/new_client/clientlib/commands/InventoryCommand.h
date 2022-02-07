@@ -5,7 +5,7 @@
 
 namespace MenAmongGods
 {
-class InventoryCommand : public ClientCommand< ClientMessages::MessageTypes, ClientMessages::MessageTypes::CMD_INV >
+class InventoryCommand : public ClientCommand
 {
 public:
   InventoryCommand( std::uint32_t x, std::uint32_t y, std::uint32_t selectedCharacter );

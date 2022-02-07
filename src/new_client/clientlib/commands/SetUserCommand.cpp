@@ -25,7 +25,7 @@ std::map< ClientMessages::MessageTypes, unsigned int > offSetToInputMap = {
 namespace MenAmongGods
 {
 SetUserCommand::SetUserCommand( const std::string& playerName, const std::string& playerDescription )
-    : ClientCommand()
+    : ClientCommand( ClientMessages::MessageTypes::CMD_SETUSER )
     , playerName_( playerName )
     , playerDescription_( playerDescription )
 {

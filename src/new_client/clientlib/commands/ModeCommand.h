@@ -5,7 +5,7 @@
 
 namespace MenAmongGods
 {
-class ModeCommand : public ClientCommand< ClientMessages::MessageTypes, ClientMessages::MessageTypes::CMD_MODE >
+class ModeCommand : public ClientCommand
 {
 public:
   ModeCommand( std::uint16_t newMode );

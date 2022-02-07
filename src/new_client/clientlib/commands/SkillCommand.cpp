@@ -6,7 +6,7 @@
 namespace MenAmongGods
 {
 SkillCommand::SkillCommand( std::uint32_t x, std::uint32_t selectedCharacter, std::uint32_t y )
-    : ClientCommand()
+    : ClientCommand( ClientMessages::MessageTypes::CMD_INV )
     , x_( x )
     , selectedCharacter_( selectedCharacter )
     , y_( y )

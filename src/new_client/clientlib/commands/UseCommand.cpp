@@ -6,7 +6,7 @@
 namespace MenAmongGods
 {
 UseCommand::UseCommand( std::uint16_t x, std::uint32_t y )
-    : ClientCommand()
+    : ClientCommand( ClientMessages::MessageTypes::CMD_USE )
     , x_( x )
     , y_( y )
 {

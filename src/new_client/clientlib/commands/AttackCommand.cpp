@@ -6,7 +6,7 @@
 namespace MenAmongGods
 {
 AttackCommand::AttackCommand( std::uint32_t characterNumber )
-    : ClientCommand()
+    : ClientCommand( ClientMessages::MessageTypes::CMD_ATTACK )
     , characterNumber_( characterNumber )
 {
 }

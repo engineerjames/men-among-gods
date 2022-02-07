@@ -5,7 +5,7 @@
 
 namespace MenAmongGods // TODO: Still need to implement this class
 {
-class PasswordCommand : public ClientCommand< ClientMessages::MessageTypes, ClientMessages::MessageTypes::PASSWD >
+class PasswordCommand : public ClientCommand
 {
 public:
   PasswordCommand( std::uint32_t passwordHash, std::uint32_t version, std::uint32_t raceAndSex );
