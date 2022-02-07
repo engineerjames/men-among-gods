@@ -20,7 +20,7 @@ protected:
   {
     std::array< uint8_t, 16 > buf {};
 
-    buf[ 0 ] = static_cast< unsigned char >( CmdVal );
+    buf[ 0 ] = ClientMessages::getValue( CmdVal );
 
     *( std::uint32_t* ) ( buf.data() + 1 ) = x;
 
@@ -39,7 +39,7 @@ protected:
   {
     std::array< uint8_t, 16 > buf {};
 
-    buf[ 0 ] = static_cast< unsigned char >( CmdVal );
+    buf[ 0 ] = ClientMessages::getValue( CmdVal );
 
     *( std::uint16_t* ) ( buf.data() + 1 ) = x;
     *( std::uint32_t* ) ( buf.data() + 3 ) = y;
@@ -59,7 +59,7 @@ protected:
   {
     std::array< uint8_t, 16 > buf {};
 
-    buf[ 0 ] = static_cast< unsigned char >( CmdVal );
+    buf[ 0 ] = ClientMessages::getValue( CmdVal );
 
     *( std::uint32_t* ) ( buf.data() + 1 ) = x;
     *( std::uint32_t* ) ( buf.data() + 5 ) = y;
