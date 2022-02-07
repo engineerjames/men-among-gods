@@ -40,7 +40,6 @@ jobs:
             ninja:p
             sfml:p
             libzip:p
-            libboost:p
 
           # Retrieve and extract base installation from upstream GitHub Releases
           release: true
