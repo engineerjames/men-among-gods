@@ -44,9 +44,9 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: CMake Configuration
-        shell: cmd
+        shell: bash
         run: cmake -G"MinGW Makefiles" -S ./ -B ./build
       
       - name: CMake Build
-        shell: cmd
+        shell: bash
         run: cmake --build ./build --parallel
