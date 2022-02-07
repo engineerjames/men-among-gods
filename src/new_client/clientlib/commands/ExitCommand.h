@@ -5,7 +5,7 @@
 
 namespace MenAmongGods
 {
-class ExitCommand : public ClientCommand< CommandType, CommandType::CL_CMD_EXIT >
+class ExitCommand : public ClientCommand< ClientMessages::MessageTypes, ClientMessages::MessageTypes::CMD_EXIT >
 {
 public:
   ExitCommand();

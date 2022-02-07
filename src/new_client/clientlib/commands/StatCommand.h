@@ -5,7 +5,7 @@
 
 namespace MenAmongGods
 {
-class StatCommand : public ClientCommand< CommandType, CommandType::CL_CMD_STAT >
+class StatCommand : public ClientCommand< ClientMessages::MessageTypes, ClientMessages::MessageTypes::CMD_STAT >
 {
 public:
   StatCommand( std::uint16_t x, std::uint32_t y ); // TODO: Figure out what these numbers represent

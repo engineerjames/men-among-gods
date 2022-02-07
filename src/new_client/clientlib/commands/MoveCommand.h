@@ -5,7 +5,7 @@
 
 namespace MenAmongGods
 {
-class MoveCommand : public ClientCommand< CommandType, CommandType::CL_CMD_MOVE >
+class MoveCommand : public ClientCommand< ClientMessages::MessageTypes, ClientMessages::MessageTypes::CMD_MOVE >
 {
 public:
   MoveCommand( std::uint16_t x, std::uint32_t y );

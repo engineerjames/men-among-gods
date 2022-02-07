@@ -7,7 +7,7 @@
 
 namespace MenAmongGods
 {
-class SayCommand : public ClientCommand< CommandType, CommandType::CL_EMPTY >
+class SayCommand : public ClientCommand< ClientMessages::MessageTypes, ClientMessages::MessageTypes::EMPTY >
 {
 public:
   SayCommand( const std::string& statement );
@@ -16,7 +16,7 @@ public:
   virtual bool send( sf::TcpSocket& socket ) const override;
 
 private:
-  bool sendPartialMessage( sf::TcpSocket& socket, const std::array< char, 250 >& stringBuffer, CommandType inputType ) const;
+  bool sendPartialMessage( sf::TcpSocket& socket, const std::array< char, 250 >& stringBuffer, ClientMessages::MessageTypes inputType ) const;
 
   std::string statement_;
 };

@@ -5,7 +5,7 @@
 
 namespace MenAmongGods
 {
-class TurnCommand : public ClientCommand< CommandType, CommandType::CL_CMD_TURN >
+class TurnCommand : public ClientCommand< ClientMessages::MessageTypes, ClientMessages::MessageTypes::CMD_TURN >
 {
 public:
   TurnCommand( std::uint16_t x, std::uint32_t y );

@@ -1,7 +1,7 @@
 #ifndef MEN_AMONG_GODS_CLIENT_COMMAND_H
 #define MEN_AMONG_GODS_CLIENT_COMMAND_H
 
-#include "ClientTypes.h"
+#include "ClientMessage.h"
 
 #include <SFML/Network.hpp>
 #include <array>

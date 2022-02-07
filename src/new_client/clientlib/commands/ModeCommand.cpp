@@ -2,6 +2,7 @@
 
 #include <SFML/Network.hpp>
 #include <cstdint>
+#include <iostream>
 
 namespace MenAmongGods
 {

@@ -5,7 +5,7 @@
 
 namespace MenAmongGods
 {
-class TickCommand : public ClientCommand< CommandType, CommandType::CL_CMD_CTICK >
+class TickCommand : public ClientCommand< ClientMessages::MessageTypes, ClientMessages::MessageTypes::CMD_CTICK >
 {
 public:
   TickCommand( std::uint32_t tickValue );

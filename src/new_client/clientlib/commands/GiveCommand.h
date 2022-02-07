@@ -5,7 +5,7 @@
 
 namespace MenAmongGods
 {
-class GiveCommand : public ClientCommand< CommandType, CommandType::CL_CMD_GIVE >
+class GiveCommand : public ClientCommand< ClientMessages::MessageTypes, ClientMessages::MessageTypes::CMD_GIVE >
 {
 public:
   GiveCommand( std::uint32_t characterNumber );

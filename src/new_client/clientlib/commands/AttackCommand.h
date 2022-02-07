@@ -5,7 +5,7 @@
 
 namespace MenAmongGods
 {
-class AttackCommand : public ClientCommand< CommandType, CommandType::CL_CMD_ATTACK >
+class AttackCommand : public ClientCommand< ClientMessages::MessageTypes, ClientMessages::MessageTypes::CMD_ATTACK >
 {
 public:
   AttackCommand( std::uint32_t characterNumber );

@@ -5,7 +5,7 @@
 
 namespace MenAmongGods
 {
-class AutoLookCommand : public ClientCommand< CommandType, CommandType::CL_CMD_AUTOLOOK >
+class AutoLookCommand : public ClientCommand< ClientMessages::MessageTypes, ClientMessages::MessageTypes::CMD_AUTOLOOK >
 {
 public:
   AutoLookCommand( std::uint32_t characterNumber );
