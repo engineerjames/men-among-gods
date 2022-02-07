@@ -24,8 +24,9 @@ bool UniqueCommand::send( sf::TcpSocket& socket ) const
   std::cerr << "unique1_ = " << unique1_ << std::endl;
   std::cerr << "unique2_ = " << unique2_ << std::endl;
 
-  sf::Socket::Status status = socket.send( buf.data(), buf.size() );
+  // sf::Socket::Status status =
+  socket.send( buf.data(), buf.size() );
 
-  return status == sf::Socket::Status::Done;
+  return true; // status == sf::Socket::Status::Done;
 }
 } // namespace MenAmongGods

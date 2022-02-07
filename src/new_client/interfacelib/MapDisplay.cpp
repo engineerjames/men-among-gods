@@ -5,12 +5,15 @@
 #include <iostream>
 
 #include "ConstantIdentifiers.h"
+#include "GraphicsCache.h"
+#include "GraphicsIndex.h"
 #include "Map.h"
 #include "PlayerData.h"
 #include "TickBuffer.h"
-#include "GraphicsCache.h"
-#include "GraphicsIndex.h"
 #include "UtilityFunctions.h"
+
+// Commands
+#include "MoveCommand.h"
 
 namespace
 {
@@ -135,9 +138,7 @@ void MapDisplay::onUserInput( const sf::Event& e )
     tileX_    = mx;
     tileY_    = my;
 
-    // TODO: Remove this filthy evil hack
-    const_cast< PlayerData& >( playerData_ ).getClientSidePlayerInfo().goto_x = map_.getMap()[ m ].x;
-    const_cast< PlayerData& >( playerData_ ).getClientSidePlayerInfo().goto_y = map_.getMap()[ m ].y;
+    commands_.emplace_back( std::make_shared< MenAmongGods::MoveCommand >( map_.getMap()[ m ].x, map_.getMap()[ m ].y ) );
   }
 }
 

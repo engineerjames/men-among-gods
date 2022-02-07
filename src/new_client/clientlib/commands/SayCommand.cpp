@@ -41,13 +41,13 @@ bool SayCommand::sendPartialMessage( sf::TcpSocket& socket, const std::array< ch
     buf[ n + 1 ] = stringBuffer[ n + offSetToInputMap.at( inputType ) ];
   }
 
-  sf::Socket::Status status = sf::Socket::Status::Done;
+  // sf::Socket::Status status = sf::Socket::Status::Done;
   while ( bytesSent != 16 )
   {
-    status = socket.send( buf, sizeof( buf ), bytesSent );
+    socket.send( buf, sizeof( buf ), bytesSent ); // status =
   }
 
-  return status == sf::Socket::Status::Done;
+  return true; // status == sf::Socket::Status::Done;
 }
 
 // For the "say" command, we need to do things a little differently.

@@ -28,13 +28,17 @@ public:
   virtual void finalize() = 0;
 
   // Grab commands to send to our networking thread
-  virtual std::vector< std::unique_ptr< ClientCommand > > getCommands() const;
+  virtual const std::vector< std::shared_ptr< ClientCommand > >& getCommands() const;
+  virtual void                                                   clearCommands();
 
   Component();
   Component( const Component& ) = default;
   Component& operator=( const Component& ) = default;
 
   virtual ~Component() = default;
+
+protected:
+  std::vector< std::shared_ptr< ClientCommand > > commands_;
 };
 } // namespace MenAmongGods
 

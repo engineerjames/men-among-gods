@@ -22,10 +22,13 @@ public:
               TickBuffer& tickBuffer, const sf::RenderWindow& window );
   virtual ~MapDisplay() = default;
 
-  virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
+  // Component interface
   virtual void update() override;
   virtual void onUserInput( const sf::Event& e ) override;
   virtual void finalize() override;
+
+  // sf::Drawable interface
+  virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
 
   void loadFromFile( std::string filePath );
   void saveToFile() const;

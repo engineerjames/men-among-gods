@@ -40,7 +40,7 @@ protected:
       status = socket.send( buf.data(), sizeof( buf ), bytesSent );
     }
 
-    return status == sf::Socket::Status::Done;
+    return true; // status == sf::Socket::Status::Done;
   }
 
   bool sendTwoArguments( sf::TcpSocket& socket, std::uint16_t x, std::uint32_t y ) const
@@ -60,7 +60,7 @@ protected:
       status = socket.send( buf.data(), sizeof( buf ), bytesSent );
     }
 
-    return status == sf::Socket::Status::Done;
+    return true; // status == sf::Socket::Status::Done;
   }
 
   bool sendThreeArguments( sf::TcpSocket& socket, std::uint32_t x, std::uint32_t y, std::uint32_t z ) const
@@ -81,7 +81,7 @@ protected:
       status = socket.send( buf.data(), sizeof( buf ), bytesSent );
     }
 
-    return status == sf::Socket::Status::Done;
+    return true; // status == sf::Socket::Status::Done;
   }
 };
 } // namespace MenAmongGods

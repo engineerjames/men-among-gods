@@ -5,12 +5,17 @@ namespace MenAmongGods
 
 Component::Component()
     : sf::Drawable()
+    , commands_()
 {
 }
 
-std::vector< std::unique_ptr< ClientCommand > > Component::getCommands() const
+const std::vector< std::shared_ptr< ClientCommand > >& Component::getCommands() const
 {
-  // Default behavior is to do nothing
-  return std::vector< std::unique_ptr< ClientCommand > > {};
+  return commands_;
+}
+
+void Component::clearCommands()
+{
+  commands_.clear();
 }
 } // namespace MenAmongGods

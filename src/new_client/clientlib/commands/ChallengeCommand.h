@@ -8,13 +8,13 @@ namespace MenAmongGods
 class ChallengeCommand : public ClientCommand
 {
 public:
-  ChallengeCommand( std::uint32_t challengeHash, std::uint32_t version, std::uint32_t raceAndSex );
+  ChallengeCommand( std::int32_t challengeHash, std::uint32_t version, std::uint32_t raceAndSex );
   virtual ~ChallengeCommand() = default;
 
   virtual bool send( sf::TcpSocket& socket ) const override;
 
 private:
-  std::uint32_t challengeHash_;
+  std::int32_t  challengeHash_;
   std::uint32_t version_;
   std::uint32_t raceAndSex_;
 };

@@ -31,6 +31,8 @@ ClientNetworkActivity::ClientNetworkActivity( TickBuffer& tickBuffer, PlayerData
     , isRunning_( false )
     , playerData_( playerData )
     , tickBuffer_( tickBuffer )
+    , commands_()
+    , commandMutex_()
 {
 }
 
@@ -54,6 +56,15 @@ void ClientNetworkActivity::stop() noexcept
   }
 
   cancellationRequested_.store( true );
+}
+
+void ClientNetworkActivity::addClientCommands( const std::vector< std::shared_ptr< MenAmongGods::ClientCommand > >& commandList )
+{
+  return;
+  std::scoped_lock< std::mutex > lock( commandMutex_ );
+
+  // Insert new commands to the end of the command list
+  commands_.insert( std::end( commands_ ), std::begin( commandList ), std::end( commandList ) );
 }
 
 void ClientNetworkActivity::startNetworkActivity()
@@ -90,6 +101,17 @@ void ClientNetworkActivity::startNetworkActivity()
     }
 
     tickBuffer_.processTicks();
+
+    // // Mutex-protected section
+    // {
+    //   std::scoped_lock< std::mutex > lock( commandMutex_ );
+
+    //   for ( const auto& c : commands_ )
+    //   {
+    //     clientConnection_.processCommand( c );
+    //   }
+    //   commands_.clear();
+    // }
   }
 
   isRunning_ = false;

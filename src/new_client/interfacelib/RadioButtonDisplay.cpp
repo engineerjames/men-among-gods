@@ -4,7 +4,8 @@ namespace MenAmongGods
 {
 RadioButtonDisplay::RadioButtonDisplay( const sf::RenderWindow& window, const sf::Font& font, const std::string& labelText,
                                         float circleRadius, unsigned int fontSize )
-    : window_( window )
+    : MenAmongGods::Component()
+    , window_( window )
     , outerCircle_( circleRadius, 60 )
     , innerCircle_( circleRadius * 0.75f, 60 )
     , isSelected_( false )

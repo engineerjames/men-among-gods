@@ -55,6 +55,8 @@ int main()
   bool isLoggingIn                = true;
   bool hasKickStartedNetworkComms = false;
 
+  std::vector< std::shared_ptr< MenAmongGods::ClientCommand > > commandList {};
+
   while ( window.isOpen() )
   {
     std::vector< std::shared_ptr< MenAmongGods::Component > >* currentComponents = &components;
@@ -95,7 +97,15 @@ int main()
     for ( auto& c : *currentComponents )
     {
       c->update();
+
+      // Get all commands from components
+      std::vector< std::shared_ptr< MenAmongGods::ClientCommand > > commands = c->getCommands();
+      commandList.insert( std::end( commandList ), std::begin( commands ), std::end( commands ) );
     }
+
+    // Pass off components to network-layer, and clear the command list for the next frame
+    client->addClientCommands( commandList );
+    commandList.clear();
 
     //
     // Draw stuff to the screen after clearing previous frame

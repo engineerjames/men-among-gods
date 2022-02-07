@@ -6,7 +6,6 @@
 #include "ClientTypes.h"
 #include "ConstantIdentifiers.h"
 #include "Map.h"
-#include "MapDisplay.h"
 #include "PlayerData.h"
 #include "ServerMessage.h"
 

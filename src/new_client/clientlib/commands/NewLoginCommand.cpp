@@ -27,8 +27,9 @@ bool NewLoginCommand::send( sf::TcpSocket& socket ) const
   std::cerr << "VERSION: " << version_ << std::endl;
   std::cerr << "OkeyRaceInt: " << raceAndSex_;
 
-  sf::Socket::Status status = socket.send( buf.data(), buf.size() );
+  //sf::Socket::Status status = 
+  socket.send( buf.data(), buf.size() );
 
-  return status == sf::Socket::Status::Done;
+  return true; // status == sf::Socket::Status::Done;
 }
 } // namespace MenAmongGods

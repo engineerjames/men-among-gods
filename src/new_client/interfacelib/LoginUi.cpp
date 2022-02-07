@@ -9,7 +9,8 @@
 namespace MenAmongGods
 {
 LoginUi::LoginUi( PlayerData& playerData, const sf::RenderWindow& window, const FontCache& fontCache, unsigned int fontSize )
-    : playerData_( playerData )
+    : MenAmongGods::Component()
+    , playerData_( playerData )
     , nameLabel_( "Name:", fontCache.getFont(), fontSize )
     , nameEntry_( window, fontCache.getFont(), fontSize )
     , descriptionLabel_( "Description:", fontCache.getFont(), fontSize )
