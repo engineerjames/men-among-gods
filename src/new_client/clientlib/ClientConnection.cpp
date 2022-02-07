@@ -244,6 +244,12 @@ std::string ClientConnection::getMessageOfTheDay() const
   return MenAmongGods::convertArrayToStdString( messageOfTheDay_ );
 }
 
+void ClientConnection::processCommand( std::shared_ptr< MenAmongGods::ClientCommand > command )
+{
+  std::cerr << "Processing command..." << std::endl;
+  command->send( clientSocket_ );
+}
+
 bool ClientConnection::sendPlayerData( const PlayerData& playerData )
 {
   int                            state = 0;

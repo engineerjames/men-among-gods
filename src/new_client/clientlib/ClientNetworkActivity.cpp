@@ -60,7 +60,6 @@ void ClientNetworkActivity::stop() noexcept
 
 void ClientNetworkActivity::addClientCommands( const std::vector< std::shared_ptr< MenAmongGods::ClientCommand > >& commandList )
 {
-  return;
   std::scoped_lock< std::mutex > lock( commandMutex_ );
 
   // Insert new commands to the end of the command list
@@ -102,16 +101,16 @@ void ClientNetworkActivity::startNetworkActivity()
 
     tickBuffer_.processTicks();
 
-    // // Mutex-protected section
-    // {
-    //   std::scoped_lock< std::mutex > lock( commandMutex_ );
+    // Mutex-protected section
+    {
+      std::scoped_lock< std::mutex > lock( commandMutex_ );
 
-    //   for ( const auto& c : commands_ )
-    //   {
-    //     clientConnection_.processCommand( c );
-    //   }
-    //   commands_.clear();
-    // }
+      for ( const auto& c : commands_ )
+      {
+        clientConnection_.processCommand( c );
+      }
+      commands_.clear();
+    }
   }
 
   isRunning_ = false;

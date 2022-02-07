@@ -5,6 +5,7 @@
 #include <array>
 #include <cstdint>
 
+#include "ClientCommand.h"
 #include "ClientTypes.h"
 #include "ConstantIdentifiers.h"
 
@@ -35,6 +36,7 @@ public:
   bool receiveTick( TickBuffer& tickBuffer );
 
   std::string getMessageOfTheDay() const;
+  void        processCommand( std::shared_ptr< MenAmongGods::ClientCommand > command );
 
 private:
   enum struct ProcessStatus
