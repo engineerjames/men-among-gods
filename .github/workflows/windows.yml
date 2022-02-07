@@ -33,9 +33,14 @@ jobs:
           update: true
           # After installation and/or update, install additional packages through pacman
           install: >-
-            mingw-w64-x86_64-boost 
-            mingw-w64-x86_64-sfml 
-            mingw-w64-x86_64-libzip
+            make
+          pacboy: >-
+            toolchain:p
+            cmake:p
+            ninja:p
+            sfml:p
+            libzip:p
+            libboost:p
 
           # Retrieve and extract base installation from upstream GitHub Releases
           release: true
