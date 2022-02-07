@@ -9,7 +9,13 @@
 #include "PlayerData.h"
 #include "ServerMessage.h"
 #include "TickBuffer.h"
+
+// Commands
+#include "ChallengeCommand.h"
+#include "SayCommand.h"
+#include "SetUserCommand.h"
 #include "TickCommand.h"
+#include "UniqueCommand.h"
 
 namespace
 {
@@ -106,9 +112,7 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( PlayerDa
     return ClientConnection::ProcessStatus::ERROR;
   }
 
-  unsigned int                   tmp {};
-  std::array< std::uint8_t, 16 > outputBuffer {};
-  static int                     capcnt {};
+  static int capcnt {};
 
   ServerMessages::MessageTypes serverMsgType = ServerMessages::getType( buffer[ 0 ] );
 
@@ -116,28 +120,18 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( PlayerDa
 
   if ( serverMsgType == MessageTypes::CHALLENGE )
   {
-    tmp = *( unsigned long* ) ( buffer.data() + 1 );
-    tmp = Encoder::xcrypt( tmp );
+    std::uint32_t tmp = *( unsigned long* ) ( buffer.data() + 1 );
+    tmp               = Encoder::xcrypt( tmp );
 
-    outputBuffer[ 0 ]                               = ClientMessages::getValue( ClientMessages::MessageTypes::CHALLENGE );
-    *( unsigned long* ) ( outputBuffer.data() + 1 ) = tmp;
-    *( unsigned long* ) ( outputBuffer.data() + 5 ) = VERSION;
-    *( unsigned long* ) ( outputBuffer.data() + 9 ) = playerData.getRaceAndSex();
-    std::cerr << "Sending CL_CHALLENGE...\n";
-    std::cerr << "tmp: " << tmp << std::endl;
-    std::cerr << "VERSION: " << VERSION << std::endl;
-    std::cerr << "OkeyRaceInt: " << playerData.getRaceAndSex();
+    MenAmongGods::ChallengeCommand challengeCmd { tmp, VERSION, static_cast< std::uint32_t >( playerData.getRaceAndSex() ) };
+    challengeCmd.send( clientSocket_ );
 
-    clientSocket_.send( outputBuffer.data(), outputBuffer.size() );
+    MenAmongGods::UniqueCommand uniqueCmd { unique1_, unique2_ };
 
-    outputBuffer[ 0 ]                               = ClientMessages::getValue( ClientMessages::MessageTypes::CMD_UNIQUE );
-    *( unsigned long* ) ( outputBuffer.data() + 1 ) = unique1_;
-    *( unsigned long* ) ( outputBuffer.data() + 5 ) = unique2_;
     std::cerr << "Sending CL_CMD_UNIQUE...\n";
     std::cerr << "unique1_ = " << unique1_ << std::endl;
     std::cerr << "unique2_ = " << unique2_ << std::endl;
-
-    clientSocket_.send( outputBuffer.data(), outputBuffer.size() );
+    uniqueCmd.send( clientSocket_ );
 
     return ProcessStatus::CONTINUE;
   }
@@ -171,7 +165,7 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( PlayerDa
   }
   else if ( serverMsgType == MessageTypes::EXIT )
   {
-    tmp = *( unsigned int* ) ( buffer.data() + 1 );
+    unsigned int tmp = *( unsigned int* ) ( buffer.data() + 1 );
 
     std::cerr << "STATUS: Server demands exit.\n";
     std::cerr << "REASON: " << logout_reason[ tmp ] << std::endl;
@@ -180,9 +174,12 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( PlayerDa
   }
   else if ( serverMsgType == MessageTypes::CAP )
   {
-    tmp = *( unsigned int* ) ( buffer.data() + 1 );
+    unsigned int tmp = *( unsigned int* ) ( buffer.data() + 1 );
     capcnt++;
     std::cerr << "STATUS: Player limit reached. You're in queue.\n";
+    std::cerr << "capcnt: " << capcnt << std::endl;
+    std::cerr << "tmp: " << tmp << std::endl;
+
     return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD1 )
@@ -246,257 +243,23 @@ std::string ClientConnection::getMessageOfTheDay() const
 
 bool ClientConnection::sendPlayerData( const PlayerData& playerData )
 {
-  int                            state = 0;
-  std::array< std::uint8_t, 16 > buffer {};
-  int                            n {};
-  bool                           completedTransfer = false;
+  MenAmongGods::SetUserCommand setUserCmd { playerData.getPlayerName(), playerData.getPlayerDescription() };
+  bool                         sendSuccessful = setUserCmd.send( clientSocket_ );
 
-  if ( ! playerData.hasPlayerDataChanged() )
-  {
-    return false;
-  }
-
-  while ( ! completedTransfer )
-  {
-    buffer[ 0 ] = ClientMessages::getValue( ClientMessages::MessageTypes::CMD_SETUSER );
-
-    switch ( state )
-    {
-    case 0:
-      buffer[ 1 ] = 0;
-      buffer[ 2 ] = 0;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerData.getPlayerName()[ n ];
-      }
-      std::cerr << "Transfering user data...";
-      break;
-    case 1:
-      buffer[ 1 ] = 0;
-      buffer[ 2 ] = 13;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerData.getPlayerName()[ n + 13 ];
-      }
-      break;
-    case 2:
-      buffer[ 1 ] = 0;
-      buffer[ 2 ] = 26;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerData.getPlayerName()[ n + 26 ];
-      }
-      break;
-    case 3:
-      buffer[ 1 ] = 0;
-      buffer[ 2 ] = 39;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerData.getPlayerName()[ n + 39 ];
-      }
-      break;
-    case 4:
-      buffer[ 1 ] = 0;
-      buffer[ 2 ] = 52;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerData.getPlayerName()[ n + 52 ];
-      }
-      break;
-    case 5:
-      buffer[ 1 ] = 0;
-      buffer[ 2 ] = 65;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerData.getPlayerName()[ n + 65 ];
-      }
-      break;
-
-    case 6:
-      buffer[ 1 ] = 1;
-      buffer[ 2 ] = 0;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerData.getPlayerDescription()[ n ];
-      }
-      break;
-    case 7:
-      buffer[ 1 ] = 1;
-      buffer[ 2 ] = 13;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerData.getPlayerDescription()[ n + 13 ];
-      }
-      break;
-    case 8:
-      buffer[ 1 ] = 1;
-      buffer[ 2 ] = 26;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerData.getPlayerDescription()[ n + 26 ];
-      }
-      break;
-    case 9:
-      buffer[ 1 ] = 1;
-      buffer[ 2 ] = 39;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerData.getPlayerDescription()[ n + 39 ];
-      }
-      break;
-    case 10:
-      buffer[ 1 ] = 1;
-      buffer[ 2 ] = 52;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerData.getPlayerDescription()[ n + 52 ];
-      }
-      break;
-    case 11:
-      buffer[ 1 ] = 1;
-      buffer[ 2 ] = 65;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerData.getPlayerDescription()[ n + 65 ];
-      }
-      break;
-
-    case 12:
-      buffer[ 1 ] = 2;
-      buffer[ 2 ] = 0;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerData.getPlayerDescription()[ n + 78 ];
-      }
-      break;
-    case 13:
-      buffer[ 1 ] = 2;
-      buffer[ 2 ] = 13;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerData.getPlayerDescription()[ n + 91 ];
-      }
-      break;
-    case 14:
-      buffer[ 1 ] = 2;
-      buffer[ 2 ] = 26;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerData.getPlayerDescription()[ n + 104 ];
-      }
-      break;
-    case 15:
-      buffer[ 1 ] = 2;
-      buffer[ 2 ] = 39;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerData.getPlayerDescription()[ n + 117 ];
-      }
-      break;
-    case 16:
-      buffer[ 1 ] = 2;
-      buffer[ 2 ] = 52;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerData.getPlayerDescription()[ n + 130 ];
-      }
-      break;
-    case 17:
-      buffer[ 1 ] = 2;
-      buffer[ 2 ] = 65;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerData.getPlayerDescription()[ n + 143 ];
-      }
-      std::cerr << "Transfer done.\n";
-      completedTransfer = true;
-      break;
-    default:
-      std::cerr << "Invalid state!" << std::endl;
-      return false;
-    }
-
-    clientSocket_.send( buffer.data(), buffer.size() );
-    state++;
-  }
-
-  return completedTransfer;
+  return sendSuccessful;
 }
 
 // TODO: Get actual values here (if needed--or remove)
 void ClientConnection::sendHardwareInfo()
 {
-  char buf[ 256 ] {};
+  std::array< std::string, 5 > hwInfo = { "|langid=120, lcid=120", "|systemdir=\"/home/yeah\"", "|windowsdir=\"/home/windir\"",
+                                          "|username=\"theUser\"", "|computername=\"theComputerName\"" };
 
-  unsigned int langid    = 120;
-  unsigned int lcid      = 120;
-  std::string  systemDir = "/home/yeah";
-  std::string  winDir    = "/home/windir";
-  std::string  cDir      = "/home/cdir";
-  std::string  user      = "theUser";
-  std::string  computer  = "mainComputer";
-
-  std::sprintf( buf, "|langid=%u, lcid=%u", langid, lcid );
-  say( buf );
-  std::sprintf( buf, "|systemdir=\"%s\"", systemDir.c_str() );
-  say( buf );
-  std::sprintf( buf, "|windowsdir=\"%s\"", winDir.c_str() );
-  say( buf );
-  std::sprintf( buf, "|currentdir=\"%s\"", cDir.c_str() );
-  say( buf );
-  std::sprintf( buf, "|username=\"%s\"", user.c_str() );
-  say( buf );
-  std::sprintf( buf, "|computername=\"%s\"", computer.c_str() );
-  say( buf );
-}
-
-void ClientConnection::say( const char* input )
-{
-  using ClientMessages::MessageTypes;
-
-  int  n;
-  char buf[ 16 ];
-  buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT1 );
-  for ( n = 0; n < 15; n++ )
+  for ( const auto& s : hwInfo )
   {
-    buf[ n + 1 ] = input[ n ];
+    MenAmongGods::SayCommand sayCmd { s };
+    sayCmd.send( clientSocket_ );
   }
-  clientSocket_.send( buf, sizeof( buf ) );
-
-  buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT2 );
-  for ( n = 0; n < 15; n++ )
-    buf[ n + 1 ] = input[ n + 15 ];
-  clientSocket_.send( buf, sizeof( buf ) );
-
-  buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT3 );
-  for ( n = 0; n < 15; n++ )
-    buf[ n + 1 ] = input[ n + 30 ];
-  clientSocket_.send( buf, sizeof( buf ) );
-
-  buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT4 );
-  for ( n = 0; n < 15; n++ )
-    buf[ n + 1 ] = input[ n + 45 ];
-  clientSocket_.send( buf, sizeof( buf ) );
-
-  buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT5 );
-  for ( n = 0; n < 15; n++ )
-    buf[ n + 1 ] = input[ n + 60 ];
-  clientSocket_.send( buf, sizeof( buf ) );
-
-  buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT6 );
-  for ( n = 0; n < 15; n++ )
-    buf[ n + 1 ] = input[ n + 75 ];
-  clientSocket_.send( buf, sizeof( buf ) );
-
-  buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT7 );
-  for ( n = 0; n < 15; n++ )
-    buf[ n + 1 ] = input[ n + 90 ];
-  clientSocket_.send( buf, sizeof( buf ) );
-
-  buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT8 );
-  for ( n = 0; n < 15; n++ )
-    buf[ n + 1 ] = input[ n + 105 ];
-  clientSocket_.send( buf, sizeof( buf ) );
 }
 
 bool ClientConnection::sendTick()

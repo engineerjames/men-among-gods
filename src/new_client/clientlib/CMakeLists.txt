@@ -35,6 +35,10 @@ set( sources
     commands/ModeCommand.h
     commands/MoveCommand.cpp
     commands/MoveCommand.h
+    commands/NewLoginCommand.h
+    commands/NewLoginCommand.cpp
+    commands/PasswordCommand.h
+    commands/PasswordCommand.cpp
     commands/PickupCommand.cpp
     commands/PickupCommand.h
     commands/ResetCommand.cpp

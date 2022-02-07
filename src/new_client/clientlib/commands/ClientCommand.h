@@ -15,6 +15,10 @@ public:
   virtual ~ClientCommand()                         = default;
   virtual bool send( sf::TcpSocket& socket ) const = 0;
 
+  ClientCommand()                       = default;
+  ClientCommand( const ClientCommand& ) = delete;
+  ClientCommand& operator=( const ClientCommand& ) = delete;
+
 protected:
   bool sendOneArgument( sf::TcpSocket& socket, std::uint32_t x ) const
   {

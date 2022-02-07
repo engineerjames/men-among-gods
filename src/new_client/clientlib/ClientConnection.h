@@ -51,8 +51,8 @@ private:
   std::string                         hostIpAddress_;
   unsigned short                      hostPort_;
   bool                                isConnected_;
-  int                                 unique1_;
-  int                                 unique2_;
+  std::uint32_t                       unique1_;
+  std::uint32_t                       unique2_;
   int                                 serverVersion_;
   static const constexpr unsigned int VERSION = 0x020E06;
   // TODO: Re-evaluate where these members are used
