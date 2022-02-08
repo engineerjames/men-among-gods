@@ -22,7 +22,6 @@ int main()
 {
   sf::RenderWindow window( sf::VideoMode( MODEX, MODEY ), "Men Among Gods - New Client" );
   window.setFramerateLimit( 10 );
-  window.setVerticalSyncEnabled( true );
   window.requestFocus();
 
   std::string fontPath  = MenAmongGods::getFontRoot() + "onuava.ttf";
