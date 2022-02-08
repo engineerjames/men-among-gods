@@ -1,8 +1,10 @@
 #include "Encoder.h"
 
+#include <array>
+
 namespace
 {
-constexpr const char secret[ 256 ] = { "\
+constexpr const std::array< char, 256 > secret = { "\
 Ifhjf64hH8sa,-#39ddj843tvxcv0434dvsdc40G#34Trefc349534Y5#34trecerr943\
 5#erZt#eA534#5erFtw#Trwec,9345mwrxm gerte-534lMIZDN(/dn8sfn8&DBDB/D&s\
 8efnsd897)DDzD'D'D''Dofs,t0943-rg-gdfg-gdf.t,e95.34u.5retfrh.wretv.56\

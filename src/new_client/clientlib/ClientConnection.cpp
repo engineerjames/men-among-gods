@@ -1,5 +1,6 @@
 #include "ClientConnection.h"
 
+#include <array>
 #include <cstring>
 #include <iostream>
 
@@ -13,7 +14,7 @@
 
 namespace
 {
-static const char* logout_reason[] = {
+static const std::array< const char*, 15 > logout_reason = {
     "unknown",                                                                              // 0
     "Client failed challenge.",                                                             // 1
     "Client was idle too long.",                                                            // 2
@@ -182,7 +183,7 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( PlayerDa
   {
     tmp = *( unsigned int* ) ( buffer.data() + 1 );
     capcnt++;
-    std::cerr << "STATUS: Player limit reached. You're in queue.\n";
+    std::cerr << "STATUS: Player limit reached. You're in queue." << tmp << std::endl;
     return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD1 )
@@ -431,7 +432,7 @@ bool ClientConnection::sendPlayerData( const PlayerData& playerData )
 // TODO: Get actual values here (if needed--or remove)
 void ClientConnection::sendHardwareInfo()
 {
-  char buf[ 256 ] {};
+  std::array< char, 256 > buf {};
 
   unsigned int langid    = 120;
   unsigned int lcid      = 120;
@@ -441,67 +442,84 @@ void ClientConnection::sendHardwareInfo()
   std::string  user      = "theUser";
   std::string  computer  = "mainComputer";
 
-  std::sprintf( buf, "|langid=%u, lcid=%u", langid, lcid );
-  say( buf );
-  std::sprintf( buf, "|systemdir=\"%s\"", systemDir.c_str() );
-  say( buf );
-  std::sprintf( buf, "|windowsdir=\"%s\"", winDir.c_str() );
-  say( buf );
-  std::sprintf( buf, "|currentdir=\"%s\"", cDir.c_str() );
-  say( buf );
-  std::sprintf( buf, "|username=\"%s\"", user.c_str() );
-  say( buf );
-  std::sprintf( buf, "|computername=\"%s\"", computer.c_str() );
-  say( buf );
+  std::sprintf( buf.data(), "|langid=%u, lcid=%u", langid, lcid );
+  say( buf.data() );
+  std::sprintf( buf.data(), "|systemdir=\"%s\"", systemDir.c_str() );
+  say( buf.data() );
+  std::sprintf( buf.data(), "|windowsdir=\"%s\"", winDir.c_str() );
+  say( buf.data() );
+  std::sprintf( buf.data(), "|currentdir=\"%s\"", cDir.c_str() );
+  say( buf.data() );
+  std::sprintf( buf.data(), "|username=\"%s\"", user.c_str() );
+  say( buf.data() );
+  std::sprintf( buf.data(), "|computername=\"%s\"", computer.c_str() );
+  say( buf.data() );
 }
 
 void ClientConnection::say( const char* input )
 {
   using ClientMessages::MessageTypes;
 
-  int  n;
-  char buf[ 16 ];
+  int                    n {};
+  std::array< char, 16 > buf {};
   buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT1 );
   for ( n = 0; n < 15; n++ )
   {
     buf[ n + 1 ] = input[ n ];
   }
-  clientSocket_.send( buf, sizeof( buf ) );
+  clientSocket_.send( buf.data(), buf.size() );
 
   buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT2 );
   for ( n = 0; n < 15; n++ )
+  {
     buf[ n + 1 ] = input[ n + 15 ];
-  clientSocket_.send( buf, sizeof( buf ) );
+  }
+
+  clientSocket_.send( buf.data(), buf.size() );
 
   buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT3 );
   for ( n = 0; n < 15; n++ )
+  {
     buf[ n + 1 ] = input[ n + 30 ];
-  clientSocket_.send( buf, sizeof( buf ) );
+  }
+
+  clientSocket_.send( buf.data(), buf.size() );
 
   buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT4 );
   for ( n = 0; n < 15; n++ )
+  {
     buf[ n + 1 ] = input[ n + 45 ];
-  clientSocket_.send( buf, sizeof( buf ) );
+  }
 
+  clientSocket_.send( buf.data(), buf.size() );
   buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT5 );
   for ( n = 0; n < 15; n++ )
+  {
     buf[ n + 1 ] = input[ n + 60 ];
-  clientSocket_.send( buf, sizeof( buf ) );
+  }
 
+  clientSocket_.send( buf.data(), buf.size() );
   buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT6 );
   for ( n = 0; n < 15; n++ )
+  {
     buf[ n + 1 ] = input[ n + 75 ];
-  clientSocket_.send( buf, sizeof( buf ) );
+  }
 
+  clientSocket_.send( buf.data(), buf.size() );
   buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT7 );
   for ( n = 0; n < 15; n++ )
+  {
     buf[ n + 1 ] = input[ n + 90 ];
-  clientSocket_.send( buf, sizeof( buf ) );
+  }
 
+  clientSocket_.send( buf.data(), buf.size() );
   buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT8 );
   for ( n = 0; n < 15; n++ )
+  {
     buf[ n + 1 ] = input[ n + 105 ];
-  clientSocket_.send( buf, sizeof( buf ) );
+  }
+
+  clientSocket_.send( buf.data(), buf.size() );
 }
 
 bool ClientConnection::sendTick()

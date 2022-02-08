@@ -61,9 +61,9 @@ void TickBuffer::processTicks()
   int csize = 0;
   int comp  = 0;
 
-  static std::uint8_t buf[ BUFFER_SIZE ];
-  static int          ctot = 1;
-  static int          utot = 1;
+  static std::array< std::uint8_t, BUFFER_SIZE > buf {};
+  static int                                     ctot = 1;
+  static int                                     utot = 1;
 
   unsigned short len = *( unsigned short* ) ( tickBuffer_.data() );
   comp               = len & 0x8000;
@@ -79,7 +79,7 @@ void TickBuffer::processTicks()
     compressor_.setNextInput( tickBuffer_.data() + 2 );
     compressor_.setAvailableIn( len - 2 );
 
-    compressor_.setNextOutput( buf );
+    compressor_.setNextOutput( buf.data() );
     compressor_.setAvailableOut( BUFFER_SIZE );
 
     int ret = compressor_.inflate();
@@ -95,14 +95,14 @@ void TickBuffer::processTicks()
       std::cerr << "uncompress: avail is " << compressor_.getAvailableIn() << std::endl;
     }
 
-    csize = BUFFER_SIZE - compressor_.getAvailableOut();
+    csize = static_cast< int >( BUFFER_SIZE ) - static_cast< int >( compressor_.getAvailableOut() );
   }
   else
   {
     csize = len - 2;
     if ( csize != 0 )
     {
-      std::memcpy( buf, tickBuffer_.data() + 2, csize );
+      std::memcpy( buf.data(), tickBuffer_.data() + 2, csize );
     }
   }
 
@@ -119,7 +119,7 @@ void TickBuffer::processTicks()
   while ( idx < csize )
   {
     playerData_.lock();
-    int retVal = processServerCommand( buf + idx );
+    int retVal = processServerCommand( buf.data() + idx );
     playerData_.unlock();
 
     if ( retVal == -1 )
@@ -322,7 +322,7 @@ int TickBuffer::processServerCommand( const std::uint8_t* bufferStart )
   return 16;
 }
 
-const char* logout_reason[] = {
+const std::array< const char*, 15 > logout_reason = {
     "unknown",                                                                              // 0
     "Client failed challenge.",                                                             // 1
     "Client was idle too long.",                                                            // 2
@@ -396,9 +396,8 @@ void TickBuffer::sv_setchar_mana( const unsigned char* buf )
 
 void TickBuffer::sv_setchar_attrib( const unsigned char* buf )
 {
-  int n;
+  int n = buf[ 1 ];
 
-  n = buf[ 1 ];
   if ( n < 0 || n > 4 )
     return;
 
@@ -412,8 +411,7 @@ void TickBuffer::sv_setchar_attrib( const unsigned char* buf )
 
 void TickBuffer::sv_setchar_skill( const unsigned char* buf )
 {
-  int n;
-  n = buf[ 1 ];
+  int n = buf[ 1 ];
   if ( n < 0 || n > 49 )
     return;
 
@@ -463,9 +461,7 @@ void TickBuffer::sv_setchar_gold( const unsigned char* buf )
 
 void TickBuffer::sv_setchar_item( const unsigned char* buf )
 {
-  int n;
-
-  n = *( unsigned long* ) ( buf + 1 );
+  int n = *( unsigned long* ) ( buf + 1 );
   if ( n < 0 || n > 39 )
   {
     std::cerr << "Invalid setchar item" << std::endl;
@@ -476,9 +472,7 @@ void TickBuffer::sv_setchar_item( const unsigned char* buf )
 
 void TickBuffer::sv_setchar_worn( const unsigned char* buf )
 {
-  int n;
-
-  n = *( unsigned long* ) ( buf + 1 );
+  int n = *( unsigned long* ) ( buf + 1 );
   if ( n < 0 || n > 19 )
   {
     std::cerr << "Invalid setchar worn" << std::endl;
@@ -489,9 +483,7 @@ void TickBuffer::sv_setchar_worn( const unsigned char* buf )
 
 void TickBuffer::sv_setchar_spell( const unsigned char* buf )
 {
-  int n;
-
-  n = *( unsigned long* ) ( buf + 1 );
+  int n = *( unsigned long* ) ( buf + 1 );
   if ( n < 0 || n > 19 )
   {
     std::cerr << "Invalid setchar spell" << std::endl;
@@ -509,8 +501,9 @@ void TickBuffer::sv_setchar_obj( const unsigned char* buf )
 int TickBuffer::sv_setmap( const unsigned char* buf, int off )
 {
   map_.lock();
-  int        n, p;
-  static int cnt[ 8 ] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+  int                         n {};
+  int                         p {};
+  static std::array< int, 8 > cnt {};
 
   if ( off )
   {
@@ -603,11 +596,11 @@ int TickBuffer::sv_setmap3( const unsigned char* buf, int cnt )
 {
   map_.lock();
 
-  int           n, m, p;
-  unsigned char tmp;
+  int m {};
+  int p {};
 
-  n   = ( *( unsigned short* ) ( buf + 1 ) ) & 2047;
-  tmp = ( *( unsigned short* ) ( buf + 1 ) ) >> 12;
+  int            n   = ( *( unsigned short* ) ( buf + 1 ) ) & 2047;
+  unsigned short tmp = ( *( unsigned short* ) ( buf + 1 ) ) >> 12;
   if ( n < 0 || n >= TILEX * TILEY )
   {
     std::cerr << "corrupt setmap3!" << std::endl;
@@ -664,18 +657,18 @@ void TickBuffer::sv_tick( const unsigned char* buf )
 
 void TickBuffer::sv_log( const unsigned char* buf, int font )
 {
-  static char text[ 512 ];
-  static int  cnt = 0;
-  int         n {};
+  static std::array< char, 512 > text {};
+  static int                     cnt = 0;
+  int                            n {};
 
-  std::memcpy( text + cnt, buf + 1, 15 );
+  std::memcpy( text.data() + cnt, buf + 1, 15 );
 
   for ( n = cnt; n < cnt + 15; n++ )
     if ( text[ n ] == 10 )
     {
       text[ n ] = 0;
 
-      playerData_.addLogMessage( getLogType( font ), text );
+      playerData_.addLogMessage( getLogType( font ), text.data() );
       cnt = 0;
       return;
     }
@@ -686,7 +679,7 @@ void TickBuffer::sv_log( const unsigned char* buf, int font )
     std::cerr << "sv_log(): cnt too big!" << std::endl;
 
     text[ cnt ] = 0;
-    std::cerr << text << std::endl;
+    std::cerr << text.data() << std::endl;
     cnt = 0;
   }
 }
@@ -800,9 +793,7 @@ void TickBuffer::sv_look4( const unsigned char* buf )
 
 void TickBuffer::sv_look5( const unsigned char* buf )
 {
-  int n;
-
-  for ( n = 0; n < 15; n++ )
+  for ( int n = 0; n < 15; n++ )
     playerData_.getLook().name[ n ] = buf[ n + 1 ];
   playerData_.getLook().name[ 15 ] = 0;
 
@@ -820,7 +811,8 @@ void TickBuffer::sv_look5( const unsigned char* buf )
 
 void TickBuffer::sv_look6( const unsigned char* buf )
 {
-  int n, s;
+  int n {};
+  int s {};
 
   s = buf[ 1 ];
 
@@ -848,8 +840,10 @@ void TickBuffer::sv_settarget( const unsigned char* buf )
 
 void TickBuffer::sv_playsound( const unsigned char* buf )
 {
-  int  nr, vol, pan;
-  char name[ 80 ];
+  int                    nr {};
+  int                    vol {};
+  int                    pan {};
+  std::array< char, 80 > name {};
 
   nr  = *( unsigned int* ) ( buf + 1 );
   vol = *( int* ) ( buf + 5 );
@@ -857,15 +851,13 @@ void TickBuffer::sv_playsound( const unsigned char* buf )
 
   ( void ) vol;
   ( void ) pan;
-  sprintf( name, "sfx\\%d.wav", nr );
+  sprintf( name.data(), "sfx\\%d.wav", nr );
   // play_sound(name, vol, -pan); // add flag to reverse channels!!
 }
 
 void TickBuffer::sv_exit( const unsigned char* buf )
 {
-  int reason;
-
-  reason = *( unsigned int* ) ( buf + 1 );
+  int reason = *( unsigned int* ) ( buf + 1 );
 
   if ( reason < 1 || reason > 12 )
   {
@@ -913,6 +905,7 @@ int TickBuffer::sv_ignore( const unsigned char* buf )
     d   = static_cast< int >( time( NULL ) - start );
     if ( d == 0 )
     {
+      // NOLINTNEXTLINE 
       d = 1;
     }
   }

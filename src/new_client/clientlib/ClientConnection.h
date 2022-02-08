@@ -5,13 +5,17 @@
 #include <array>
 #include <cstdint>
 
-#include "ClientCommand.h"
 #include "ClientTypes.h"
 #include "ConstantIdentifiers.h"
 
 // Forward declarations
 class TickBuffer;
 class PlayerData;
+
+namespace MenAmongGods
+{
+class ClientCommand;
+}
 
 class ClientConnection
 {

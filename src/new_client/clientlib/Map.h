@@ -5,6 +5,7 @@
 #include <mutex>
 
 #include "ClientTypes.h"
+#include "ConstantIdentifiers.h"
 
 namespace MenAmongGods
 {
@@ -27,14 +28,14 @@ public:
 
 private:
   int speedstep( int n, int d, int s, int update );
-  int interpolateItemSprite( int mapIndex );
-  int interpolateCharacterSprite( int mapIndex );
-  int speedo( int n );
+  int interpolateItemSprite( unsigned int mapIndex );
+  int interpolateCharacterSprite( unsigned int mapIndex );
+  int speedo( unsigned int n );
 
-  std::unique_ptr< cmap[] > map_;
-  std::mutex                mapMutex_;
-  int                       ctick_;
-  std::size_t               ticker_;
+  std::array< cmap, MAPX * MAPY > map_;
+  std::mutex                      mapMutex_;
+  int                             ctick_;
+  std::size_t                     ticker_;
 };
 } // namespace MenAmongGods
 

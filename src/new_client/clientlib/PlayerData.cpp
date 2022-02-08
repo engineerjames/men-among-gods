@@ -13,6 +13,7 @@ namespace
 static constexpr const std::size_t SKILLTAB_SIZE = 50;
 
 // clang-format off
+// NOLINTNEXTLINE 
 skilltab static_skilltab[SKILLTAB_SIZE]={
 	{0,     'C',    "Hand to Hand", "Fighting without weapons.",                    {AT_BRAVE,AT_AGIL,AT_STREN}},
 	{1,     'C',    "Karate",       "Fighting without weapons and doing damage.",   {AT_BRAVE,AT_AGIL,AT_STREN}},
@@ -305,7 +306,7 @@ look& PlayerData::getLook()
 
 void PlayerData::setName( std::string newName )
 {
-  std::strcpy( okey_.name, newName.c_str() );
+  std::strncpy( okey_.name, newName.c_str(), newName.length() );
 }
 
 void PlayerData::setPassword( std::string password )
@@ -326,7 +327,7 @@ void PlayerData::setPassword( long unsigned int pass1, long unsigned int pass2 )
 
 void PlayerData::setDescription( std::string description )
 {
-  std::strcpy( playerInfo_.desc, description.c_str() );
+  std::strncpy( playerInfo_.desc, description.c_str(), description.length() );
 }
 
 void PlayerData::setRaceAndSex( std::string race, std::string sex )
@@ -364,9 +365,10 @@ long unsigned int PlayerData::getUserNumber() const
   return okey_.usnr;
 }
 
+// NOLINTNEXTLINE
 void PlayerData::setOkeyName( char ( &pdataName )[ 40 ] )
 {
-  std::strcpy( okey_.name, pdataName );
+  std::strncpy( okey_.name, pdataName, sizeof( pdataName ) - 1 );
 }
 
 PlayerData::OkeyPasswordType PlayerData::getPasswordOkeyValues() const
