@@ -101,7 +101,7 @@ MapDisplay::MapDisplay( MenAmongGods::Map& map, const PlayerData& playerData, co
 
 int MapDisplay::speedo( int n )
 {
-  return speedtab[ map_.getMap()[ n ].ch_speed ][ 0 ]; // 0 -> ctick
+  return speedtab[ map_.getMap()[ n ].ch_speed ][ ctick_ ];
 }
 
 void MapDisplay::draw( sf::RenderTarget& target, sf::RenderStates states ) const

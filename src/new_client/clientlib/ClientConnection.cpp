@@ -246,7 +246,6 @@ std::string ClientConnection::getMessageOfTheDay() const
 
 void ClientConnection::processCommand( std::shared_ptr< MenAmongGods::ClientCommand > command )
 {
-  std::cerr << "Processing command..." << std::endl;
   command->send( clientSocket_ );
 }
 
