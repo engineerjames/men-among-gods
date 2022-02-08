@@ -22,6 +22,7 @@ int main()
 {
   sf::RenderWindow window( sf::VideoMode( MODEX, MODEY ), "Men Among Gods - New Client" );
   window.setFramerateLimit( 10 );
+  window.setVerticalSyncEnabled( true );
   window.requestFocus();
 
   std::string fontPath  = MenAmongGods::getFontRoot() + "onuava.ttf";
@@ -101,6 +102,7 @@ int main()
       // Get all commands from components
       std::vector< std::shared_ptr< MenAmongGods::ClientCommand > > commands = c->getCommands();
       commandList.insert( std::end( commandList ), std::begin( commands ), std::end( commands ) );
+      c->clearCommands();
     }
 
     // Pass off components to network-layer, and clear the command list for the next frame
