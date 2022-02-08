@@ -139,7 +139,7 @@ void TickBuffer::processTicks()
   }
 
   // Was engine_tick before
-  map_.tick();
+  // map_.tick(); TODO: Call this here.
 }
 
 int TickBuffer::processServerCommand( const std::uint8_t* bufferStart )
