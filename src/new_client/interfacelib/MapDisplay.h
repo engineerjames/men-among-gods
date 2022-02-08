@@ -41,18 +41,11 @@ private:
   TickBuffer&               tickBuffer_;
   const sf::RenderWindow&   window_;
   std::vector< sf::Sprite > spritesToDraw_;
-  std::size_t               ticker_;
-  bool                      needsToUpdate_;
-  unsigned int              ctick_;
   int                       tileType_;
   int                       tileX_;
   int                       tileY_;
 
   void copysprite( int nr, int effect, int xpos, int ypos, int xoff, int yoff );
-  int  interpolateItemSprite( int mapIndex );
-  int  interpolateCharacterSprite( int mapIndex );
-  int  speedo( int n );
-  int  speedstep( int n, int d, int s, int update );
 };
 } // namespace MenAmongGods
 

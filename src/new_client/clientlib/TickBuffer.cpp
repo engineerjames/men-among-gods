@@ -114,6 +114,7 @@ void TickBuffer::processTicks()
   {
     ctick_ = 0;
   }
+  map_.setCTick( ctick_ );
 
   while ( idx < csize )
   {
@@ -139,7 +140,7 @@ void TickBuffer::processTicks()
   }
 
   // Was engine_tick before
-  // map_.tick(); TODO: Call this here.
+  map_.tick();
 }
 
 int TickBuffer::processServerCommand( const std::uint8_t* bufferStart )
@@ -658,11 +659,7 @@ void TickBuffer::sv_setorigin( const unsigned char* buf )
 void TickBuffer::sv_tick( const unsigned char* buf )
 {
   ctick_ = *( unsigned char* ) ( buf + 1 );
-}
-
-unsigned int TickBuffer::getCTick() const
-{
-  return ctick_;
+  map_.setCTick( ctick_ );
 }
 
 void TickBuffer::sv_log( const unsigned char* buf, int font )
