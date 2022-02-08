@@ -1,5 +1,7 @@
 #include "RadioButtonDisplay.h"
 
+#include "UtilityFunctions.h"
+
 namespace MenAmongGods
 {
 RadioButtonDisplay::RadioButtonDisplay( const sf::RenderWindow& window, const sf::Font& font, const std::string& labelText,
@@ -61,7 +63,7 @@ void RadioButtonDisplay::onUserInput( const sf::Event& e )
 {
   if ( e.type == sf::Event::MouseButtonReleased && e.mouseButton.button == sf::Mouse::Button::Left )
   {
-    if ( outerCircle_.getGlobalBounds().contains( sf::Mouse::getPosition( window_ ).x, sf::Mouse::getPosition( window_ ).y ) )
+    if ( outerCircle_.getGlobalBounds().contains( MenAmongGods::getNormalizedMousePosition( window_ ) ) )
     {
       isSelected_ = true;
     }

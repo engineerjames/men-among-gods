@@ -1,6 +1,7 @@
 #include "TextInputDisplay.h"
 
 #include "ColorPalette.h"
+#include "UtilityFunctions.h"
 
 #include <iostream>
 
@@ -55,7 +56,7 @@ void TextInputDisplay::onUserInput( const sf::Event& e )
   }
   else if ( e.type == sf::Event::MouseButtonReleased && e.mouseButton.button == sf::Mouse::Button::Left )
   {
-    if ( boundingBox_.getGlobalBounds().contains( sf::Mouse::getPosition( window_ ).x, sf::Mouse::getPosition( window_ ).y ) )
+    if ( boundingBox_.getGlobalBounds().contains( MenAmongGods::getNormalizedMousePosition( window_ ) ) )
     {
       isSelected_ = true;
     }
