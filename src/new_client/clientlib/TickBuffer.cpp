@@ -109,6 +109,11 @@ void TickBuffer::processTicks()
   utot += csize;
 
   lastn_ = -1; // reset sv_setmap
+  ctick_++;
+  if ( ctick_ > 19 )
+  {
+    ctick_ = 0;
+  }
 
   while ( idx < csize )
   {
@@ -133,9 +138,8 @@ void TickBuffer::processTicks()
     std::memmove( tickBuffer_.data(), tickBuffer_.data() + len, tickSize_ );
   }
 
-  // engine_tick();
-
-  // return 1;
+  // Was engine_tick before
+  map_.tick();
 }
 
 int TickBuffer::processServerCommand( const std::uint8_t* bufferStart )
@@ -630,7 +634,11 @@ void TickBuffer::sv_setorigin( const unsigned char* buf )
 {
   map_.lock();
 
-  int x, y, xp, yp, n;
+  int x {};
+  int y {};
+  int xp {};
+  int yp {};
+  int n {};
 
   xp = *( short* ) ( buf + 1 );
   yp = *( short* ) ( buf + 3 );
