@@ -9,58 +9,6 @@ set( sources
     PlayerData.cpp
     ServerMessage.cpp
     TickBuffer.cpp
-
-    commands/AttackCommand.cpp
-    commands/AttackCommand.h
-    commands/AutoLookCommand.cpp
-    commands/AutoLookCommand.h
-    commands/ClientCommand.h
-    commands/ChallengeCommand.h
-    commands/ChallengeCommand.cpp
-    commands/DropCommand.cpp
-    commands/DropCommand.h
-    commands/ExitCommand.cpp
-    commands/ExitCommand.h
-    commands/GiveCommand.cpp
-    commands/GiveCommand.h
-    commands/InventoryCommand.cpp
-    commands/InventoryCommand.h
-    commands/InventoryLookCommand.cpp
-    commands/InventoryLookCommand.h
-    commands/LookCommand.cpp
-    commands/LookCommand.h
-    commands/LookItemCommand.cpp
-    commands/LookItemCommand.h
-    commands/ModeCommand.cpp
-    commands/ModeCommand.h
-    commands/MoveCommand.cpp
-    commands/MoveCommand.h
-    commands/NewLoginCommand.h
-    commands/NewLoginCommand.cpp
-    commands/PasswordCommand.h
-    commands/PasswordCommand.cpp
-    commands/PickupCommand.cpp
-    commands/PickupCommand.h
-    commands/ResetCommand.cpp
-    commands/ResetCommand.h
-    commands/SetUserCommand.h
-    commands/SetUserCommand.cpp
-    commands/ShopCommand.cpp
-    commands/ShopCommand.h
-    commands/SkillCommand.cpp
-    commands/SkillCommand.h
-    commands/StatCommand.cpp
-    commands/StatCommand.h
-    commands/TickCommand.cpp
-    commands/TickCommand.h
-    commands/SayCommand.cpp
-    commands/SayCommand.h
-    commands/TurnCommand.cpp
-    commands/TurnCommand.h
-    commands/UniqueCommand.h
-    commands/UniqueCommand.cpp
-    commands/UseCommand.cpp
-    commands/UseCommand.h
 )
 set( headers
     ClientConnection.h
@@ -77,9 +25,83 @@ set( headers
 )
 add_library(${target} ${sources} ${headers})
 target_link_libraries(${target} PRIVATE sfml-graphics sfml-network z zip pthread 
-                                        Boost::serialization MenAmongGodsGraphics)
+                                        Boost::serialization MenAmongGodsGraphics commands)
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
 target_compile_definitions(${target} PUBLIC ${PROJECT_CXX_DEFINITIONS})
-target_include_directories(${target} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
-                                            ${CMAKE_CURRENT_SOURCE_DIR}/commands)
+target_include_directories(${target} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+if (ENABLE_CLANG_TIDY)
+  set_target_properties(${target} PROPERTIES CXX_CLANG_TIDY clang-tidy-11)
+endif()
+
+set(target clientInterface)
+add_library(${target} INTERFACE)
+target_include_directories(${target} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+
+set(target commands)
+set( sources
+    commands/AttackCommand.cpp
+    commands/AutoLookCommand.cpp
+    commands/ChallengeCommand.cpp
+    commands/DropCommand.cpp
+    commands/ExitCommand.cpp
+    commands/GiveCommand.cpp
+    commands/InventoryCommand.cpp
+    commands/InventoryLookCommand.cpp
+    commands/LookCommand.cpp
+    commands/LookItemCommand.cpp
+    commands/ModeCommand.cpp
+    commands/MoveCommand.cpp
+    commands/NewLoginCommand.cpp
+    commands/PasswordCommand.cpp
+    commands/PickupCommand.cpp
+    commands/ResetCommand.cpp
+    commands/SetUserCommand.cpp
+    commands/ShopCommand.cpp
+    commands/SkillCommand.cpp
+    commands/StatCommand.cpp
+    commands/TickCommand.cpp
+    commands/SayCommand.cpp
+    commands/TurnCommand.cpp
+    commands/UniqueCommand.cpp
+    commands/UseCommand.cpp
+)
+set( headers
+    commands/AttackCommand.h
+    commands/AutoLookCommand.h
+    commands/ClientCommand.h
+    commands/ChallengeCommand.h
+    commands/DropCommand.h
+    commands/ExitCommand.h
+    commands/GiveCommand.h
+    commands/InventoryCommand.h
+    commands/InventoryLookCommand.h
+    commands/LookCommand.h
+    commands/LookItemCommand.h
+    commands/ModeCommand.h
+    commands/MoveCommand.h
+    commands/NewLoginCommand.h
+    commands/PasswordCommand.h
+    commands/PickupCommand.h
+    commands/ResetCommand.h
+    commands/SetUserCommand.h
+    commands/ShopCommand.h
+    commands/SkillCommand.h
+    commands/StatCommand.h
+    commands/TickCommand.h
+    commands/SayCommand.h
+    commands/TurnCommand.h
+    commands/UniqueCommand.h
+    commands/UseCommand.h
+)
+add_library(${target} ${sources} ${headers})
+target_link_libraries(${target} PRIVATE sfml-network MenAmongGodsGraphics clientInterface)
+target_compile_features(${target} PRIVATE cxx_std_17)
+target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
+target_compile_definitions(${target} PUBLIC ${PROJECT_CXX_DEFINITIONS})
+target_include_directories(${target} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/commands)
+
+if (ENABLE_CLANG_TIDY)
+  set_target_properties(${target} PROPERTIES CXX_CLANG_TIDY clang-tidy-11)
+endif()

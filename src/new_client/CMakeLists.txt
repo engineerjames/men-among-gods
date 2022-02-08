@@ -10,4 +10,8 @@ target_link_libraries(${target} PRIVATE client sfml-graphics sfml-network
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
 
+if (ENABLE_CLANG_TIDY)
+  set_target_properties(${target} PROPERTIES CXX_CLANG_TIDY clang-tidy-11)
+endif()
+
 add_subdirectory(interfacelib)

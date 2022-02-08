@@ -2,6 +2,12 @@ cmake_minimum_required(VERSION 3.14)
 
 project(men-among-gods C CXX)
 
+option(ENABLE_CLANG_TIDY "Enable static analysis via clang-tidy" ON)
+
+if (ENABLE_CLANG_TIDY)
+  message(STATUS "Enabling clang-tidy support")
+endif()
+
 enable_testing()
 
 find_package(Boost COMPONENTS unit_test_framework serialization REQUIRED)
