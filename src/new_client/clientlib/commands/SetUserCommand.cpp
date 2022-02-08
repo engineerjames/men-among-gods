@@ -9,7 +9,7 @@
 namespace
 {
 // clang-format off
-std::map< ClientMessages::MessageTypes, unsigned int > offSetToInputMap = { 
+const std::map< ClientMessages::MessageTypes, unsigned int > offSetToInputMap = { // TODO: Decide what to do with this, or eliminate it
   { ClientMessages::MessageTypes::CMD_INPUT1, 0 },
   { ClientMessages::MessageTypes::CMD_INPUT2, 15 },
   { ClientMessages::MessageTypes::CMD_INPUT3, 30 },

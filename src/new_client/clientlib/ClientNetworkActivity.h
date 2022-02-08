@@ -6,7 +6,6 @@
 #include <string>
 #include <thread>
 
-#include "ClientCommand.h"
 #include "ClientConnection.h"
 #include "Compressor.h"
 
@@ -15,7 +14,8 @@ class TickBuffer;
 namespace MenAmongGods
 {
 class Map;
-}
+class ClientCommand;
+} // namespace MenAmongGods
 
 class PlayerData;
 

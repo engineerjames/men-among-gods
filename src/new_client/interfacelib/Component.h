@@ -5,8 +5,6 @@
 #include <memory>
 #include <vector>
 
-#include "ClientCommand.h"
-
 namespace sf
 {
 class Event;
@@ -14,6 +12,8 @@ class Event;
 
 namespace MenAmongGods
 {
+class ClientCommand;
+
 class Component : public sf::Drawable
 {
 public:

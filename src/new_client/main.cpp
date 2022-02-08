@@ -18,10 +18,16 @@
 #include <memory>
 #include <vector>
 
+namespace
+{
+static const constexpr int FRAME_RATE_LIMIT = 10;
+static const constexpr int LOGIN_FONT_SIZE  = 16;
+} // namespace
+
 int main()
 {
   sf::RenderWindow window( sf::VideoMode( MODEX, MODEY ), "Men Among Gods - New Client" );
-  window.setFramerateLimit( 10 );
+  window.setFramerateLimit( FRAME_RATE_LIMIT );
   window.requestFocus();
 
   std::string fontPath  = MenAmongGods::getFontRoot() + "onuava.ttf";
@@ -42,7 +48,7 @@ int main()
 
   auto mapPtr     = std::make_shared< MenAmongGods::MapDisplay >( map, playerData, *gfxCache, *idxCache, *tickBufferPtr, window );
   auto mainUiPtr  = std::make_shared< MenAmongGods::MainUi >( playerData, *gfxCache, *fontCache );
-  auto loginUiPtr = std::make_shared< MenAmongGods::LoginUi >( playerData, window, *fontCache, 16 );
+  auto loginUiPtr = std::make_shared< MenAmongGods::LoginUi >( playerData, window, *fontCache, LOGIN_FONT_SIZE );
 
   // Populate components
   std::vector< std::shared_ptr< MenAmongGods::Component > > components;
@@ -77,7 +83,7 @@ int main()
     //
     // Process events--aka input by the user
     //
-    sf::Event event;
+    sf::Event event {};
     while ( window.pollEvent( event ) )
     {
       if ( event.type == sf::Event::Closed )

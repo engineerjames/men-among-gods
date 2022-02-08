@@ -1,44 +1,47 @@
 #include "Map.h"
 
-#include "ConstantIdentifiers.h"
+#include <array>
 
 namespace
 {
-const unsigned char speedtab[ 20 ][ 20 ] = {
+const std::array< std::array< unsigned char, 20 >, 20 > speedtab = {
     //  1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0
-    { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }, // 20
-    { 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }, // 19
-    { 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1 }, // 18
-    { 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1 }, // 17
-    { 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1 }, // 16
-    { 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1 }, // 15
-    { 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1 }, // 14
-    { 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0 }, // 13
-    { 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1 }, // 12
-    { 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1 }, // 11
-    { 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0 }, // 10
-    { 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0 }, // 9
-    { 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0 }, // 8
-    { 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1 }, // 7
-    { 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0 }, // 6
-    { 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0 }, // 5
-    { 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0 }, // 4
-    { 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0 }, // 3
-    { 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0 }, // 2
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }  // 1
+    { { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },  // 20
+      { 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },  // 19
+      { 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1 },  // 18
+      { 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1 },  // 17
+      { 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1 },  // 16
+      { 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1 },  // 15
+      { 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1 },  // 14
+      { 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0 },  // 13
+      { 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1 },  // 12
+      { 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1 },  // 11
+      { 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0 },  // 10
+      { 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0 },  // 9
+      { 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0 },  // 8
+      { 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1 },  // 7
+      { 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0 },  // 6
+      { 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0 },  // 5
+      { 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0 },  // 4
+      { 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0 },  // 3
+      { 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0 },  // 2
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } // 1
 };
 
 //  0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10
-static int stattab[] = { 0, 1, 1, 6, 6, 2, 3, 4, 5, 7, 4 };
+static const std::array< int, 11 > stattab = { 0, 1, 1, 6, 6, 2, 3, 4, 5, 7, 4 };
 
-#define do_idle( ani, sprite ) ( sprite == 22480 ? ani : 0 )
+int do_idle( int ani, int sprite )
+{
+  return sprite == 22480 ? ani : 0;
+}
 
 } // namespace
 
 namespace MenAmongGods
 {
 Map::Map()
-    : map_( std::make_unique< cmap[] >( MAPX * MAPY ) )
+    : map_()
     , mapMutex_()
     , ctick_()
     , ticker_()
@@ -86,7 +89,7 @@ void Map::lock()
   mapMutex_.lock();
 }
 
-int Map::speedo( int n )
+int Map::speedo( unsigned int n )
 {
   return speedtab[ map_[ n ].ch_speed ][ ctick_ ];
 }
@@ -98,12 +101,12 @@ void Map::setCTick( int newValue )
 
 cmap* Map::getMap()
 {
-  return map_.get();
+  return map_.data();
 }
 
 const cmap* Map::getMap() const
 {
-  return map_.get();
+  return map_.data();
 }
 
 void Map::unlock()
@@ -186,7 +189,7 @@ int Map::speedstep( int n, int d, int s, int update )
   return dist;
 }
 
-int Map::interpolateItemSprite( int mapIndex )
+int Map::interpolateItemSprite( unsigned int mapIndex )
 {
   unsigned int ctick = ctick_;
   switch ( map_[ mapIndex ].it_status )
@@ -334,7 +337,7 @@ int Map::interpolateItemSprite( int mapIndex )
     return map_[ mapIndex ].it_sprite + 4;
 
   case 21:
-    return map_[ mapIndex ].it_sprite + ( ticker_ & 63 ); // TODO: How to get ticker value?
+    return map_[ mapIndex ].it_sprite + ( ticker_ & 63 );
 
   default:
     std::cerr << "Unknown it_status\n";
@@ -342,9 +345,10 @@ int Map::interpolateItemSprite( int mapIndex )
   }
 }
 
-int Map::interpolateCharacterSprite( int mapIndex )
+int Map::interpolateCharacterSprite( unsigned int mapIndex )
 {
-  int tmp, update = 1;
+  int tmp {};
+  int update = 1;
 
   if ( map_[ mapIndex ].flags & STUNNED )
   {
