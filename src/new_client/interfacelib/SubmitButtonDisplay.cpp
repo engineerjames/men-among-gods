@@ -1,5 +1,7 @@
 #include "SubmitButtonDisplay.h"
 
+#include "UtilityFunctions.h"
+
 namespace MenAmongGods
 {
 SubmitButtonDisplay::SubmitButtonDisplay( const sf::RenderWindow& window, const sf::Font& font, unsigned int fontSize,
@@ -43,7 +45,7 @@ void SubmitButtonDisplay::onUserInput( const sf::Event& e )
 {
   if ( e.type == sf::Event::MouseButtonReleased && e.mouseButton.button == sf::Mouse::Button::Left )
   {
-    if ( buttonShape_.getGlobalBounds().contains( sf::Mouse::getPosition( window_ ).x, sf::Mouse::getPosition( window_ ).y ) )
+    if ( buttonShape_.getGlobalBounds().contains( MenAmongGods::getNormalizedMousePosition( window_ ) ) )
     {
       if ( submitCallback_ != nullptr && isEnabled_ )
       {
