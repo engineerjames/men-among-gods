@@ -6,7 +6,7 @@
 
 namespace MenAmongGods
 {
-UniqueCommand::UniqueCommand( std::uint32_t unique1, std::uint32_t unique2 )
+UniqueCommand::UniqueCommand( std::int32_t unique1, std::int32_t unique2 )
     : ClientCommand( ClientMessages::MessageTypes::CMD_UNIQUE )
     , unique1_( unique1 )
     , unique2_( unique2 )
@@ -24,9 +24,8 @@ bool UniqueCommand::send( sf::TcpSocket& socket ) const
   std::cerr << "unique1_ = " << unique1_ << std::endl;
   std::cerr << "unique2_ = " << unique2_ << std::endl;
 
-  // sf::Socket::Status status =
-  socket.send( buf.data(), buf.size() );
+  sf::Socket::Status status = socket.send( buf.data(), buf.size() );
 
-  return true; // status == sf::Socket::Status::Done;
+  return status == sf::Socket::Status::Done;
 }
 } // namespace MenAmongGods

@@ -6,7 +6,7 @@
 
 namespace MenAmongGods
 {
-ChallengeCommand::ChallengeCommand( std::int32_t challengeHash, std::uint32_t version, std::uint32_t raceAndSex )
+ChallengeCommand::ChallengeCommand( std::uint32_t challengeHash, std::uint32_t version, std::int32_t raceAndSex )
     : ClientCommand( ClientMessages::MessageTypes::CHALLENGE )
     , challengeHash_( challengeHash )
     , version_( version )
@@ -27,9 +27,8 @@ bool ChallengeCommand::send( sf::TcpSocket& socket ) const
   std::cerr << "VERSION: " << version_ << std::endl;
   std::cerr << "OkeyRaceInt: " << raceAndSex_ << std::endl;
 
-  // sf::Socket::Status status =
-  socket.send( buf.data(), buf.size() );
+  sf::Socket::Status status = socket.send( buf.data(), buf.size() );
 
-  return true; // status == sf::Socket::Status::Done;
+  return status == sf::Socket::Status::Done;
 }
 } // namespace MenAmongGods

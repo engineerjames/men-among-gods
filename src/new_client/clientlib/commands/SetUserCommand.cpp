@@ -5,21 +5,34 @@
 #include <cstring>
 #include <iostream>
 #include <map>
+#include <utility>
 
 namespace
 {
+
 // clang-format off
-const std::map< ClientMessages::MessageTypes, unsigned int > offSetToInputMap = { // TODO: Decide what to do with this, or eliminate it
-  { ClientMessages::MessageTypes::CMD_INPUT1, 0 },
-  { ClientMessages::MessageTypes::CMD_INPUT2, 15 },
-  { ClientMessages::MessageTypes::CMD_INPUT3, 30 },
-  { ClientMessages::MessageTypes::CMD_INPUT4, 45 },
-  { ClientMessages::MessageTypes::CMD_INPUT5, 60 },
-  { ClientMessages::MessageTypes::CMD_INPUT6, 75 },
-  { ClientMessages::MessageTypes::CMD_INPUT7, 90 },
-  { ClientMessages::MessageTypes::CMD_INPUT8, 105 } 
+const std::map< int, std::pair<int, int> > offSetToInputMap = { 
+  {  0, {0, 0}  },
+  {  1, {0, 13} },
+  {  2, {0, 26} },
+  {  3, {0, 39} },
+  {  4, {0, 52} },
+  {  5, {0, 65} },
+  {  6, {1, 0}  },
+  {  7, {1, 13} },
+  {  8, {1, 26} },
+  {  9, {1, 39} },
+  { 10, {1, 52} },
+  { 11, {1, 65} },
+  { 12, {2, 0}  },
+  { 13, {2, 13} },
+  { 14, {2, 26} },
+  { 15, {2, 39} },
+  { 16, {2, 52} },
+  { 17, {2, 65} }
   };
 // clang-format on
+
 } // namespace
 
 namespace MenAmongGods
@@ -33,176 +46,44 @@ SetUserCommand::SetUserCommand( const std::string& playerName, const std::string
 
 bool SetUserCommand::send( sf::TcpSocket& socket ) const
 {
-  int                            state = 0;
-  std::array< std::uint8_t, 16 > buffer {};
-  int                            n {};
-  bool                           completedTransfer = false;
+  // TODO: Accomodate this when we allow for saving/loading
+  // if ( ! playerData.hasPlayerDataChanged() )
+  // {
+  //   return false;
+  // }
 
-  // TODO: Refactor this so the logic is easier to follow.
-  while ( ! completedTransfer )
+  std::array< std::uint8_t, 16 > buffer {};
+
+  const constexpr int N_CHUNKS            = 18;
+  const constexpr int N_BYTES_PER_PAYLOAD = 13;
+
+  std::cerr << "Transferring user data..." << std::endl;
+  std::cerr << "playerName: " << playerName_ << std::endl;
+  std::cerr << "playerDesc: " << playerDescription_ << std::endl;
+
+  sf::Socket::Status status = sf::Socket::Status::Done;
+  for ( int i = 0; i < N_CHUNKS; ++i )
   {
     buffer[ 0 ] = ClientMessages::getValue( ClientMessages::MessageTypes::CMD_SETUSER );
+    buffer[ 1 ] = offSetToInputMap.at( i ).first;
+    buffer[ 2 ] = offSetToInputMap.at( i ).second;
 
-    switch ( state )
+    for ( int n = 0; n < N_BYTES_PER_PAYLOAD; ++n )
     {
-    case 0:
-      buffer[ 1 ] = 0;
-      buffer[ 2 ] = 0;
-      for ( n = 0; n < 13; n++ )
+      if ( i >= 6 )
       {
-        buffer[ n + 3 ] = playerName_.c_str()[ n ];
+        buffer[ n + 3 ] = playerDescription_.c_str()[ n + offSetToInputMap.at( i ).second ];
       }
-      std::cerr << "Transfering user data...";
-      break;
-    case 1:
-      buffer[ 1 ] = 0;
-      buffer[ 2 ] = 13;
-      for ( n = 0; n < 13; n++ )
+      else
       {
-        buffer[ n + 3 ] = playerName_.c_str()[ n + 13 ];
+        buffer[ n + 3 ] = playerName_.c_str()[ n + offSetToInputMap.at( i ).second ];
       }
-      break;
-    case 2:
-      buffer[ 1 ] = 0;
-      buffer[ 2 ] = 26;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerName_.c_str()[ n + 26 ];
-      }
-      break;
-    case 3:
-      buffer[ 1 ] = 0;
-      buffer[ 2 ] = 39;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerName_.c_str()[ n + 39 ];
-      }
-      break;
-    case 4:
-      buffer[ 1 ] = 0;
-      buffer[ 2 ] = 52;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerName_.c_str()[ n + 52 ];
-      }
-      break;
-    case 5:
-      buffer[ 1 ] = 0;
-      buffer[ 2 ] = 65;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerName_.c_str()[ n + 65 ];
-      }
-      break;
-
-    case 6:
-      buffer[ 1 ] = 1;
-      buffer[ 2 ] = 0;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerDescription_.c_str()[ n ];
-      }
-      break;
-    case 7:
-      buffer[ 1 ] = 1;
-      buffer[ 2 ] = 13;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerDescription_.c_str()[ n + 13 ];
-      }
-      break;
-    case 8:
-      buffer[ 1 ] = 1;
-      buffer[ 2 ] = 26;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerDescription_.c_str()[ n + 26 ];
-      }
-      break;
-    case 9:
-      buffer[ 1 ] = 1;
-      buffer[ 2 ] = 39;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerDescription_.c_str()[ n + 39 ];
-      }
-      break;
-    case 10:
-      buffer[ 1 ] = 1;
-      buffer[ 2 ] = 52;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerDescription_.c_str()[ n + 52 ];
-      }
-      break;
-    case 11:
-      buffer[ 1 ] = 1;
-      buffer[ 2 ] = 65;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerDescription_.c_str()[ n + 65 ];
-      }
-      break;
-
-    case 12:
-      buffer[ 1 ] = 2;
-      buffer[ 2 ] = 0;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerDescription_.c_str()[ n + 78 ];
-      }
-      break;
-    case 13:
-      buffer[ 1 ] = 2;
-      buffer[ 2 ] = 13;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerDescription_.c_str()[ n + 91 ];
-      }
-      break;
-    case 14:
-      buffer[ 1 ] = 2;
-      buffer[ 2 ] = 26;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerDescription_.c_str()[ n + 104 ];
-      }
-      break;
-    case 15:
-      buffer[ 1 ] = 2;
-      buffer[ 2 ] = 39;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerDescription_.c_str()[ n + 117 ];
-      }
-      break;
-    case 16:
-      buffer[ 1 ] = 2;
-      buffer[ 2 ] = 52;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerDescription_.c_str()[ n + 130 ];
-      }
-      break;
-    case 17:
-      buffer[ 1 ] = 2;
-      buffer[ 2 ] = 65;
-      for ( n = 0; n < 13; n++ )
-      {
-        buffer[ n + 3 ] = playerDescription_.c_str()[ n + 143 ];
-      }
-      std::cerr << "Transfer done.\n";
-      completedTransfer = true;
-      break;
-    default:
-      std::cerr << "Invalid state!" << std::endl;
-      return false;
     }
 
-    socket.send( buffer.data(), buffer.size() );
-    state++;
+    status = socket.send( buffer.data(), buffer.size() );
   }
 
-  return completedTransfer;
+  std::cerr << "Done transferring user data." << std::endl;
+  return status == sf::Socket::Status::Done;
 }
 } // namespace MenAmongGods
