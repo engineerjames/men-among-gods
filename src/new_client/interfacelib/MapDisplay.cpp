@@ -13,6 +13,7 @@
 #include "UtilityFunctions.h"
 
 // Commands
+#include "AttackCommand.h"
 #include "LookCommand.h"
 #include "MoveCommand.h"
 #include "TurnCommand.h"
@@ -128,6 +129,20 @@ void MapDisplay::onUserInput( const sf::Event& e )
     int m = getMapIndexFromMousePosition( mousePosition, false );
 
     commands_.emplace_back( std::make_shared< MenAmongGods::TurnCommand >( map_.getMap()[ m ].x, map_.getMap()[ m ].y ) );
+  }
+
+  if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Key::LControl ) && e.type == sf::Event::MouseButtonReleased &&
+       e.mouseButton.button == sf::Mouse::Button::Left )
+  {
+    sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
+
+    int m = getMapIndexFromMousePosition( mousePosition, true );
+
+    // Check if character is present on tile?
+    if ( map_.getMap()[ m ].ch_nr != 0 )
+    {
+      commands_.emplace_back( std::make_shared< MenAmongGods::AttackCommand >( map_.getMap()[ m ].ch_nr ) );
+    }
   }
 }
 
