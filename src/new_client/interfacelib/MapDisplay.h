@@ -34,6 +34,8 @@ public:
   void saveToFile() const;
 
 private:
+  int getMapIndexFromMousePosition( const sf::Vector2f& mousePosition, bool setTileOutline );
+
   MenAmongGods::Map&        map_;
   const PlayerData&         playerData_;
   const GraphicsCache&      cache_;

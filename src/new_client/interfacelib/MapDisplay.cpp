@@ -13,7 +13,9 @@
 #include "UtilityFunctions.h"
 
 // Commands
+#include "LookCommand.h"
 #include "MoveCommand.h"
+#include "TurnCommand.h"
 
 namespace
 {
@@ -50,6 +52,7 @@ int facing( int x, int y, int dir )
 
   return 0;
 }
+
 } // namespace
 
 namespace MenAmongGods
@@ -78,33 +81,53 @@ void MapDisplay::draw( sf::RenderTarget& target, sf::RenderStates states ) const
   }
 }
 
+int MapDisplay::getMapIndexFromMousePosition( const sf::Vector2f& mousePosition, bool setTileOutline )
+{
+  sf::Vector2f shiftedMousePosition = sf::Vector2f { mousePosition.x + ( 176 - 16 ), mousePosition.y + 8 };
+
+  int mx = 2 * shiftedMousePosition.y + shiftedMousePosition.x - ( YPOS * 2 ) - XPOS + ( ( TILEX - 34 ) / 2 * 32 );
+  int my = shiftedMousePosition.x - 2 * shiftedMousePosition.y + ( YPOS * 2 ) - XPOS + ( ( TILEX - 34 ) / 2 * 32 );
+
+  mx /= 32;
+  my /= 32;
+
+  if ( setTileOutline )
+  {
+    tileType_ = 0;
+    tileX_    = mx;
+    tileY_    = my;
+  }
+
+  // Map index
+  return mx + my * TILEX;
+}
+
 void MapDisplay::finalize()
 {
 }
 
 void MapDisplay::onUserInput( const sf::Event& e )
 {
+  // User attempts to move by left clicking on the map
   if ( e.type == sf::Event::MouseButtonReleased && e.mouseButton.button == sf::Mouse::Button::Left )
   {
     // Attempting to port similar logic from inter.c::mouse_mapbox()
     sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
 
-    mousePosition = sf::Vector2f { mousePosition.x + ( 176 - 16 ), mousePosition.y + 8 };
-
-    int mx = 2 * mousePosition.y + mousePosition.x - ( YPOS * 2 ) - XPOS + ( ( TILEX - 34 ) / 2 * 32 );
-    int my = mousePosition.x - 2 * mousePosition.y + ( YPOS * 2 ) - XPOS + ( ( TILEX - 34 ) / 2 * 32 );
-
-    mx /= 32;
-    my /= 32;
-
-    // Map index
-    int m = mx + my * TILEX;
-
-    tileType_ = 0;
-    tileX_    = mx;
-    tileY_    = my;
+    int m = getMapIndexFromMousePosition( mousePosition, true );
 
     commands_.emplace_back( std::make_shared< MenAmongGods::MoveCommand >( map_.getMap()[ m ].x, map_.getMap()[ m ].y ) );
+  }
+
+  // User faces his/her character a specific direction via a right mouse button click
+  if ( e.type == sf::Event::MouseButtonReleased && e.mouseButton.button == sf::Mouse::Button::Right )
+  {
+    // Attempting to port similar logic from inter.c::mouse_mapbox()
+    sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
+
+    int m = getMapIndexFromMousePosition( mousePosition, false );
+
+    commands_.emplace_back( std::make_shared< MenAmongGods::TurnCommand >( map_.getMap()[ m ].x, map_.getMap()[ m ].y ) );
   }
 }
 
