@@ -116,10 +116,10 @@ static_assert( sizeof( cmap ) == 64 );
 
 enum struct LogType
 {
-  INFO, // Yellow
-  CHAT, // Blue
-  LOG,  // Green
-  ERROR // Red
+  ERROR, // Red
+  INFO,  // Yellow
+  LOG,   // Green
+  CHAT   // Blue
 };
 
 inline LogType getLogType( int value )
