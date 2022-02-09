@@ -10,7 +10,12 @@
 #include "PlayerData.h"
 #include "ServerMessage.h"
 #include "TickBuffer.h"
+
+// Commands
+#include "ChallengeCommand.h"
+#include "PasswordCommand.h"
 #include "TickCommand.h"
+#include "UniqueCommand.h"
 
 namespace
 {
@@ -64,9 +69,8 @@ bool ClientConnection::login( PlayerData& playerData )
   std::array< std::uint8_t, 16 > buffer {};
 
   std::cerr << "Sending initial password...\n";
-  const std::string myEmptyPassword = playerData.getPassword();
-  buffer[ 0 ]                       = ClientMessages::getValue( ClientMessages::MessageTypes::PASSWD );
-  clientSocket_.send( buffer.data(), buffer.size() );
+  MenAmongGods::PasswordCommand passwordCommand { playerData.getPassword() };
+  passwordCommand.send( clientSocket_ );
 
   // Assume we're creating a new character each time.
   // Normally you'd need to send the 'key' structure (username, pass1, pass2,
