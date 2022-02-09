@@ -1,8 +1,10 @@
 #include "SayCommand.h"
 
 #include <SFML/Network.hpp>
+
 #include <cstdint>
 #include <cstring>
+#include <iostream>
 #include <map>
 
 namespace
@@ -78,6 +80,8 @@ bool SayCommand::send( sf::TcpSocket& socket ) const
   std::strncpy( stringBuffer.data(), statement_.c_str(), statement_.length() );
 
   bool inputSent = true;
+
+  std::cerr << "Sending cmd: " << statement_ << std::endl;
 
   inputSent &= sendPartialMessage( socket, stringBuffer, ClientMessages::MessageTypes::CMD_INPUT1 );
   inputSent &= sendPartialMessage( socket, stringBuffer, ClientMessages::MessageTypes::CMD_INPUT2 );

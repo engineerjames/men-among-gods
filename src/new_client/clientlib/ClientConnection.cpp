@@ -15,6 +15,7 @@
 #include "ChallengeCommand.h"
 #include "NewLoginCommand.h"
 #include "PasswordCommand.h"
+#include "SayCommand.h"
 #include "SetUserCommand.h"
 #include "TickCommand.h"
 #include "UniqueCommand.h"
@@ -117,8 +118,8 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( PlayerDa
     return ClientConnection::ProcessStatus::ERROR;
   }
 
-  unsigned int                   tmp {};
-  static int                     capcnt {};
+  unsigned int tmp {};
+  static int   capcnt {};
 
   ServerMessages::MessageTypes serverMsgType = ServerMessages::getType( buffer[ 0 ] );
 
@@ -281,68 +282,8 @@ void ClientConnection::sendHardwareInfo()
 
 void ClientConnection::say( const char* input )
 {
-  using ClientMessages::MessageTypes;
-
-  int                    n {};
-  std::array< char, 16 > buf {};
-  buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT1 );
-  for ( n = 0; n < 15; n++ )
-  {
-    buf[ n + 1 ] = input[ n ];
-  }
-  clientSocket_.send( buf.data(), buf.size() );
-
-  buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT2 );
-  for ( n = 0; n < 15; n++ )
-  {
-    buf[ n + 1 ] = input[ n + 15 ];
-  }
-
-  clientSocket_.send( buf.data(), buf.size() );
-
-  buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT3 );
-  for ( n = 0; n < 15; n++ )
-  {
-    buf[ n + 1 ] = input[ n + 30 ];
-  }
-
-  clientSocket_.send( buf.data(), buf.size() );
-
-  buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT4 );
-  for ( n = 0; n < 15; n++ )
-  {
-    buf[ n + 1 ] = input[ n + 45 ];
-  }
-
-  clientSocket_.send( buf.data(), buf.size() );
-  buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT5 );
-  for ( n = 0; n < 15; n++ )
-  {
-    buf[ n + 1 ] = input[ n + 60 ];
-  }
-
-  clientSocket_.send( buf.data(), buf.size() );
-  buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT6 );
-  for ( n = 0; n < 15; n++ )
-  {
-    buf[ n + 1 ] = input[ n + 75 ];
-  }
-
-  clientSocket_.send( buf.data(), buf.size() );
-  buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT7 );
-  for ( n = 0; n < 15; n++ )
-  {
-    buf[ n + 1 ] = input[ n + 90 ];
-  }
-
-  clientSocket_.send( buf.data(), buf.size() );
-  buf[ 0 ] = ClientMessages::getValue( MessageTypes::CMD_INPUT8 );
-  for ( n = 0; n < 15; n++ )
-  {
-    buf[ n + 1 ] = input[ n + 105 ];
-  }
-
-  clientSocket_.send( buf.data(), buf.size() );
+  MenAmongGods::SayCommand sayCommand { input };
+  sayCommand.send( clientSocket_ );
 }
 
 bool ClientConnection::sendTick()
