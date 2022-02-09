@@ -2,8 +2,9 @@
 
 #include <iostream>
 
-#include "ConstantIdentifiers.h"
 #include "ColorPalette.h"
+#include "ConstantIdentifiers.h"
+#include "SayCommand.h"
 
 namespace MenAmongGods
 {
@@ -14,7 +15,6 @@ PlayerTextInputDisplay::PlayerTextInputDisplay( const sf::Font& font )
     , maxCharacters_( 45 )
     , font_( font )
     , text_()
-    , commandList_()
 {
   drawableText_.setFont( font_ );
   drawableText_.setCharacterSize( FONT_SIZE );
@@ -56,7 +56,7 @@ void PlayerTextInputDisplay::onUserInput( const sf::Event& e )
   if ( e.text.unicode == 13 )
   {
     // Copy command into command list
-    commandList_.push_back( text_ );
+    commands_.emplace_back( std::make_shared< MenAmongGods::SayCommand >( text_ ) );
     text_.clear();
   }
 
@@ -71,15 +71,5 @@ void PlayerTextInputDisplay::setPosition( const sf::Vector2f& newPosition )
 void PlayerTextInputDisplay::finalize()
 {
   // Do nothing for now
-}
-
-void PlayerTextInputDisplay::getAndClearCommands( std::vector< std::string >& outList )
-{
-  for ( const auto& s : commandList_ )
-  {
-    outList.push_back( s );
-  }
-
-  commandList_.clear();
 }
 } // namespace MenAmongGods

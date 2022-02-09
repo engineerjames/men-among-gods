@@ -264,6 +264,10 @@ void MainUi::update()
   {
     addMessage( m.type, m.msg );
   }
+
+  std::vector< std::shared_ptr< MenAmongGods::ClientCommand > > commands = userInput_.getCommands();
+  commands_.insert( std::end( commands_ ), std::begin( commands ), std::end( commands ) );
+  userInput_.clearCommands();
 }
 
 void MainUi::finalize()

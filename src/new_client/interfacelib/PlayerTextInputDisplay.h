@@ -15,7 +15,6 @@ public:
   virtual ~PlayerTextInputDisplay() override = default;
 
   void setPosition( const sf::Vector2f& newPosition );
-  void getAndClearCommands( std::vector< std::string >& outList );
 
   virtual void update() override;
   virtual void onUserInput( const sf::Event& e ) override;
@@ -23,11 +22,10 @@ public:
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
 
 private:
-  sf::Text                   drawableText_;
-  unsigned int               maxCharacters_;
-  const sf::Font&            font_;
-  std::string                text_;
-  std::vector< std::string > commandList_;
+  sf::Text        drawableText_;
+  unsigned int    maxCharacters_;
+  const sf::Font& font_;
+  std::string     text_;
 };
 } // namespace MenAmongGods
 #endif
