@@ -349,7 +349,7 @@ void PlayerData::setRaceAndSex( std::string race, std::string sex )
   MenAmongGods::Sex sexEnum = MenAmongGods::Sex::Male;
   if ( sex == "Female" )
   {
-    sexEnum = MenAmongGods::Sex::Male;
+    sexEnum = MenAmongGods::Sex::Female;
   }
 
   setRaceAndSex( getOkeyRaceValue( raceEnum, sexEnum ) );
