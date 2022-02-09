@@ -20,9 +20,9 @@ GraphicsCache::GraphicsCache()
 
 void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int howMany )
 {
-  struct zip*      za = nullptr;
-  struct zip_file* zf = nullptr;
-  auto buf = std::make_unique<char[]>(2*1024*1024); // 2MB
+  struct zip*      za  = nullptr;
+  struct zip_file* zf  = nullptr;
+  auto             buf = std::make_unique< char[] >( 2 * 1024 * 1024 ); // 2MB
 
   int errors {};
   za = zip_open( filePath.c_str(), 0, &errors );
@@ -80,6 +80,9 @@ void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int
         // Great, some images have masks of 254 0 254 as well
         newImage.createMaskFromColor( sf::Color { 0xFF00FFFF } );
         newImage.createMaskFromColor( sf::Color { 0xFE00FEFF } );
+
+        // Yeah, there's just a FEW that have 251 0 251 as well...
+        newImage.createMaskFromColor( sf::Color { 0xFB00FBFF } );
 
         // Load in textures and sprites for now, though this is probably unnecessary work
         newTexture.loadFromImage( newImage );
