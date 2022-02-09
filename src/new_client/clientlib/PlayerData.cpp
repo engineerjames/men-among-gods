@@ -306,7 +306,7 @@ look& PlayerData::getLook()
 
 void PlayerData::setName( std::string newName )
 {
-  std::strncpy( okey_.name, newName.c_str(), newName.length() );
+  std::strncpy( playerInfo_.cname, newName.c_str(), newName.length() );
 }
 
 void PlayerData::setPassword( std::string password )
@@ -349,13 +349,13 @@ void PlayerData::setRaceAndSex( std::string race, std::string sex )
   MenAmongGods::Sex sexEnum = MenAmongGods::Sex::Male;
   if ( sex == "Female" )
   {
-    sexEnum = MenAmongGods::Sex::Male;
+    sexEnum = MenAmongGods::Sex::Female;
   }
 
   setRaceAndSex( getOkeyRaceValue( raceEnum, sexEnum ) );
 }
 
-long unsigned int PlayerData::getRaceAndSex() const
+int PlayerData::getRaceAndSex() const
 {
   return okey_.race;
 }

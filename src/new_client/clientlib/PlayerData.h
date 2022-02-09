@@ -70,7 +70,7 @@ public:
   void setClientShouldHideWalls( bool shouldHideWalls );
   void setOkeyName( char ( &pdataName )[ 40 ] );
 
-  long unsigned int getRaceAndSex() const;
+  int               getRaceAndSex() const;
   std::string       getPassword() const;
   OkeyPasswordType  getPasswordOkeyValues() const;
   long unsigned int getUserNumber() const;

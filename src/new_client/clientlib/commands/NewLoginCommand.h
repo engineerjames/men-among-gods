@@ -3,20 +3,18 @@
 
 #include "ClientCommand.h"
 
-namespace MenAmongGods // TODO: Still need to implement this class
+namespace MenAmongGods
 {
 class NewLoginCommand : public ClientCommand
 {
 public:
-  NewLoginCommand( std::uint32_t newloginHash, std::uint32_t version, std::uint32_t raceAndSex );
+  NewLoginCommand();
   virtual ~NewLoginCommand() = default;
 
   virtual bool send( sf::TcpSocket& socket ) const override;
 
 private:
-  std::uint32_t newloginHash_;
-  std::uint32_t version_;
-  std::uint32_t raceAndSex_;
+  // Nothing for now
 };
 } // namespace MenAmongGods
 

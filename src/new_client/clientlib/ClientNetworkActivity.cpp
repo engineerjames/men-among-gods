@@ -112,7 +112,7 @@ void ClientNetworkActivity::startNetworkActivity()
       commands_.clear();
     }
 
-    // This is really stupid, but somehow by injectingthis delay, the
+    // This is really stupid, but somehow by injecting this delay, the
     // graphics suddently act normal.  Processing updates too quickly?
     std::this_thread::sleep_for( std::chrono::milliseconds( 50 ) );
   }
