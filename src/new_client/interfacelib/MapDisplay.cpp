@@ -56,13 +56,12 @@ namespace MenAmongGods
 {
 
 MapDisplay::MapDisplay( MenAmongGods::Map& map, const PlayerData& playerData, const GraphicsCache& cache, const GraphicsIndex& index,
-                        TickBuffer& tickBuffer, const sf::RenderWindow& window )
+                        const sf::RenderWindow& window )
     : MenAmongGods::Component()
     , map_( map )
     , playerData_( playerData )
     , cache_( cache )
     , index_( index )
-    , tickBuffer_( tickBuffer )
     , window_( window )
     , spritesToDraw_()
     , tileType_()

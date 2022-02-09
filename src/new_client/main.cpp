@@ -46,7 +46,7 @@ int main()
   auto              tickBufferPtr = std::make_shared< TickBuffer >( playerData, map );
   auto              client        = std::make_shared< ClientNetworkActivity >( *tickBufferPtr, playerData, MHOST, MHOST_PORT );
 
-  auto mapPtr     = std::make_shared< MenAmongGods::MapDisplay >( map, playerData, *gfxCache, *idxCache, *tickBufferPtr, window );
+  auto mapPtr     = std::make_shared< MenAmongGods::MapDisplay >( map, playerData, *gfxCache, *idxCache, window );
   auto mainUiPtr  = std::make_shared< MenAmongGods::MainUi >( playerData, *gfxCache, *fontCache );
   auto loginUiPtr = std::make_shared< MenAmongGods::LoginUi >( playerData, window, *fontCache, LOGIN_FONT_SIZE );
 

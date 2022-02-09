@@ -19,7 +19,7 @@ class MapDisplay : public MenAmongGods::Component
 {
 public:
   MapDisplay( MenAmongGods::Map& map, const PlayerData& playerData, const GraphicsCache& cache, const GraphicsIndex& index,
-              TickBuffer& tickBuffer, const sf::RenderWindow& window );
+              const sf::RenderWindow& window );
   virtual ~MapDisplay() = default;
 
   // Component interface
@@ -38,7 +38,6 @@ private:
   const PlayerData&         playerData_;
   const GraphicsCache&      cache_;
   const GraphicsIndex&      index_;
-  TickBuffer&               tickBuffer_;
   const sf::RenderWindow&   window_;
   std::vector< sf::Sprite > spritesToDraw_;
   int                       tileType_;

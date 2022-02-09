@@ -19,7 +19,6 @@
 #include "MapDisplay.h"
 #include "PlayerData.h"
 #include "ResourceLocations.h"
-#include "TickBuffer.h"
 
 int main()
 {
@@ -44,11 +43,9 @@ int main()
   pdata.loadFromFile( "test/player.archive" );
 
   MenAmongGods::Map map {};
-  TickBuffer        tickbuffer { pdata, map };
-
   auto fontCache = std::make_unique< MenAmongGods::FontCache >( MenAmongGods::getFontRoot() + "onuava.ttf" );
 
-  auto mapPtr    = new MenAmongGods::MapDisplay( map, pdata, *cache, index, tickbuffer, window );
+  auto mapPtr    = new MenAmongGods::MapDisplay( map, pdata, *cache, index, window );
   auto mainUiPtr = new MenAmongGods::MainUi( pdata, *cache, *fontCache );
 
   mapPtr->loadFromFile( "test/mapfile.archive" );
