@@ -224,14 +224,6 @@ void MainUi::onUserInput( const sf::Event& e )
   lifeDisplay_.onUserInput( e );
   playerInventory_.onUserInput( e );
   userOptionPanel_.onUserInput( e );
-
-  if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Key::LControl ) && sf::Keyboard::isKeyPressed( sf::Keyboard::Key::N ) )
-  {
-    std::cerr << "Enabling display names and health!\n";
-    playerData_.setClientShouldShowNames( true );
-    playerData_.setClientShouldHideWalls( true );
-    playerData_.setClientShouldShowPercentHealth( true );
-  }
 }
 
 void MainUi::update()
