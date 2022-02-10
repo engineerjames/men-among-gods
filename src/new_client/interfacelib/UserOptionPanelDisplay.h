@@ -11,10 +11,10 @@ class PlayerData;
 
 namespace MenAmongGods
 {
-class UserOptionPanelDisplay : MenAmongGods::Component
+class UserOptionPanelDisplay : public MenAmongGods::Component
 {
 public:
-  UserOptionPanelDisplay( PlayerData& playerData );
+  UserOptionPanelDisplay( const sf::RenderWindow& window, PlayerData& playerData );
 
   // Component Interface
   virtual void update() override;
@@ -25,9 +25,13 @@ public:
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
 
 private:
-  PlayerData& playerData_;
+  const sf::RenderWindow& window_;
+  PlayerData&             playerData_;
 
-  sf::RectangleShape modeRectangle_;
+  sf::RectangleShape fastModeRectangle_;
+  sf::RectangleShape normModeRectangle_;
+  sf::RectangleShape slowModeRectangle_;
+
   sf::RectangleShape hideWallsRectangle_;
   sf::RectangleShape hideNamesRectangle_;
   sf::RectangleShape hideHealthRectangle_;

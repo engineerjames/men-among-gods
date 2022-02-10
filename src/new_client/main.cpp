@@ -47,7 +47,7 @@ int main()
   auto              client        = std::make_shared< ClientNetworkActivity >( *tickBufferPtr, playerData, MHOST, MHOST_PORT );
 
   auto mapPtr     = std::make_shared< MenAmongGods::MapDisplay >( fontCache->getFont(), map, playerData, *gfxCache, *idxCache, window );
-  auto mainUiPtr  = std::make_shared< MenAmongGods::MainUi >( playerData, *gfxCache, *fontCache );
+  auto mainUiPtr  = std::make_shared< MenAmongGods::MainUi >( window, playerData, *gfxCache, *fontCache );
   auto loginUiPtr = std::make_shared< MenAmongGods::LoginUi >( playerData, window, *fontCache, LOGIN_FONT_SIZE );
 
   // Populate components

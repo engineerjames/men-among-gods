@@ -173,6 +173,11 @@ int PlayerData::getMode() const
   return clientSidePlayerInfo_.mode;
 }
 
+void PlayerData::setMode( int newMode )
+{
+  clientSidePlayerInfo_.mode = newMode;
+}
+
 std::string PlayerData::lookup( int nr, unsigned short id ) const
 {
   static std::array< char, 40 > buf {};

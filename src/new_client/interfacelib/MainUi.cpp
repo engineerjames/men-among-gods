@@ -13,7 +13,7 @@
 namespace MenAmongGods
 {
 
-MainUi::MainUi( PlayerData& pdata, const GraphicsCache& gfxCache, const FontCache& fontCache )
+MainUi::MainUi( const sf::RenderWindow& window, PlayerData& pdata, const GraphicsCache& gfxCache, const FontCache& fontCache )
     : MenAmongGods::Component()
     , playerData_( pdata )
     , font_( fontCache.getFont() )
@@ -30,6 +30,7 @@ MainUi::MainUi( PlayerData& pdata, const GraphicsCache& gfxCache, const FontCach
     , msgBox_()
     , userInput_( font_ )
     , playerInventory_( pdata, gfxCache )
+    , userOptionPanel_( window, pdata )
     , background_()
 {
   goldDisplay_.setPosition( sf::Vector2f { MenAmongGods::goldDisplayPosition } );
@@ -213,6 +214,7 @@ void MainUi::draw( sf::RenderTarget& target, sf::RenderStates states ) const
   target.draw( skillsAndAttributes_, states );
   target.draw( lifeDisplay_, states );
   target.draw( playerInventory_, states );
+  target.draw( userOptionPanel_, states );
 }
 
 void MainUi::onUserInput( const sf::Event& e )
@@ -221,6 +223,7 @@ void MainUi::onUserInput( const sf::Event& e )
   skillsAndAttributes_.onUserInput( e );
   lifeDisplay_.onUserInput( e );
   playerInventory_.onUserInput( e );
+  userOptionPanel_.onUserInput( e );
 
   if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Key::LControl ) && sf::Keyboard::isKeyPressed( sf::Keyboard::Key::N ) )
   {
@@ -260,7 +263,8 @@ void MainUi::update()
 
   playerInventory_.update();
 
-  playerData_.unlock();
+  // TODO: Fix naming consistency (user vs. client, vs. player)
+  userOptionPanel_.update();
 
   // Update JustifiableText
   wvValue_.update();
@@ -272,6 +276,8 @@ void MainUi::update()
   {
     addMessage( m.type, m.msg );
   }
+
+  playerData_.unlock();
 }
 
 void MainUi::populateCommands( std::vector< std::shared_ptr< ClientCommand > >& outCommands )
@@ -292,5 +298,6 @@ void MainUi::finalize()
   wvValue_.finalize();
   avValue_.finalize();
   expValue_.finalize();
+  userOptionPanel_.finalize();
 }
 } // namespace MenAmongGods
