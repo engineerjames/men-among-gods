@@ -168,6 +168,11 @@ PlayerData::PlayerData()
   setClientShouldShowPercentHealth( true );
 }
 
+int PlayerData::getMode() const
+{
+  return clientSidePlayerInfo_.mode;
+}
+
 std::string PlayerData::lookup( int nr, unsigned short id ) const
 {
   static std::array< char, 40 > buf {};

@@ -40,6 +40,13 @@ static const sf::Vector2f manaLabelPosition { 4.0f, 295.0f };
 static const sf::Vector2f manaCurrentValuePosition { 111.0f, 295.0f };
 static const sf::Vector2f manaMaxValuePosition { 136.0f, 295.0f };
 
+// Client options on the bottom-right
+static const sf::Vector2f  clientOptionsOrigin { 608.0f, 554.0f };
+static const constexpr int CLIENT_SELECTION_BOX_WIDTH  = 45;
+static const constexpr int CLIENT_SELECTION_BOX_HEIGHT = 12;
+static const constexpr int CLIENT_SELECTION_SPACING_X  = 48;
+static const constexpr int CLIENT_SELECTION_SPACING_Y  = 15;
+
 } // namespace MenAmongGods
 
 #endif

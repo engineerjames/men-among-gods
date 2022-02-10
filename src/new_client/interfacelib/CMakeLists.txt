@@ -20,6 +20,7 @@ set( sources
     SkillsAndAttributesDisplay.cpp
     SubmitButtonDisplay.cpp
     TextInputDisplay.cpp
+    UserOptionPanelDisplay.cpp
 )
 
 set( headers 
@@ -44,6 +45,7 @@ set( headers
     SubmitButtonDisplay.h
     TextInputDisplay.h
     UiPositions.h
+    UserOptionPanelDisplay.h
     UtilityFunctions.h
 )
 

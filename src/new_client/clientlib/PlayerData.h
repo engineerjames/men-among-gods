@@ -43,6 +43,7 @@ public:
   int          clientShouldShowNames() const;
   int          clientShouldShowPercentHealth() const;
   int          getAttackTarget() const;
+  int          getMode() const;
 
   // TODO: Eliminate this series of "get" calls--need just a plethora of get/set commands
   // for the underlying data values so they can be properly protected from multi-threaded
