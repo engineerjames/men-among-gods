@@ -35,6 +35,15 @@ UserOptionPanelDisplay::UserOptionPanelDisplay( const sf::RenderWindow& window, 
   normModeRectangle_.setPosition( MenAmongGods::clientOptionsOrigin + sf::Vector2f { MenAmongGods::CLIENT_SELECTION_SPACING_X, 0.0f } );
   slowModeRectangle_.setPosition( MenAmongGods::clientOptionsOrigin +
                                   sf::Vector2f { 2.0f * MenAmongGods::CLIENT_SELECTION_SPACING_X, 0.0f } );
+
+  hideHealthRectangle_.setPosition( MenAmongGods::clientOptionsOrigin +
+                                    sf::Vector2f { 3.0f * MenAmongGods::CLIENT_SELECTION_SPACING_X, 0.0f } );
+
+  hideNamesRectangle_.setPosition( MenAmongGods::clientOptionsOrigin + sf::Vector2f { 2.0f * MenAmongGods::CLIENT_SELECTION_SPACING_X,
+                                                                                      MenAmongGods::CLIENT_SELECTION_SPACING_Y } );
+
+  hideWallsRectangle_.setPosition( MenAmongGods::clientOptionsOrigin + sf::Vector2f { 1.0f * MenAmongGods::CLIENT_SELECTION_SPACING_X,
+                                                                                      MenAmongGods::CLIENT_SELECTION_SPACING_Y } );
 }
 
 void UserOptionPanelDisplay::update()
@@ -61,6 +70,21 @@ void UserOptionPanelDisplay::draw( sf::RenderTarget& target, sf::RenderStates st
     target.draw( normModeRectangle_, states );
     break;
   }
+
+  if ( playerData_.clientShouldShowPercentHealth() )
+  {
+    target.draw( hideHealthRectangle_, states );
+  }
+
+  if ( playerData_.clientShouldShowNames() )
+  {
+    target.draw( hideNamesRectangle_, states );
+  }
+
+  if ( playerData_.areWallsHidden() != 0 ) // TODO: Update areWallsHidden() to return a bool
+  {
+    target.draw( hideWallsRectangle_, states );
+  }
 }
 
 void UserOptionPanelDisplay::onUserInput( const sf::Event& e )
@@ -70,6 +94,7 @@ void UserOptionPanelDisplay::onUserInput( const sf::Event& e )
   {
     sf::Vector2f mousePosition = MenAmongGods::getNormalizedMousePosition( window_ );
 
+    // Slow/Normal/Fast modes
     if ( slowModeRectangle_.getGlobalBounds().contains( mousePosition ) )
     {
       playerData_.setMode( 0 );
@@ -81,6 +106,31 @@ void UserOptionPanelDisplay::onUserInput( const sf::Event& e )
     else if ( fastModeRectangle_.getGlobalBounds().contains( mousePosition ) )
     {
       playerData_.setMode( 2 );
+    }
+
+    // Hide walls - true->false, false->true when clicked
+    if ( hideWallsRectangle_.getGlobalBounds().contains( mousePosition ) )
+    {
+      if ( playerData_.areWallsHidden() != 0 )
+      {
+        playerData_.setClientShouldHideWalls( false );
+      }
+      else
+      {
+        playerData_.setClientShouldHideWalls( true );
+      }
+    }
+
+    // Hide health - true->false, false->true when clicked
+    if ( hideHealthRectangle_.getGlobalBounds().contains( mousePosition ) )
+    {
+      playerData_.setClientShouldShowPercentHealth( ! playerData_.clientShouldShowPercentHealth() );
+    }
+
+    // Hide names - true->false, false->true when clicked
+    if ( hideNamesRectangle_.getGlobalBounds().contains( mousePosition ) )
+    {
+      playerData_.setClientShouldShowNames( ! playerData_.clientShouldShowNames() );
     }
   }
 }
