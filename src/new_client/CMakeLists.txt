@@ -15,3 +15,4 @@ if (ENABLE_CLANG_TIDY)
 endif()
 
 add_subdirectory(interfacelib)
+add_subdirectory(loglib)
