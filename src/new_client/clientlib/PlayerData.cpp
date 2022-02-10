@@ -1,5 +1,6 @@
 #include "PlayerData.h"
 
+#include <cstring>
 #include <fstream>
 #include <iostream>
 
@@ -142,6 +143,12 @@ int getOkeyRaceValue( MenAmongGods::Race race, MenAmongGods::Sex sex )
 
 } // namespace
 
+// NOLINTNEXTLINE
+std::map< unsigned short, looks > PlayerData::lookMap_ {};
+
+// NOLINTNEXTLINE
+int PlayerData::lookAt_ {};
+
 PlayerData::PlayerData()
     : playerInfo_()
     , playerDataHasChanged_( true ) // Temporarily default to true
@@ -150,6 +157,7 @@ PlayerData::PlayerData()
     , skillsList_( &static_skilltab[ 0 ] )
     , look_()
     , password_()
+    , messages_()
 {
   for ( unsigned int i = 0; i < SKILLTAB_SIZE; ++i )
   {
@@ -158,6 +166,104 @@ PlayerData::PlayerData()
 
   setClientShouldShowNames( true );
   setClientShouldShowPercentHealth( true );
+}
+
+int PlayerData::getMode() const
+{
+  return clientSidePlayerInfo_.mode;
+}
+
+void PlayerData::setMode( int newMode )
+{
+  clientSidePlayerInfo_.mode = newMode;
+}
+
+std::string PlayerData::lookup( int nr, unsigned short id ) const
+{
+  static std::array< char, 40 > buf {};
+
+  if ( id && id != lookMap_[ nr ].id )
+  {
+    lookMap_[ nr ].known     = 0;
+    lookMap_[ nr ].name[ 0 ] = 0;
+    lookMap_[ nr ].proz      = 0;
+    lookMap_[ nr ].id        = id;
+  }
+
+  if ( ! lookMap_[ nr ].known )
+  {
+    lookAt_ = nr;
+  }
+
+  if ( ! id )
+  {
+    return lookMap_[ nr ].name;
+  }
+
+  if ( clientShouldShowNames() && clientShouldShowPercentHealth() )
+  {
+    if ( lookMap_[ nr ].proz )
+    {
+      sprintf( buf.data(), "%s %d%%", lookMap_[ nr ].name, lookMap_[ nr ].proz );
+      return buf.data();
+    }
+    else
+    {
+      return lookMap_[ nr ].name;
+    }
+  }
+  else if ( clientShouldShowNames() )
+  {
+    return lookMap_[ nr ].name;
+  }
+  else if ( clientShouldShowPercentHealth() )
+  {
+    if ( lookMap_[ nr ].proz )
+    {
+      sprintf( buf.data(), "%d%%", lookMap_[ nr ].proz );
+      return buf.data();
+    }
+    else
+    {
+      return "";
+    }
+  }
+  else
+  {
+    return "";
+  }
+}
+
+// Usage like set_look_proz(map[m].ch_nr,map[m].ch_id,map[m].ch_proz);
+void PlayerData::set_look_proz( unsigned short nr, unsigned short id, int proz ) const
+{
+  if ( id != lookMap_[ nr ].id )
+  {
+    lookMap_[ nr ].known     = 0;
+    lookMap_[ nr ].name[ 0 ] = 0;
+    lookMap_[ nr ].proz      = 0;
+    lookMap_[ nr ].id        = id;
+  }
+
+  lookMap_[ nr ].proz = ( unsigned char ) proz;
+}
+
+void PlayerData::add_look( unsigned short nr, char* name, unsigned short id )
+{
+  std::cerr << "ADD_LOOK" << std::endl;
+  std::cerr << "nr=" << nr << ", name=" << name << ", id=" << id << std::endl;
+  if ( id != lookMap_[ nr ].id )
+  {
+    lookMap_[ nr ].known     = 0;
+    lookMap_[ nr ].name[ 0 ] = 0;
+    lookMap_[ nr ].proz      = 0;
+  }
+
+  std::strncpy( lookMap_[ nr ].name, name, 16 );
+  lookMap_[ nr ].name[ 16 ] = 0;
+  lookMap_[ nr ].known      = 1;
+  lookMap_[ nr ].proz       = 0;
+  lookMap_[ nr ].id         = id;
 }
 
 void PlayerData::setRaceAndSex( long unsigned int race )

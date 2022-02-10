@@ -11,6 +11,7 @@
 #include "PlayerLogDisplay.h"
 #include "PlayerTextInputDisplay.h"
 #include "SkillsAndAttributesDisplay.h"
+#include "UserOptionPanelDisplay.h"
 
 class PlayerData;
 class GraphicsCache;
@@ -22,7 +23,7 @@ class FontCache;
 class MainUi : public MenAmongGods::Component
 {
 public:
-  MainUi( PlayerData& pdata, const GraphicsCache& gfxCache, const FontCache& fontCache );
+  MainUi( const sf::RenderWindow& window, PlayerData& pdata, const GraphicsCache& gfxCache, const FontCache& fontCache );
   ~MainUi() = default;
 
   void         addMessage( LogType type, std::string text );
@@ -65,6 +66,7 @@ private:
   PlayerLogDisplay       msgBox_;
   PlayerTextInputDisplay userInput_;
   PlayerInventoryDisplay playerInventory_;
+  UserOptionPanelDisplay userOptionPanel_;
 
   sf::Sprite background_;
 };

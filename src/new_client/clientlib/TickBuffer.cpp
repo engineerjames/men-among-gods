@@ -793,20 +793,26 @@ void TickBuffer::sv_look4( const unsigned char* buf )
 
 void TickBuffer::sv_look5( const unsigned char* buf )
 {
+  std::cerr << "SV_LOOK5: " << std::endl;
   for ( int n = 0; n < 15; n++ )
+  {
     playerData_.getLook().name[ n ] = buf[ n + 1 ];
+  }
+
   playerData_.getLook().name[ 15 ] = 0;
 
   if ( ! playerData_.getLook().extended )
   {
     if ( ! playerData_.getLook().autoflag )
     {
-      // show_look  = 1;
-      // look       = tmplook;
+      // playerData_.setShowLook( 1 );
+      // playerData_.setLook( tmplook );
       // look_timer = 10 * TICKS;
     }
-    // add_look(playerData_.getLook().nr, playerData_.getLook().name, playerData_.getLook().id);
+    playerData_.add_look( playerData_.getLook().nr, playerData_.getLook().name, playerData_.getLook().id );
   }
+
+  std::cerr << "look: name=" << playerData_.getLook().name << std::endl;
 }
 
 void TickBuffer::sv_look6( const unsigned char* buf )
@@ -905,7 +911,7 @@ int TickBuffer::sv_ignore( const unsigned char* buf )
     d   = static_cast< int >( time( NULL ) - start );
     if ( d == 0 )
     {
-      // NOLINTNEXTLINE 
+      // NOLINTNEXTLINE
       d = 1;
     }
   }
