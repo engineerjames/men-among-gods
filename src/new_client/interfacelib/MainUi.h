@@ -1,5 +1,5 @@
-#ifndef MAIN_UI_H
-#define MAIN_UI_H
+#ifndef MEN_AMONG_GODS_MAIN_UI_H
+#define MEN_AMONG_GODS_MAIN_UI_H
 
 #include <SFML/Graphics.hpp>
 
@@ -30,6 +30,8 @@ public:
   virtual void update() override;
   virtual void onUserInput( const sf::Event& e ) override;
   virtual void finalize() override;
+
+  virtual void populateCommands( std::vector< std::shared_ptr< ClientCommand > >& outCommands ) override;
 
 private:
   PlayerData& playerData_;

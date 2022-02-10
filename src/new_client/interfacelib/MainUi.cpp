@@ -264,10 +264,15 @@ void MainUi::update()
   {
     addMessage( m.type, m.msg );
   }
+}
 
-  std::vector< std::shared_ptr< MenAmongGods::ClientCommand > > commands = userInput_.getCommands();
-  commands_.insert( std::end( commands_ ), std::begin( commands ), std::end( commands ) );
-  userInput_.clearCommands();
+void MainUi::populateCommands( std::vector< std::shared_ptr< ClientCommand > >& outCommands )
+{
+  userInput_.populateCommands( outCommands );
+  skillsAndAttributes_.populateCommands( outCommands );
+  lifeDisplay_.populateCommands( outCommands );
+  msgBox_.populateCommands( outCommands );
+  playerInventory_.populateCommands( outCommands );
 }
 
 void MainUi::finalize()

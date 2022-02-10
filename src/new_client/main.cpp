@@ -105,9 +105,7 @@ int main()
       c->update();
 
       // Get all commands from components
-      std::vector< std::shared_ptr< MenAmongGods::ClientCommand > > commands = c->getCommands();
-      commandList.insert( std::end( commandList ), std::begin( commands ), std::end( commands ) );
-      c->clearCommands();
+      c->populateCommands( commandList );
     }
 
     // Pass off components to network-layer, and clear the command list for the next frame

@@ -9,13 +9,13 @@ Component::Component()
 {
 }
 
-const std::vector< std::shared_ptr< ClientCommand > >& Component::getCommands() const
+void Component::populateCommands( std::vector< std::shared_ptr< ClientCommand > >& outCommands )
 {
-  return commands_;
-}
+  // Insert our commands into the end of the command list passed in
+  outCommands.insert( std::end( outCommands ), std::begin( commands_ ), std::end( commands_ ) );
 
-void Component::clearCommands()
-{
+  // To ensure we don't keep re-inserting the same commands, clear our internal command list.
   commands_.clear();
 }
+
 } // namespace MenAmongGods

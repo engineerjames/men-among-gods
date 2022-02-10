@@ -28,8 +28,7 @@ public:
   virtual void finalize() = 0;
 
   // Grab commands to send to our networking thread
-  virtual const std::vector< std::shared_ptr< ClientCommand > >& getCommands() const;
-  virtual void                                                   clearCommands();
+  virtual void populateCommands( std::vector< std::shared_ptr< ClientCommand > >& outCommands );
 
   Component();
   Component( const Component& ) = default;
