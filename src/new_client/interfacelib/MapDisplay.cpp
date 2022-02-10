@@ -3,6 +3,7 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <fstream>
 #include <iostream>
+#include <set>
 
 #include "ConstantIdentifiers.h"
 #include "GraphicsCache.h"
@@ -59,9 +60,10 @@ int facing( int x, int y, int dir )
 namespace MenAmongGods
 {
 
-MapDisplay::MapDisplay( MenAmongGods::Map& map, const PlayerData& playerData, const GraphicsCache& cache, const GraphicsIndex& index,
-                        const sf::RenderWindow& window )
+MapDisplay::MapDisplay( const sf::Font& font, MenAmongGods::Map& map, const PlayerData& playerData, const GraphicsCache& cache,
+                        const GraphicsIndex& index, const sf::RenderWindow& window )
     : MenAmongGods::Component()
+    , font_( font )
     , map_( map )
     , playerData_( playerData )
     , cache_( cache )
@@ -71,6 +73,8 @@ MapDisplay::MapDisplay( MenAmongGods::Map& map, const PlayerData& playerData, co
     , tileType_()
     , tileX_()
     , tileY_()
+    , lookMap()
+    , lookat()
 {
 }
 
@@ -80,6 +84,68 @@ void MapDisplay::draw( sf::RenderTarget& target, sf::RenderStates states ) const
   {
     target.draw( tile, states );
   }
+}
+
+std::string MapDisplay::lookup( int nr, unsigned short id )
+{
+  static char buf[ 40 ] {};
+
+  if ( id && id != lookMap[ nr ].id )
+  {
+    lookMap[ nr ].known     = 0;
+    lookMap[ nr ].name[ 0 ] = 0;
+    lookMap[ nr ].proz      = 0;
+    lookMap[ nr ].id        = id;
+  }
+
+  if ( ! lookMap[ nr ].known )
+  {
+    lookat = nr;
+  }
+
+  if ( ! id )
+    return lookMap[ nr ].name;
+
+  if ( playerData_.clientShouldShowNames() && playerData_.clientShouldShowPercentHealth() )
+  {
+    if ( lookMap[ nr ].proz )
+    {
+      sprintf( buf, "%s %d%%", lookMap[ nr ].name, lookMap[ nr ].proz );
+      return buf;
+    }
+    else
+      return lookMap[ nr ].name;
+  }
+  else if ( playerData_.clientShouldShowNames() )
+  {
+    return lookMap[ nr ].name;
+  }
+  else if ( playerData_.clientShouldShowPercentHealth() )
+  {
+    if ( lookMap[ nr ].proz )
+    {
+      sprintf( buf, "%d%%", lookMap[ nr ].proz );
+      return buf;
+    }
+    else
+      return "";
+  }
+  else
+    return "";
+}
+
+// Usage like set_look_proz(map[m].ch_nr,map[m].ch_id,map[m].ch_proz);
+void MapDisplay::set_look_proz( unsigned short nr, unsigned short id, int proz )
+{
+  if ( id != lookMap[ nr ].id )
+  {
+    lookMap[ nr ].known     = 0;
+    lookMap[ nr ].name[ 0 ] = 0;
+    lookMap[ nr ].proz      = 0;
+    lookMap[ nr ].id        = id;
+  }
+
+  lookMap[ nr ].proz = ( unsigned char ) proz;
 }
 
 int MapDisplay::getMapIndexFromMousePosition( const sf::Vector2f& mousePosition, bool setTileOutline )
@@ -146,11 +212,42 @@ void MapDisplay::onUserInput( const sf::Event& e )
   }
 }
 
+sf::Vector2i MapDisplay::dd_gputtext( int xpos, int ypos, std::string text, int xoff, int yoff )
+{
+  int rx {};
+  int ry {};
+
+  rx = ( xpos / 2 ) + ( ypos / 2 ) + 32 - ( ( text.length() * 5 ) / 2 ) + XPOS;
+  if ( xpos < 0 && ( xpos & 1 ) )
+  {
+    rx--;
+  }
+  if ( ypos < 0 && ( ypos & 1 ) )
+  {
+    rx--;
+  }
+  ry = ( xpos / 4 ) - ( ypos / 4 ) + YPOS - 64;
+  if ( xpos < 0 && ( xpos & 3 ) )
+  {
+    ry--;
+  }
+  if ( ypos < 0 && ( ypos & 3 ) )
+  {
+    ry++;
+  }
+
+  rx += xoff;
+  ry += yoff;
+
+  return sf::Vector2i { rx, ry };
+}
+
 void MapDisplay::update()
 {
   map_.lock();
 
   spritesToDraw_.clear();
+  textToDraw_.clear();
 
   int x {};
   int y {};
@@ -344,11 +441,6 @@ void MapDisplay::update()
         tmp |= 512;
       }
 
-      //   if ( do_shadow )
-      //     {
-      //     // dd_shadow( map_.getMap()[ m ].obj2, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff
-      //     + 4 );
-      //     }
       if ( map_.getMap()[ m ].obj2 != 0 )
       {
         copysprite( map_.getMap()[ m ].obj2, map_.getMap()[ m ].light | tmp, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff,
@@ -367,10 +459,15 @@ void MapDisplay::update()
 
       if ( ( playerData_.clientShouldShowNames() | playerData_.clientShouldShowPercentHealth() ) && map_.getMap()[ m ].ch_nr )
       {
-        // set_look_proz( map_.getMap()[ m ].ch_nr, map_.getMap()[ m ].ch_id, map_.getMap()[ m ].ch_proz );
-        // dd_gputtext( x * 32, y * 32, 1, lookup( map_.getMap()[ m ].ch_nr, map_.getMap()[ m ].ch_id ), xoff + map_.getMap()[ m
-        // ].obj_xoff,
-        //              yoff + map_.getMap()[ m ].obj_yoff );
+        set_look_proz( map_.getMap()[ m ].ch_nr, map_.getMap()[ m ].ch_id, map_.getMap()[ m ].ch_proz );
+
+        textToDraw_.emplace_back( lookup( map_.getMap()[ m ].ch_nr, map_.getMap()[ m ].ch_id ), font_, FONT_SIZE );
+        sf::Vector2i textPosition = dd_gputtext( x * 32, y * 32, lookup( map_.getMap()[ m ].ch_nr, map_.getMap()[ m ].ch_id ),
+                                                 xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff );
+
+        auto& lastText = *( textToDraw_.end() - 1 );
+
+        lastText.setPosition( sf::Vector2f { static_cast< float >( textPosition.x ), static_cast< float >( textPosition.y ) } );
       }
 
       if ( playerData_.getPlayerAction() == DR_DROP && playerData_.getFirstTarget() == map_.getMap()[ m ].x &&

@@ -43,9 +43,9 @@ int main()
   pdata.loadFromFile( "test/player.archive" );
 
   MenAmongGods::Map map {};
-  auto fontCache = std::make_unique< MenAmongGods::FontCache >( MenAmongGods::getFontRoot() + "onuava.ttf" );
+  auto              fontCache = std::make_unique< MenAmongGods::FontCache >( MenAmongGods::getFontRoot() + "onuava.ttf" );
 
-  auto mapPtr    = new MenAmongGods::MapDisplay( map, pdata, *cache, index, window );
+  auto mapPtr    = new MenAmongGods::MapDisplay( fontCache->getFont(), map, pdata, *cache, index, window );
   auto mainUiPtr = new MenAmongGods::MainUi( pdata, *cache, *fontCache );
 
   mapPtr->loadFromFile( "test/mapfile.archive" );

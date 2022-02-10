@@ -29,6 +29,15 @@ struct look
 };
 static_assert( sizeof( look ) == 496 );
 
+// What is the significance of looks vs. look?
+struct looks
+{
+  char           known;
+  char           name[ 21 ];
+  char           proz;
+  unsigned short id;
+};
+
 struct skilltab
 {
   int  nr;
