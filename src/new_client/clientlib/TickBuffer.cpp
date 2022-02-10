@@ -791,36 +791,9 @@ void TickBuffer::sv_look4( const unsigned char* buf )
   playerData_.getLook().worn[ 13 ] = *( unsigned short* ) ( buf + 14 );
 }
 
-// Need access to the lookMap here.  This is how it gets populated.
-// void add_look(unsigned short nr,char *name,unsigned short id)
-// {
-// 	int n;
-
-// 	if (nr>=lookmax) {
-// 		looks=realloc(looks,sizeof(struct looks)*(nr+10));
-// 		for (n=lookmax; n<nr+10; n++) {
-// 			strcpy(looks[n].name,"");
-// 			looks[n].known=0;
-// 			looks[n].proz=0;
-// 		}
-// 		lookmax=nr+10;
-// 	}
-
-// 	if (id!=looks[nr].id) {
-// 		looks[nr].known=0;
-// 		looks[nr].name[0]=0;
-// 		looks[nr].proz=0;
-// 	}
-
-// 	strncpy(looks[nr].name,name,16);
-// 	looks[nr].name[16]=0;
-// 	looks[nr].known=1;
-// 	looks[nr].proz=0;
-// 	looks[nr].id=id;
-// }
-
 void TickBuffer::sv_look5( const unsigned char* buf )
 {
+  std::cerr << "SV_LOOK5: " << std::endl;
   for ( int n = 0; n < 15; n++ )
   {
     playerData_.getLook().name[ n ] = buf[ n + 1 ];
@@ -832,12 +805,14 @@ void TickBuffer::sv_look5( const unsigned char* buf )
   {
     if ( ! playerData_.getLook().autoflag )
     {
-      // show_look  = 1;
-      // look       = tmplook;
+      // playerData_.setShowLook( 1 );
+      // playerData_.setLook( tmplook );
       // look_timer = 10 * TICKS;
     }
-    // add_look( playerData_.getLook().nr, playerData_.getLook().name, playerData_.getLook().id );
+    playerData_.add_look( playerData_.getLook().nr, playerData_.getLook().name, playerData_.getLook().id );
   }
+
+  std::cerr << "look: name=" << playerData_.getLook().name << std::endl;
 }
 
 void TickBuffer::sv_look6( const unsigned char* buf )

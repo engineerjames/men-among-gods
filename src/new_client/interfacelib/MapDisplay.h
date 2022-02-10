@@ -51,8 +51,6 @@ private:
   int                               tileType_;
   int                               tileX_;
   int                               tileY_;
-  std::map< unsigned short, looks > lookMap;
-  int                               lookat;
 };
 } // namespace MenAmongGods
 

@@ -73,8 +73,6 @@ MapDisplay::MapDisplay( const sf::Font& font, MenAmongGods::Map& map, const Play
     , tileType_()
     , tileX_()
     , tileY_()
-    , lookMap()
-    , lookat()
 {
 }
 
@@ -84,68 +82,11 @@ void MapDisplay::draw( sf::RenderTarget& target, sf::RenderStates states ) const
   {
     target.draw( tile, states );
   }
-}
 
-std::string MapDisplay::lookup( int nr, unsigned short id )
-{
-  static char buf[ 40 ] {};
-
-  if ( id && id != lookMap[ nr ].id )
+  for ( const auto& text : textToDraw_ )
   {
-    lookMap[ nr ].known     = 0;
-    lookMap[ nr ].name[ 0 ] = 0;
-    lookMap[ nr ].proz      = 0;
-    lookMap[ nr ].id        = id;
+    target.draw( text, states );
   }
-
-  if ( ! lookMap[ nr ].known )
-  {
-    lookat = nr;
-  }
-
-  if ( ! id )
-    return lookMap[ nr ].name;
-
-  if ( playerData_.clientShouldShowNames() && playerData_.clientShouldShowPercentHealth() )
-  {
-    if ( lookMap[ nr ].proz )
-    {
-      sprintf( buf, "%s %d%%", lookMap[ nr ].name, lookMap[ nr ].proz );
-      return buf;
-    }
-    else
-      return lookMap[ nr ].name;
-  }
-  else if ( playerData_.clientShouldShowNames() )
-  {
-    return lookMap[ nr ].name;
-  }
-  else if ( playerData_.clientShouldShowPercentHealth() )
-  {
-    if ( lookMap[ nr ].proz )
-    {
-      sprintf( buf, "%d%%", lookMap[ nr ].proz );
-      return buf;
-    }
-    else
-      return "";
-  }
-  else
-    return "";
-}
-
-// Usage like set_look_proz(map[m].ch_nr,map[m].ch_id,map[m].ch_proz);
-void MapDisplay::set_look_proz( unsigned short nr, unsigned short id, int proz )
-{
-  if ( id != lookMap[ nr ].id )
-  {
-    lookMap[ nr ].known     = 0;
-    lookMap[ nr ].name[ 0 ] = 0;
-    lookMap[ nr ].proz      = 0;
-    lookMap[ nr ].id        = id;
-  }
-
-  lookMap[ nr ].proz = ( unsigned char ) proz;
 }
 
 int MapDisplay::getMapIndexFromMousePosition( const sf::Vector2f& mousePosition, bool setTileOutline )
@@ -459,11 +400,12 @@ void MapDisplay::update()
 
       if ( ( playerData_.clientShouldShowNames() | playerData_.clientShouldShowPercentHealth() ) && map_.getMap()[ m ].ch_nr )
       {
-        set_look_proz( map_.getMap()[ m ].ch_nr, map_.getMap()[ m ].ch_id, map_.getMap()[ m ].ch_proz );
+        playerData_.set_look_proz( map_.getMap()[ m ].ch_nr, map_.getMap()[ m ].ch_id, map_.getMap()[ m ].ch_proz );
 
-        textToDraw_.emplace_back( lookup( map_.getMap()[ m ].ch_nr, map_.getMap()[ m ].ch_id ), font_, FONT_SIZE );
-        sf::Vector2i textPosition = dd_gputtext( x * 32, y * 32, lookup( map_.getMap()[ m ].ch_nr, map_.getMap()[ m ].ch_id ),
-                                                 xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff );
+        std::string stringToDraw = playerData_.lookup( map_.getMap()[ m ].ch_nr, map_.getMap()[ m ].ch_id );
+        textToDraw_.emplace_back( stringToDraw, font_, FONT_SIZE );
+        sf::Vector2i textPosition =
+            dd_gputtext( x * 32, y * 32, stringToDraw, xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff );
 
         auto& lastText = *( textToDraw_.end() - 1 );
 
