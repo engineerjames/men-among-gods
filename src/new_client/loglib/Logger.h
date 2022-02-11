@@ -153,6 +153,7 @@ private:
 #define LOG_DEBUG_OBJ( msg )
 #define LOG_WARNING_OBJ( msg )
 #define LOG_ERROR_OBJ( msg )
+
 #endif
 
 #endif
