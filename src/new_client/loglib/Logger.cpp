@@ -11,7 +11,14 @@ Logger& Logger::instance()
 Logger::Logger( std::string fileName )
     : jsonLogEntries_()
     , outputFile_( fileName, std::ios::app )
+    , logMutex_()
+    , currentLogLevel_( Logger::Level::DEBUG )
 {
+}
+
+void Logger::setLogLevel( Logger::Level newLevel )
+{
+  currentLogLevel_ = newLevel;
 }
 
 Logger::~Logger()

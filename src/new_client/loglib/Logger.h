@@ -98,8 +98,15 @@ public:
     }
   };
 
+  void setLogLevel( Level newLevel );
+
   void addLogEntry( std::string msg, Level level, std::string file, int lineNumber )
   {
+    if ( level < currentLogLevel_ )
+    {
+      return;
+    }
+
     LogEntry newEntry { Json::nullValue, msg, level, file, lineNumber };
 
     std::lock_guard< std::mutex > lock( logMutex_ );
@@ -108,6 +115,11 @@ public:
 
   template < typename T > void addLogEntry( const T& jsonifiedObject, std::string msg, Level level, std::string file, int lineNumber )
   {
+    if ( level < currentLogLevel_ )
+    {
+      return;
+    }
+
     LogEntry newEntry { jsonifiedObject.toJson(), msg, level, file, lineNumber };
 
     std::lock_guard< std::mutex > lock( logMutex_ );
@@ -121,6 +133,7 @@ private:
   std::vector< LogEntry > jsonLogEntries_;
   std::fstream            outputFile_;
   std::mutex              logMutex_;
+  Level                   currentLogLevel_;
 };
 
 } // namespace MenAmongGods::detail
