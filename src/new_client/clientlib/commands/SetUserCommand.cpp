@@ -86,4 +86,14 @@ bool SetUserCommand::send( sf::TcpSocket& socket ) const
   std::cerr << "Done transferring user data." << std::endl;
   return status == sf::Socket::Status::Done;
 }
+
+Json::Value SetUserCommand::toJson() const
+{
+  Json::Value root            = MenAmongGods::ClientCommand::toJson();
+  root[ "playerName" ]        = playerName_;
+  root[ "playerDescription" ] = playerDescription_;
+
+  return root;
+}
+
 } // namespace MenAmongGods

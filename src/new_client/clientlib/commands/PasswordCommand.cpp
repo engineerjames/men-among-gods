@@ -26,4 +26,13 @@ bool PasswordCommand::send( sf::TcpSocket& socket ) const
 
   return status == sf::Socket::Status::Done;
 }
+
+Json::Value PasswordCommand::toJson() const
+{
+  Json::Value root   = MenAmongGods::ClientCommand::toJson();
+  root[ "password" ] = password_;
+
+  return root;
+}
+
 } // namespace MenAmongGods

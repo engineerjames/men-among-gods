@@ -28,4 +28,14 @@ bool UniqueCommand::send( sf::TcpSocket& socket ) const
 
   return status == sf::Socket::Status::Done;
 }
+
+Json::Value UniqueCommand::toJson() const
+{
+  Json::Value root  = MenAmongGods::ClientCommand::toJson();
+  root[ "unique1" ] = unique1_;
+  root[ "unique2" ] = unique2_;
+
+  return root;
+}
+
 } // namespace MenAmongGods

@@ -94,4 +94,13 @@ bool SayCommand::send( sf::TcpSocket& socket ) const
 
   return inputSent;
 }
+
+Json::Value SayCommand::toJson() const
+{
+  Json::Value root    = MenAmongGods::ClientCommand::toJson();
+  root[ "statement" ] = statement_;
+
+  return root;
+}
+
 } // namespace MenAmongGods

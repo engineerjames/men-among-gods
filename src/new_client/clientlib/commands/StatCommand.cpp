@@ -16,4 +16,14 @@ bool StatCommand::send( sf::TcpSocket& socket ) const
 {
   return StatCommand::sendTwoArguments( socket, x_, y_ );
 }
+
+Json::Value StatCommand::toJson() const
+{
+  Json::Value root = MenAmongGods::ClientCommand::toJson();
+  root[ "x" ]      = x_;
+  root[ "y" ]      = y_;
+
+  return root;
+}
+
 } // namespace MenAmongGods

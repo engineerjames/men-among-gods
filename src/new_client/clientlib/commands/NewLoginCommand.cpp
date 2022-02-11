@@ -22,4 +22,5 @@ bool NewLoginCommand::send( sf::TcpSocket& socket ) const
 
   return status == sf::Socket::Status::Done;
 }
+
 } // namespace MenAmongGods

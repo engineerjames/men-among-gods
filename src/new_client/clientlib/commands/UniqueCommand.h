@@ -11,7 +11,8 @@ public:
   UniqueCommand( std::int32_t unique1, std::int32_t unique2 );
   virtual ~UniqueCommand() = default;
 
-  virtual bool send( sf::TcpSocket& socket ) const override;
+  virtual bool        send( sf::TcpSocket& socket ) const override;
+  virtual Json::Value toJson() const override;
 
 private:
   std::int32_t unique1_;
