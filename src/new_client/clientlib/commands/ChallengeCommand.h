@@ -11,7 +11,8 @@ public:
   ChallengeCommand( std::uint32_t challengeHash, std::uint32_t version, std::int32_t raceAndSex );
   virtual ~ChallengeCommand() = default;
 
-  virtual bool send( sf::TcpSocket& socket ) const override;
+  virtual bool        send( sf::TcpSocket& socket ) const override;
+  virtual Json::Value toJson() const override;
 
 private:
   std::uint32_t challengeHash_;

@@ -11,7 +11,8 @@ public:
   ModeCommand( std::uint16_t newMode );
   virtual ~ModeCommand() = default;
 
-  virtual bool send( sf::TcpSocket& socket ) const override;
+  virtual bool        send( sf::TcpSocket& socket ) const override;
+  virtual Json::Value toJson() const override;
 
 private:
   std::uint16_t newMode_;

@@ -31,4 +31,15 @@ bool ChallengeCommand::send( sf::TcpSocket& socket ) const
 
   return status == sf::Socket::Status::Done;
 }
+
+Json::Value ChallengeCommand::toJson() const
+{
+  Json::Value root        = ClientCommand::toJson();
+  root[ "challengeHash" ] = challengeHash_;
+  root[ "version" ]       = version_;
+  root[ "raceAndSex" ]    = raceAndSex_;
+
+  return root;
+}
+
 } // namespace MenAmongGods
