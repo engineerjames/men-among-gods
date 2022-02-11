@@ -3,9 +3,15 @@ cmake_minimum_required(VERSION 3.14)
 project(men-among-gods C CXX)
 
 option(ENABLE_CLANG_TIDY "Enable static analysis via clang-tidy" ON)
+option(ENABLE_LOGGING "Enable logging output from new client application" ON)
 
 if (ENABLE_CLANG_TIDY)
   message(STATUS "Enabling clang-tidy support")
+endif()
+
+if (ENABLE_LOGGING)
+  message(STATUS "Enabling logging support")
+  set(PROJECT_CXX_DEFINITIONS -DENABLE_LOGGING=1)
 endif()
 
 enable_testing()

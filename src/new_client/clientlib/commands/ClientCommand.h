@@ -2,9 +2,11 @@
 #define MEN_AMONG_GODS_CLIENT_COMMAND_H
 
 #include "ClientMessage.h"
+#include "Logger.h"
 
 #include <SFML/Network.hpp>
 #include <array>
+#include <json/json.h>
 
 namespace MenAmongGods
 {
@@ -20,6 +22,14 @@ public:
   }
   ClientCommand( const ClientCommand& ) = default;
   ClientCommand& operator=( const ClientCommand& ) = default;
+
+  virtual Json::Value toJson() const
+  {
+    Json::Value root {};
+    root[ "type" ] = ClientMessages::getName( type_ );
+
+    return root;
+  }
 
 protected:
   ClientMessages::MessageTypes type_;
@@ -40,6 +50,7 @@ protected:
       status = socket.send( buf.data(), sizeof( buf ), bytesSent );
     }
 
+    LOG_DEBUG_OBJ( *this, "Successful send." );
     return status == sf::Socket::Status::Done;
   }
 
@@ -60,6 +71,7 @@ protected:
       status = socket.send( buf.data(), sizeof( buf ), bytesSent );
     }
 
+    LOG_DEBUG_OBJ( *this, "Successful send." );
     return status == sf::Socket::Status::Done;
   }
 
@@ -81,6 +93,7 @@ protected:
       status = socket.send( buf.data(), sizeof( buf ), bytesSent );
     }
 
+    LOG_DEBUG_OBJ( *this, "Successful send." );
     return status == sf::Socket::Status::Done;
   }
 };
