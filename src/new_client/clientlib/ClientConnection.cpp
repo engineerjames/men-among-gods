@@ -7,6 +7,7 @@
 #include "ClientMessage.h"
 #include "ConversionUtilities.h"
 #include "Encoder.h"
+#include "Logger.h"
 #include "PlayerData.h"
 #include "ServerMessage.h"
 #include "TickBuffer.h"
@@ -56,6 +57,7 @@ ClientConnection::ClientConnection( std::string hostIp, unsigned short hostPort 
 
 bool ClientConnection::connect()
 {
+  LOG_DEBUG( "Logging in with hostIpAddress=" << hostIpAddress_ << " and hostPort=" << hostPort_ );
   sf::Socket::Status status = clientSocket_.connect( hostIpAddress_, hostPort_ );
   isConnected_              = status == sf::Socket::Status::Done;
   return isConnected_;
@@ -152,26 +154,24 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( PlayerDa
     serverVersion_ += ( int ) ( ( *( unsigned char* ) ( buffer.data() + 14 ) ) ) << 8;
     serverVersion_ += ( int ) ( ( *( unsigned char* ) ( buffer.data() + 15 ) ) ) << 16;
 
-    std::cerr << "Server Response: NEWPLAYER...\n";
-    std::cerr << "received usnr:" << playerData.getUserNumber() << std::endl;
     auto [ storedPass1, storedPass2 ] = playerData.getPasswordOkeyValues();
-    std::cerr << "received pass1:" << storedPass1 << std::endl;
-    std::cerr << "received pass2:" << storedPass2 << std::endl;
+
+    LOG_DEBUG( "Received NEWPLAYER message from server: [usnr, pass1, pass2]=[" << playerData.getUserNumber() << ", " << storedPass1 << ", "
+                                                                                << storedPass2 << "]." );
 
     return ProcessStatus::DONE;
   }
   else if ( serverMsgType == MessageTypes::LOGIN_OK )
   {
     serverVersion_ = *( unsigned long* ) ( buffer.data() + 1 );
-    std::cerr << "Server Response: LOGIN OK...\n";
+    LOG_DEBUG( "LOGIN_OK from server: " << serverVersion_ );
     return ProcessStatus::DONE;
   }
   else if ( serverMsgType == MessageTypes::EXIT )
   {
     tmp = *( unsigned int* ) ( buffer.data() + 1 );
 
-    std::cerr << "STATUS: Server demands exit.\n";
-    std::cerr << "REASON: " << logout_reason[ tmp ] << std::endl;
+    LOG_WARNING( "Server demands exit: " << logout_reason[ tmp ] );
 
     return ProcessStatus::ERROR;
   }
@@ -179,7 +179,7 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( PlayerDa
   {
     tmp = *( unsigned int* ) ( buffer.data() + 1 );
     capcnt++;
-    std::cerr << "STATUS: Player limit reached. You're in queue." << tmp << std::endl;
+    LOG_WARNING( "Player limit reached; player placed in queue: " << capcnt << ", " << tmp );
     return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD1 )
@@ -256,6 +256,8 @@ bool ClientConnection::sendPlayerData( const PlayerData& playerData )
 // TODO: Get actual values here (if needed--or remove)
 void ClientConnection::sendHardwareInfo()
 {
+  LOG_DEBUG( "Sending hardware information" );
+
   std::array< char, 256 > buf {};
 
   unsigned int langid    = 120;

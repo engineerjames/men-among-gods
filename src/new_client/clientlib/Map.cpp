@@ -2,6 +2,8 @@
 
 #include <array>
 
+#include "Logger.h"
+
 namespace
 {
 const std::array< std::array< unsigned char, 20 >, 20 > speedtab = {
@@ -1133,7 +1135,7 @@ int Map::interpolateCharacterSprite( unsigned int mapIndex )
     return tmp;
 
   default:
-    std::cerr << "Unknown ch_status " << map_[ mapIndex ].ch_status << std::endl;
+    LOG_ERROR( "Unknown ch_status " << map_[ mapIndex ].ch_status );
     return map_[ mapIndex ].ch_sprite;
   }
 }

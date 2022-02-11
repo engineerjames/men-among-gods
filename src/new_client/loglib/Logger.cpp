@@ -18,9 +18,12 @@ Logger::~Logger()
 {
   Json::Value root = Json::arrayValue;
 
-  for ( const auto& e : jsonLogEntries_ )
   {
-    e.toJson( root );
+    std::lock_guard< std::mutex > lock( logMutex_ );
+    for ( const auto& e : jsonLogEntries_ )
+    {
+      e.toJson( root );
+    }
   }
 
   // TODO: Write things out as we receive them

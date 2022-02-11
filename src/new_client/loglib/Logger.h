@@ -8,6 +8,7 @@
 #include <iomanip>
 #include <iostream>
 #include <locale>
+#include <mutex>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -100,12 +101,16 @@ public:
   void addLogEntry( std::string msg, Level level, std::string file, int lineNumber )
   {
     LogEntry newEntry { Json::nullValue, msg, level, file, lineNumber };
+
+    std::lock_guard< std::mutex > lock( logMutex_ );
     jsonLogEntries_.push_back( newEntry );
   }
 
   template < typename T > void addLogEntry( const T& jsonifiedObject, std::string msg, Level level, std::string file, int lineNumber )
   {
     LogEntry newEntry { jsonifiedObject.toJson(), msg, level, file, lineNumber };
+
+    std::lock_guard< std::mutex > lock( logMutex_ );
     jsonLogEntries_.push_back( newEntry );
   }
 
@@ -115,35 +120,56 @@ private:
 
   std::vector< LogEntry > jsonLogEntries_;
   std::fstream            outputFile_;
+  std::mutex              logMutex_;
 };
 
 } // namespace MenAmongGods::detail
 
 #ifdef ENABLE_LOGGING
 
+// TODO: Reduce duplication here.
 #define LOG_DEBUG( msg )                                                                                                                   \
-  MenAmongGods::detail::Logger::instance().addLogEntry( std::string( msg ), MenAmongGods::detail::Logger::Level::DEBUG, __FILE__,          \
-                                                        __LINE__ );
+  {                                                                                                                                        \
+    std::stringstream ss {};                                                                                                               \
+    ss << msg;                                                                                                                             \
+    MenAmongGods::detail::Logger::instance().addLogEntry( ss.str(), MenAmongGods::detail::Logger::Level::DEBUG, __FILE__, __LINE__ );      \
+  }
 
 #define LOG_WARNING( msg )                                                                                                                 \
-  MenAmongGods::detail::Logger::instance().addLogEntry( std::string( msg ), MenAmongGods::detail::Logger::Level::WARNING, __FILE__,        \
-                                                        __LINE__ );
+  {                                                                                                                                        \
+    std::stringstream ss {};                                                                                                               \
+    ss << msg;                                                                                                                             \
+    MenAmongGods::detail::Logger::instance().addLogEntry( ss.str(), MenAmongGods::detail::Logger::Level::WARNING, __FILE__, __LINE__ );    \
+  }
 
 #define LOG_ERROR( msg )                                                                                                                   \
-  MenAmongGods::detail::Logger::instance().addLogEntry( std::string( msg ), MenAmongGods::detail::Logger::Level::ERROR, __FILE__,          \
-                                                        __LINE__ );
+  {                                                                                                                                        \
+    std::stringstream ss {};                                                                                                               \
+    ss << msg;                                                                                                                             \
+    MenAmongGods::detail::Logger::instance().addLogEntry( ss.str(), MenAmongGods::detail::Logger::Level::ERROR, __FILE__, __LINE__ );      \
+  }
 
 #define LOG_DEBUG_OBJ( obj, msg )                                                                                                          \
-  MenAmongGods::detail::Logger::instance().addLogEntry( obj, std::string( msg ), MenAmongGods::detail::Logger::Level::DEBUG, __FILE__,     \
-                                                        __LINE__ );
+  {                                                                                                                                        \
+    std::stringstream ss {};                                                                                                               \
+    ss << msg;                                                                                                                             \
+    MenAmongGods::detail::Logger::instance().addLogEntry( obj, ss.str(), MenAmongGods::detail::Logger::Level::DEBUG, __FILE__, __LINE__ ); \
+  }
 
 #define LOG_WARNING_OBJ( obj, msg )                                                                                                        \
-  MenAmongGods::detail::Logger::instance().addLogEntry( obj, std::string( msg ), MenAmongGods::detail::Logger::Level::WARNING, __FILE__,   \
-                                                        __LINE__ );
+  {                                                                                                                                        \
+    std::stringstream ss {};                                                                                                               \
+    ss << msg;                                                                                                                             \
+    MenAmongGods::detail::Logger::instance().addLogEntry( obj, ss.str(), MenAmongGods::detail::Logger::Level::WARNING, __FILE__,           \
+                                                          __LINE__ );                                                                      \
+  }
 
 #define LOG_ERROR_OBJ( obj, msg )                                                                                                          \
-  MenAmongGods::detail::Logger::instance().addLogEntry( obj, std::string( msg ), MenAmongGods::detail::Logger::Level::ERROR, __FILE__,     \
-                                                        __LINE__ );
+  {                                                                                                                                        \
+    std::stringstream ss {};                                                                                                               \
+    ss << msg;                                                                                                                             \
+    MenAmongGods::detail::Logger::instance().addLogEntry( obj, ss.str(), MenAmongGods::detail::Logger::Level::ERROR, __FILE__, __LINE__ ); \
+  }
 
 #else // No-ops
 
