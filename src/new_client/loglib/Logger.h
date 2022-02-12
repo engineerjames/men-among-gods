@@ -50,14 +50,16 @@ public:
     const std::string file_;
     const int         lineNumber_;
     const std::time_t currentTime_;
+    std::string       functionName_;
 
-    LogEntry( Json::Value json, std::string msg, Level level, std::string file, int lineNumber )
+    LogEntry( Json::Value json, std::string msg, Level level, std::string file, int lineNumber, std::string functionName )
         : json_( json )
         , msg_( msg )
         , level_( level )
         , file_( file )
         , lineNumber_( lineNumber )
         , currentTime_( std::chrono::system_clock::to_time_t( std::chrono::system_clock::now() ) )
+        , functionName_( functionName )
     {
     }
 
@@ -92,6 +94,7 @@ public:
       root[ "level" ]      = levelString;
       root[ "file" ]       = file_;
       root[ "lineNumber" ] = lineNumber_;
+      root[ "function" ]   = functionName_;
 
       arrayRoot.append( root );
     }
@@ -99,27 +102,28 @@ public:
 
   void setLogLevel( Level newLevel );
 
-  void addLogEntry( std::string msg, Level level, std::string file, int lineNumber )
+  void addLogEntry( std::string msg, Level level, std::string file, int lineNumber, std::string function )
   {
     if ( level < currentLogLevel_ )
     {
       return;
     }
 
-    LogEntry newEntry { Json::nullValue, msg, level, file, lineNumber };
+    LogEntry newEntry { Json::nullValue, msg, level, file, lineNumber, function };
 
     std::lock_guard< std::mutex > lock( logMutex_ );
     jsonLogEntries_.push_back( newEntry );
   }
 
-  template < typename T > void addLogEntry( const T& jsonifiedObject, std::string msg, Level level, std::string file, int lineNumber )
+  template < typename T >
+  void addLogEntry( const T& jsonifiedObject, std::string msg, Level level, std::string file, int lineNumber, std::string function )
   {
     if ( level < currentLogLevel_ )
     {
       return;
     }
 
-    LogEntry newEntry { jsonifiedObject.toJson(), msg, level, file, lineNumber };
+    LogEntry newEntry { jsonifiedObject.toJson(), msg, level, file, lineNumber, function };
 
     std::lock_guard< std::mutex > lock( logMutex_ );
     jsonLogEntries_.push_back( newEntry );
@@ -144,43 +148,48 @@ private:
   {                                                                                                                                        \
     std::stringstream ss {};                                                                                                               \
     ss << msg;                                                                                                                             \
-    MenAmongGods::detail::Logger::instance().addLogEntry( ss.str(), MenAmongGods::detail::Logger::Level::DEBUG, __FILE__, __LINE__ );      \
+    MenAmongGods::detail::Logger::instance().addLogEntry( ss.str(), MenAmongGods::detail::Logger::Level::DEBUG, __FILE__, __LINE__,        \
+                                                          __PRETTY_FUNCTION__ );                                                           \
   }
 
 #define LOG_WARNING( msg )                                                                                                                 \
   {                                                                                                                                        \
     std::stringstream ss {};                                                                                                               \
     ss << msg;                                                                                                                             \
-    MenAmongGods::detail::Logger::instance().addLogEntry( ss.str(), MenAmongGods::detail::Logger::Level::WARNING, __FILE__, __LINE__ );    \
+    MenAmongGods::detail::Logger::instance().addLogEntry( ss.str(), MenAmongGods::detail::Logger::Level::WARNING, __FILE__, __LINE__,      \
+                                                          __PRETTY_FUNCTION__ );                                                           \
   }
 
 #define LOG_ERROR( msg )                                                                                                                   \
   {                                                                                                                                        \
     std::stringstream ss {};                                                                                                               \
     ss << msg;                                                                                                                             \
-    MenAmongGods::detail::Logger::instance().addLogEntry( ss.str(), MenAmongGods::detail::Logger::Level::ERROR, __FILE__, __LINE__ );      \
+    MenAmongGods::detail::Logger::instance().addLogEntry( ss.str(), MenAmongGods::detail::Logger::Level::ERROR, __FILE__, __LINE__,        \
+                                                          __PRETTY_FUNCTION__ );                                                           \
   }
 
 #define LOG_DEBUG_OBJ( obj, msg )                                                                                                          \
   {                                                                                                                                        \
     std::stringstream ss {};                                                                                                               \
     ss << msg;                                                                                                                             \
-    MenAmongGods::detail::Logger::instance().addLogEntry( obj, ss.str(), MenAmongGods::detail::Logger::Level::DEBUG, __FILE__, __LINE__ ); \
+    MenAmongGods::detail::Logger::instance().addLogEntry( obj, ss.str(), MenAmongGods::detail::Logger::Level::DEBUG, __FILE__, __LINE__,   \
+                                                          __PRETTY_FUNCTION__ );                                                           \
   }
 
 #define LOG_WARNING_OBJ( obj, msg )                                                                                                        \
   {                                                                                                                                        \
     std::stringstream ss {};                                                                                                               \
     ss << msg;                                                                                                                             \
-    MenAmongGods::detail::Logger::instance().addLogEntry( obj, ss.str(), MenAmongGods::detail::Logger::Level::WARNING, __FILE__,           \
-                                                          __LINE__ );                                                                      \
+    MenAmongGods::detail::Logger::instance().addLogEntry( obj, ss.str(), MenAmongGods::detail::Logger::Level::WARNING, __FILE__, __LINE__, \
+                                                          __PRETTY_FUNCTION__ );                                                           \
   }
 
 #define LOG_ERROR_OBJ( obj, msg )                                                                                                          \
   {                                                                                                                                        \
     std::stringstream ss {};                                                                                                               \
     ss << msg;                                                                                                                             \
-    MenAmongGods::detail::Logger::instance().addLogEntry( obj, ss.str(), MenAmongGods::detail::Logger::Level::ERROR, __FILE__, __LINE__ ); \
+    MenAmongGods::detail::Logger::instance().addLogEntry( obj, ss.str(), MenAmongGods::detail::Logger::Level::ERROR, __FILE__, __LINE__,   \
+                                                          __PRETTY_FUNCTION__ );                                                           \
   }
 
 #else // No-ops
