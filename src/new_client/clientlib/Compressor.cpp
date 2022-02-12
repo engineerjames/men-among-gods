@@ -1,7 +1,5 @@
 #include "Compressor.h"
 
-#include <iostream>
-
 Compressor::Compressor()
     : zStream()
     , isInitialized( false )

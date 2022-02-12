@@ -13,10 +13,12 @@ public:
   SayCommand( const std::string& statement );
   virtual ~SayCommand() = default;
 
-  virtual bool send( sf::TcpSocket& socket ) const override;
+  virtual bool        send( sf::TcpSocket& socket ) const override;
+  virtual Json::Value toJson() const override;
 
 private:
-  bool sendPartialMessage( sf::TcpSocket& socket, const std::array< char, 250 >& stringBuffer, ClientMessages::MessageTypes inputType ) const;
+  bool sendPartialMessage( sf::TcpSocket& socket, const std::array< char, 250 >& stringBuffer,
+                           ClientMessages::MessageTypes inputType ) const;
 
   std::string statement_;
 };

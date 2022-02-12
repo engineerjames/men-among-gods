@@ -15,4 +15,13 @@ bool GiveCommand::send( sf::TcpSocket& socket ) const
 {
   return GiveCommand::sendOneArgument( socket, characterNumber_ );
 }
+
+Json::Value GiveCommand::toJson() const
+{
+  Json::Value root          = ClientCommand::toJson();
+  root[ "characterNumber" ] = characterNumber_;
+
+  return root;
+}
+
 } // namespace MenAmongGods

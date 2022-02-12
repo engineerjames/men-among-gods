@@ -13,7 +13,8 @@ public:
   SetUserCommand( const std::string& playerName, const std::string& playerDescription );
   virtual ~SetUserCommand() = default;
 
-  virtual bool send( sf::TcpSocket& socket ) const override;
+  virtual bool        send( sf::TcpSocket& socket ) const override;
+  virtual Json::Value toJson() const override;
 
 private:
   std::string playerName_;

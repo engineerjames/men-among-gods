@@ -3,7 +3,6 @@
 #include <SFML/Network.hpp>
 #include <cstdint>
 #include <cstring>
-#include <iostream>
 #include <map>
 #include <utility>
 
@@ -57,10 +56,6 @@ bool SetUserCommand::send( sf::TcpSocket& socket ) const
   const constexpr int N_CHUNKS            = 18;
   const constexpr int N_BYTES_PER_PAYLOAD = 13;
 
-  std::cerr << "Transferring user data..." << std::endl;
-  std::cerr << "playerName: " << playerName_ << std::endl;
-  std::cerr << "playerDesc: " << playerDescription_ << std::endl;
-
   sf::Socket::Status status = sf::Socket::Status::Done;
   for ( int i = 0; i < N_CHUNKS; ++i )
   {
@@ -83,7 +78,16 @@ bool SetUserCommand::send( sf::TcpSocket& socket ) const
     status = socket.send( buffer.data(), buffer.size() );
   }
 
-  std::cerr << "Done transferring user data." << std::endl;
   return status == sf::Socket::Status::Done;
 }
+
+Json::Value SetUserCommand::toJson() const
+{
+  Json::Value root            = MenAmongGods::ClientCommand::toJson();
+  root[ "playerName" ]        = playerName_;
+  root[ "playerDescription" ] = playerDescription_;
+
+  return root;
+}
+
 } // namespace MenAmongGods

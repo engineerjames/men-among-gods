@@ -1,7 +1,5 @@
 #include "PlayerTextInputDisplay.h"
 
-#include <iostream>
-
 #include "ColorPalette.h"
 #include "ConstantIdentifiers.h"
 #include "SayCommand.h"

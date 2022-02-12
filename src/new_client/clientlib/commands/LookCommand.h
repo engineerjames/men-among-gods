@@ -11,7 +11,8 @@ public:
   LookCommand( std::uint32_t characterNumber );
   virtual ~LookCommand() = default;
 
-  virtual bool send( sf::TcpSocket& socket ) const override;
+  virtual bool        send( sf::TcpSocket& socket ) const override;
+  virtual Json::Value toJson() const override;
 
 private:
   std::uint32_t characterNumber_;

@@ -35,7 +35,6 @@ public:
   bool        hasSubmitted() const;
 
 private:
-  void printValues() const;
   void populatePlayerData() const;
 
   PlayerData& playerData_;

@@ -11,7 +11,8 @@ public:
   TurnCommand( std::uint16_t x, std::uint32_t y );
   virtual ~TurnCommand() = default;
 
-  virtual bool send( sf::TcpSocket& socket ) const override;
+  virtual bool        send( sf::TcpSocket& socket ) const override;
+  virtual Json::Value toJson() const override;
 
 private:
   std::uint16_t x_;

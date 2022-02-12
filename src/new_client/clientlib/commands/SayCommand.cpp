@@ -4,7 +4,6 @@
 
 #include <cstdint>
 #include <cstring>
-#include <iostream>
 #include <map>
 
 namespace
@@ -81,8 +80,6 @@ bool SayCommand::send( sf::TcpSocket& socket ) const
 
   bool inputSent = true;
 
-  std::cerr << "Sending cmd: " << statement_ << std::endl;
-
   inputSent &= sendPartialMessage( socket, stringBuffer, ClientMessages::MessageTypes::CMD_INPUT1 );
   inputSent &= sendPartialMessage( socket, stringBuffer, ClientMessages::MessageTypes::CMD_INPUT2 );
   inputSent &= sendPartialMessage( socket, stringBuffer, ClientMessages::MessageTypes::CMD_INPUT3 );
@@ -94,4 +91,13 @@ bool SayCommand::send( sf::TcpSocket& socket ) const
 
   return inputSent;
 }
+
+Json::Value SayCommand::toJson() const
+{
+  Json::Value root    = MenAmongGods::ClientCommand::toJson();
+  root[ "statement" ] = statement_;
+
+  return root;
+}
+
 } // namespace MenAmongGods

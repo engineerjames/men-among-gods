@@ -11,7 +11,8 @@ public:
   GiveCommand( std::uint32_t characterNumber );
   virtual ~GiveCommand() = default;
 
-  virtual bool send( sf::TcpSocket& socket ) const override;
+  virtual bool        send( sf::TcpSocket& socket ) const override;
+  virtual Json::Value toJson() const override;
 
 private:
   std::uint32_t characterNumber_;

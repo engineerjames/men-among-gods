@@ -1,6 +1,5 @@
 #include "ProgressBarDisplay.h"
 
-#include <iostream>
 #include <limits>
 
 namespace MenAmongGods

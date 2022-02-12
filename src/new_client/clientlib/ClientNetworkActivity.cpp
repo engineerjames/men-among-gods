@@ -1,10 +1,10 @@
 #include "ClientNetworkActivity.h"
 
 #include <cstring>
-#include <iostream>
 
 #include "ClientMessage.h"
 #include "ConstantIdentifiers.h"
+#include "Logger.h"
 #include "Map.h"
 #include "TickBuffer.h"
 
@@ -45,6 +45,7 @@ void ClientNetworkActivity::run() noexcept
 
   isRunning_ = true;
 
+  LOG_DEBUG( "Starting network thread." );
   clientNetworkThread_ = std::thread( &ClientNetworkActivity::startNetworkActivity, this );
 }
 
@@ -60,7 +61,15 @@ void ClientNetworkActivity::stop() noexcept
 
 void ClientNetworkActivity::addClientCommands( const std::vector< std::shared_ptr< MenAmongGods::ClientCommand > >& commandList )
 {
+  // No need to append commands if the vector is empty
+  if ( commandList.empty() )
+  {
+    return;
+  }
+
   std::scoped_lock< std::mutex > lock( commandMutex_ );
+
+  LOG_DEBUG( "Adding " << commandList.size() << " commands to network thread." );
 
   // Insert new commands to the end of the command list
   commands_.insert( std::end( commands_ ), std::begin( commandList ), std::end( commandList ) );
@@ -88,7 +97,7 @@ void ClientNetworkActivity::startNetworkActivity()
     {
       if ( ! clientConnection_.sendTick() )
       {
-        std::cerr << "Unable to send tick!" << std::endl;
+        LOG_ERROR( "Unable to send tick!" );
       }
       // Reset timeSinceLastTickSent
       timeSinceLastTickSent = clock.getElapsedTime();
@@ -96,7 +105,7 @@ void ClientNetworkActivity::startNetworkActivity()
 
     if ( ! clientConnection_.receiveTick( tickBuffer_ ) )
     {
-      std::cerr << "Unable to receive tick!" << std::endl;
+      LOG_ERROR( "Unable to receive tick!" );
     }
 
     tickBuffer_.processTicks();

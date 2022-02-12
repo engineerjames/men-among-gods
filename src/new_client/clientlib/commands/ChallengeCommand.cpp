@@ -2,7 +2,8 @@
 
 #include <SFML/Network.hpp>
 #include <cstdint>
-#include <iostream>
+
+#include "Logger.h"
 
 namespace MenAmongGods
 {
@@ -22,13 +23,21 @@ bool ChallengeCommand::send( sf::TcpSocket& socket ) const
   *( unsigned long* ) ( buf.data() + 1 ) = challengeHash_;
   *( unsigned long* ) ( buf.data() + 5 ) = version_;
   *( unsigned long* ) ( buf.data() + 9 ) = raceAndSex_;
-  std::cerr << "Sending CL_CHALLENGE...\n";
-  std::cerr << "tmp: " << challengeHash_ << std::endl;
-  std::cerr << "VERSION: " << version_ << std::endl;
-  std::cerr << "OkeyRaceInt: " << raceAndSex_ << std::endl;
+  LOG_DEBUG( "Sending CL_CHALLENGE - tmp: " << challengeHash_ << "VERSION: " << version_ << "OkeyRaceInt: " << raceAndSex_ );
 
   sf::Socket::Status status = socket.send( buf.data(), buf.size() );
 
   return status == sf::Socket::Status::Done;
 }
+
+Json::Value ChallengeCommand::toJson() const
+{
+  Json::Value root        = ClientCommand::toJson();
+  root[ "challengeHash" ] = challengeHash_;
+  root[ "version" ]       = version_;
+  root[ "raceAndSex" ]    = raceAndSex_;
+
+  return root;
+}
+
 } // namespace MenAmongGods

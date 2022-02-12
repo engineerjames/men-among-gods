@@ -2,11 +2,11 @@
 
 #include <array>
 #include <cstring>
-#include <iostream>
 
 #include "ClientMessage.h"
 #include "ConversionUtilities.h"
 #include "Encoder.h"
+#include "Logger.h"
 #include "PlayerData.h"
 #include "ServerMessage.h"
 #include "TickBuffer.h"
@@ -56,6 +56,7 @@ ClientConnection::ClientConnection( std::string hostIp, unsigned short hostPort 
 
 bool ClientConnection::connect()
 {
+  LOG_DEBUG( "Logging in with hostIpAddress=" << hostIpAddress_ << " and hostPort=" << hostPort_ );
   sf::Socket::Status status = clientSocket_.connect( hostIpAddress_, hostPort_ );
   isConnected_              = status == sf::Socket::Status::Done;
   return isConnected_;
@@ -65,13 +66,13 @@ bool ClientConnection::login( PlayerData& playerData )
 {
   if ( ! isConnected_ )
   {
-    std::cerr << "Attempting to login while not connected!" << std::endl;
+    LOG_ERROR( "Attempting to login while not connected!" );
     return false;
   }
 
   std::array< std::uint8_t, 16 > buffer {};
 
-  std::cerr << "Sending initial password...\n";
+  LOG_DEBUG( "Sending initial password..." );
   MenAmongGods::PasswordCommand passwordCommand { playerData.getPassword() };
   passwordCommand.send( clientSocket_ );
 
@@ -82,11 +83,11 @@ bool ClientConnection::login( PlayerData& playerData )
   // *(unsigned long *)(buf + 1) = okey.usnr;
   // *(unsigned long *)(buf + 5) = okey.pass1;
   // *(unsigned long *)(buf + 9) = okey.pass2;
-  std::cerr << "Sending new login request...\n";
+  LOG_DEBUG( "Sending new login request..." );
   MenAmongGods::NewLoginCommand newLoginCommand {};
   newLoginCommand.send( clientSocket_ );
 
-  std::cerr << "Waiting for receipt of information...\n";
+  LOG_DEBUG( "Waiting for receipt of information..." );
   ProcessStatus procStatus = ProcessStatus::CONTINUE;
   do
   {
@@ -94,14 +95,14 @@ bool ClientConnection::login( PlayerData& playerData )
     sf::Socket::Status status        = clientSocket_.receive( buffer.data(), buffer.size(), bytesReceived );
     if ( bytesReceived == 0 || status == sf::Socket::Status::Disconnected )
     {
-      std::cerr << "STATUS: ERROR: Server closed connection.\n";
+      LOG_ERROR( "STATUS: ERROR: Server closed connection." );
       return false;
     }
 
     procStatus = processLoginResponse( playerData, buffer );
     if ( procStatus == ProcessStatus::ERROR )
     {
-      std::cerr << "Error logging in!" << std::endl;
+      LOG_ERROR( "Error logging in!" );
       return false;
     }
   } while ( procStatus == ProcessStatus::CONTINUE );
@@ -114,7 +115,7 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( PlayerDa
 {
   if ( ! isConnected_ )
   {
-    std::cerr << "Can't execute processLoginResponse - Socket is not connected!" << std::endl;
+    LOG_ERROR( "Can't execute processLoginResponse - Socket is not connected!" );
     return ClientConnection::ProcessStatus::ERROR;
   }
 
@@ -152,26 +153,24 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( PlayerDa
     serverVersion_ += ( int ) ( ( *( unsigned char* ) ( buffer.data() + 14 ) ) ) << 8;
     serverVersion_ += ( int ) ( ( *( unsigned char* ) ( buffer.data() + 15 ) ) ) << 16;
 
-    std::cerr << "Server Response: NEWPLAYER...\n";
-    std::cerr << "received usnr:" << playerData.getUserNumber() << std::endl;
     auto [ storedPass1, storedPass2 ] = playerData.getPasswordOkeyValues();
-    std::cerr << "received pass1:" << storedPass1 << std::endl;
-    std::cerr << "received pass2:" << storedPass2 << std::endl;
+
+    LOG_DEBUG( "Received NEWPLAYER message from server: [usnr, pass1, pass2]=[" << playerData.getUserNumber() << ", " << storedPass1 << ", "
+                                                                                << storedPass2 << "]." );
 
     return ProcessStatus::DONE;
   }
   else if ( serverMsgType == MessageTypes::LOGIN_OK )
   {
     serverVersion_ = *( unsigned long* ) ( buffer.data() + 1 );
-    std::cerr << "Server Response: LOGIN OK...\n";
+    LOG_DEBUG( "LOGIN_OK from server: " << serverVersion_ );
     return ProcessStatus::DONE;
   }
   else if ( serverMsgType == MessageTypes::EXIT )
   {
     tmp = *( unsigned int* ) ( buffer.data() + 1 );
 
-    std::cerr << "STATUS: Server demands exit.\n";
-    std::cerr << "REASON: " << logout_reason[ tmp ] << std::endl;
+    LOG_WARNING( "Server demands exit: " << logout_reason[ tmp ] );
 
     return ProcessStatus::ERROR;
   }
@@ -179,55 +178,47 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( PlayerDa
   {
     tmp = *( unsigned int* ) ( buffer.data() + 1 );
     capcnt++;
-    std::cerr << "STATUS: Player limit reached. You're in queue." << tmp << std::endl;
+    LOG_WARNING( "Player limit reached; player placed in queue: " << capcnt << ", " << tmp );
     return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD1 )
   {
     std::memcpy( messageOfTheDay_.data(), buffer.data() + 1, 15 );
-    std::cerr << "Server Response: MOD1...\n";
     return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD2 )
   {
     std::memcpy( messageOfTheDay_.data() + 15, buffer.data() + 1, 15 );
-    std::cerr << "Server Response: MOD2...\n";
     return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD3 )
   {
     std::memcpy( messageOfTheDay_.data() + 30, buffer.data() + 1, 15 );
-    std::cerr << "Server Response: MOD3...\n";
     return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD4 )
   {
     std::memcpy( messageOfTheDay_.data() + 45, buffer.data() + 1, 15 );
-    std::cerr << "Server Response: MOD4...\n";
     return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD5 )
   {
     std::memcpy( messageOfTheDay_.data() + 60, buffer.data() + 1, 15 );
-    std::cerr << "Server Response: MOD5...\n";
     return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD6 )
   {
     std::memcpy( messageOfTheDay_.data() + 75, buffer.data() + 1, 15 );
-    std::cerr << "Server Response: MOD6...\n";
     return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD7 )
   {
     std::memcpy( messageOfTheDay_.data() + 90, buffer.data() + 1, 15 );
-    std::cerr << "Server Response: MOD7...\n";
     return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD8 )
   {
     std::memcpy( messageOfTheDay_.data() + 105, buffer.data() + 1, 15 );
-    std::cerr << "Server Response: MOD8...\n";
     return ProcessStatus::CONTINUE;
   }
   else
@@ -256,6 +247,8 @@ bool ClientConnection::sendPlayerData( const PlayerData& playerData )
 // TODO: Get actual values here (if needed--or remove)
 void ClientConnection::sendHardwareInfo()
 {
+  LOG_DEBUG( "Sending hardware information" );
+
   std::array< char, 256 > buf {};
 
   unsigned int langid    = 120;

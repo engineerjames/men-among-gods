@@ -17,4 +17,15 @@ bool InventoryCommand::send( sf::TcpSocket& socket ) const
 {
   return InventoryCommand::sendThreeArguments( socket, x_, y_, selectedCharacter_ );
 }
+
+Json::Value InventoryCommand::toJson() const
+{
+  Json::Value root            = ClientCommand::toJson();
+  root[ "x" ]                 = x_;
+  root[ "y" ]                 = y_;
+  root[ "selectedCharacter" ] = selectedCharacter_;
+
+  return root;
+}
+
 } // namespace MenAmongGods

@@ -13,7 +13,8 @@ public:
   PasswordCommand( const std::string& password );
   virtual ~PasswordCommand() = default;
 
-  virtual bool send( sf::TcpSocket& socket ) const override;
+  virtual bool        send( sf::TcpSocket& socket ) const override;
+  virtual Json::Value toJson() const override;
 
 private:
   std::string password_;

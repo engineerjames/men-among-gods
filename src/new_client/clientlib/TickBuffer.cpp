@@ -1,10 +1,10 @@
 #include "TickBuffer.h"
 
 #include <cstring>
-#include <iostream>
 
 #include "ClientTypes.h"
 #include "ConstantIdentifiers.h"
+#include "Logger.h"
 #include "Map.h"
 #include "PlayerData.h"
 #include "ServerMessage.h"
@@ -86,13 +86,12 @@ void TickBuffer::processTicks()
 
     if ( ret != Z_OK )
     {
-      std::cerr << "uncompress error!" << std::endl;
-      std::cerr << "Error code is: " << ret << std::endl;
+      LOG_ERROR( "Uncompress error: " << ret );
     }
 
     if ( compressor_.getAvailableIn() != 0 )
     {
-      std::cerr << "uncompress: avail is " << compressor_.getAvailableIn() << std::endl;
+      LOG_ERROR( "uncompress: avail is " << compressor_.getAvailableIn() );
     }
 
     csize = static_cast< int >( BUFFER_SIZE ) - static_cast< int >( compressor_.getAvailableOut() );
@@ -124,7 +123,7 @@ void TickBuffer::processTicks()
 
     if ( retVal == -1 )
     {
-      std::cerr << "Warning: syntax error in server data";
+      LOG_ERROR( "Warning: syntax error in server data" );
       exit( 1 );
     }
     idx += retVal;
@@ -315,7 +314,7 @@ int TickBuffer::processServerCommand( const std::uint8_t* bufferStart )
   case ServerMessages::MessageTypes::MOD8:
   case ServerMessages::MessageTypes::SETMAP:
   default:
-    std::cerr << "Unknown server message type!" << std::endl;
+    LOG_ERROR( "Unknown server message type!" );
     return -1;
   }
 
@@ -342,16 +341,19 @@ const std::array< const char*, 15 > logout_reason = {
 
 void TickBuffer::sv_setchar_name1( const unsigned char* buf )
 {
+  LOG_DEBUG( "TickBuffer::sv_setchar_name1" );
   std::memcpy( playerData_.getClientSidePlayerInfo().name, buf + 1, 15 );
 }
 
 void TickBuffer::sv_setchar_name2( const unsigned char* buf )
 {
+  LOG_DEBUG( "TickBuffer::sv_setchar_name2" );
   std::memcpy( playerData_.getClientSidePlayerInfo().name + 15, buf + 1, 15 );
 }
 
 void TickBuffer::sv_setchar_name3( const unsigned char* buf )
 {
+  LOG_DEBUG( "TickBuffer::sv_setchar_name3" );
   std::memcpy( playerData_.getClientSidePlayerInfo().name + 30, buf + 1, 10 );
 
   playerData_.setOkeyName( playerData_.getClientSidePlayerInfo().name );
@@ -361,11 +363,13 @@ void TickBuffer::sv_setchar_name3( const unsigned char* buf )
 
 void TickBuffer::sv_setchar_mode( const unsigned char* buf )
 {
+  LOG_DEBUG( "TickBuffer::sv_setchar_mode" );
   playerData_.getClientSidePlayerInfo().mode = buf[ 1 ];
 }
 
 void TickBuffer::sv_setchar_hp( const unsigned char* buf )
 {
+  LOG_DEBUG( "TickBuffer::sv_setchar_hp" );
   playerData_.getClientSidePlayerInfo().hp[ 0 ] = *( unsigned short* ) ( buf + 1 );
   playerData_.getClientSidePlayerInfo().hp[ 1 ] = *( unsigned short* ) ( buf + 3 );
   playerData_.getClientSidePlayerInfo().hp[ 2 ] = *( unsigned short* ) ( buf + 5 );
@@ -376,6 +380,7 @@ void TickBuffer::sv_setchar_hp( const unsigned char* buf )
 
 void TickBuffer::sv_setchar_endur( const unsigned char* buf )
 {
+  LOG_DEBUG( "TickBuffer::sv_setchar_endur" );
   playerData_.getClientSidePlayerInfo().end[ 0 ] = *( short int* ) ( buf + 1 );
   playerData_.getClientSidePlayerInfo().end[ 1 ] = *( short int* ) ( buf + 3 );
   playerData_.getClientSidePlayerInfo().end[ 2 ] = *( short int* ) ( buf + 5 );
@@ -386,6 +391,7 @@ void TickBuffer::sv_setchar_endur( const unsigned char* buf )
 
 void TickBuffer::sv_setchar_mana( const unsigned char* buf )
 {
+  LOG_DEBUG( "TickBuffer::sv_setchar_mana" );
   playerData_.getClientSidePlayerInfo().mana[ 0 ] = *( short int* ) ( buf + 1 );
   playerData_.getClientSidePlayerInfo().mana[ 1 ] = *( short int* ) ( buf + 3 );
   playerData_.getClientSidePlayerInfo().mana[ 2 ] = *( short int* ) ( buf + 5 );
@@ -396,6 +402,7 @@ void TickBuffer::sv_setchar_mana( const unsigned char* buf )
 
 void TickBuffer::sv_setchar_attrib( const unsigned char* buf )
 {
+  LOG_DEBUG( "TickBuffer::sv_setchar_attrib" );
   int n = buf[ 1 ];
 
   if ( n < 0 || n > 4 )
@@ -411,6 +418,8 @@ void TickBuffer::sv_setchar_attrib( const unsigned char* buf )
 
 void TickBuffer::sv_setchar_skill( const unsigned char* buf )
 {
+  LOG_DEBUG( "TickBuffer::sv_setchar_skill" );
+
   int n = buf[ 1 ];
   if ( n < 0 || n > 49 )
     return;
@@ -427,26 +436,31 @@ void TickBuffer::sv_setchar_skill( const unsigned char* buf )
 
 void TickBuffer::sv_setchar_ahp( const unsigned char* buf )
 {
+  LOG_DEBUG( "TickBuffer::sv_setchar_ahp" );
   playerData_.getClientSidePlayerInfo().a_hp = *( unsigned short* ) ( buf + 1 );
 }
 
 void TickBuffer::sv_setchar_aend( const unsigned char* buf )
 {
+  LOG_DEBUG( "TickBuffer::sv_setchar_aend" );
   playerData_.getClientSidePlayerInfo().a_end = *( unsigned short* ) ( buf + 1 );
 }
 
 void TickBuffer::sv_setchar_amana( const unsigned char* buf )
 {
+  LOG_DEBUG( "TickBuffer::sv_setchar_amana" );
   playerData_.getClientSidePlayerInfo().a_mana = *( unsigned short* ) ( buf + 1 );
 }
 
 void TickBuffer::sv_setchar_dir( const unsigned char* buf )
 {
+  LOG_DEBUG( "TickBuffer::sv_setchar_dir" );
   playerData_.getClientSidePlayerInfo().dir = *( unsigned char* ) ( buf + 1 );
 }
 
 void TickBuffer::sv_setchar_pts( const unsigned char* buf )
 {
+  LOG_DEBUG( "TickBuffer::sv_setchar_pts" );
   playerData_.getClientSidePlayerInfo().points     = *( unsigned long* ) ( buf + 1 );
   playerData_.getClientSidePlayerInfo().points_tot = *( unsigned long* ) ( buf + 5 );
   playerData_.getClientSidePlayerInfo().kindred    = *( unsigned long* ) ( buf + 9 );
@@ -454,6 +468,7 @@ void TickBuffer::sv_setchar_pts( const unsigned char* buf )
 
 void TickBuffer::sv_setchar_gold( const unsigned char* buf )
 {
+  LOG_DEBUG( "TickBuffer::sv_setchar_gold" );
   playerData_.getClientSidePlayerInfo().gold   = *( unsigned long* ) ( buf + 1 );
   playerData_.getClientSidePlayerInfo().armor  = *( unsigned long* ) ( buf + 5 );
   playerData_.getClientSidePlayerInfo().weapon = *( unsigned long* ) ( buf + 9 );
@@ -461,10 +476,12 @@ void TickBuffer::sv_setchar_gold( const unsigned char* buf )
 
 void TickBuffer::sv_setchar_item( const unsigned char* buf )
 {
+  LOG_DEBUG( "TickBuffer::sv_setchar_item" );
+
   int n = *( unsigned long* ) ( buf + 1 );
   if ( n < 0 || n > 39 )
   {
-    std::cerr << "Invalid setchar item" << std::endl;
+    LOG_ERROR( "Invalid setchar item" );
   }
   playerData_.getClientSidePlayerInfo().item[ n ]   = *( short int* ) ( buf + 5 );
   playerData_.getClientSidePlayerInfo().item_p[ n ] = *( short int* ) ( buf + 7 );
@@ -472,10 +489,12 @@ void TickBuffer::sv_setchar_item( const unsigned char* buf )
 
 void TickBuffer::sv_setchar_worn( const unsigned char* buf )
 {
+  LOG_DEBUG( "TickBuffer::sv_setchar_worn" );
+
   int n = *( unsigned long* ) ( buf + 1 );
   if ( n < 0 || n > 19 )
   {
-    std::cerr << "Invalid setchar worn" << std::endl;
+    LOG_ERROR( "Invalid setchar worn" );
   }
   playerData_.getClientSidePlayerInfo().worn[ n ]   = *( short int* ) ( buf + 5 );
   playerData_.getClientSidePlayerInfo().worn_p[ n ] = *( short int* ) ( buf + 7 );
@@ -483,10 +502,12 @@ void TickBuffer::sv_setchar_worn( const unsigned char* buf )
 
 void TickBuffer::sv_setchar_spell( const unsigned char* buf )
 {
+  LOG_DEBUG( "TickBuffer::sv_setchar_spell" );
+
   int n = *( unsigned long* ) ( buf + 1 );
   if ( n < 0 || n > 19 )
   {
-    std::cerr << "Invalid setchar spell" << std::endl;
+    LOG_ERROR( "Invalid setchar spell" );
   }
   playerData_.getClientSidePlayerInfo().spell[ n ]  = *( short int* ) ( buf + 5 );
   playerData_.getClientSidePlayerInfo().active[ n ] = *( short int* ) ( buf + 7 );
@@ -494,12 +515,16 @@ void TickBuffer::sv_setchar_spell( const unsigned char* buf )
 
 void TickBuffer::sv_setchar_obj( const unsigned char* buf )
 {
+  LOG_DEBUG( "TickBuffer::sv_setchar_obj" );
+
   playerData_.getClientSidePlayerInfo().citem   = *( short int* ) ( buf + 1 );
   playerData_.getClientSidePlayerInfo().citem_p = *( short int* ) ( buf + 3 );
 }
 
 int TickBuffer::sv_setmap( const unsigned char* buf, int off )
 {
+  LOG_DEBUG( "TickBuffer::sv_setmap" );
+
   map_.lock();
   int                         n {};
   int                         p {};
@@ -518,7 +543,7 @@ int TickBuffer::sv_setmap( const unsigned char* buf, int off )
 
   if ( n < 0 || n >= TILEX * TILEY )
   {
-    std::cerr << "corrupt setmap!" << std::endl;
+    LOG_ERROR( "Corrupt setmap!" );
     map_.unlock();
     return -1;
   }
@@ -526,7 +551,7 @@ int TickBuffer::sv_setmap( const unsigned char* buf, int off )
   lastn_ = n;
   if ( ! buf[ 1 ] )
   {
-    std::cerr << "Warning: no flags in setmap!" << std::endl;
+    LOG_ERROR( "Warning: no flags in setmap!" );
     map_.unlock();
     return -1;
   }
@@ -594,6 +619,8 @@ int TickBuffer::sv_setmap( const unsigned char* buf, int off )
 
 int TickBuffer::sv_setmap3( const unsigned char* buf, int cnt )
 {
+  LOG_DEBUG( "TickBuffer::sv_setmap3" );
+
   map_.lock();
 
   int m {};
@@ -603,7 +630,7 @@ int TickBuffer::sv_setmap3( const unsigned char* buf, int cnt )
   unsigned short tmp = ( *( unsigned short* ) ( buf + 1 ) ) >> 12;
   if ( n < 0 || n >= TILEX * TILEY )
   {
-    std::cerr << "corrupt setmap3!" << std::endl;
+    LOG_ERROR( "corrupt setmap3!" );
     return -1;
   }
 
@@ -626,6 +653,8 @@ int TickBuffer::sv_setmap3( const unsigned char* buf, int cnt )
 
 void TickBuffer::sv_setorigin( const unsigned char* buf )
 {
+  LOG_DEBUG( "TickBuffer::sv_setorigin" );
+
   map_.lock();
 
   int x {};
@@ -651,12 +680,16 @@ void TickBuffer::sv_setorigin( const unsigned char* buf )
 
 void TickBuffer::sv_tick( const unsigned char* buf )
 {
+  LOG_DEBUG( "TickBuffer::sv_tick" );
+
   ctick_ = *( unsigned char* ) ( buf + 1 );
   map_.setCTick( ctick_ );
 }
 
 void TickBuffer::sv_log( const unsigned char* buf, int font )
 {
+  LOG_DEBUG( "TickBuffer::sv_log" );
+
   static std::array< char, 512 > text {};
   static int                     cnt = 0;
   int                            n {};
@@ -676,16 +709,17 @@ void TickBuffer::sv_log( const unsigned char* buf, int font )
 
   if ( cnt > 500 )
   {
-    std::cerr << "sv_log(): cnt too big!" << std::endl;
+    LOG_ERROR( "sv_log(): cnt too big!" );
 
     text[ cnt ] = 0;
-    std::cerr << text.data() << std::endl;
-    cnt = 0;
+    cnt         = 0;
   }
 }
 
 void TickBuffer::sv_scroll_right( const unsigned char* )
 {
+  LOG_DEBUG( "TickBuffer::sv_scroll_right" );
+
   map_.lock();
 
   memmove( map_.getMap(), map_.getMap() + 1, sizeof( struct cmap ) * ( TILEX * TILEY - 1 ) );
@@ -694,6 +728,8 @@ void TickBuffer::sv_scroll_right( const unsigned char* )
 
 void TickBuffer::sv_scroll_left( const unsigned char* )
 {
+  LOG_DEBUG( "TickBuffer::sv_scroll_left" );
+
   map_.lock();
 
   memmove( map_.getMap() + 1, map_.getMap(), sizeof( struct cmap ) * ( TILEX * TILEY - 1 ) );
@@ -702,6 +738,8 @@ void TickBuffer::sv_scroll_left( const unsigned char* )
 
 void TickBuffer::sv_scroll_down( const unsigned char* )
 {
+  LOG_DEBUG( "TickBuffer::sv_scroll_down" );
+
   map_.lock();
 
   memmove( map_.getMap(), map_.getMap() + TILEX, sizeof( struct cmap ) * ( TILEX * TILEY - TILEX ) );
@@ -710,6 +748,8 @@ void TickBuffer::sv_scroll_down( const unsigned char* )
 
 void TickBuffer::sv_scroll_up( const unsigned char* )
 {
+  LOG_DEBUG( "TickBuffer::sv_scroll_up" );
+
   map_.lock();
 
   memmove( map_.getMap() + TILEX, map_.getMap(), sizeof( struct cmap ) * ( TILEX * TILEY - TILEX ) );
@@ -718,6 +758,8 @@ void TickBuffer::sv_scroll_up( const unsigned char* )
 
 void TickBuffer::sv_scroll_leftup( const unsigned char* )
 {
+  LOG_DEBUG( "TickBuffer::sv_scroll_leftup" );
+
   map_.lock();
 
   memmove( map_.getMap() + TILEX + 1, map_.getMap(), sizeof( struct cmap ) * ( TILEX * TILEY - TILEX - 1 ) );
@@ -726,6 +768,8 @@ void TickBuffer::sv_scroll_leftup( const unsigned char* )
 
 void TickBuffer::sv_scroll_leftdown( const unsigned char* )
 {
+  LOG_DEBUG( "TickBuffer::sv_scroll_leftdown" );
+
   map_.lock();
 
   memmove( map_.getMap(), map_.getMap() + TILEX - 1, sizeof( struct cmap ) * ( TILEX * TILEY - TILEX + 1 ) );
@@ -734,6 +778,8 @@ void TickBuffer::sv_scroll_leftdown( const unsigned char* )
 
 void TickBuffer::sv_scroll_rightup( const unsigned char* )
 {
+  LOG_DEBUG( "TickBuffer::sv_scroll_rightup" );
+
   map_.lock();
 
   memmove( map_.getMap() + TILEX - 1, map_.getMap(), sizeof( struct cmap ) * ( TILEX * TILEY - TILEX + 1 ) );
@@ -742,6 +788,8 @@ void TickBuffer::sv_scroll_rightup( const unsigned char* )
 
 void TickBuffer::sv_scroll_rightdown( const unsigned char* )
 {
+  LOG_DEBUG( "TickBuffer::sv_scroll_rightdown" );
+
   map_.lock();
 
   memmove( map_.getMap(), map_.getMap() + TILEX + 1, sizeof( struct cmap ) * ( TILEX * TILEY - TILEX - 1 ) );
@@ -750,6 +798,8 @@ void TickBuffer::sv_scroll_rightdown( const unsigned char* )
 
 void TickBuffer::sv_look1( const unsigned char* buf )
 {
+  LOG_DEBUG( "TickBuffer::sv_look1" );
+
   playerData_.getLook().worn[ 0 ] = *( unsigned short* ) ( buf + 1 );
   playerData_.getLook().worn[ 2 ] = *( unsigned short* ) ( buf + 3 );
   playerData_.getLook().worn[ 3 ] = *( unsigned short* ) ( buf + 5 );
@@ -762,6 +812,8 @@ void TickBuffer::sv_look1( const unsigned char* buf )
 
 void TickBuffer::sv_look2( const unsigned char* buf )
 {
+  LOG_DEBUG( "TickBuffer::sv_look2" );
+
   playerData_.getLook().worn[ 9 ]  = *( unsigned short* ) ( buf + 1 );  // 1 2
   playerData_.getLook().sprite     = *( unsigned short* ) ( buf + 3 );  // 3 4
   playerData_.getLook().points     = *( unsigned int* ) ( buf + 5 );    // 5 6 7 8
@@ -771,6 +823,8 @@ void TickBuffer::sv_look2( const unsigned char* buf )
 
 void TickBuffer::sv_look3( const unsigned char* buf )
 {
+  LOG_DEBUG( "TickBuffer::sv_look3" );
+
   playerData_.getLook().end    = *( unsigned short* ) ( buf + 1 );
   playerData_.getLook().a_hp   = *( unsigned short* ) ( buf + 3 );
   playerData_.getLook().a_end  = *( unsigned short* ) ( buf + 5 );
@@ -782,6 +836,8 @@ void TickBuffer::sv_look3( const unsigned char* buf )
 
 void TickBuffer::sv_look4( const unsigned char* buf )
 {
+  LOG_DEBUG( "TickBuffer::sv_look4" );
+
   playerData_.getLook().worn[ 1 ]  = *( unsigned short* ) ( buf + 1 );
   playerData_.getLook().worn[ 4 ]  = *( unsigned short* ) ( buf + 3 );
   playerData_.getLook().extended   = buf[ 5 ];
@@ -793,7 +849,8 @@ void TickBuffer::sv_look4( const unsigned char* buf )
 
 void TickBuffer::sv_look5( const unsigned char* buf )
 {
-  std::cerr << "SV_LOOK5: " << std::endl;
+  LOG_DEBUG( "TickBuffer::sv_look5" );
+
   for ( int n = 0; n < 15; n++ )
   {
     playerData_.getLook().name[ n ] = buf[ n + 1 ];
@@ -811,12 +868,12 @@ void TickBuffer::sv_look5( const unsigned char* buf )
     }
     playerData_.add_look( playerData_.getLook().nr, playerData_.getLook().name, playerData_.getLook().id );
   }
-
-  std::cerr << "look: name=" << playerData_.getLook().name << std::endl;
 }
 
 void TickBuffer::sv_look6( const unsigned char* buf )
 {
+  LOG_DEBUG( "TickBuffer::sv_look6" );
+
   int n {};
   int s {};
 
@@ -836,6 +893,8 @@ void TickBuffer::sv_look6( const unsigned char* buf )
 
 void TickBuffer::sv_settarget( const unsigned char* buf )
 {
+  LOG_DEBUG( "TickBuffer::sv_settarget" );
+
   playerData_.getClientSidePlayerInfo().attack_cn    = *( unsigned short* ) ( buf + 1 );
   playerData_.getClientSidePlayerInfo().goto_x       = *( unsigned short* ) ( buf + 3 );
   playerData_.getClientSidePlayerInfo().goto_y       = *( unsigned short* ) ( buf + 5 );
@@ -846,6 +905,8 @@ void TickBuffer::sv_settarget( const unsigned char* buf )
 
 void TickBuffer::sv_playsound( const unsigned char* buf )
 {
+  LOG_DEBUG( "TickBuffer::sv_playsound" );
+
   int                    nr {};
   int                    vol {};
   int                    pan {};
@@ -863,27 +924,33 @@ void TickBuffer::sv_playsound( const unsigned char* buf )
 
 void TickBuffer::sv_exit( const unsigned char* buf )
 {
+  LOG_DEBUG( "TickBuffer::sv_exit" );
+
   int reason = *( unsigned int* ) ( buf + 1 );
 
   if ( reason < 1 || reason > 12 )
   {
-    std::cerr << "EXIT: Reason unknown." << std::endl;
+    LOG_ERROR( "EXIT: Reason unknown." );
   }
   else
   {
-    std::cerr << "EXIT: " << logout_reason[ reason ] << std::endl;
+    LOG_ERROR( "EXIT: " << logout_reason[ reason ] );
   }
   // do_exit = 1;
 }
 
 void TickBuffer::sv_load( const unsigned char* )
 {
+  LOG_DEBUG( "TickBuffer::sv_load" );
+
   // int load <<--- EXTERN
   // load = *( unsigned int * ) ( buf + 1 );
 }
 
 void TickBuffer::sv_unique( const unsigned char* )
 {
+  LOG_DEBUG( "TickBuffer::sv_unique" );
+
   // unique1 = *( unsigned int * ) ( buf + 1 );
   // unique2 = *( unsigned int * ) ( buf + 5 );
   // save_unique();
@@ -891,6 +958,8 @@ void TickBuffer::sv_unique( const unsigned char* )
 
 int TickBuffer::sv_ignore( const unsigned char* buf )
 {
+  LOG_DEBUG( "TickBuffer::sv_ignore" );
+
   int        size {};
   int        d {};
   static int cnt {};

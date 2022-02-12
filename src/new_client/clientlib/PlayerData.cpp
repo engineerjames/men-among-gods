@@ -2,11 +2,11 @@
 
 #include <cstring>
 #include <fstream>
-#include <iostream>
 
 #include <boost/archive/text_iarchive.hpp>
 
 #include "ConstantIdentifiers.h"
+#include "Logger.h"
 
 namespace
 {
@@ -105,7 +105,7 @@ int getOkeyRaceValue( MenAmongGods::Race race, MenAmongGods::Sex sex )
       return 547;
 
     default:
-      std::cerr << "Invalid race and sex combination for male.\n";
+      LOG_ERROR( "Invalid race and sex combination for male." );
       break;
     }
   }
@@ -133,7 +133,7 @@ int getOkeyRaceValue( MenAmongGods::Race race, MenAmongGods::Sex sex )
       return 552;
 
     default:
-      std::cerr << "Invalid race and sex combination for female.\n";
+      LOG_ERROR( "Invalid race and sex combination for female." );
       break;
     }
   }
@@ -250,8 +250,8 @@ void PlayerData::set_look_proz( unsigned short nr, unsigned short id, int proz )
 
 void PlayerData::add_look( unsigned short nr, char* name, unsigned short id )
 {
-  std::cerr << "ADD_LOOK" << std::endl;
-  std::cerr << "nr=" << nr << ", name=" << name << ", id=" << id << std::endl;
+  LOG_DEBUG( "ADD_LOOK, nr=" << nr << ", name=" << name << ", id=" << id );
+
   if ( id != lookMap_[ nr ].id )
   {
     lookMap_[ nr ].known     = 0;

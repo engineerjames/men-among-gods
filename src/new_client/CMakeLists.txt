@@ -6,12 +6,14 @@ add_subdirectory(clientlib)
 set(target MenAmongGods)
 add_executable(${target} main.cpp)
 target_link_libraries(${target} PRIVATE client sfml-graphics sfml-network 
-                                        Boost::serialization MenAmongGodsGraphics)
+                                        Boost::serialization MenAmongGodsGraphics logging)
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
+target_compile_definitions(${target} PRIVATE ${PROJECT_CXX_DEFINITIONS})
 
 if (ENABLE_CLANG_TIDY)
   set_target_properties(${target} PROPERTIES CXX_CLANG_TIDY clang-tidy-11)
 endif()
 
 add_subdirectory(interfacelib)
+add_subdirectory(loglib)

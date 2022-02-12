@@ -1,6 +1,6 @@
 #include "JustifiableText.h"
 
-#include <iostream>
+#include "Logger.h"
 
 namespace MenAmongGods
 {
@@ -87,7 +87,7 @@ void JustifiableText::moveTextAccordingToJustification()
   }
   else
   {
-    std::cerr << "UNIMPLEMENTED JUSTIFICATION!" << std::endl;
+    LOG_ERROR( "UNIMPLEMENTED JUSTIFICATION!" );
   }
 }
 
