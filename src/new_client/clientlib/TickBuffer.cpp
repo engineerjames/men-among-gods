@@ -525,7 +525,6 @@ int TickBuffer::sv_setmap( const unsigned char* buf, int off )
 {
   LOG_DEBUG( "TickBuffer::sv_setmap" );
 
-  map_.lock();
   int                         n {};
   int                         p {};
   static std::array< int, 8 > cnt {};
@@ -544,7 +543,7 @@ int TickBuffer::sv_setmap( const unsigned char* buf, int off )
   if ( n < 0 || n >= TILEX * TILEY )
   {
     LOG_ERROR( "Corrupt setmap!" );
-    map_.unlock();
+
     return -1;
   }
 
@@ -552,76 +551,73 @@ int TickBuffer::sv_setmap( const unsigned char* buf, int off )
   if ( ! buf[ 1 ] )
   {
     LOG_ERROR( "Warning: no flags in setmap!" );
-    map_.unlock();
+
     return -1;
   }
 
   if ( buf[ 1 ] & 1 )
   {
-    map_.getMap()[ n ].ba_sprite = *( unsigned short* ) ( buf + p );
+    map_.setBackgroundSprite( n, *( unsigned short* ) ( buf + p ) );
     p += 2;
     cnt[ 0 ]++;
   }
   if ( buf[ 1 ] & 2 )
   {
-    map_.getMap()[ n ].flags = *( unsigned int* ) ( buf + p );
+    map_.setFlags( n, *( unsigned int* ) ( buf + p ) );
     p += 4;
     cnt[ 1 ]++;
   }
   if ( buf[ 1 ] & 4 )
   {
-    map_.getMap()[ n ].flags2 = *( unsigned int* ) ( buf + p );
+    map_.setFlags2( n, *( unsigned int* ) ( buf + p ) );
     p += 4;
     cnt[ 2 ]++;
   }
   if ( buf[ 1 ] & 8 )
   {
-    map_.getMap()[ n ].it_sprite = *( unsigned short* ) ( buf + p );
+    map_.setItemSprite( n, *( unsigned short* ) ( buf + p ) );
     p += 2;
     cnt[ 3 ]++;
   }
   if ( buf[ 1 ] & 16 )
   {
-    map_.getMap()[ n ].it_status = *( unsigned char* ) ( buf + p );
+    map_.setItemStatus( n, *( unsigned char* ) ( buf + p ) );
     p += 1;
     cnt[ 4 ]++;
   }
   if ( buf[ 1 ] & 32 )
   {
-    map_.getMap()[ n ].ch_sprite = *( unsigned short* ) ( buf + p );
+    map_.setCharacterSprite( n, *( unsigned short* ) ( buf + p ) );
     p += 2;
-    map_.getMap()[ n ].ch_status = *( unsigned char* ) ( buf + p );
+    map_.setCharacterStatus( n, *( unsigned char* ) ( buf + p ) );
     p += 1;
-    map_.getMap()[ n ].ch_stat_off = *( unsigned char* ) ( buf + p );
+    map_.setCharacterStatOff( n, *( unsigned char* ) ( buf + p ) );
     p += 1;
     cnt[ 5 ]++;
   }
   if ( buf[ 1 ] & 64 )
   {
-    map_.getMap()[ n ].ch_nr = *( unsigned short* ) ( buf + p );
+    map_.setCharacterId( n, *( unsigned short* ) ( buf + p ) );
     p += 2;
-    map_.getMap()[ n ].ch_id = *( unsigned short* ) ( buf + p );
+    map_.setCharacterCrc( n, *( unsigned short* ) ( buf + p ) );
     p += 2;
-    map_.getMap()[ n ].ch_speed = *( unsigned char* ) ( buf + p );
+    map_.setCharacterSpeed( n, *( unsigned char* ) ( buf + p ) );
     p += 1;
     cnt[ 6 ]++;
   }
   if ( buf[ 1 ] & 128 )
   {
-    map_.getMap()[ n ].ch_proz = *( unsigned char* ) ( buf + p );
+    map_.setCharacterPercentHealth( n, *( unsigned char* ) ( buf + p ) );
     p += 1;
     cnt[ 7 ]++;
   }
 
-  map_.unlock();
   return p;
 }
 
 int TickBuffer::sv_setmap3( const unsigned char* buf, int cnt )
 {
   LOG_DEBUG( "TickBuffer::sv_setmap3" );
-
-  map_.lock();
 
   int m {};
   int p {};
@@ -634,7 +630,7 @@ int TickBuffer::sv_setmap3( const unsigned char* buf, int cnt )
     return -1;
   }
 
-  map_.getMap()[ n ].light = tmp;
+  map_.setLight( n, tmp );
 
   for ( m = n + 2, p = 3; m < n + cnt + 2; m += 2, p++ )
   {
@@ -642,20 +638,17 @@ int TickBuffer::sv_setmap3( const unsigned char* buf, int cnt )
     {
       tmp = *( unsigned char* ) ( buf + p );
 
-      map_.getMap()[ m ].light     = ( unsigned char ) ( tmp & 15 );
-      map_.getMap()[ m - 1 ].light = ( unsigned char ) ( tmp >> 4 );
+      map_.setLight( m, ( unsigned char ) ( tmp & 15 ) );
+      map_.setLight( m - 1, ( unsigned char ) ( tmp >> 4 ) );
     }
   }
 
-  map_.unlock();
   return p;
 }
 
 void TickBuffer::sv_setorigin( const unsigned char* buf )
 {
   LOG_DEBUG( "TickBuffer::sv_setorigin" );
-
-  map_.lock();
 
   int x {};
   int y {};
@@ -670,12 +663,10 @@ void TickBuffer::sv_setorigin( const unsigned char* buf )
   {
     for ( x = 0; x < TILEX; x++, n++ )
     {
-      map_.getMap()[ n ].x = ( unsigned short ) ( x + xp );
-      map_.getMap()[ n ].y = ( unsigned short ) ( y + yp );
+      map_.setX( n, ( unsigned short ) ( x + xp ) );
+      map_.setY( n, ( unsigned short ) ( y + yp ) );
     }
   }
-
-  map_.unlock();
 }
 
 void TickBuffer::sv_tick( const unsigned char* buf )
@@ -719,81 +710,49 @@ void TickBuffer::sv_log( const unsigned char* buf, int font )
 void TickBuffer::sv_scroll_right( const unsigned char* )
 {
   LOG_DEBUG( "TickBuffer::sv_scroll_right" );
-
-  map_.lock();
-
-  memmove( map_.getMap(), map_.getMap() + 1, sizeof( struct cmap ) * ( TILEX * TILEY - 1 ) );
-  map_.unlock();
+  map_.scrollRight();
 }
 
 void TickBuffer::sv_scroll_left( const unsigned char* )
 {
   LOG_DEBUG( "TickBuffer::sv_scroll_left" );
-
-  map_.lock();
-
-  memmove( map_.getMap() + 1, map_.getMap(), sizeof( struct cmap ) * ( TILEX * TILEY - 1 ) );
-  map_.unlock();
+  map_.scrollLeft();
 }
 
 void TickBuffer::sv_scroll_down( const unsigned char* )
 {
   LOG_DEBUG( "TickBuffer::sv_scroll_down" );
-
-  map_.lock();
-
-  memmove( map_.getMap(), map_.getMap() + TILEX, sizeof( struct cmap ) * ( TILEX * TILEY - TILEX ) );
-  map_.unlock();
+  map_.scrollDown();
 }
 
 void TickBuffer::sv_scroll_up( const unsigned char* )
 {
   LOG_DEBUG( "TickBuffer::sv_scroll_up" );
-
-  map_.lock();
-
-  memmove( map_.getMap() + TILEX, map_.getMap(), sizeof( struct cmap ) * ( TILEX * TILEY - TILEX ) );
-  map_.unlock();
+  map_.scrollUp();
 }
 
 void TickBuffer::sv_scroll_leftup( const unsigned char* )
 {
   LOG_DEBUG( "TickBuffer::sv_scroll_leftup" );
-
-  map_.lock();
-
-  memmove( map_.getMap() + TILEX + 1, map_.getMap(), sizeof( struct cmap ) * ( TILEX * TILEY - TILEX - 1 ) );
-  map_.unlock();
+  map_.scrollLeftUp();
 }
 
 void TickBuffer::sv_scroll_leftdown( const unsigned char* )
 {
   LOG_DEBUG( "TickBuffer::sv_scroll_leftdown" );
-
-  map_.lock();
-
-  memmove( map_.getMap(), map_.getMap() + TILEX - 1, sizeof( struct cmap ) * ( TILEX * TILEY - TILEX + 1 ) );
-  map_.unlock();
+  map_.scrollLeftDown();
 }
 
 void TickBuffer::sv_scroll_rightup( const unsigned char* )
 {
   LOG_DEBUG( "TickBuffer::sv_scroll_rightup" );
-
-  map_.lock();
-
-  memmove( map_.getMap() + TILEX - 1, map_.getMap(), sizeof( struct cmap ) * ( TILEX * TILEY - TILEX + 1 ) );
-  map_.unlock();
+  map_.scrollRightUp();
 }
 
 void TickBuffer::sv_scroll_rightdown( const unsigned char* )
 {
   LOG_DEBUG( "TickBuffer::sv_scroll_rightdown" );
-
-  map_.lock();
-
-  memmove( map_.getMap(), map_.getMap() + TILEX + 1, sizeof( struct cmap ) * ( TILEX * TILEY - TILEX - 1 ) );
-  map_.unlock();
+  map_.scrollRightDown();
 }
 
 void TickBuffer::sv_look1( const unsigned char* buf )

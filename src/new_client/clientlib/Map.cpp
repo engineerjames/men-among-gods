@@ -54,6 +54,286 @@ Map::Map()
   }
 }
 
+unsigned short Map::getX( int index ) const
+{
+  return map_[ index ].x;
+}
+
+unsigned short Map::getY( int index ) const
+{
+  return map_[ index ].y;
+}
+
+short int Map::getBackgroundSprite( int index ) const
+{
+  return map_[ index ].ba_sprite;
+}
+
+unsigned char Map::getLight( int index ) const
+{
+  return map_[ index ].light;
+}
+
+unsigned int Map::getFlags( int index ) const
+{
+  return map_[ index ].flags;
+}
+
+unsigned int Map::getFlags2( int index ) const
+{
+  return map_[ index ].flags2;
+}
+
+unsigned short Map::getCharacterSprite( int index ) const
+{
+  return map_[ index ].ch_sprite;
+}
+
+unsigned char Map::getCharacterStatus( int index ) const
+{
+  return map_[ index ].ch_status;
+}
+
+unsigned char Map::getCharacterStatOff( int index ) const
+{
+  return map_[ index ].ch_stat_off;
+}
+
+unsigned char Map::getCharacterSpeed( int index ) const
+{
+  return map_[ index ].ch_speed;
+}
+
+unsigned short Map::getCharacterId( int index ) const
+{
+  return map_[ index ].ch_nr;
+}
+
+unsigned short Map::getCharacterCrc( int index ) const
+{
+  return map_[ index ].ch_id;
+}
+
+unsigned char Map::getCharacterPercentHealth( int index ) const
+{
+  return map_[ index ].ch_proz;
+}
+
+short int Map::getItemSprite( int index ) const
+{
+  return map_[ index ].it_sprite;
+}
+
+unsigned char Map::getItemStatus( int index ) const
+{
+  return map_[ index ].it_status;
+}
+
+int Map::getBackground( int index ) const
+{
+  return map_[ index ].back;
+}
+
+int Map::getObject1( int index ) const
+{
+  return map_[ index ].obj1;
+}
+
+int Map::getObject2( int index ) const
+{
+  return map_[ index ].obj2;
+}
+
+int Map::getObjectXOffset( int index ) const
+{
+  return map_[ index ].obj_xoff;
+}
+
+int Map::getObjectYOffset( int index ) const
+{
+  return map_[ index ].obj_yoff;
+}
+
+int Map::getOvlXOffset( int index ) const
+{
+  return map_[ index ].ovl_xoff;
+}
+
+int Map::getOvlYOffset( int index ) const
+{
+  return map_[ index ].ovl_yoff;
+}
+
+int Map::getIdleAnimation( int index ) const
+{
+  return map_[ index ].idle_ani;
+}
+
+void Map::setX( int index, unsigned short newValue )
+{
+  map_[ index ].x = newValue;
+}
+
+void Map::setY( int index, unsigned short newValue )
+{
+  map_[ index ].y = newValue;
+}
+
+void Map::setBackgroundSprite( int index, short int newValue )
+{
+  map_[ index ].ba_sprite = newValue;
+}
+
+void Map::setLight( int index, unsigned char newValue )
+{
+  map_[ index ].light = newValue;
+}
+
+void Map::setFlags( int index, unsigned int newValue )
+{
+  map_[ index ].flags = newValue;
+}
+
+void Map::setFlags2( int index, unsigned int newValue )
+{
+  map_[ index ].flags2 = newValue;
+}
+
+void Map::setCharacterSprite( int index, unsigned short newValue )
+{
+  map_[ index ].ch_sprite = newValue;
+}
+
+void Map::setCharacterStatus( int index, unsigned char newValue )
+{
+  map_[ index ].ch_status = newValue;
+}
+
+void Map::setCharacterStatOff( int index, unsigned char newValue )
+{
+  map_[ index ].ch_stat_off = newValue;
+}
+
+void Map::setCharacterSpeed( int index, unsigned char newValue )
+{
+  map_[ index ].ch_speed = newValue;
+}
+
+void Map::setCharacterId( int index, unsigned short newValue )
+{
+  map_[ index ].ch_nr = newValue;
+}
+
+void Map::setCharacterCrc( int index, unsigned short newValue )
+{
+  map_[ index ].ch_id = newValue;
+}
+
+void Map::setCharacterPercentHealth( int index, unsigned char newValue )
+{
+  map_[ index ].ch_proz = newValue;
+}
+
+void Map::setItemSprite( int index, short int newValue )
+{
+  map_[ index ].it_sprite = newValue;
+}
+
+void Map::setItemStatus( int index, unsigned char newValue )
+{
+  map_[ index ].it_status = newValue;
+}
+
+void Map::setBackground( int index, int newValue )
+{
+  map_[ index ].back = newValue;
+}
+
+void Map::setObject1( int index, int newValue )
+{
+  map_[ index ].obj1 = newValue;
+}
+
+void Map::setObject2( int index, int newValue )
+{
+  map_[ index ].obj2 = newValue;
+}
+
+void Map::setObjectXOffset( int index, int newValue )
+{
+  map_[ index ].obj_xoff = newValue;
+}
+
+void Map::setObjectYOffset( int index, int newValue )
+{
+  map_[ index ].obj_yoff = newValue;
+}
+
+void Map::setOvlXOffset( int index, int newValue )
+{
+  map_[ index ].ovl_xoff = newValue;
+}
+
+void Map::setOvlYOffset( int index, int newValue )
+{
+  map_[ index ].ovl_yoff = newValue;
+}
+
+void Map::setIdleAnimation( int index, int newValue )
+{
+  map_[ index ].idle_ani = newValue;
+}
+
+void Map::scrollRight()
+{
+  std::memmove( map_.data(), map_.data() + 1, sizeof( struct cmap ) * ( TILEX * TILEY - 1 ) );
+}
+
+void Map::scrollLeft()
+{
+  std::memmove( map_.data() + 1, map_.data(), sizeof( struct cmap ) * ( TILEX * TILEY - 1 ) );
+}
+
+void Map::scrollDown()
+{
+  memmove( map_.data(), map_.data() + TILEX, sizeof( struct cmap ) * ( TILEX * TILEY - TILEX ) );
+}
+
+void Map::scrollUp()
+{
+  memmove( map_.data() + TILEX, map_.data(), sizeof( struct cmap ) * ( TILEX * TILEY - TILEX ) );
+}
+
+void Map::scrollLeftUp()
+{
+  memmove( map_.data() + TILEX + 1, map_.data(), sizeof( struct cmap ) * ( TILEX * TILEY - TILEX - 1 ) );
+}
+
+void Map::scrollLeftDown()
+{
+  memmove( map_.data(), map_.data() + TILEX - 1, sizeof( struct cmap ) * ( TILEX * TILEY - TILEX + 1 ) );
+}
+
+void Map::scrollRightUp()
+{
+  memmove( map_.data() + TILEX - 1, map_.data(), sizeof( struct cmap ) * ( TILEX * TILEY - TILEX + 1 ) );
+}
+
+void Map::scrollRightDown()
+{
+  memmove( map_.data(), map_.data() + TILEX + 1, sizeof( struct cmap ) * ( TILEX * TILEY - TILEX - 1 ) );
+}
+
+cmap Map::getMap( int index ) const
+{
+  return map_[ index ];
+}
+
+void Map::setMap( int index, cmap newValue )
+{
+  map_[ index ] = newValue;
+}
+
 void Map::tick()
 {
   ticker_++; // Should this be at the end?
@@ -86,11 +366,6 @@ void Map::tick()
   }
 }
 
-void Map::lock()
-{
-  mapMutex_.lock();
-}
-
 int Map::speedo( unsigned int n )
 {
   return speedtab[ map_[ n ].ch_speed ][ ctick_ ];
@@ -99,21 +374,6 @@ int Map::speedo( unsigned int n )
 void Map::setCTick( int newValue )
 {
   ctick_ = newValue;
-}
-
-cmap* Map::getMap()
-{
-  return map_.data();
-}
-
-const cmap* Map::getMap() const
-{
-  return map_.data();
-}
-
-void Map::unlock()
-{
-  mapMutex_.unlock();
 }
 
 int Map::speedstep( int n, int d, int s, int update )
