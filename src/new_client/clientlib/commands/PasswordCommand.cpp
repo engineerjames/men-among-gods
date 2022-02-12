@@ -3,7 +3,6 @@
 #include <SFML/Network.hpp>
 #include <cstdint>
 #include <cstring>
-#include <iostream>
 
 namespace MenAmongGods
 {

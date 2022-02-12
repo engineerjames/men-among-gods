@@ -1,10 +1,9 @@
 #include "PlayerLogDisplay.h"
 
 #include <fstream>
-#include <iostream>
 
-#include "ConstantIdentifiers.h"
 #include "ColorPalette.h"
+#include "ConstantIdentifiers.h"
 
 namespace MenAmongGods
 {

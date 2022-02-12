@@ -2,7 +2,6 @@
 #define MEN_AMONG_GODS_CONVERSION_UTILITIES_H
 
 #include <array>
-#include <iostream>
 #include <sstream>
 #include <string>
 

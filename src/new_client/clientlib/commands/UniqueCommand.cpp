@@ -2,7 +2,6 @@
 
 #include <SFML/Network.hpp>
 #include <cstdint>
-#include <iostream>
 
 namespace MenAmongGods
 {
@@ -20,9 +19,6 @@ bool UniqueCommand::send( sf::TcpSocket& socket ) const
   buf[ 0 ]                               = ClientMessages::getValue( ClientMessages::MessageTypes::CMD_UNIQUE );
   *( unsigned long* ) ( buf.data() + 1 ) = unique1_;
   *( unsigned long* ) ( buf.data() + 5 ) = unique2_;
-  std::cerr << "Sending CL_CMD_UNIQUE...\n";
-  std::cerr << "unique1_ = " << unique1_ << std::endl;
-  std::cerr << "unique2_ = " << unique2_ << std::endl;
 
   sf::Socket::Status status = socket.send( buf.data(), buf.size() );
 

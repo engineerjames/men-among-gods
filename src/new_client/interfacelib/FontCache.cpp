@@ -1,6 +1,6 @@
 #include "FontCache.h"
 
-#include <iostream>
+#include "Logger.h"
 
 namespace MenAmongGods
 {
@@ -9,11 +9,11 @@ FontCache::FontCache( const std::string& pathToFont )
 {
   if ( ! font_.loadFromFile( pathToFont ) )
   {
-    std::cerr << "Unable to load font for FontCache!" << std::endl;
+    LOG_ERROR( "Unable to load font for FontCache!" );
   }
   else
   {
-    std::cerr << "Loaded font: " << font_.getInfo().family << std::endl;
+    LOG_DEBUG( "Loaded font: " << font_.getInfo().family );
   }
 }
 

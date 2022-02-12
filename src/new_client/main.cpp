@@ -76,7 +76,8 @@ int main()
       {
         hasKickStartedNetworkComms = true;
         client->run();
-        std::cerr << "Starting client communication!" << std::endl;
+
+        LOG_DEBUG( "Starting client communication!" );
       }
     }
 

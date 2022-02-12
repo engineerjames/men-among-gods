@@ -66,7 +66,7 @@ void UserOptionPanelDisplay::draw( sf::RenderTarget& target, sf::RenderStates st
     break;
 
   default:
-    std::cerr << "Invalid mode in draw() for UserOptionPanelDisplay" << std::endl;
+    LOG_ERROR( "Invalid mode in draw()" );
     target.draw( normModeRectangle_, states );
     break;
   }

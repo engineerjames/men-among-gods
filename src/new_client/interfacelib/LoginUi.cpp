@@ -1,6 +1,5 @@
 #include "LoginUi.h"
 
-#include <iostream>
 #include <string.h>
 
 #include "FontCache.h"
@@ -126,38 +125,6 @@ void LoginUi::populatePlayerData() const
   }
 
   playerData_.setRaceAndSex( race, sex );
-
-  printValues();
-}
-
-void LoginUi::printValues() const
-{
-  std::cerr << "Name: " << nameEntry_.getText() << std::endl;
-  std::cerr << "Password: " << passwordEntry_.getText() << std::endl;
-  std::cerr << "Description: " << descriptionEntry_.getText() << std::endl;
-
-  std::string race {};
-  for ( const auto& r : raceSelection_ )
-  {
-    if ( r.isSelected() )
-    {
-      race = r.getLabelText();
-      break;
-    }
-  }
-
-  std::string sex {};
-  for ( const auto& s : sexSelection_ )
-  {
-    if ( s.isSelected() )
-    {
-      sex = s.getLabelText();
-      break;
-    }
-  }
-
-  std::cerr << "Race: " << race << std::endl;
-  std::cerr << "Sex: " << sex << std::endl;
 }
 
 PlayerData& LoginUi::getPlayerData() const

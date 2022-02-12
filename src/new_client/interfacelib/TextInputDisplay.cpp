@@ -3,8 +3,6 @@
 #include "ColorPalette.h"
 #include "UtilityFunctions.h"
 
-#include <iostream>
-
 namespace MenAmongGods
 {
 TextInputDisplay::TextInputDisplay( const sf::RenderWindow& window, const sf::Font& font, unsigned int fontSize )

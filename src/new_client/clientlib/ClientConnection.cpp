@@ -2,7 +2,6 @@
 
 #include <array>
 #include <cstring>
-#include <iostream>
 
 #include "ClientMessage.h"
 #include "ConversionUtilities.h"
@@ -67,13 +66,13 @@ bool ClientConnection::login( PlayerData& playerData )
 {
   if ( ! isConnected_ )
   {
-    std::cerr << "Attempting to login while not connected!" << std::endl;
+    LOG_ERROR( "Attempting to login while not connected!" );
     return false;
   }
 
   std::array< std::uint8_t, 16 > buffer {};
 
-  std::cerr << "Sending initial password...\n";
+  LOG_DEBUG( "Sending initial password..." );
   MenAmongGods::PasswordCommand passwordCommand { playerData.getPassword() };
   passwordCommand.send( clientSocket_ );
 
@@ -84,11 +83,11 @@ bool ClientConnection::login( PlayerData& playerData )
   // *(unsigned long *)(buf + 1) = okey.usnr;
   // *(unsigned long *)(buf + 5) = okey.pass1;
   // *(unsigned long *)(buf + 9) = okey.pass2;
-  std::cerr << "Sending new login request...\n";
+  LOG_DEBUG( "Sending new login request..." );
   MenAmongGods::NewLoginCommand newLoginCommand {};
   newLoginCommand.send( clientSocket_ );
 
-  std::cerr << "Waiting for receipt of information...\n";
+  LOG_DEBUG( "Waiting for receipt of information..." );
   ProcessStatus procStatus = ProcessStatus::CONTINUE;
   do
   {
@@ -96,14 +95,14 @@ bool ClientConnection::login( PlayerData& playerData )
     sf::Socket::Status status        = clientSocket_.receive( buffer.data(), buffer.size(), bytesReceived );
     if ( bytesReceived == 0 || status == sf::Socket::Status::Disconnected )
     {
-      std::cerr << "STATUS: ERROR: Server closed connection.\n";
+      LOG_ERROR( "STATUS: ERROR: Server closed connection." );
       return false;
     }
 
     procStatus = processLoginResponse( playerData, buffer );
     if ( procStatus == ProcessStatus::ERROR )
     {
-      std::cerr << "Error logging in!" << std::endl;
+      LOG_ERROR( "Error logging in!" );
       return false;
     }
   } while ( procStatus == ProcessStatus::CONTINUE );
@@ -116,7 +115,7 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( PlayerDa
 {
   if ( ! isConnected_ )
   {
-    std::cerr << "Can't execute processLoginResponse - Socket is not connected!" << std::endl;
+    LOG_ERROR( "Can't execute processLoginResponse - Socket is not connected!" );
     return ClientConnection::ProcessStatus::ERROR;
   }
 
@@ -185,49 +184,41 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( PlayerDa
   else if ( serverMsgType == MessageTypes::MOD1 )
   {
     std::memcpy( messageOfTheDay_.data(), buffer.data() + 1, 15 );
-    std::cerr << "Server Response: MOD1...\n";
     return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD2 )
   {
     std::memcpy( messageOfTheDay_.data() + 15, buffer.data() + 1, 15 );
-    std::cerr << "Server Response: MOD2...\n";
     return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD3 )
   {
     std::memcpy( messageOfTheDay_.data() + 30, buffer.data() + 1, 15 );
-    std::cerr << "Server Response: MOD3...\n";
     return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD4 )
   {
     std::memcpy( messageOfTheDay_.data() + 45, buffer.data() + 1, 15 );
-    std::cerr << "Server Response: MOD4...\n";
     return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD5 )
   {
     std::memcpy( messageOfTheDay_.data() + 60, buffer.data() + 1, 15 );
-    std::cerr << "Server Response: MOD5...\n";
     return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD6 )
   {
     std::memcpy( messageOfTheDay_.data() + 75, buffer.data() + 1, 15 );
-    std::cerr << "Server Response: MOD6...\n";
     return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD7 )
   {
     std::memcpy( messageOfTheDay_.data() + 90, buffer.data() + 1, 15 );
-    std::cerr << "Server Response: MOD7...\n";
     return ProcessStatus::CONTINUE;
   }
   else if ( serverMsgType == MessageTypes::MOD8 )
   {
     std::memcpy( messageOfTheDay_.data() + 105, buffer.data() + 1, 15 );
-    std::cerr << "Server Response: MOD8...\n";
     return ProcessStatus::CONTINUE;
   }
   else

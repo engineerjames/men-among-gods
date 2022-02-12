@@ -342,7 +342,7 @@ int Map::interpolateItemSprite( unsigned int mapIndex )
     return map_[ mapIndex ].it_sprite + ( ticker_ & 63 );
 
   default:
-    std::cerr << "Unknown it_status\n";
+    LOG_ERROR( "Unknown it_status" );
     return map_[ mapIndex ].it_sprite;
   }
 }

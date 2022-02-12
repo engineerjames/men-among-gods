@@ -3,7 +3,6 @@
 #include "ColorPalette.h"
 #include "UtilityFunctions.h"
 
-#include <iostream>
 #include <sstream>
 
 namespace MenAmongGods

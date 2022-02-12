@@ -3,12 +3,12 @@
 #include <fcntl.h>
 #include <filesystem>
 #include <fstream>
-#include <iostream>
-
 #include <unistd.h>
 #include <zip.h>
 
 #include <SFML/Graphics/Sprite.hpp>
+
+#include "Logger.h"
 
 GraphicsCache::GraphicsCache()
     : isLoaded_( false )
@@ -29,10 +29,10 @@ void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int
 
   if ( za == nullptr )
   {
-    std::cerr << "Unable to open the zip file!" << std::endl;
+    LOG_ERROR( "Unable to open the zip file!" );
   }
 
-  std::cerr << "Loading " << howMany << " of " << zip_get_num_entries( za, 0 ) << std::endl;
+  LOG_DEBUG( "Loading " << zip_get_num_entries( za, 0 ) << " files from the ZIP." );
 
   struct zip_stat sb;
 
@@ -44,7 +44,7 @@ void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int
       zf = zip_fopen_index( za, i, 0 );
       if ( ! zf )
       {
-        std::cerr << "Error loading file.\n";
+        LOG_ERROR( "Error loading file." );
         return;
       }
 
@@ -68,12 +68,12 @@ void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int
 
       if ( static_cast< unsigned long >( zip_fread( zf, buf.get(), sb.size ) ) != sb.size )
       {
-        std::cerr << "Unable to read entire zip file." << std::endl;
+        LOG_ERROR( "Unable to read the entire zip file." );
       }
 
       if ( ! newImage.loadFromMemory( buf.get(), sb.size ) )
       {
-        std::cerr << "Error loading image from memory." << std::endl;
+        LOG_ERROR( "Error loading image from memory" );
       }
       else
       {
@@ -91,7 +91,7 @@ void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int
 
         if ( ( i + offSet ) > images_.capacity() )
         {
-          std::cerr << "Underallocated buffers - need at least a capacity of " << ( i + offSet ) << std::endl;
+          LOG_ERROR( "Underallocated buffers - need at least a capacity of " << ( i + offSet ) );
           return;
         }
 

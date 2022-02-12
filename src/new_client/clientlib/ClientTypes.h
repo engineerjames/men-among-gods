@@ -2,10 +2,11 @@
 #define CLIENT_TYPES_H
 
 #include <fstream>
-#include <iostream>
 
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
+
+#include "Logger.h"
 
 struct look
 {
@@ -139,7 +140,7 @@ inline LogType getLogType( int value )
   }
   else
   {
-    std::cerr << "UNABLE TO PARSE LOG TYPE!\n" << std::endl;
+    LOG_ERROR( "Unable to parse log type" );
     return LogType::ERROR;
   }
 }

@@ -6,7 +6,6 @@
 #include <ctime>
 #include <fstream>
 #include <iomanip>
-#include <iostream>
 #include <locale>
 #include <mutex>
 #include <sstream>

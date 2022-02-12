@@ -2,7 +2,6 @@
 
 #include <SFML/Network.hpp>
 #include <cstdint>
-#include <iostream>
 
 namespace MenAmongGods
 {
@@ -13,7 +12,7 @@ ModeCommand::ModeCommand( std::uint16_t newMode )
   // TODO: Update to an enum
   if ( newMode > 2 )
   {
-    std::cerr << "INVALID MODE SELECTED: " << newMode << std::endl;
+    LOG_ERROR( "Invalid mode selected: " << newMode );
   }
 }
 

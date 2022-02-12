@@ -1,7 +1,8 @@
 #include "GraphicsIndex.h"
 
 #include <fstream>
-#include <iostream>
+
+#include "Logger.h"
 
 GraphicsIndex::GraphicsIndex( const std::string& pathToIndexFile )
     : indices_()
@@ -17,7 +18,7 @@ void GraphicsIndex::load()
 
   if ( ! gfxidx.is_open() )
   {
-    std::cerr << "Error opening gx00.idx." << std::endl;
+    LOG_ERROR( "Error opening gx00.idx." );
     return;
   }
 

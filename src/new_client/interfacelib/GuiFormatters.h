@@ -2,7 +2,6 @@
 #define GUI_FORMATTERS_H
 
 #include <cmath>
-#include <iostream>
 #include <sstream>
 #include <string>
 #include <type_traits>

@@ -2,7 +2,6 @@
 
 #include <boost/archive/text_iarchive.hpp>
 #include <fstream>
-#include <iostream>
 #include <set>
 
 #include "ConstantIdentifiers.h"

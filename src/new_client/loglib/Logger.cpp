@@ -1,5 +1,7 @@
 #include "Logger.h"
 
+#include <iostream>
+
 namespace MenAmongGods::detail
 {
 Logger& Logger::instance()

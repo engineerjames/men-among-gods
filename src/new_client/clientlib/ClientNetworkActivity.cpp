@@ -1,7 +1,6 @@
 #include "ClientNetworkActivity.h"
 
 #include <cstring>
-#include <iostream>
 
 #include "ClientMessage.h"
 #include "ConstantIdentifiers.h"
@@ -62,6 +61,12 @@ void ClientNetworkActivity::stop() noexcept
 
 void ClientNetworkActivity::addClientCommands( const std::vector< std::shared_ptr< MenAmongGods::ClientCommand > >& commandList )
 {
+  // No need to append commands if the vector is empty
+  if ( commandList.empty() )
+  {
+    return;
+  }
+
   std::scoped_lock< std::mutex > lock( commandMutex_ );
 
   LOG_DEBUG( "Adding " << commandList.size() << " commands to network thread." );
