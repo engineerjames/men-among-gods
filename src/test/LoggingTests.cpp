@@ -31,7 +31,7 @@ BOOST_AUTO_TEST_CASE( DEBUG_LOG_WORKS )
 BOOST_AUTO_TEST_CASE( CAN_JSONIFY_LOG_ENTRY )
 {
   MenAmongGods::detail::Logger::LogEntry entry { Json::nullValue, "This is the message", MenAmongGods::detail::Logger::Level::DEBUG,
-                                                 "testfile.cpp", 53 };
+                                                 "testfile.cpp", 53, "testFunction" };
   Json::Value                            json {};
   entry.toJson( json );
 
@@ -41,6 +41,7 @@ BOOST_AUTO_TEST_CASE( CAN_JSONIFY_LOG_ENTRY )
   BOOST_CHECK_EQUAL( "DEBUG", json[ 0 ][ "level" ].asString() );
   BOOST_CHECK_EQUAL( 53, json[ 0 ][ "lineNumber" ].asInt() );
   BOOST_CHECK_EQUAL( "testfile.cpp", json[ 0 ][ "file" ].asString() );
+  BOOST_CHECK_EQUAL( "testFunction", json[ 0 ][ "function" ].asString() );
 }
 
 BOOST_AUTO_TEST_SUITE_END()
