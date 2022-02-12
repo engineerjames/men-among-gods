@@ -26,13 +26,17 @@ BOOST_AUTO_TEST_CASE( DEBUG_LOG_WORKS )
   auto actualLogLevel   = MenAmongGods::detail::Logger::instance().jsonLogEntries_[ 0 ].level_;
 
   BOOST_ASSERT( expectedLogLevel == actualLogLevel );
+
+  // For some reason older version of GCC don't pick up the variables as being used, so we'll void-cast them here.
+  ( void ) expectedLogLevel;
+  ( void ) actualLogLevel;
 }
 
 BOOST_AUTO_TEST_CASE( CAN_JSONIFY_LOG_ENTRY )
 {
-  MenAmongGods::detail::Logger::LogEntry entry { Json::nullValue, "This is the message", MenAmongGods::detail::Logger::Level::DEBUG,
-                                                 "testfile.cpp", 53, "testFunction" };
-  Json::Value                            json {};
+  MenAmongGods::detail::Logger::LogEntry entry {
+      Json::nullValue, "This is the message", MenAmongGods::detail::Logger::Level::DEBUG, "testfile.cpp", 53, "testFunction" };
+  Json::Value json {};
   entry.toJson( json );
 
   std::cerr << "Time Value: " << json[ 0 ][ "time" ].asString() << std::endl;
