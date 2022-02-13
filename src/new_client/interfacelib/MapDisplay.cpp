@@ -123,7 +123,7 @@ void MapDisplay::onUserInput( const sf::Event& e )
 
     int m = getMapIndexFromMousePosition( mousePosition, true );
 
-    commands_.emplace_back( std::make_shared< MenAmongGods::MoveCommand >( map_.getMap()[ m ].x, map_.getMap()[ m ].y ) );
+    commands_.emplace_back( std::make_shared< MenAmongGods::MoveCommand >( map_.getX( m ), map_.getY( m ) ) );
   }
 
   // User faces his/her character a specific direction via a right mouse button click
@@ -134,7 +134,7 @@ void MapDisplay::onUserInput( const sf::Event& e )
 
     int m = getMapIndexFromMousePosition( mousePosition, false );
 
-    commands_.emplace_back( std::make_shared< MenAmongGods::TurnCommand >( map_.getMap()[ m ].x, map_.getMap()[ m ].y ) );
+    commands_.emplace_back( std::make_shared< MenAmongGods::TurnCommand >( map_.getX( m ), map_.getY( m ) ) );
   }
 
   if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Key::LControl ) && e.type == sf::Event::MouseButtonReleased &&
@@ -145,9 +145,9 @@ void MapDisplay::onUserInput( const sf::Event& e )
     int m = getMapIndexFromMousePosition( mousePosition, true );
 
     // Check if character is present on tile?
-    if ( map_.getMap()[ m ].ch_nr != 0 )
+    if ( map_.getCharacterId( m ) != 0 )
     {
-      commands_.emplace_back( std::make_shared< MenAmongGods::AttackCommand >( map_.getMap()[ m ].ch_nr ) );
+      commands_.emplace_back( std::make_shared< MenAmongGods::AttackCommand >( map_.getCharacterId( m ) ) );
     }
   }
 }
@@ -184,8 +184,6 @@ sf::Vector2i MapDisplay::dd_gputtext( int xpos, int ypos, std::string text, int 
 
 void MapDisplay::update()
 {
-  map_.lock();
-
   spritesToDraw_.clear();
   textToDraw_.clear();
 
@@ -198,9 +196,9 @@ void MapDisplay::update()
   int hightlight {};
   int selected_char {};
 
-  int xoff       = -map_.getMap()[ ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX ].obj_xoff - 176; //-176;
-  int yoff       = -map_.getMap()[ ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX ].obj_yoff;       //-176;
-  int plr_sprite = map_.getMap()[ ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX ].obj2;
+  int xoff       = -map_.getObjectXOffset( ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX ) - 176; //-176;
+  int yoff       = -map_.getObjectYOffset( ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX );       //-176;
+  int plr_sprite = map_.getObject2( ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX );
 
   ( void ) plr_sprite;
   ( void ) selected_visible;
@@ -220,15 +218,15 @@ void MapDisplay::update()
       {
         tmp = 0;
       }
-      if ( map_.getMap()[ m ].flags & INVIS )
+      if ( map_.getFlags( m ) & INVIS )
       {
         tmp |= 64;
       }
-      if ( map_.getMap()[ m ].flags & INFRARED )
+      if ( map_.getFlags( m ) & INFRARED )
       {
         tmp |= 256;
       }
-      if ( map_.getMap()[ m ].flags & UWATER )
+      if ( map_.getFlags( m ) & UWATER )
       {
         tmp |= 512;
       }
@@ -240,9 +238,9 @@ void MapDisplay::update()
 
       // What is the difference between ba_sprite and back? Can I always use ba_sprite?
       // by using ba_sprite instead; we fixed the intermittent "blank" sprite issue
-      copysprite( map_.getMap()[ m ].back, map_.getMap()[ m ].light | tmp, x * 32, y * 32, xoff, yoff );
+      copysprite( map_.getBackground( m ), map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff );
 
-      if ( playerData_.getGotoPosition().x == map_.getMap()[ m ].x && playerData_.getGotoPosition().y == map_.getMap()[ m ].y )
+      if ( playerData_.getGotoPosition().x == map_.getX( m ) && playerData_.getGotoPosition().y == map_.getY( m ) )
       {
         copysprite( 31, 0, x * 32, y * 32, xoff, yoff );
       }
@@ -255,7 +253,7 @@ void MapDisplay::update()
     {
       int m = x + y * MAPX;
 
-      if ( map_.getMap()[ x + y * MAPX ].flags & INVIS )
+      if ( map_.getFlags( x + y * MAPX ) & INVIS )
       {
         tmp = 128;
       }
@@ -264,56 +262,56 @@ void MapDisplay::update()
         tmp = 0;
       }
 
-      if ( map_.getMap()[ m ].flags & INFRARED )
+      if ( map_.getFlags( m ) & INFRARED )
       {
         tmp |= 256;
       }
-      if ( map_.getMap()[ m ].flags & UWATER )
+      if ( map_.getFlags( m ) & UWATER )
       {
         tmp |= 512;
       }
 
       // object
-      if ( playerData_.areWallsHidden() == 0 || ( map_.getMap()[ m ].flags & ISITEM ) || autohide( x, y ) )
+      if ( playerData_.areWallsHidden() == 0 || ( map_.getFlags( m ) & ISITEM ) || autohide( x, y ) )
       {
         int tmp2 {};
         ( void ) tmp2;
 
-        if ( map_.getMap()[ m ].obj1 > 16335 && map_.getMap()[ m ].obj1 < 16422 && map_.getMap()[ m ].obj1 != 16357 &&
-             map_.getMap()[ m ].obj1 != 16365 && map_.getMap()[ m ].obj1 != 16373 && map_.getMap()[ m ].obj1 != 16381 &&
-             map_.getMap()[ m ].obj1 != 16357 && map_.getMap()[ m ].obj1 != 16389 && map_.getMap()[ m ].obj1 != 16397 &&
-             map_.getMap()[ m ].obj1 != 16405 && map_.getMap()[ m ].obj1 != 16413 && map_.getMap()[ m ].obj1 != 16421 &&
+        if ( map_.getObject1( m ) > 16335 && map_.getObject1( m ) < 16422 && map_.getObject1( m ) != 16357 &&
+             map_.getObject1( m ) != 16365 && map_.getObject1( m ) != 16373 && map_.getObject1( m ) != 16381 &&
+             map_.getObject1( m ) != 16357 && map_.getObject1( m ) != 16389 && map_.getObject1( m ) != 16397 &&
+             map_.getObject1( m ) != 16405 && map_.getObject1( m ) != 16413 && map_.getObject1( m ) != 16421 &&
              ! facing( x, y, playerData_.getPlayerDirection() ) && ! autohide( x, y ) && playerData_.areWallsHidden() )
         { // mine hack
-          if ( map_.getMap()[ m ].obj1 < 16358 )
+          if ( map_.getObject1( m ) < 16358 )
           {
             tmp2 = 457;
           }
-          else if ( map_.getMap()[ m ].obj1 < 16366 )
+          else if ( map_.getObject1( m ) < 16366 )
           {
             tmp2 = 456;
           }
-          else if ( map_.getMap()[ m ].obj1 < 16374 )
+          else if ( map_.getObject1( m ) < 16374 )
           {
             tmp2 = 455;
           }
-          else if ( map_.getMap()[ m ].obj1 < 16382 )
+          else if ( map_.getObject1( m ) < 16382 )
           {
             tmp2 = 466;
           }
-          else if ( map_.getMap()[ m ].obj1 < 16390 )
+          else if ( map_.getObject1( m ) < 16390 )
           {
             tmp2 = 459;
           }
-          else if ( map_.getMap()[ m ].obj1 < 16398 )
+          else if ( map_.getObject1( m ) < 16398 )
           {
             tmp2 = 458;
           }
-          else if ( map_.getMap()[ m ].obj1 < 16398 )
+          else if ( map_.getObject1( m ) < 16398 )
           {
             tmp2 = 449;
           }
-          else if ( map_.getMap()[ m ].obj1 < 16406 )
+          else if ( map_.getObject1( m ) < 16406 )
           {
             tmp2 = 468;
           }
@@ -324,28 +322,28 @@ void MapDisplay::update()
 
           if ( hightlight == HL_MAP && tileType_ == 1 && tileX_ == x && tileY_ == y )
           {
-            copysprite( tmp2, map_.getMap()[ m ].light | 16 | tmp, x * 32, y * 32, xoff, yoff );
+            copysprite( tmp2, map_.getLight( m ) | 16 | tmp, x * 32, y * 32, xoff, yoff );
           }
           else
           {
-            copysprite( tmp2, map_.getMap()[ m ].light | tmp, x * 32, y * 32, xoff, yoff );
+            copysprite( tmp2, map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff );
           }
         }
         else
         {
           if ( hightlight == HL_MAP && tileType_ == 1 && tileX_ == x && tileY_ == y )
           {
-            copysprite( map_.getMap()[ m ].obj1, map_.getMap()[ m ].light | 16 | tmp, x * 32, y * 32, xoff, yoff );
+            copysprite( map_.getObject1( m ), map_.getLight( m ) | 16 | tmp, x * 32, y * 32, xoff, yoff );
           }
           else
           {
-            copysprite( map_.getMap()[ m ].obj1, map_.getMap()[ m ].light | tmp, x * 32, y * 32, xoff, yoff );
+            copysprite( map_.getObject1( m ), map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff );
           }
         }
       }
-      else if ( map_.getMap()[ m ].obj1 )
+      else if ( map_.getObject1( m ) )
       {
-        copysprite( map_.getMap()[ m ].obj1 + 1, map_.getMap()[ m ].light | tmp, x * 32, y * 32, xoff, yoff );
+        copysprite( map_.getObject1( m ) + 1, map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff );
       }
 
       // character
@@ -358,186 +356,186 @@ void MapDisplay::update()
         tmp = 0;
       }
 
-      if ( map_.getMap()[ m ].ch_nr == selected_char )
+      if ( map_.getCharacterId( m ) == selected_char )
       {
         tmp |= 32;
         selected_visible = 1;
       }
 
-      if ( map_.getMap()[ m ].flags & INVIS )
+      if ( map_.getFlags( m ) & INVIS )
       {
         tmp |= 64;
       }
-      if ( map_.getMap()[ m ].flags & STONED )
+      if ( map_.getFlags( m ) & STONED )
       {
         tmp |= 128;
       }
-      if ( map_.getMap()[ m ].flags & INFRARED )
+      if ( map_.getFlags( m ) & INFRARED )
       {
         tmp |= 256;
       }
-      if ( map_.getMap()[ m ].flags & UWATER )
+      if ( map_.getFlags( m ) & UWATER )
       {
         tmp |= 512;
       }
 
-      if ( map_.getMap()[ m ].obj2 != 0 )
+      if ( map_.getObject2( m ) != 0 )
       {
-        copysprite( map_.getMap()[ m ].obj2, map_.getMap()[ m ].light | tmp, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff,
-                    yoff + map_.getMap()[ m ].obj_yoff );
+        copysprite( map_.getObject2( m ), map_.getLight( m ) | tmp, x * 32, y * 32, xoff + map_.getObjectXOffset( m ),
+                    yoff + map_.getObjectYOffset( m ) );
       }
 
-      if ( playerData_.getAttackTarget() != 0 && playerData_.getAttackTarget() == map_.getMap()[ m ].ch_nr )
+      if ( playerData_.getAttackTarget() != 0 && playerData_.getAttackTarget() == map_.getCharacterId( m ) )
       {
-        copysprite( 34, 0, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff );
+        copysprite( 34, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ) );
       }
 
-      if ( playerData_.getPlayerAction() == DR_GIVE && playerData_.getFirstTarget() == map_.getMap()[ m ].ch_id )
+      if ( playerData_.getPlayerAction() == DR_GIVE && playerData_.getFirstTarget() == map_.getCharacterCrc( m ) )
       {
-        copysprite( 45, 0, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff );
+        copysprite( 45, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ) );
       }
 
-      if ( ( playerData_.clientShouldShowNames() | playerData_.clientShouldShowPercentHealth() ) && map_.getMap()[ m ].ch_nr )
+      if ( ( playerData_.clientShouldShowNames() | playerData_.clientShouldShowPercentHealth() ) && map_.getCharacterId( m ) )
       {
-        playerData_.set_look_proz( map_.getMap()[ m ].ch_nr, map_.getMap()[ m ].ch_id, map_.getMap()[ m ].ch_proz );
+        playerData_.set_look_proz( map_.getCharacterId( m ), map_.getCharacterCrc( m ), map_.getCharacterPercentHealth( m ) );
 
-        std::string stringToDraw = playerData_.lookup( map_.getMap()[ m ].ch_nr, map_.getMap()[ m ].ch_id );
+        std::string stringToDraw = playerData_.lookup( map_.getCharacterId( m ), map_.getCharacterCrc( m ) );
         textToDraw_.emplace_back( stringToDraw, font_, FONT_SIZE );
         sf::Vector2i textPosition =
-            dd_gputtext( x * 32, y * 32, stringToDraw, xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff );
+            dd_gputtext( x * 32, y * 32, stringToDraw, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ) );
 
         auto& lastText = *( textToDraw_.end() - 1 );
 
         lastText.setPosition( sf::Vector2f { static_cast< float >( textPosition.x ), static_cast< float >( textPosition.y ) } );
       }
 
-      if ( playerData_.getPlayerAction() == DR_DROP && playerData_.getFirstTarget() == map_.getMap()[ m ].x &&
-           playerData_.getSecondTarget() == map_.getMap()[ m ].y )
+      if ( playerData_.getPlayerAction() == DR_DROP && playerData_.getFirstTarget() == map_.getX( m ) &&
+           playerData_.getSecondTarget() == map_.getY( m ) )
       {
         copysprite( 32, 0, x * 32, y * 32, xoff, yoff );
       }
-      if ( playerData_.getPlayerAction() == DR_PICKUP && playerData_.getFirstTarget() == map_.getMap()[ m ].x &&
-           playerData_.getSecondTarget() == map_.getMap()[ m ].y )
+      if ( playerData_.getPlayerAction() == DR_PICKUP && playerData_.getFirstTarget() == map_.getX( m ) &&
+           playerData_.getSecondTarget() == map_.getY( m ) )
       {
         copysprite( 33, 0, x * 32, y * 32, xoff, yoff );
       }
-      if ( playerData_.getPlayerAction() == DR_USE && playerData_.getFirstTarget() == map_.getMap()[ m ].x &&
-           playerData_.getSecondTarget() == map_.getMap()[ m ].y )
+      if ( playerData_.getPlayerAction() == DR_USE && playerData_.getFirstTarget() == map_.getX( m ) &&
+           playerData_.getSecondTarget() == map_.getY( m ) )
       {
         copysprite( 45, 0, x * 32, y * 32, xoff, yoff );
       }
 
       // effects
-      if ( map_.getMap()[ m ].flags2 & MF_MOVEBLOCK )
+      if ( map_.getFlags2( m ) & MF_MOVEBLOCK )
       {
         copysprite( 55, 0, x * 32, y * 32, xoff, yoff );
       }
-      if ( map_.getMap()[ m ].flags2 & MF_SIGHTBLOCK )
+      if ( map_.getFlags2( m ) & MF_SIGHTBLOCK )
       {
         copysprite( 84, 0, x * 32, y * 32, xoff, yoff );
       }
-      if ( map_.getMap()[ m ].flags2 & MF_INDOORS )
+      if ( map_.getFlags2( m ) & MF_INDOORS )
       {
         copysprite( 56, 0, x * 32, y * 32, xoff, yoff );
       }
-      if ( map_.getMap()[ m ].flags2 & MF_UWATER )
+      if ( map_.getFlags2( m ) & MF_UWATER )
       {
         copysprite( 75, 0, x * 32, y * 32, xoff, yoff );
       }
-      if ( map_.getMap()[ m ].flags2 & MF_NOMONST )
+      if ( map_.getFlags2( m ) & MF_NOMONST )
       {
         copysprite( 59, 0, x * 32, y * 32, xoff, yoff );
       }
-      if ( map_.getMap()[ m ].flags2 & MF_BANK )
+      if ( map_.getFlags2( m ) & MF_BANK )
       {
         copysprite( 60, 0, x * 32, y * 32, xoff, yoff );
       }
-      if ( map_.getMap()[ m ].flags2 & MF_TAVERN )
+      if ( map_.getFlags2( m ) & MF_TAVERN )
       {
         copysprite( 61, 0, x * 32, y * 32, xoff, yoff );
       }
-      if ( map_.getMap()[ m ].flags2 & MF_NOMAGIC )
+      if ( map_.getFlags2( m ) & MF_NOMAGIC )
       {
         copysprite( 62, 0, x * 32, y * 32, xoff, yoff );
       }
-      if ( map_.getMap()[ m ].flags2 & MF_DEATHTRAP )
+      if ( map_.getFlags2( m ) & MF_DEATHTRAP )
       {
         copysprite( 73, 0, x * 32, y * 32, xoff, yoff );
       }
-      if ( map_.getMap()[ m ].flags2 & MF_NOLAG )
+      if ( map_.getFlags2( m ) & MF_NOLAG )
       {
         copysprite( 57, 0, x * 32, y * 32, xoff, yoff );
       }
-      if ( map_.getMap()[ m ].flags2 & MF_ARENA )
+      if ( map_.getFlags2( m ) & MF_ARENA )
       {
         copysprite( 76, 0, x * 32, y * 32, xoff, yoff );
       }
-      if ( map_.getMap()[ m ].flags2 & MF_NOEXPIRE )
+      if ( map_.getFlags2( m ) & MF_NOEXPIRE )
       {
         copysprite( 82, 0, x * 32, y * 32, xoff, yoff );
       }
-      if ( map_.getMap()[ m ].flags2 & 0x80000000 )
+      if ( map_.getFlags2( m ) & 0x80000000 )
       {
         copysprite( 72, 0, x * 32, y * 32, xoff, yoff );
       }
 
-      if ( ( map_.getMap()[ m ].flags & ( INJURED | INJURED1 | INJURED2 ) ) == INJURED )
+      if ( ( map_.getFlags( m ) & ( INJURED | INJURED1 | INJURED2 ) ) == INJURED )
       {
-        copysprite( 1079, 0, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff );
+        copysprite( 1079, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ) );
       }
-      if ( ( map_.getMap()[ m ].flags & ( INJURED | INJURED1 | INJURED2 ) ) == ( INJURED | INJURED1 ) )
+      if ( ( map_.getFlags( m ) & ( INJURED | INJURED1 | INJURED2 ) ) == ( INJURED | INJURED1 ) )
       {
-        copysprite( 1080, 0, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff );
+        copysprite( 1080, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ) );
       }
-      if ( ( map_.getMap()[ m ].flags & ( INJURED | INJURED1 | INJURED2 ) ) == ( INJURED | INJURED2 ) )
+      if ( ( map_.getFlags( m ) & ( INJURED | INJURED1 | INJURED2 ) ) == ( INJURED | INJURED2 ) )
       {
-        copysprite( 1081, 0, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff );
+        copysprite( 1081, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ) );
       }
-      if ( ( map_.getMap()[ m ].flags & ( INJURED | INJURED1 | INJURED2 ) ) == ( INJURED | INJURED1 | INJURED2 ) )
+      if ( ( map_.getFlags( m ) & ( INJURED | INJURED1 | INJURED2 ) ) == ( INJURED | INJURED1 | INJURED2 ) )
       {
-        copysprite( 1082, 0, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff );
+        copysprite( 1082, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ) );
       }
 
-      if ( map_.getMap()[ m ].flags & DEATH )
+      if ( map_.getFlags( m ) & DEATH )
       {
-        if ( map_.getMap()[ m ].obj2 )
+        if ( map_.getObject2( m ) )
         {
-          copysprite( 280 + ( ( map_.getMap()[ m ].flags & DEATH ) >> 17 ) - 1, 0, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff,
-                      yoff + map_.getMap()[ m ].obj_yoff );
+          copysprite( 280 + ( ( map_.getFlags( m ) & DEATH ) >> 17 ) - 1, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ),
+                      yoff + map_.getObjectYOffset( m ) );
         }
         else
         {
-          copysprite( 280 + ( ( map_.getMap()[ m ].flags & DEATH ) >> 17 ) - 1, 0, x * 32, y * 32, xoff, yoff );
+          copysprite( 280 + ( ( map_.getFlags( m ) & DEATH ) >> 17 ) - 1, 0, x * 32, y * 32, xoff, yoff );
         }
       }
-      if ( map_.getMap()[ m ].flags & TOMB )
+      if ( map_.getFlags( m ) & TOMB )
       {
-        copysprite( 240 + ( ( map_.getMap()[ m ].flags & TOMB ) >> 12 ) - 1, map_.getMap()[ m ].light, x * 32, y * 32, xoff, yoff );
+        copysprite( 240 + ( ( map_.getFlags( m ) & TOMB ) >> 12 ) - 1, map_.getLight( m ), x * 32, y * 32, xoff, yoff );
       }
 
       alpha    = 0;
       alphastr = 0;
 
-      if ( map_.getMap()[ m ].flags & EMAGIC )
+      if ( map_.getFlags( m ) & EMAGIC )
       {
         alpha |= 1;
-        alphastr = std::max( ( unsigned ) alphastr, ( ( map_.getMap()[ m ].flags & EMAGIC ) >> 22 ) );
+        alphastr = std::max( ( unsigned ) alphastr, ( ( map_.getFlags( m ) & EMAGIC ) >> 22 ) );
       }
 
-      if ( map_.getMap()[ m ].flags & GMAGIC )
+      if ( map_.getFlags( m ) & GMAGIC )
       {
         alpha |= 2;
-        alphastr = std::max( ( unsigned ) alphastr, ( ( map_.getMap()[ m ].flags & GMAGIC ) >> 25 ) );
+        alphastr = std::max( ( unsigned ) alphastr, ( ( map_.getFlags( m ) & GMAGIC ) >> 25 ) );
       }
 
-      if ( map_.getMap()[ m ].flags & CMAGIC )
+      if ( map_.getFlags( m ) & CMAGIC )
       {
         alpha |= 4;
-        alphastr = std::max( ( unsigned ) alphastr, ( ( map_.getMap()[ m ].flags & CMAGIC ) >> 28 ) );
+        alphastr = std::max( ( unsigned ) alphastr, ( ( map_.getFlags( m ) & CMAGIC ) >> 28 ) );
       }
       if ( alpha )
       {
-        // dd_alphaeffect_magic( alpha, alphastr, x * 32, y * 32, xoff + map_.getMap()[ m ].obj_xoff, yoff + map_.getMap()[ m ].obj_yoff
+        // dd_alphaeffect_magic( alpha, alphastr, x * 32, y * 32, xoff + map_.getObjectXOffset(m), yoff + map_.getObjectYOffset(m)
         // );
       }
     }
@@ -569,7 +567,6 @@ void MapDisplay::update()
       }
     }
   }
-  map_.unlock();
 }
 
 void MapDisplay::loadFromFile( std::string filePath )
@@ -585,7 +582,7 @@ void MapDisplay::loadFromFile( std::string filePath )
       for ( unsigned int y = 0; y < MAPY; ++y )
       {
         ia >> tmpMap;
-        map_.getMap()[ x + y * MAPX ] = tmpMap;
+        map_.setMap( x + y * MAPX, tmpMap );
       }
     }
   }
@@ -652,7 +649,7 @@ void MapDisplay::saveToFile() const
     {
       for ( unsigned int y = 0; y < MAPY; ++y )
       {
-        oa << map_.getMap()[ x + y * MAPX ];
+        oa << map_.getMap( x + y * MAPX );
       }
     }
   }

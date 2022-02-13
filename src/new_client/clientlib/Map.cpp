@@ -54,8 +54,402 @@ Map::Map()
   }
 }
 
+unsigned short Map::getX( int index ) const
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  return map_[ index ].x;
+}
+
+unsigned short Map::getY( int index ) const
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  return map_[ index ].y;
+}
+
+short int Map::getBackgroundSprite( int index ) const
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  return map_[ index ].ba_sprite;
+}
+
+unsigned char Map::getLight( int index ) const
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  return map_[ index ].light;
+}
+
+unsigned int Map::getFlags( int index ) const
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  return map_[ index ].flags;
+}
+
+unsigned int Map::getFlags2( int index ) const
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  return map_[ index ].flags2;
+}
+
+unsigned short Map::getCharacterSprite( int index ) const
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  return map_[ index ].ch_sprite;
+}
+
+unsigned char Map::getCharacterStatus( int index ) const
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  return map_[ index ].ch_status;
+}
+
+unsigned char Map::getCharacterStatOff( int index ) const
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  return map_[ index ].ch_stat_off;
+}
+
+unsigned char Map::getCharacterSpeed( int index ) const
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  return map_[ index ].ch_speed;
+}
+
+unsigned short Map::getCharacterId( int index ) const
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  return map_[ index ].ch_nr;
+}
+
+unsigned short Map::getCharacterCrc( int index ) const
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  return map_[ index ].ch_id;
+}
+
+unsigned char Map::getCharacterPercentHealth( int index ) const
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  return map_[ index ].ch_proz;
+}
+
+short int Map::getItemSprite( int index ) const
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  return map_[ index ].it_sprite;
+}
+
+unsigned char Map::getItemStatus( int index ) const
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  return map_[ index ].it_status;
+}
+
+int Map::getBackground( int index ) const
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  return map_[ index ].back;
+}
+
+int Map::getObject1( int index ) const
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  return map_[ index ].obj1;
+}
+
+int Map::getObject2( int index ) const
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  return map_[ index ].obj2;
+}
+
+int Map::getObjectXOffset( int index ) const
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  return map_[ index ].obj_xoff;
+}
+
+int Map::getObjectYOffset( int index ) const
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  return map_[ index ].obj_yoff;
+}
+
+int Map::getOvlXOffset( int index ) const
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  return map_[ index ].ovl_xoff;
+}
+
+int Map::getOvlYOffset( int index ) const
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  return map_[ index ].ovl_yoff;
+}
+
+int Map::getIdleAnimation( int index ) const
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  return map_[ index ].idle_ani;
+}
+
+void Map::setX( int index, unsigned short newValue )
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  map_[ index ].x = newValue;
+}
+
+void Map::setY( int index, unsigned short newValue )
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  map_[ index ].y = newValue;
+}
+
+void Map::setBackgroundSprite( int index, short int newValue )
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  map_[ index ].ba_sprite = newValue;
+}
+
+void Map::setLight( int index, unsigned char newValue )
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  map_[ index ].light = newValue;
+}
+
+void Map::setFlags( int index, unsigned int newValue )
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  map_[ index ].flags = newValue;
+}
+
+void Map::setFlags2( int index, unsigned int newValue )
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  map_[ index ].flags2 = newValue;
+}
+
+void Map::setCharacterSprite( int index, unsigned short newValue )
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  map_[ index ].ch_sprite = newValue;
+}
+
+void Map::setCharacterStatus( int index, unsigned char newValue )
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  map_[ index ].ch_status = newValue;
+}
+
+void Map::setCharacterStatOff( int index, unsigned char newValue )
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  map_[ index ].ch_stat_off = newValue;
+}
+
+void Map::setCharacterSpeed( int index, unsigned char newValue )
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  map_[ index ].ch_speed = newValue;
+}
+
+void Map::setCharacterId( int index, unsigned short newValue )
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  map_[ index ].ch_nr = newValue;
+}
+
+void Map::setCharacterCrc( int index, unsigned short newValue )
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  map_[ index ].ch_id = newValue;
+}
+
+void Map::setCharacterPercentHealth( int index, unsigned char newValue )
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  map_[ index ].ch_proz = newValue;
+}
+
+void Map::setItemSprite( int index, short int newValue )
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  map_[ index ].it_sprite = newValue;
+}
+
+void Map::setItemStatus( int index, unsigned char newValue )
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  map_[ index ].it_status = newValue;
+}
+
+void Map::setBackground( int index, int newValue )
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  map_[ index ].back = newValue;
+}
+
+void Map::setObject1( int index, int newValue )
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  map_[ index ].obj1 = newValue;
+}
+
+void Map::setObject2( int index, int newValue )
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  map_[ index ].obj2 = newValue;
+}
+
+void Map::setObjectXOffset( int index, int newValue )
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  map_[ index ].obj_xoff = newValue;
+}
+
+void Map::setObjectYOffset( int index, int newValue )
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  map_[ index ].obj_yoff = newValue;
+}
+
+void Map::setOvlXOffset( int index, int newValue )
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  map_[ index ].ovl_xoff = newValue;
+}
+
+void Map::setOvlYOffset( int index, int newValue )
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  map_[ index ].ovl_yoff = newValue;
+}
+
+void Map::setIdleAnimation( int index, int newValue )
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  map_[ index ].idle_ani = newValue;
+}
+
+void Map::scrollRight()
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  std::memmove( map_.data(), map_.data() + 1, sizeof( struct cmap ) * ( TILEX * TILEY - 1 ) );
+}
+
+void Map::scrollLeft()
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  std::memmove( map_.data() + 1, map_.data(), sizeof( struct cmap ) * ( TILEX * TILEY - 1 ) );
+}
+
+void Map::scrollDown()
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  memmove( map_.data(), map_.data() + TILEX, sizeof( struct cmap ) * ( TILEX * TILEY - TILEX ) );
+}
+
+void Map::scrollUp()
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  memmove( map_.data() + TILEX, map_.data(), sizeof( struct cmap ) * ( TILEX * TILEY - TILEX ) );
+}
+
+void Map::scrollLeftUp()
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  memmove( map_.data() + TILEX + 1, map_.data(), sizeof( struct cmap ) * ( TILEX * TILEY - TILEX - 1 ) );
+}
+
+void Map::scrollLeftDown()
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  memmove( map_.data(), map_.data() + TILEX - 1, sizeof( struct cmap ) * ( TILEX * TILEY - TILEX + 1 ) );
+}
+
+void Map::scrollRightUp()
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  memmove( map_.data() + TILEX - 1, map_.data(), sizeof( struct cmap ) * ( TILEX * TILEY - TILEX + 1 ) );
+}
+
+void Map::scrollRightDown()
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  memmove( map_.data(), map_.data() + TILEX + 1, sizeof( struct cmap ) * ( TILEX * TILEY - TILEX - 1 ) );
+}
+
+cmap Map::getMap( int index ) const
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  return map_[ index ];
+}
+
+void Map::setMap( int index, cmap newValue )
+{
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
+  map_[ index ] = newValue;
+}
+
 void Map::tick()
 {
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
   ticker_++; // Should this be at the end?
 
   // Need to perform the regular "engine tick" here:
@@ -86,38 +480,24 @@ void Map::tick()
   }
 }
 
-void Map::lock()
-{
-  mapMutex_.lock();
-}
-
 int Map::speedo( unsigned int n )
 {
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
   return speedtab[ map_[ n ].ch_speed ][ ctick_ ];
 }
 
 void Map::setCTick( int newValue )
 {
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
   ctick_ = newValue;
-}
-
-cmap* Map::getMap()
-{
-  return map_.data();
-}
-
-const cmap* Map::getMap() const
-{
-  return map_.data();
-}
-
-void Map::unlock()
-{
-  mapMutex_.unlock();
 }
 
 int Map::speedstep( int n, int d, int s, int update )
 {
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
   int hard_step {};
   int soft_step {};
   int total_step {};
@@ -193,6 +573,8 @@ int Map::speedstep( int n, int d, int s, int update )
 
 int Map::interpolateItemSprite( unsigned int mapIndex )
 {
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
   unsigned int ctick = ctick_;
   switch ( map_[ mapIndex ].it_status )
   {
@@ -349,6 +731,8 @@ int Map::interpolateItemSprite( unsigned int mapIndex )
 
 int Map::interpolateCharacterSprite( unsigned int mapIndex )
 {
+  std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
+
   int tmp {};
   int update = 1;
 

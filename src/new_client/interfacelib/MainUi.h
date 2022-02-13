@@ -7,6 +7,7 @@
 #include "Component.h"
 #include "JustifiableText.h"
 #include "LifeDisplay.h"
+#include "MapDisplay.h"
 #include "PlayerInventoryDisplay.h"
 #include "PlayerLogDisplay.h"
 #include "PlayerTextInputDisplay.h"
@@ -15,6 +16,8 @@
 
 class PlayerData;
 class GraphicsCache;
+class GraphicsIndex;
+class Map;
 
 namespace MenAmongGods
 {
@@ -23,7 +26,8 @@ class FontCache;
 class MainUi : public MenAmongGods::Component
 {
 public:
-  MainUi( const sf::RenderWindow& window, PlayerData& pdata, const GraphicsCache& gfxCache, const FontCache& fontCache );
+  MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, const GraphicsCache& gfxCache, const GraphicsIndex& gfxIndex,
+          const FontCache& fontCache );
   ~MainUi() = default;
 
   void         addMessage( LogType type, std::string text );
@@ -67,6 +71,7 @@ private:
   PlayerTextInputDisplay userInput_;
   PlayerInventoryDisplay playerInventory_;
   UserOptionPanelDisplay userOptionPanel_;
+  MapDisplay             mapDisplay_;
 
   sf::Sprite background_;
 };

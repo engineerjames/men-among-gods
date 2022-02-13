@@ -1,5 +1,7 @@
 #include "Logger.h"
 
+#include "ResourceLocations.h"
+
 #include <iostream>
 
 namespace MenAmongGods::detail
@@ -26,6 +28,11 @@ void Logger::setLogLevel( Logger::Level newLevel )
 Logger::~Logger()
 {
   Json::Value root = Json::arrayValue;
+
+  Json::Value header {};
+  header[ "revision" ] = GIT_REVISION;
+
+  root.append( header );
 
   {
     std::lock_guard< std::mutex > lock( logMutex_ );
