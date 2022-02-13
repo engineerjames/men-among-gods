@@ -11,6 +11,7 @@
 #include "PlayerInventoryDisplay.h"
 #include "PlayerLogDisplay.h"
 #include "PlayerTextInputDisplay.h"
+#include "RankDisplay.h"
 #include "SkillsAndAttributesDisplay.h"
 #include "UserOptionPanelDisplay.h"
 
@@ -43,7 +44,6 @@ private:
   sf::Font    font_;
 
   sf::Text goldDisplay_;
-  sf::Text textualRank_;
 
   sf::Text                      avLabel_;
   MenAmongGods::JustifiableText avValue_;
@@ -53,6 +53,9 @@ private:
 
   sf::Text                      expLabel_;
   MenAmongGods::JustifiableText expValue_;
+
+  sf::Text                      expToSpendLabel_;
+  MenAmongGods::JustifiableText expToSpendValue_;
 
   sf::Text hpLabel_;
   sf::Text hpCurrentValue_;
@@ -72,6 +75,7 @@ private:
   PlayerInventoryDisplay playerInventory_;
   UserOptionPanelDisplay userOptionPanel_;
   MapDisplay             mapDisplay_;
+  RankDisplay            rankDisplay_;
 
   sf::Sprite background_;
 };
