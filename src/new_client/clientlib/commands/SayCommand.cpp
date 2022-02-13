@@ -89,6 +89,8 @@ bool SayCommand::send( sf::TcpSocket& socket ) const
   inputSent &= sendPartialMessage( socket, stringBuffer, ClientMessages::MessageTypes::CMD_INPUT7 );
   inputSent &= sendPartialMessage( socket, stringBuffer, ClientMessages::MessageTypes::CMD_INPUT8 );
 
+  LOG_DEBUG_OBJ( *this, "Successful send: " << inputSent );
+
   return inputSent;
 }
 
