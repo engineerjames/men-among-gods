@@ -32,6 +32,7 @@ MainUi::MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, con
     , playerInventory_( pdata, gfxCache )
     , userOptionPanel_( window, pdata )
     , mapDisplay_( font_, map, pdata, gfxCache, gfxIndex, window )
+    , rankDisplay_( font_, pdata, gfxCache )
     , background_()
 {
   goldDisplay_.setPosition( MenAmongGods::goldDisplayPosition );
@@ -203,6 +204,7 @@ void MainUi::draw( sf::RenderTarget& target, sf::RenderStates states ) const
   // Draw the background first
   target.draw( background_, states );
 
+  target.draw( rankDisplay_, states );
   target.draw( goldDisplay_, states );
   target.draw( msgBox_, states );
   target.draw( userInput_, states );
@@ -231,6 +233,7 @@ void MainUi::draw( sf::RenderTarget& target, sf::RenderStates states ) const
 
 void MainUi::onUserInput( const sf::Event& e )
 {
+  rankDisplay_.onUserInput( e );
   mapDisplay_.onUserInput( e );
   userInput_.onUserInput( e );
   skillsAndAttributes_.onUserInput( e );
@@ -241,9 +244,10 @@ void MainUi::onUserInput( const sf::Event& e )
 
 void MainUi::update()
 {
-  mapDisplay_.update();
-
   playerData_.lock();
+
+  mapDisplay_.update();
+  rankDisplay_.update();
 
   // Update UI from player data
   cplayer& player = playerData_.getClientSidePlayerInfo();
@@ -290,6 +294,7 @@ void MainUi::update()
 
 void MainUi::populateCommands( std::vector< std::shared_ptr< ClientCommand > >& outCommands )
 {
+  rankDisplay_.populateCommands( outCommands );
   mapDisplay_.populateCommands( outCommands );
   userInput_.populateCommands( outCommands );
   skillsAndAttributes_.populateCommands( outCommands );
@@ -300,6 +305,7 @@ void MainUi::populateCommands( std::vector< std::shared_ptr< ClientCommand > >& 
 
 void MainUi::finalize()
 {
+  rankDisplay_.finalize();
   mapDisplay_.finalize();
   userInput_.finalize();
   msgBox_.finalize();

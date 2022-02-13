@@ -11,6 +11,7 @@
 #include "PlayerInventoryDisplay.h"
 #include "PlayerLogDisplay.h"
 #include "PlayerTextInputDisplay.h"
+#include "RankDisplay.h"
 #include "SkillsAndAttributesDisplay.h"
 #include "UserOptionPanelDisplay.h"
 
@@ -74,6 +75,7 @@ private:
   PlayerInventoryDisplay playerInventory_;
   UserOptionPanelDisplay userOptionPanel_;
   MapDisplay             mapDisplay_;
+  RankDisplay            rankDisplay_;
 
   sf::Sprite background_;
 };
