@@ -88,7 +88,7 @@ private:
   int speedo( unsigned int n );
 
   std::array< cmap, MAPX * MAPY > map_;
-  std::mutex                      mapMutex_;
+  mutable std::recursive_mutex    mapMutex_;
   int                             ctick_;
   std::size_t                     ticker_;
 };
