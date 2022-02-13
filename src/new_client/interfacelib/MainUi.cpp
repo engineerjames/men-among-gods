@@ -11,7 +11,8 @@
 namespace MenAmongGods
 {
 
-MainUi::MainUi( const sf::RenderWindow& window, PlayerData& pdata, const GraphicsCache& gfxCache, const FontCache& fontCache )
+MainUi::MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, const GraphicsCache& gfxCache, const GraphicsIndex& gfxIndex,
+                const FontCache& fontCache )
     : MenAmongGods::Component()
     , playerData_( pdata )
     , font_( fontCache.getFont() )
@@ -29,6 +30,7 @@ MainUi::MainUi( const sf::RenderWindow& window, PlayerData& pdata, const Graphic
     , userInput_( font_ )
     , playerInventory_( pdata, gfxCache )
     , userOptionPanel_( window, pdata )
+    , mapDisplay_( font_, map, pdata, gfxCache, gfxIndex, window )
     , background_()
 {
   goldDisplay_.setPosition( sf::Vector2f { MenAmongGods::goldDisplayPosition } );
@@ -187,6 +189,8 @@ void MainUi::addMessage( LogType type, std::string text )
 
 void MainUi::draw( sf::RenderTarget& target, sf::RenderStates states ) const
 {
+  target.draw( mapDisplay_, states );
+
   // Draw the background first
   target.draw( background_, states );
 
@@ -217,6 +221,7 @@ void MainUi::draw( sf::RenderTarget& target, sf::RenderStates states ) const
 
 void MainUi::onUserInput( const sf::Event& e )
 {
+  mapDisplay_.onUserInput( e );
   userInput_.onUserInput( e );
   skillsAndAttributes_.onUserInput( e );
   lifeDisplay_.onUserInput( e );
@@ -226,7 +231,8 @@ void MainUi::onUserInput( const sf::Event& e )
 
 void MainUi::update()
 {
-  // Do nothing for now
+  mapDisplay_.update();
+
   playerData_.lock();
 
   // Update UI from player data
@@ -272,6 +278,7 @@ void MainUi::update()
 
 void MainUi::populateCommands( std::vector< std::shared_ptr< ClientCommand > >& outCommands )
 {
+  mapDisplay_.populateCommands( outCommands );
   userInput_.populateCommands( outCommands );
   skillsAndAttributes_.populateCommands( outCommands );
   lifeDisplay_.populateCommands( outCommands );
@@ -281,6 +288,7 @@ void MainUi::populateCommands( std::vector< std::shared_ptr< ClientCommand > >& 
 
 void MainUi::finalize()
 {
+  mapDisplay_.finalize();
   userInput_.finalize();
   msgBox_.finalize();
   lifeDisplay_.finalize();
