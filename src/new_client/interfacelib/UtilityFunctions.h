@@ -3,6 +3,8 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "ConstantIdentifiers.h"
+
 namespace MenAmongGods
 {
 inline sf::Vector2f getNormalizedMousePosition( const sf::RenderWindow& window )
@@ -18,6 +20,11 @@ inline sf::Vector2f getNormalizedMousePosition( const sf::RenderWindow& window )
       sf::Vector2f { mousePosition.x * multiplicationFactor.x, mousePosition.y * multiplicationFactor.y };
 
   return normalizedMousePosition;
+}
+
+inline bool mapIndexIsValid( const int index )
+{
+  return index < ( TILEX * TILEY );
 }
 
 } // namespace MenAmongGods

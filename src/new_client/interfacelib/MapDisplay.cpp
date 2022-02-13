@@ -4,6 +4,7 @@
 #include <fstream>
 #include <set>
 
+#include "ColorPalette.h"
 #include "ConstantIdentifiers.h"
 #include "GraphicsCache.h"
 #include "GraphicsIndex.h"
@@ -123,7 +124,10 @@ void MapDisplay::onUserInput( const sf::Event& e )
 
     int m = getMapIndexFromMousePosition( mousePosition, true );
 
-    commands_.emplace_back( std::make_shared< MenAmongGods::MoveCommand >( map_.getX( m ), map_.getY( m ) ) );
+    if ( mapIndexIsValid( m ) )
+    {
+      commands_.emplace_back( std::make_shared< MenAmongGods::MoveCommand >( map_.getX( m ), map_.getY( m ) ) );
+    }
   }
 
   // User faces his/her character a specific direction via a right mouse button click
@@ -134,7 +138,10 @@ void MapDisplay::onUserInput( const sf::Event& e )
 
     int m = getMapIndexFromMousePosition( mousePosition, false );
 
-    commands_.emplace_back( std::make_shared< MenAmongGods::TurnCommand >( map_.getX( m ), map_.getY( m ) ) );
+    if ( mapIndexIsValid( m ) )
+    {
+      commands_.emplace_back( std::make_shared< MenAmongGods::TurnCommand >( map_.getX( m ), map_.getY( m ) ) );
+    }
   }
 
   if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Key::LControl ) && e.type == sf::Event::MouseButtonReleased &&
@@ -401,12 +408,16 @@ void MapDisplay::update()
 
         std::string stringToDraw = playerData_.lookup( map_.getCharacterId( m ), map_.getCharacterCrc( m ) );
         textToDraw_.emplace_back( stringToDraw, font_, FONT_SIZE );
+
         sf::Vector2i textPosition =
             dd_gputtext( x * 32, y * 32, stringToDraw, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ) );
 
         auto& lastText = *( textToDraw_.end() - 1 );
 
         lastText.setPosition( sf::Vector2f { static_cast< float >( textPosition.x ), static_cast< float >( textPosition.y ) } );
+        lastText.setOutlineColor( sf::Color::Black );
+        lastText.setOutlineThickness( 1.0f );
+        lastText.setFillColor( MenAmongGods::MsgYellow );
       }
 
       if ( playerData_.getPlayerAction() == DR_DROP && playerData_.getFirstTarget() == map_.getX( m ) &&

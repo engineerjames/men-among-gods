@@ -27,6 +27,9 @@ static const sf::Vector2f wvValuePosition { 792.0f, 241.0f };
 static const sf::Vector2f expLabelPosition { 645.0f, 269.0f };
 static const sf::Vector2f expValuePosition { 792.0f, 269.0f };
 
+static const sf::Vector2f expToSpendLabelPosition { 115.0f, 255.0f };
+static const sf::Vector2f expToSpendValuePosition { 203.0f, 255.0f };
+
 // Hitpoints / End / Mana area near the bottom left
 static const sf::Vector2f hpLabelPosition { 4.0f, 268.0f };
 static const sf::Vector2f hpCurrentValuePosition { 111.0f, 268.0f };

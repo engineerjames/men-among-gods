@@ -17,6 +17,7 @@ set( sources
     PlayerTextInputDisplay.cpp
     ProgressBarDisplay.cpp
     RadioButtonDisplay.cpp
+    RankDisplay.cpp
     SkillsAndAttributesDisplay.cpp
     SubmitButtonDisplay.cpp
     TextInputDisplay.cpp
@@ -41,6 +42,7 @@ set( headers
     PlayerTextInputDisplay.h
     ProgressBarDisplay.h
     RadioButtonDisplay.h
+    RankDisplay.h
     SkillsAndAttributesDisplay.h
     SubmitButtonDisplay.h
     TextInputDisplay.h

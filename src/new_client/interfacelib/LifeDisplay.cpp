@@ -1,7 +1,7 @@
 #include "LifeDisplay.h"
 
-#include "PlayerData.h"
 #include "GuiFormatters.h"
+#include "PlayerData.h"
 #include "UiPositions.h"
 
 namespace
