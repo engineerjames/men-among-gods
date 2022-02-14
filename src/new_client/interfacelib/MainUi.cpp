@@ -25,7 +25,7 @@ MainUi::MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, con
     , expValue_()
     , expToSpendLabel_()
     , expToSpendValue_()
-    , skillsAndAttributes_( font_, pdata )
+    , skillsAndAttributes_( window, font_, pdata )
     , lifeDisplay_( font_, pdata )
     , msgBox_()
     , userInput_( font_ )

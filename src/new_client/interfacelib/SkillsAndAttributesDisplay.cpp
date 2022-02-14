@@ -1,10 +1,12 @@
 #include "SkillsAndAttributesDisplay.h"
 
-#include "GuiFormatters.h"
-#include "UiPositions.h"
-
 #include "ClientTypes.h"
+#include "GuiFormatters.h"
 #include "PlayerData.h"
+#include "UiPositions.h"
+#include "UtilityFunctions.h"
+
+#include <iostream>
 
 namespace
 {
@@ -95,6 +97,8 @@ skilltab static_skilltab[MAX_SKILLS]={
 }
 // clang-format on
 
+namespace MenAmongGods
+{
 SkillsAndAttributesDisplay::SkillRow::SkillRow()
     : name_()
     , displayValue_()
@@ -121,18 +125,23 @@ SkillsAndAttributesDisplay::SkillRow::SkillRow()
   minus_.setCharacterSize( FONT_SIZE );
 }
 
-SkillsAndAttributesDisplay::SkillsAndAttributesDisplay( const sf::Font& font, PlayerData& playerData )
-    : font_( font )
+SkillsAndAttributesDisplay::SkillsAndAttributesDisplay( const sf::RenderWindow& window, const sf::Font& font, PlayerData& playerData )
+    : window_( window )
+    , font_( font )
     , playerData_( playerData )
     , attributes_()
     , skills_()
     , skillsToDisplay_()
     , skillScrollBar_()
+    , scrollUpBox_( MenAmongGods::scrollUpBoxPosition, MenAmongGods::scrollBoxSize )
+    , scrollDownBox_( MenAmongGods::scrollDownBoxPosition, MenAmongGods::scrollBoxSize )
+    , scrollPosition_( 0 )
+    , initialScrollBarPosition_( 207.0f, 149.0f )
 {
 
   skillScrollBar_.setFillColor( sf::Color( 17, 87, 1, 128 ) );
   skillScrollBar_.setOutlineColor( sf::Color::Black );
-  skillScrollBar_.setPosition( sf::Vector2f { 207.0f, 149.0f } );
+  skillScrollBar_.setPosition( initialScrollBarPosition_ );
   skillScrollBar_.setSize( sf::Vector2f { 11.0f, 11.0f } );
 
   for ( unsigned int i = 0; i < MAX_SKILLS; ++i )
@@ -142,8 +151,6 @@ SkillsAndAttributesDisplay::SkillsAndAttributesDisplay( const sf::Font& font, Pl
     skills_[ i ].name_.setString( static_skilltab[ i ].name );
     skills_[ i ].displayValue_.setString( "0" );
     skills_[ i ].expRequired_.setString( MenAmongGods::addThousandsSeparator( 1000u ) );
-    skills_[ i ].plus_.setString( "+" );
-    skills_[ i ].minus_.setString( "-" );
 
     skills_[ i ].name_.setFont( font_ );
     skills_[ i ].displayValue_.setFont( font_ );
@@ -181,8 +188,6 @@ SkillsAndAttributesDisplay::SkillsAndAttributesDisplay( const sf::Font& font, Pl
 
     attributes_[ i ].displayValue_.setString( "0" );
     attributes_[ i ].expRequired_.setString( MenAmongGods::addThousandsSeparator( 1000u ) );
-    attributes_[ i ].plus_.setString( "+" );
-    attributes_[ i ].minus_.setString( "-" );
 
     attributes_[ i ].name_.setFont( font_ );
     attributes_[ i ].displayValue_.setFont( font_ );
@@ -208,7 +213,6 @@ void SkillsAndAttributesDisplay::draw( sf::RenderTarget& target, sf::RenderState
 
   for ( unsigned int i = 0; i < skillsToDisplay_.size(); ++i )
   {
-    // TODO: Accomodate scrolling behavior
     if ( i == 10 || skillsToDisplay_[ i ] == nullptr )
     {
       break;
@@ -236,6 +240,11 @@ void SkillsAndAttributesDisplay::update()
     attributes_[ i ].expRequired_.setString( std::to_string( attrib_needed( i, player.attrib[ i ][ 0 ], player ) ) );
     attributes_[ i ].displayValue_.update();
     attributes_[ i ].expRequired_.update();
+
+    if ( player.points >= attrib_needed( i, player.attrib[ i ][ 0 ], player ) )
+    {
+      attributes_[ i ].plus_.setString( "+" );
+    }
   }
 
   // Skills
@@ -245,7 +254,7 @@ void SkillsAndAttributesDisplay::update()
 
   skillsToDisplay_.fill( nullptr );
   unsigned int j = 0;
-  for ( unsigned int i = 0; i < MAX_SKILLS; ++i )
+  for ( unsigned int i = scrollPosition_; i < MAX_SKILLS; ++i )
   {
     // Player does not have the inspected skill
     if ( player.skill[ i ][ 0 ] == 0 )
@@ -270,14 +279,52 @@ void SkillsAndAttributesDisplay::update()
 
     skills_[ i ].displayValue_.update();
     skills_[ i ].expRequired_.update();
+
+    if ( player.points >= skill_needed( i, player.skill[ i ][ 0 ], player ) )
+    {
+      skills_[ i ].plus_.setString( "+" );
+    }
   }
+  skillScrollBar_.setPosition( initialScrollBarPosition_ + sf::Vector2f { 0.0f, 14.0f * scrollPosition_ } );
 }
 
-void SkillsAndAttributesDisplay::onUserInput( const sf::Event& )
+void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
 {
-  // Do nothing for now
+  if ( e.type == sf::Event::MouseButtonReleased && e.mouseButton.button == sf::Mouse::Button::Left )
+  {
+    sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
+
+    if ( scrollUpBox_.contains( mousePosition ) )
+    {
+      if ( scrollPosition_ > 0 )
+      {
+        scrollPosition_--;
+      }
+    }
+
+    if ( scrollDownBox_.contains( mousePosition ) )
+    {
+      scrollPosition_++;
+    }
+
+    // 10 skills displayable at most
+    for ( int i = 0; i < 10; ++i )
+    {
+      const sf::Vector2f  delta { 0.0f, i * 14.0f };
+      const sf::Vector2f  potentialSkillPosition = initialSkillPosition + delta;
+      const sf::Vector2f  skillBarSize { 105.0f, 10.0f };
+      const sf::FloatRect clickableSkillRegion { potentialSkillPosition, skillBarSize };
+
+      if ( clickableSkillRegion.contains( mousePosition ) )
+      {
+        std::cerr << "Clicking on skill " << i + scrollPosition_ << std::endl;
+        std::cerr << skillsToDisplay_[ i ]->name_.getString().toAnsiString() << std::endl;
+      }
+    }
+  }
 }
 
 void SkillsAndAttributesDisplay::finalize()
 {
 }
+} // namespace MenAmongGods

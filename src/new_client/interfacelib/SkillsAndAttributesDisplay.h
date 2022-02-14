@@ -1,16 +1,18 @@
-#ifndef SKILL_DISPLAY_H
-#define SKILL_DISPLAY_H
+#ifndef MEN_AMONG_GODS_SKILLS_AND_ATTRIBUTES_DISPLAY
+#define MEN_AMONG_GODS_SKILLS_AND_ATTRIBUTES_DISPLAY
 
 #include <SFML/Graphics.hpp>
 #include <array>
 
-#include "ConstantIdentifiers.h"
 #include "ColorPalette.h"
 #include "Component.h"
+#include "ConstantIdentifiers.h"
 #include "JustifiableText.h"
 
 class PlayerData;
 
+namespace MenAmongGods
+{
 class SkillsAndAttributesDisplay : public MenAmongGods::Component
 {
 public:
@@ -26,7 +28,7 @@ public:
     ~SkillRow() = default;
   };
 
-  SkillsAndAttributesDisplay( const sf::Font& font, PlayerData& playerData );
+  SkillsAndAttributesDisplay( const sf::RenderWindow& window, const sf::Font& font, PlayerData& playerData );
   ~SkillsAndAttributesDisplay() = default;
 
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
@@ -35,12 +37,19 @@ public:
   virtual void finalize() override;
 
 private:
+  const sf::RenderWindow&                window_;
   const sf::Font&                        font_;
   PlayerData&                            playerData_;
   std::array< SkillRow, MAX_ATTRIBUTES > attributes_;
   std::array< SkillRow, MAX_SKILLS >     skills_;
   std::array< SkillRow*, MAX_SKILLS >    skillsToDisplay_;
   sf::RectangleShape                     skillScrollBar_;
+
+  sf::FloatRect      scrollUpBox_;
+  sf::FloatRect      scrollDownBox_;
+  int                scrollPosition_;
+  const sf::Vector2f initialScrollBarPosition_;
 };
+} // namespace MenAmongGods
 
 #endif
