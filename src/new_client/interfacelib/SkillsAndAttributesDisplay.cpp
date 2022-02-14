@@ -8,6 +8,9 @@
 
 #include <iostream>
 
+// Commands
+#include "SkillCommand.h"
+
 namespace
 {
 
@@ -94,8 +97,30 @@ skilltab static_skilltab[MAX_SKILLS]={
 	{47,   'Z',   "", "", {0,0,0,}},
 	{48,   'Z',   "", "", {0,0,0,}},
 	{49,   'Z',   "", "", {0,0,0,}}};
-}
 // clang-format on
+
+int getSkillNumber( std::string skillName )
+{
+  skilltab* foundSkill = nullptr;
+
+  for ( int i = 0; i < MAX_SKILLS; ++i )
+  {
+    if ( static_skilltab[ i ].name == skillName )
+    {
+      foundSkill = &static_skilltab[ i ];
+      break;
+    }
+  }
+
+  if ( foundSkill )
+  {
+    return foundSkill->nr;
+  }
+
+  return -1; // TODO: Find something better than a negative return sentinel value
+}
+
+} // namespace
 
 namespace MenAmongGods
 {
@@ -316,9 +341,14 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
       const sf::FloatRect clickableSkillRegion { potentialSkillPosition, skillBarSize };
 
       if ( clickableSkillRegion.contains( mousePosition ) )
-      {
+      { //		cmd3(CL_CMD_SKILL,skilltab[n+skill_pos].nr,selected_char,skilltab[n+skill_pos].attrib[0]);
         std::cerr << "Clicking on skill " << i + scrollPosition_ << std::endl;
         std::cerr << skillsToDisplay_[ i ]->name_.getString().toAnsiString() << std::endl;
+
+        int skillNr = getSkillNumber( skillsToDisplay_[ i ]->name_.getString() );
+        ( void ) skillNr;
+        // int          skillBaseValue = getSkillBaseValue( skillsToDisplay_[i]->nam)
+        // SkillCommand skillCommand { skillNr, 0, skillBaseValue };
       }
     }
   }
