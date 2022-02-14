@@ -27,5 +27,19 @@ inline bool mapIndexIsValid( const int index )
   return index < ( TILEX * TILEY );
 }
 
+inline bool userClickedOnMap( const sf::Vector2f& pos )
+{
+  sf::FloatRect skillsArea { sf::Vector2f { 0.0f, 0.0f }, sf::Vector2f { 248.0f, 280.0f } };
+  sf::FloatRect clientOptionsArea { sf::Vector2f { 600.0f, 500.0 }, sf::Vector2f { 200.0f, 100.0f } };
+
+  // TODO: This needs some work, currently just a rough approximation
+  if ( skillsArea.contains( pos ) || clientOptionsArea.contains( pos ) )
+  {
+    return false;
+  }
+
+  return true;
+}
+
 } // namespace MenAmongGods
 #endif
