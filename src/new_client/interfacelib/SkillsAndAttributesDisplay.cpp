@@ -120,6 +120,19 @@ int getSkillNumber( std::string skillName )
   return -1; // TODO: Find something better than a negative return sentinel value
 }
 
+int getBaseAttributeModifier( const std::string& skillName )
+{
+  for ( unsigned int i = 0; i < MAX_SKILLS; ++i )
+  {
+    if ( static_skilltab[ i ].name == skillName )
+    {
+      return static_skilltab[ i ].attrib[ 0 ];
+    }
+  }
+
+  return -1;
+}
+
 } // namespace
 
 namespace MenAmongGods
@@ -310,7 +323,7 @@ void SkillsAndAttributesDisplay::update()
       skills_[ i ].plus_.setString( "+" );
     }
   }
-  skillScrollBar_.setPosition( initialScrollBarPosition_ + sf::Vector2f { 0.0f, 14.0f * scrollPosition_ } );
+  skillScrollBar_.setPosition( initialScrollBarPosition_ + MenAmongGods::scrollBarMovementPerClick );
 }
 
 void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
@@ -341,14 +354,13 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
       const sf::FloatRect clickableSkillRegion { potentialSkillPosition, skillBarSize };
 
       if ( clickableSkillRegion.contains( mousePosition ) )
-      { //		cmd3(CL_CMD_SKILL,skilltab[n+skill_pos].nr,selected_char,skilltab[n+skill_pos].attrib[0]);
-        std::cerr << "Clicking on skill " << i + scrollPosition_ << std::endl;
-        std::cerr << skillsToDisplay_[ i ]->name_.getString().toAnsiString() << std::endl;
+      {
+        int  skillNr               = getSkillNumber( skillsToDisplay_[ i ]->name_.getString() );
+        int  baseAttributeModifier = getBaseAttributeModifier( skillsToDisplay_[ i ]->name_.getString() );
+        auto skillCommand          = std::make_shared< SkillCommand >( static_cast< unsigned int >( skillNr ), 0,
+                                                              static_cast< unsigned int >( baseAttributeModifier ) );
 
-        int skillNr = getSkillNumber( skillsToDisplay_[ i ]->name_.getString() );
-        ( void ) skillNr;
-        // int          skillBaseValue = getSkillBaseValue( skillsToDisplay_[i]->nam)
-        // SkillCommand skillCommand { skillNr, 0, skillBaseValue };
+        commands_.push_back( skillCommand );
       }
     }
   }

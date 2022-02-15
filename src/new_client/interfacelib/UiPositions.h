@@ -10,6 +10,8 @@ namespace MenAmongGods
 static const sf::Vector2f initialAttributePosition { 3.0f, 1.0f };
 static const sf::Vector2f initialSkillPosition { 3.0f, 113.0f };
 
+static const sf::Vector2f scrollBarMovementPerClick { 0.0f, 5.0f };
+
 static const sf::Vector2f scrollUpBoxPosition { 207.0f, 114.0f };
 static const sf::Vector2f scrollDownBoxPosition { 207.0f, 219.0f };
 static const sf::Vector2f scrollBoxSize { 10.0f, 32.0f };
