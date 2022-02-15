@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <array>
+#include <vector>
 
 #include "ColorPalette.h"
 #include "Component.h"
@@ -10,6 +11,8 @@
 #include "JustifiableText.h"
 
 class PlayerData;
+class GraphicsCache;
+class GraphicsIndex;
 
 namespace MenAmongGods
 {
@@ -28,7 +31,8 @@ public:
     ~SkillRow() = default;
   };
 
-  SkillsAndAttributesDisplay( const sf::RenderWindow& window, const sf::Font& font, PlayerData& playerData );
+  SkillsAndAttributesDisplay( const sf::RenderWindow& window, const sf::Font& font, const GraphicsCache& gfxCache,
+                              const GraphicsIndex& gfxIndex, PlayerData& playerData );
   ~SkillsAndAttributesDisplay() = default;
 
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
@@ -39,6 +43,8 @@ public:
 private:
   const sf::RenderWindow&                window_;
   const sf::Font&                        font_;
+  const GraphicsCache&                   gfxCache_;
+  const GraphicsIndex&                   gfxIndex_;
   PlayerData&                            playerData_;
   std::array< SkillRow, MAX_ATTRIBUTES > attributes_;
   std::array< SkillRow, MAX_SKILLS >     skills_;
@@ -49,6 +55,8 @@ private:
   sf::FloatRect      scrollDownBox_;
   int                scrollPosition_;
   const sf::Vector2f initialScrollBarPosition_;
+
+  std::vector< sf::Sprite > spellsToDraw;
 };
 } // namespace MenAmongGods
 

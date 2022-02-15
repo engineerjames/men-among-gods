@@ -1,6 +1,8 @@
 #include "SkillsAndAttributesDisplay.h"
 
 #include "ClientTypes.h"
+#include "GraphicsCache.h"
+#include "GraphicsIndex.h"
 #include "GuiFormatters.h"
 #include "PlayerData.h"
 #include "UiPositions.h"
@@ -163,9 +165,12 @@ SkillsAndAttributesDisplay::SkillRow::SkillRow()
   minus_.setCharacterSize( FONT_SIZE );
 }
 
-SkillsAndAttributesDisplay::SkillsAndAttributesDisplay( const sf::RenderWindow& window, const sf::Font& font, PlayerData& playerData )
+SkillsAndAttributesDisplay::SkillsAndAttributesDisplay( const sf::RenderWindow& window, const sf::Font& font, const GraphicsCache& gfxCache,
+                                                        const GraphicsIndex& gfxIndex, PlayerData& playerData )
     : window_( window )
     , font_( font )
+    , gfxCache_( gfxCache )
+    , gfxIndex_( gfxIndex )
     , playerData_( playerData )
     , attributes_()
     , skills_()
@@ -175,6 +180,7 @@ SkillsAndAttributesDisplay::SkillsAndAttributesDisplay( const sf::RenderWindow& 
     , scrollDownBox_( MenAmongGods::scrollDownBoxPosition, MenAmongGods::scrollBoxSize )
     , scrollPosition_( 0 )
     , initialScrollBarPosition_( 207.0f, 149.0f )
+    , spellsToDraw()
 {
 
   skillScrollBar_.setFillColor( sf::Color( 17, 87, 1, 128 ) );
@@ -265,6 +271,12 @@ void SkillsAndAttributesDisplay::draw( sf::RenderTarget& target, sf::RenderState
 
   // Draw scrollbar
   target.draw( skillScrollBar_, states );
+
+  // Draw active spells
+  for ( const auto& s : spellsToDraw )
+  {
+    target.draw( s, states );
+  }
 }
 
 void SkillsAndAttributesDisplay::update()
@@ -324,6 +336,23 @@ void SkillsAndAttributesDisplay::update()
     }
   }
   skillScrollBar_.setPosition( initialScrollBarPosition_ + MenAmongGods::scrollBarMovementPerClick );
+
+  // Update spells to draw
+  spellsToDraw.clear();
+  const cplayer& pl = playerData_.getClientSidePlayerInfo();
+
+  for ( int n = 0; n < 20; n++ )
+  {
+    if ( pl.spell[ n ] != 0 )
+    {
+      sf::Vector2f spellPosition { static_cast< float >( 374 + ( n % 5 ) * 24 ), static_cast< float >( 4 + ( n / 5 ) * 24 ) };
+
+      spellsToDraw.push_back( gfxCache_.getSprite( pl.spell[ n ] ) );
+
+      auto lastSprite = ( spellsToDraw.end() - 1 );
+      lastSprite->setPosition( spellPosition );
+    }
+  }
 }
 
 void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
