@@ -3,6 +3,9 @@
 
 #include <SFML/Graphics.hpp>
 #include <array>
+#include <map>
+#include <stack>
+#include <string>
 #include <vector>
 
 #include "ColorPalette.h"
@@ -58,8 +61,9 @@ private:
 
   std::vector< sf::Sprite > spellsToDraw;
 
-  sf::Text                      expToSpendLabel_;
-  MenAmongGods::JustifiableText expToSpendValue_;
+  sf::Text                                   expToSpendLabel_;
+  MenAmongGods::JustifiableText              expToSpendValue_;
+  std::map< std::string, std::stack< int > > raiseMap_; // TODO: This should be in the player data class
 };
 } // namespace MenAmongGods
 

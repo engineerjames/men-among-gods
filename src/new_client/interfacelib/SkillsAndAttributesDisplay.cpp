@@ -183,6 +183,7 @@ SkillsAndAttributesDisplay::SkillsAndAttributesDisplay( const sf::RenderWindow& 
     , spellsToDraw()
     , expToSpendLabel_( "Update", font, FONT_SIZE )
     , expToSpendValue_()
+    , raiseMap_()
 {
 
   expToSpendLabel_.setPosition( MenAmongGods::expToSpendLabelPosition );
@@ -314,14 +315,30 @@ void SkillsAndAttributesDisplay::update()
   // Attributes
   for ( unsigned int i = 0; i < MAX_ATTRIBUTES; ++i )
   {
-    attributes_[ i ].displayValue_.setString( std::to_string( player.attrib[ i ][ 5 ] ) );
-    attributes_[ i ].expRequired_.setString( std::to_string( attrib_needed( i, player.attrib[ i ][ 0 ], player ) ) );
+    int nTimesRaised = raiseMap_[ attributes_[ i ].name_.getString() ].size();
+
+    attributes_[ i ].displayValue_.setString( std::to_string( player.attrib[ i ][ 5 ] + nTimesRaised ) );
+
+    attributes_[ i ].expRequired_.setString( std::to_string( attrib_needed( i, player.attrib[ i ][ 0 ] + nTimesRaised, player ) ) );
     attributes_[ i ].displayValue_.update();
     attributes_[ i ].expRequired_.update();
 
-    if ( player.points >= attrib_needed( i, player.attrib[ i ][ 0 ], player ) )
+    if ( player.points >= attrib_needed( i, player.attrib[ i ][ 0 ] + nTimesRaised, player ) )
     {
       attributes_[ i ].plus_.setString( "+" );
+    }
+    else
+    {
+      attributes_[ i ].plus_.setString( "" );
+    }
+
+    if ( nTimesRaised > 0 )
+    {
+      attributes_[ i ].minus_.setString( "-" );
+    }
+    else
+    {
+      attributes_[ i ].minus_.setString( "" );
     }
   }
 
@@ -428,18 +445,82 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
     if ( MenAmongGods::plusAreaRectangle.contains( mousePosition ) )
     {
       // Find out which row was clicked -- each row
-      int row = ( mousePosition.y / 14.0f );
-      row     = std::max( 0, row ); // 0 - 4 attributes, 5-7 hp/end/mana, the rest are skills
+      int row         = ( mousePosition.y / 14.0f );
+      row             = std::max( 0, row ); // 0 - 4 attributes, 5-7 hp/end/mana, the rest are skills
+      cplayer& player = playerData_.getClientSidePlayerInfo();
 
-      std::cerr << "User clicked + for index " << row << std::endl;
+      if ( row >= 0 && row <= 4 ) // Attributes
+      {
+        std::cerr << "Raising attribute..." << std::endl;
+        int nTimesRaised   = raiseMap_[ attributes_[ row ].name_.getString() ].size();
+        int pointsRequired = attrib_needed( row, player.attrib[ row ][ 0 ] + nTimesRaised, player );
+        std::cerr << "Exp required to raise: " << pointsRequired << " out of " << player.points << std::endl;
+        if ( player.points >= pointsRequired )
+        {
+          std::string attributeName = attributes_.at( row ).name_.getString();
+          std::cerr << "Attribute name attempting to increase is: " << attributeName << std::endl;
+
+          raiseMap_[ attributeName ].push( pointsRequired );
+
+          player.points -= pointsRequired;
+        }
+      }
+      else if ( row >= 5 && row <= 7 ) // HP/END/MANA
+      {
+        // Nothing for now--need to move the logic into here (currently it is separated out)
+      }
+      else // Skills
+      {
+        // int m              = static_skilltab[ row - 8 ].nr + 8;
+        // int pointsRequired = skill_needed( m, player.skill[ m ][ 0 ], player );
+        // std::cerr << "Need " << pointsRequired << " points to raise skill" << std::endl;
+        // if ( player.points >= pointsRequired )
+        // {
+        //   std::string skillName = skillsToDisplay_[ m ]->name_.getString();
+        //   std::cerr << "Skill name attempting to increase is: " << skillName << std::endl;
+
+        //   raiseMap_[ skillName ]++;
+
+        //   player.points -= pointsRequired;
+      }
     }
     else if ( MenAmongGods::minusAreaRectangle.contains( mousePosition ) )
     {
       // Find out which row was clicked -- each row
-      int row = ( mousePosition.y / 14.0f );
-      row     = std::max( 0, row );
+      int row         = ( mousePosition.y / 14.0f );
+      row             = std::max( 0, row );
+      cplayer& player = playerData_.getClientSidePlayerInfo();
 
       std::cerr << "User clicked - for index " << row << std::endl;
+
+      if ( row >= 0 && row <= 4 ) // Attributes
+      {
+        std::string attributeName = attributes_.at( row ).name_.getString();
+        std::cerr << "Attribute name attempting to decrease is: " << attributeName << std::endl;
+
+        if ( raiseMap_.count( attributeName ) != 0 && raiseMap_[ attributeName ].size() > 0 )
+        {
+          player.points += raiseMap_[ attributeName ].top();
+          raiseMap_[ attributeName ].pop();
+
+          std::cerr << "Size is now: " << raiseMap_[ attributeName ].size();
+        }
+      }
+      else if ( row >= 5 && row <= 7 ) // HP/END/MANA
+      {
+        // Nothing for now--need to move the logic into here (currently it is separated out)
+      }
+      else // Skills
+      {
+        // std::string skillName = skillsToDisplay_[ row - 8 ]->name_.getString();
+        // std::cerr << "Skill name attempting to decrease is: " << skillName << std::endl;
+        // if ( raiseMap_.count( skillName ) != 0 && raiseMap_[ skillName ] > 0 )
+        // {
+        //   int pointsToReturn = skill_needed( row, player.skill[ row ][ 0 ] + raiseMap_[ skillName ], player );
+        //   raiseMap_[ skillName ]--;
+        //   player.points += pointsToReturn;
+        // }
+      }
     }
   }
 }
