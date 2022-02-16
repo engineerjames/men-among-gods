@@ -359,12 +359,15 @@ void SkillsAndAttributesDisplay::update()
 
     // Player DOES have the skill, so appropriately set the delta value (based on how many skills)
     // we've added to the skillstodisplay list.
-    skillsToDisplay_[ j ] = &skills_[ i ];
+    skillsToDisplay_[ j ]               = &skills_[ i ];
+    skillsToDisplay_[ j ]->skillsIndex_ = i;
     const sf::Vector2f delta { 0.0f, j * 14.0f };
     j++;
 
-    skills_[ i ].displayValue_.setString( std::to_string( player.skill[ i ][ 5 ] ) );
-    skills_[ i ].expRequired_.setString( std::to_string( skill_needed( i, player.skill[ i ][ 0 ], player ) ) );
+    int nTimesRaised = raiseMap_[ skills_[ i ].name_.getString() ].size();
+
+    skills_[ i ].displayValue_.setString( std::to_string( player.skill[ i ][ 5 ] + nTimesRaised ) );
+    skills_[ i ].expRequired_.setString( std::to_string( skill_needed( i, player.skill[ i ][ 0 ] + nTimesRaised, player ) ) );
     skills_[ i ].name_.setPosition( MenAmongGods::initialSkillPosition + delta );
 
     skills_[ i ].displayValue_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 127.0f, delta.y } );
@@ -378,6 +381,19 @@ void SkillsAndAttributesDisplay::update()
     if ( player.points >= skill_needed( i, player.skill[ i ][ 0 ], player ) )
     {
       skills_[ i ].plus_.setString( "+" );
+    }
+    else
+    {
+      skills_[ i ].plus_.setString( "" );
+    }
+
+    if ( nTimesRaised > 0 )
+    {
+      skills_[ i ].minus_.setString( "-" );
+    }
+    else
+    {
+      skills_[ i ].minus_.setString( "" );
     }
   }
   skillScrollBar_.setPosition( initialScrollBarPosition_ +
@@ -471,17 +487,25 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
       }
       else // Skills
       {
-        // int m              = static_skilltab[ row - 8 ].nr + 8;
-        // int pointsRequired = skill_needed( m, player.skill[ m ][ 0 ], player );
-        // std::cerr << "Need " << pointsRequired << " points to raise skill" << std::endl;
-        // if ( player.points >= pointsRequired )
-        // {
-        //   std::string skillName = skillsToDisplay_[ m ]->name_.getString();
-        //   std::cerr << "Skill name attempting to increase is: " << skillName << std::endl;
+        if ( skillsToDisplay_[ row - 8 ] == nullptr )
+        {
+          return;
+        }
 
-        //   raiseMap_[ skillName ]++;
+        int m            = skillsToDisplay_[ row - 8 ]->skillsIndex_;
+        int nTimesRaised = raiseMap_[ skillsToDisplay_[ row - 8 ]->name_.getString() ].size();
 
-        //   player.points -= pointsRequired;
+        int pointsRequired = skill_needed( m, player.skill[ m ][ 0 ] + nTimesRaised, player );
+        std::cerr << "Need " << pointsRequired << " points to raise skill" << std::endl;
+        if ( player.points >= pointsRequired )
+        {
+          std::string skillName = skillsToDisplay_[ row - 8 ]->name_.getString();
+          std::cerr << "Skill name attempting to increase is: " << skillName << std::endl;
+
+          raiseMap_[ skillName ].push( pointsRequired );
+
+          player.points -= pointsRequired;
+        }
       }
     }
     else if ( MenAmongGods::minusAreaRectangle.contains( mousePosition ) )
@@ -512,14 +536,21 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
       }
       else // Skills
       {
-        // std::string skillName = skillsToDisplay_[ row - 8 ]->name_.getString();
-        // std::cerr << "Skill name attempting to decrease is: " << skillName << std::endl;
-        // if ( raiseMap_.count( skillName ) != 0 && raiseMap_[ skillName ] > 0 )
-        // {
-        //   int pointsToReturn = skill_needed( row, player.skill[ row ][ 0 ] + raiseMap_[ skillName ], player );
-        //   raiseMap_[ skillName ]--;
-        //   player.points += pointsToReturn;
-        // }
+        if ( skillsToDisplay_[ row - 8 ] == nullptr )
+        {
+          return;
+        }
+
+        std::string skillName = skillsToDisplay_[ row - 8 ]->name_.getString();
+        std::cerr << "Skill name attempting to decrease is: " << skillName << std::endl;
+
+        if ( raiseMap_.count( skillName ) != 0 && raiseMap_[ skillName ].size() > 0 )
+        {
+          player.points += raiseMap_[ skillName ].top();
+          raiseMap_[ skillName ].pop();
+
+          std::cerr << "Size is now: " << raiseMap_[ skillName ].size();
+        }
       }
     }
   }

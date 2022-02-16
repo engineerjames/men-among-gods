@@ -29,6 +29,7 @@ public:
     MenAmongGods::JustifiableText expRequired_;
     sf::Text                      plus_;
     sf::Text                      minus_;
+    int                           skillsIndex_;
 
     SkillRow();
     ~SkillRow() = default;
