@@ -12,6 +12,7 @@
 
 // Commands
 #include "SkillCommand.h"
+#include "StatCommand.h"
 
 namespace
 {
@@ -378,7 +379,7 @@ void SkillsAndAttributesDisplay::update()
     skills_[ i ].displayValue_.update();
     skills_[ i ].expRequired_.update();
 
-    if ( player.points >= skill_needed( i, player.skill[ i ][ 0 ], player ) )
+    if ( player.points >= skill_needed( i, player.skill[ i ][ 0 ] + nTimesRaised, player ) )
     {
       skills_[ i ].plus_.setString( "+" );
     }
@@ -448,6 +449,11 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
 
       if ( clickableSkillRegion.contains( mousePosition ) )
       {
+        if ( skillsToDisplay_[ i ] == nullptr )
+        {
+          return;
+        }
+
         int  skillNr               = getSkillNumber( skillsToDisplay_[ i ]->name_.getString() );
         int  baseAttributeModifier = getBaseAttributeModifier( skillsToDisplay_[ i ]->name_.getString() );
         auto skillCommand          = std::make_shared< SkillCommand >( static_cast< unsigned int >( skillNr ), 0,
@@ -550,6 +556,64 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
           raiseMap_[ skillName ].pop();
 
           std::cerr << "Size is now: " << raiseMap_[ skillName ].size();
+        }
+      }
+    }
+    else if ( expToSpendLabel_.getGlobalBounds().contains( mousePosition ) ) // User clicks "Update"
+    {
+      // Put commands into the command list so we communicate with the server with what we're trying to update
+      for ( auto& [ skillOrAttributeName, raiseStack ] : raiseMap_ )
+      {
+        std::cout << "Attempting to raise " << skillOrAttributeName << " by " << raiseStack.size() << std::endl;
+
+        // The stat number lines up with the attributes perfectly until we reach the skill section.
+        // It is at that point that we take the numerical index and ADD 8 to it (vs. subtract).
+        // Let's just do it stupidly for now and fix it later.
+        int skillNumber {};
+        if ( skillOrAttributeName == "Braveness" )
+        {
+          skillNumber = 0;
+        }
+        else if ( skillOrAttributeName == "Willpower" )
+        {
+          skillNumber = 1;
+        }
+        else if ( skillOrAttributeName == "Intuition" )
+        {
+          skillNumber = 2;
+        }
+        else if ( skillOrAttributeName == "Agility" )
+        {
+          skillNumber = 3;
+        }
+        else if ( skillOrAttributeName == "Strength" )
+        {
+          skillNumber = 4;
+        }
+        else if ( skillOrAttributeName == "Hitpoints" )
+        {
+          skillNumber = 5;
+        }
+        else if ( skillOrAttributeName == "Endurance" )
+        {
+          skillNumber = 6;
+        }
+        else if ( skillOrAttributeName == "Mana" )
+        {
+          skillNumber = 7;
+        }
+        else // Skill
+        {
+          skillNumber = getSkillNumber( skillOrAttributeName ) + 8;
+        }
+
+        LOG_DEBUG( "Attempting to update " << skillOrAttributeName << " " << raiseStack.size() << " times." );
+        commands_.push_back( std::make_shared< MenAmongGods::StatCommand >( skillNumber, raiseStack.size() ) );
+
+        // Optimistically assume the commands went through
+        while ( ! raiseStack.empty() )
+        {
+          raiseStack.pop();
         }
       }
     }
