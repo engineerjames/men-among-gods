@@ -181,7 +181,29 @@ SkillsAndAttributesDisplay::SkillsAndAttributesDisplay( const sf::RenderWindow& 
     , scrollPosition_( 0 )
     , initialScrollBarPosition_( 207.0f, 149.0f )
     , spellsToDraw()
+    , expToSpendLabel_( "Update", font, FONT_SIZE )
+    , expToSpendValue_()
 {
+
+  expToSpendLabel_.setPosition( MenAmongGods::expToSpendLabelPosition );
+  expToSpendValue_.setPosition( MenAmongGods::expToSpendValuePosition );
+
+  expToSpendLabel_.setFont( font_ );
+  expToSpendValue_.setFont( font_ );
+
+  expToSpendLabel_.setCharacterSize( FONT_SIZE );
+  expToSpendValue_.setCharacterSize( FONT_SIZE );
+
+  expToSpendLabel_.setFillColor( MenAmongGods::MsgYellow );
+  expToSpendValue_.setFillColor( MenAmongGods::MsgYellow );
+
+  expToSpendLabel_.setOutlineColor( sf::Color::Black );
+  expToSpendValue_.setOutlineColor( sf::Color::Black );
+
+  expToSpendValue_.setJustification( MenAmongGods::JustifiableText::TextJustification::RIGHT );
+
+  expToSpendLabel_.setString( "Update" );
+  expToSpendValue_.setString( MenAmongGods::addThousandsSeparator( 1234251u ) );
 
   skillScrollBar_.setFillColor( sf::Color( 17, 87, 1, 128 ) );
   skillScrollBar_.setOutlineColor( sf::Color::Black );
@@ -246,6 +268,10 @@ SkillsAndAttributesDisplay::SkillsAndAttributesDisplay( const sf::RenderWindow& 
 
 void SkillsAndAttributesDisplay::draw( sf::RenderTarget& target, sf::RenderStates states ) const
 {
+
+  target.draw( expToSpendLabel_, states );
+  target.draw( expToSpendValue_, states );
+
   for ( unsigned int i = 0; i < attributes_.size(); ++i )
   {
     target.draw( attributes_[ i ].name_, states );
@@ -282,6 +308,8 @@ void SkillsAndAttributesDisplay::draw( sf::RenderTarget& target, sf::RenderState
 void SkillsAndAttributesDisplay::update()
 {
   cplayer& player = playerData_.getClientSidePlayerInfo();
+
+  expToSpendValue_.setString( std::to_string( player.points ) );
 
   // Attributes
   for ( unsigned int i = 0; i < MAX_ATTRIBUTES; ++i )
@@ -335,7 +363,8 @@ void SkillsAndAttributesDisplay::update()
       skills_[ i ].plus_.setString( "+" );
     }
   }
-  skillScrollBar_.setPosition( initialScrollBarPosition_ + MenAmongGods::scrollBarMovementPerClick );
+  skillScrollBar_.setPosition( initialScrollBarPosition_ +
+                               static_cast< float >( scrollPosition_ ) * MenAmongGods::scrollBarMovementPerClick );
 
   // Update spells to draw
   spellsToDraw.clear();
@@ -353,6 +382,8 @@ void SkillsAndAttributesDisplay::update()
       lastSprite->setPosition( spellPosition );
     }
   }
+
+  expToSpendValue_.update();
 }
 
 void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
@@ -392,10 +423,29 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
         commands_.push_back( skillCommand );
       }
     }
+
+    // Check if a +/- area was clicked
+    if ( MenAmongGods::plusAreaRectangle.contains( mousePosition ) )
+    {
+      // Find out which row was clicked -- each row
+      int row = ( mousePosition.y / 14.0f );
+      row     = std::max( 0, row ); // 0 - 4 attributes, 5-7 hp/end/mana, the rest are skills
+
+      std::cerr << "User clicked + for index " << row << std::endl;
+    }
+    else if ( MenAmongGods::minusAreaRectangle.contains( mousePosition ) )
+    {
+      // Find out which row was clicked -- each row
+      int row = ( mousePosition.y / 14.0f );
+      row     = std::max( 0, row );
+
+      std::cerr << "User clicked - for index " << row << std::endl;
+    }
   }
 }
 
 void SkillsAndAttributesDisplay::finalize()
 {
+  expToSpendValue_.finalize();
 }
 } // namespace MenAmongGods

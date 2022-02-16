@@ -57,6 +57,9 @@ private:
   const sf::Vector2f initialScrollBarPosition_;
 
   std::vector< sf::Sprite > spellsToDraw;
+
+  sf::Text                      expToSpendLabel_;
+  MenAmongGods::JustifiableText expToSpendValue_;
 };
 } // namespace MenAmongGods
 

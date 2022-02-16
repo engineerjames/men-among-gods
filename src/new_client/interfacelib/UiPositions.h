@@ -12,6 +12,14 @@ static const sf::Vector2f initialSkillPosition { 3.0f, 113.0f };
 
 static const sf::Vector2f scrollBarMovementPerClick { 0.0f, 5.0f };
 
+static const sf::Vector2f  plusAreaRectanglePosition { 134.0f, 2.0f };
+static const sf::Vector2f  plusAreaRectangleSize { 10.0f, 248.0f };
+static const sf::FloatRect plusAreaRectangle { plusAreaRectanglePosition, plusAreaRectangleSize };
+
+static const sf::Vector2f  minusAreaRectanglePosition { 147.0f, 2.0f };
+static const sf::Vector2f  minusAreaRectangleSize { 10.0f, 248.0f };
+static const sf::FloatRect minusAreaRectangle { minusAreaRectanglePosition, minusAreaRectangleSize };
+
 static const sf::Vector2f scrollUpBoxPosition { 207.0f, 114.0f };
 static const sf::Vector2f scrollDownBoxPosition { 207.0f, 219.0f };
 static const sf::Vector2f scrollBoxSize { 10.0f, 32.0f };
