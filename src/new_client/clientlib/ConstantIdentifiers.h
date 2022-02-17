@@ -255,6 +255,8 @@ static const constexpr unsigned int WN_CLOAK = 9;
 static const constexpr unsigned int WN_LRING = 10;
 static const constexpr unsigned int WN_RRING = 11;
 
+static const constexpr int N_ITEMS = 40;
+
 namespace MenAmongGods
 {
 enum struct Sex
