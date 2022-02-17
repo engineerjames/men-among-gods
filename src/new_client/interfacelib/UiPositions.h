@@ -27,6 +27,7 @@ static const sf::Vector2f scrollBoxSize { 10.0f, 32.0f };
 // Gold display and rank "Private" displayed below the 'self' view
 static const sf::Vector2f goldDisplayPosition { 452.0f, 185.0f };
 static const sf::Vector2f textualRankPosition { 377.0f, 169.0f };
+static const sf::Vector2f playerNamePosition { 413.0f, 27.0f };
 
 // Inventory positions (size is the same as for the skills)
 static const sf::Vector2f inventoryScrollUpBoxPosition { 291.0f, 3.0f };

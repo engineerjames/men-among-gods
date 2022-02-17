@@ -80,14 +80,12 @@ void PlayerInventoryDisplay::onUserInput( const sf::Event& e )
 
     if ( upArrow_.contains( mousePosition ) )
     {
-      std::cerr << "UP CLICK" << std::endl;
       scrollPosition_ = std::max( scrollPosition_ - 1, 0 );
 
       std::cerr << scrollPosition_ << std::endl;
     }
     else if ( downArrow_.contains( mousePosition ) )
     {
-      std::cerr << "DOWN CLICK" << std::endl;
       scrollPosition_ = std::min( scrollPosition_ + 1, 15 );
 
       std::cerr << scrollPosition_ << std::endl;

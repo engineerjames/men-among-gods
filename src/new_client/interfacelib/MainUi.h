@@ -45,6 +45,7 @@ private:
   sf::Font    font_;
 
   sf::Text goldDisplay_;
+  sf::Text playerNameDisplay_;
 
   sf::Text                      avLabel_;
   MenAmongGods::JustifiableText avValue_;
