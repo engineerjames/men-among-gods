@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "CommandHistory.h"
 #include "Component.h"
 
 namespace MenAmongGods
@@ -27,6 +28,7 @@ private:
   unsigned int    maxCharacters_;
   const sf::Font& font_;
   std::string     text_;
+  CommandHistory  history_;
 };
 } // namespace MenAmongGods
 #endif

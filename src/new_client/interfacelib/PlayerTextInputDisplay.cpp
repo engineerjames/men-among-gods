@@ -15,6 +15,7 @@ PlayerTextInputDisplay::PlayerTextInputDisplay( const sf::Font& font )
     , maxCharacters_( 45 )
     , font_( font )
     , text_()
+    , history_()
 {
   drawableText_.setFont( font_ );
   drawableText_.setCharacterSize( FONT_SIZE );
@@ -38,9 +39,17 @@ void PlayerTextInputDisplay::onUserInput( const sf::Event& e )
 {
   if ( e.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed( sf::Keyboard::Key::Up ) )
   {
+    text_ = history_.getPreviousCommand();
+    drawableText_.setString( text_ + "_" );
+
+    return;
   }
   else if ( e.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed( sf::Keyboard::Key::Down ) )
   {
+    text_ = history_.getNextCommand();
+    drawableText_.setString( text_ + "_" );
+
+    return;
   }
 
   // Only want to act on text being entered--specifically ASCII characters
@@ -64,6 +73,7 @@ void PlayerTextInputDisplay::onUserInput( const sf::Event& e )
   {
     // Copy command into command list
     commands_.emplace_back( std::make_shared< MenAmongGods::SayCommand >( text_ ) );
+    history_.addCommand( text_ );
     text_.clear();
   }
 
