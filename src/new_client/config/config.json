@@ -1,0 +1,4 @@
+{
+    "frameLimit" : 10,
+    "networkThreadDelay" : 50
+}
