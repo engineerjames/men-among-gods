@@ -2,6 +2,7 @@
 set(target MenAmongGodsGraphics)
 
 set( sources 
+    CommandHistory.cpp
     Component.cpp
     FontCache.cpp
     GraphicsCache.cpp
@@ -25,6 +26,7 @@ set( sources
 )
 
 set( headers 
+    CommandHistory.h
     ColorPalette.h
     Component.h
     FontCache.h
