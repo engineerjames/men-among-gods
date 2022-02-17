@@ -325,7 +325,7 @@ int mouse_inventory(int x,int y,int mode)
 		ty=(y-1)/35;
 
 		nr=tx+ty*2;
-		if (keys==1) {
+		if (keys==1) { // Shift is held
 			if (mode==MS_LB_UP) cmd3(CL_CMD_INV,0,nr+inv_pos,selected_char);
 			else if (mode==MS_RB_UP) cmd3(CL_CMD_INV_LOOK,nr+inv_pos,0,selected_char);
 			if (pl.item[nr+inv_pos]) {
@@ -336,7 +336,7 @@ int mouse_inventory(int x,int y,int mode)
 				else cursor_type=CT_NONE;
 			}
 		}
-		else if (keys==0) {
+		else if (keys==0) { // No keys are held
 			if (mode==MS_LB_UP) cmd3(CL_CMD_INV,6,nr+inv_pos,selected_char);
 			else if (mode==MS_RB_UP) cmd3(CL_CMD_INV_LOOK,nr+inv_pos,0,selected_char);
 			if (pl.item[nr+inv_pos]) cursor_type=CT_USE;
