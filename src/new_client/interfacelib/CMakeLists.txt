@@ -13,6 +13,7 @@ set( sources
     MainUi.cpp
     MapDisplay.cpp
     PasswordTextInputDisplay.cpp
+    PlayerEquipmentDisplay.cpp
     PlayerInventoryDisplay.cpp
     PlayerLogDisplay.cpp
     PlayerTextInputDisplay.cpp
@@ -39,6 +40,7 @@ set( headers
     MainUi.h
     MapDisplay.h
     PasswordTextInputDisplay.h
+    PlayerEquipmentDisplay.h
     PlayerInventoryDisplay.h
     PlayerLogDisplay.h
     PlayerTextInputDisplay.h
