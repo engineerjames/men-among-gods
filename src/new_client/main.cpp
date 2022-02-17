@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
 
+#include "ClientConfiguration.h"
 #include "ClientNetworkActivity.h"
 #include "Component.h"
 #include "ConstantIdentifiers.h"
@@ -20,14 +21,13 @@
 
 namespace
 {
-static const constexpr int FRAME_RATE_LIMIT = 10;
-static const constexpr int LOGIN_FONT_SIZE  = 16;
+static const constexpr int LOGIN_FONT_SIZE = 16;
 } // namespace
 
 int main()
 {
   sf::RenderWindow window( sf::VideoMode( MODEX, MODEY ), "Men Among Gods - New Client" );
-  window.setFramerateLimit( FRAME_RATE_LIMIT );
+  window.setFramerateLimit( MenAmongGods::ClientConfiguration::instance().frameLimit() );
   window.requestFocus();
 
   std::string fontPath  = MenAmongGods::getFontRoot() + "onuava.ttf";
