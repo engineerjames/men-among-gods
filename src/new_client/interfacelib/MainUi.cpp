@@ -28,7 +28,7 @@ MainUi::MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, con
     , msgBox_()
     , userInput_( font_ )
     , playerEquipment_( pdata, gfxCache )
-    , playerInventory_( pdata, gfxCache )
+    , playerInventory_( window, pdata, gfxCache )
     , userOptionPanel_( window, pdata )
     , mapDisplay_( font_, map, pdata, gfxCache, gfxIndex, window )
     , rankDisplay_( font_, pdata, gfxCache )
