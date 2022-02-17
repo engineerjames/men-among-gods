@@ -8,16 +8,16 @@ namespace MenAmongGods
 class SkillCommand : public ClientCommand
 {
 public:
-  SkillCommand( std::uint32_t x, std::uint32_t selectedCharacter, std::uint32_t y );
+  SkillCommand( std::uint32_t skillNumber, std::uint32_t selectedCharacter, std::uint32_t baseModifierAttribute );
   virtual ~SkillCommand() = default;
 
   virtual bool        send( sf::TcpSocket& socket ) const override;
   virtual Json::Value toJson() const override;
 
 private:
-  std::uint32_t x_;
+  std::uint32_t skillNumber_;
   std::uint32_t selectedCharacter_;
-  std::uint32_t y_;
+  std::uint32_t baseModifierAttribute_;
 };
 } // namespace MenAmongGods
 

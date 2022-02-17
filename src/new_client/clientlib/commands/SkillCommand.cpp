@@ -5,25 +5,25 @@
 
 namespace MenAmongGods
 {
-SkillCommand::SkillCommand( std::uint32_t x, std::uint32_t selectedCharacter, std::uint32_t y )
-    : ClientCommand( ClientMessages::MessageTypes::CMD_INV )
-    , x_( x )
+SkillCommand::SkillCommand( std::uint32_t skillNumber, std::uint32_t selectedCharacter, std::uint32_t baseModifierAttribute )
+    : ClientCommand( ClientMessages::MessageTypes::CMD_SKILL )
+    , skillNumber_( skillNumber )
     , selectedCharacter_( selectedCharacter )
-    , y_( y )
+    , baseModifierAttribute_( baseModifierAttribute )
 {
 }
 
 bool SkillCommand::send( sf::TcpSocket& socket ) const
 {
-  return SkillCommand::sendThreeArguments( socket, x_, selectedCharacter_, y_ );
+  return SkillCommand::sendThreeArguments( socket, skillNumber_, selectedCharacter_, baseModifierAttribute_ );
 }
 
 Json::Value SkillCommand::toJson() const
 {
-  Json::Value root            = MenAmongGods::ClientCommand::toJson();
-  root[ "x" ]                 = x_;
-  root[ "y" ]                 = y_;
-  root[ "selectedCharacter" ] = selectedCharacter_;
+  Json::Value root                = MenAmongGods::ClientCommand::toJson();
+  root[ "skillNumber" ]           = skillNumber_;
+  root[ "baseModifierAttribute" ] = baseModifierAttribute_;
+  root[ "selectedCharacter" ]     = selectedCharacter_;
 
   return root;
 }

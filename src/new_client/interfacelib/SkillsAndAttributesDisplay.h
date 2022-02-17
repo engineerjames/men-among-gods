@@ -1,16 +1,24 @@
-#ifndef SKILL_DISPLAY_H
-#define SKILL_DISPLAY_H
+#ifndef MEN_AMONG_GODS_SKILLS_AND_ATTRIBUTES_DISPLAY
+#define MEN_AMONG_GODS_SKILLS_AND_ATTRIBUTES_DISPLAY
 
 #include <SFML/Graphics.hpp>
 #include <array>
+#include <map>
+#include <stack>
+#include <string>
+#include <vector>
 
-#include "ConstantIdentifiers.h"
 #include "ColorPalette.h"
 #include "Component.h"
+#include "ConstantIdentifiers.h"
 #include "JustifiableText.h"
 
 class PlayerData;
+class GraphicsCache;
+class GraphicsIndex;
 
+namespace MenAmongGods
+{
 class SkillsAndAttributesDisplay : public MenAmongGods::Component
 {
 public:
@@ -21,12 +29,14 @@ public:
     MenAmongGods::JustifiableText expRequired_;
     sf::Text                      plus_;
     sf::Text                      minus_;
+    int                           skillsIndex_;
 
     SkillRow();
     ~SkillRow() = default;
   };
 
-  SkillsAndAttributesDisplay( const sf::Font& font, PlayerData& playerData );
+  SkillsAndAttributesDisplay( const sf::RenderWindow& window, const sf::Font& font, const GraphicsCache& gfxCache,
+                              const GraphicsIndex& gfxIndex, PlayerData& playerData );
   ~SkillsAndAttributesDisplay() = default;
 
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
@@ -35,12 +45,27 @@ public:
   virtual void finalize() override;
 
 private:
+  const sf::RenderWindow&                window_;
   const sf::Font&                        font_;
+  const GraphicsCache&                   gfxCache_;
+  const GraphicsIndex&                   gfxIndex_;
   PlayerData&                            playerData_;
   std::array< SkillRow, MAX_ATTRIBUTES > attributes_;
   std::array< SkillRow, MAX_SKILLS >     skills_;
   std::array< SkillRow*, MAX_SKILLS >    skillsToDisplay_;
   sf::RectangleShape                     skillScrollBar_;
+
+  sf::FloatRect      scrollUpBox_;
+  sf::FloatRect      scrollDownBox_;
+  int                scrollPosition_;
+  const sf::Vector2f initialScrollBarPosition_;
+
+  std::vector< sf::Sprite > spellsToDraw;
+
+  sf::Text                                   expToSpendLabel_;
+  MenAmongGods::JustifiableText              expToSpendValue_;
+  std::map< std::string, std::stack< int > > raiseMap_; // TODO: This should be in the player data class
 };
+} // namespace MenAmongGods
 
 #endif

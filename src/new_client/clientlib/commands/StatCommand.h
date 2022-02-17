@@ -8,15 +8,15 @@ namespace MenAmongGods
 class StatCommand : public ClientCommand
 {
 public:
-  StatCommand( std::uint16_t x, std::uint32_t y ); // TODO: Figure out what these numbers represent
+  StatCommand( std::uint16_t statNumber, std::uint32_t raiseNTimes );
   virtual ~StatCommand() = default;
 
   virtual bool        send( sf::TcpSocket& socket ) const override;
   virtual Json::Value toJson() const override;
 
 private:
-  std::uint16_t x_;
-  std::uint32_t y_;
+  std::uint16_t statNumber_;
+  std::uint32_t raiseNTimes_;
 };
 } // namespace MenAmongGods
 

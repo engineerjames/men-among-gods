@@ -54,9 +54,6 @@ private:
   sf::Text                      expLabel_;
   MenAmongGods::JustifiableText expValue_;
 
-  sf::Text                      expToSpendLabel_;
-  MenAmongGods::JustifiableText expToSpendValue_;
-
   sf::Text hpLabel_;
   sf::Text hpCurrentValue_;
   sf::Text hpMaxValue_;

@@ -124,7 +124,7 @@ void MapDisplay::onUserInput( const sf::Event& e )
 
     int m = getMapIndexFromMousePosition( mousePosition, true );
 
-    if ( mapIndexIsValid( m ) )
+    if ( mapIndexIsValid( m ) && userClickedOnMap( mousePosition ) )
     {
       commands_.emplace_back( std::make_shared< MenAmongGods::MoveCommand >( map_.getX( m ), map_.getY( m ) ) );
     }

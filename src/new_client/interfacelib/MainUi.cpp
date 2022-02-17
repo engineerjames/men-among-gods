@@ -23,9 +23,7 @@ MainUi::MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, con
     , wvValue_()
     , expLabel_()
     , expValue_()
-    , expToSpendLabel_()
-    , expToSpendValue_()
-    , skillsAndAttributes_( font_, pdata )
+    , skillsAndAttributes_( window, font_, gfxCache, gfxIndex, pdata )
     , lifeDisplay_( font_, pdata )
     , msgBox_()
     , userInput_( font_ )
@@ -47,9 +45,6 @@ MainUi::MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, con
   expLabel_.setPosition( MenAmongGods::expLabelPosition );
   expValue_.setPosition( MenAmongGods::expValuePosition );
 
-  expToSpendLabel_.setPosition( MenAmongGods::expToSpendLabelPosition );
-  expToSpendValue_.setPosition( MenAmongGods::expToSpendValuePosition );
-
   hpLabel_.setPosition( MenAmongGods::hpLabelPosition );
   hpCurrentValue_.setPosition( MenAmongGods::hpCurrentValuePosition );
   hpMaxValue_.setPosition( MenAmongGods::hpMaxValuePosition );
@@ -69,8 +64,6 @@ MainUi::MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, con
   wvValue_.setFont( font_ );
   expLabel_.setFont( font_ );
   expValue_.setFont( font_ );
-  expToSpendLabel_.setFont( font_ );
-  expToSpendValue_.setFont( font_ );
   hpLabel_.setFont( font_ );
   hpCurrentValue_.setFont( font_ );
   hpMaxValue_.setFont( font_ );
@@ -88,8 +81,6 @@ MainUi::MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, con
   wvValue_.setCharacterSize( FONT_SIZE );
   expLabel_.setCharacterSize( FONT_SIZE );
   expValue_.setCharacterSize( FONT_SIZE );
-  expToSpendLabel_.setCharacterSize( FONT_SIZE );
-  expToSpendValue_.setCharacterSize( FONT_SIZE );
   hpLabel_.setCharacterSize( FONT_SIZE );
   hpCurrentValue_.setCharacterSize( FONT_SIZE );
   hpMaxValue_.setCharacterSize( FONT_SIZE );
@@ -107,8 +98,6 @@ MainUi::MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, con
   wvValue_.setFillColor( MenAmongGods::MsgYellow );
   expLabel_.setFillColor( MenAmongGods::MsgYellow );
   expValue_.setFillColor( MenAmongGods::MsgYellow );
-  expToSpendLabel_.setFillColor( MenAmongGods::MsgYellow );
-  expToSpendValue_.setFillColor( MenAmongGods::MsgYellow );
   hpLabel_.setFillColor( MenAmongGods::MsgYellow );
   hpCurrentValue_.setFillColor( MenAmongGods::MsgYellow );
   hpMaxValue_.setFillColor( MenAmongGods::MsgYellow );
@@ -126,8 +115,6 @@ MainUi::MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, con
   wvValue_.setOutlineColor( sf::Color::Black );
   expLabel_.setOutlineColor( sf::Color::Black );
   expValue_.setOutlineColor( sf::Color::Black );
-  expToSpendLabel_.setOutlineColor( sf::Color::Black );
-  expToSpendValue_.setOutlineColor( sf::Color::Black );
   hpLabel_.setOutlineColor( sf::Color::Black );
   hpCurrentValue_.setOutlineColor( sf::Color::Black );
   hpMaxValue_.setOutlineColor( sf::Color::Black );
@@ -145,8 +132,6 @@ MainUi::MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, con
   wvValue_.setString( "0" );
   expLabel_.setString( "Experience" );
   expValue_.setString( MenAmongGods::addThousandsSeparator( 12412125u ) );
-  expToSpendLabel_.setString( "Update" );
-  expToSpendValue_.setString( MenAmongGods::addThousandsSeparator( 1234251u ) );
   hpLabel_.setString( "Hitpoints" );
   hpCurrentValue_.setString( "100" );
   hpMaxValue_.setString( "100" );
@@ -160,7 +145,6 @@ MainUi::MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, con
   wvValue_.setJustification( MenAmongGods::JustifiableText::TextJustification::RIGHT );
   avValue_.setJustification( MenAmongGods::JustifiableText::TextJustification::RIGHT );
   expValue_.setJustification( MenAmongGods::JustifiableText::TextJustification::RIGHT );
-  expToSpendValue_.setJustification( MenAmongGods::JustifiableText::TextJustification::RIGHT );
 
   background_ = gfxCache.getSprite( 1 );
   background_.setPosition( sf::Vector2f { 0.0f, 0.0f } );
@@ -214,8 +198,6 @@ void MainUi::draw( sf::RenderTarget& target, sf::RenderStates states ) const
   target.draw( wvValue_, states );
   target.draw( expLabel_, states );
   target.draw( expValue_, states );
-  target.draw( expToSpendLabel_, states );
-  target.draw( expToSpendValue_, states );
   target.draw( hpLabel_, states );
   target.draw( hpCurrentValue_, states );
   target.draw( hpMaxValue_, states );
@@ -266,7 +248,6 @@ void MainUi::update()
   goldDisplay_.setString( MenAmongGods::goldToString( player.gold ) );
 
   expValue_.setString( std::to_string( player.points_tot ) );
-  expToSpendValue_.setString( std::to_string( player.points ) );
 
   skillsAndAttributes_.update();
 
@@ -281,7 +262,6 @@ void MainUi::update()
   wvValue_.update();
   avValue_.update();
   expValue_.update();
-  expToSpendValue_.update();
 
   // Get new message values
   for ( const auto& m : playerData_.getAndClearLogMessages() )
@@ -314,7 +294,6 @@ void MainUi::finalize()
   wvValue_.finalize();
   avValue_.finalize();
   expValue_.finalize();
-  expToSpendValue_.finalize();
   userOptionPanel_.finalize();
 }
 } // namespace MenAmongGods

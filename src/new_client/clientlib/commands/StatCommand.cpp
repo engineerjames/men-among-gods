@@ -5,23 +5,23 @@
 
 namespace MenAmongGods
 {
-StatCommand::StatCommand( std::uint16_t x, std::uint32_t y )
+StatCommand::StatCommand( std::uint16_t statNumber, std::uint32_t raiseNTimes )
     : ClientCommand( ClientMessages::MessageTypes::CMD_STAT )
-    , x_( x )
-    , y_( y )
+    , statNumber_( statNumber )
+    , raiseNTimes_( raiseNTimes )
 {
 }
 
 bool StatCommand::send( sf::TcpSocket& socket ) const
 {
-  return StatCommand::sendTwoArguments( socket, x_, y_ );
+  return StatCommand::sendTwoArguments( socket, statNumber_, raiseNTimes_ );
 }
 
 Json::Value StatCommand::toJson() const
 {
-  Json::Value root = MenAmongGods::ClientCommand::toJson();
-  root[ "x" ]      = x_;
-  root[ "y" ]      = y_;
+  Json::Value root      = MenAmongGods::ClientCommand::toJson();
+  root[ "statNumber" ]  = statNumber_;
+  root[ "raiseNTimes" ] = raiseNTimes_;
 
   return root;
 }

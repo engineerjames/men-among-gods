@@ -1,10 +1,18 @@
 #include "SkillsAndAttributesDisplay.h"
 
-#include "GuiFormatters.h"
-#include "UiPositions.h"
-
 #include "ClientTypes.h"
+#include "GraphicsCache.h"
+#include "GraphicsIndex.h"
+#include "GuiFormatters.h"
 #include "PlayerData.h"
+#include "UiPositions.h"
+#include "UtilityFunctions.h"
+
+#include <iostream>
+
+// Commands
+#include "SkillCommand.h"
+#include "StatCommand.h"
 
 namespace
 {
@@ -92,9 +100,46 @@ skilltab static_skilltab[MAX_SKILLS]={
 	{47,   'Z',   "", "", {0,0,0,}},
 	{48,   'Z',   "", "", {0,0,0,}},
 	{49,   'Z',   "", "", {0,0,0,}}};
-}
 // clang-format on
 
+int getSkillNumber( std::string skillName )
+{
+  skilltab* foundSkill = nullptr;
+
+  for ( int i = 0; i < MAX_SKILLS; ++i )
+  {
+    if ( static_skilltab[ i ].name == skillName )
+    {
+      foundSkill = &static_skilltab[ i ];
+      break;
+    }
+  }
+
+  if ( foundSkill )
+  {
+    return foundSkill->nr;
+  }
+
+  return -1; // TODO: Find something better than a negative return sentinel value
+}
+
+int getBaseAttributeModifier( const std::string& skillName )
+{
+  for ( unsigned int i = 0; i < MAX_SKILLS; ++i )
+  {
+    if ( static_skilltab[ i ].name == skillName )
+    {
+      return static_skilltab[ i ].attrib[ 0 ];
+    }
+  }
+
+  return -1;
+}
+
+} // namespace
+
+namespace MenAmongGods
+{
 SkillsAndAttributesDisplay::SkillRow::SkillRow()
     : name_()
     , displayValue_()
@@ -121,18 +166,50 @@ SkillsAndAttributesDisplay::SkillRow::SkillRow()
   minus_.setCharacterSize( FONT_SIZE );
 }
 
-SkillsAndAttributesDisplay::SkillsAndAttributesDisplay( const sf::Font& font, PlayerData& playerData )
-    : font_( font )
+SkillsAndAttributesDisplay::SkillsAndAttributesDisplay( const sf::RenderWindow& window, const sf::Font& font, const GraphicsCache& gfxCache,
+                                                        const GraphicsIndex& gfxIndex, PlayerData& playerData )
+    : window_( window )
+    , font_( font )
+    , gfxCache_( gfxCache )
+    , gfxIndex_( gfxIndex )
     , playerData_( playerData )
     , attributes_()
     , skills_()
     , skillsToDisplay_()
     , skillScrollBar_()
+    , scrollUpBox_( MenAmongGods::scrollUpBoxPosition, MenAmongGods::scrollBoxSize )
+    , scrollDownBox_( MenAmongGods::scrollDownBoxPosition, MenAmongGods::scrollBoxSize )
+    , scrollPosition_( 0 )
+    , initialScrollBarPosition_( 207.0f, 149.0f )
+    , spellsToDraw()
+    , expToSpendLabel_( "Update", font, FONT_SIZE )
+    , expToSpendValue_()
+    , raiseMap_()
 {
+
+  expToSpendLabel_.setPosition( MenAmongGods::expToSpendLabelPosition );
+  expToSpendValue_.setPosition( MenAmongGods::expToSpendValuePosition );
+
+  expToSpendLabel_.setFont( font_ );
+  expToSpendValue_.setFont( font_ );
+
+  expToSpendLabel_.setCharacterSize( FONT_SIZE );
+  expToSpendValue_.setCharacterSize( FONT_SIZE );
+
+  expToSpendLabel_.setFillColor( MenAmongGods::MsgYellow );
+  expToSpendValue_.setFillColor( MenAmongGods::MsgYellow );
+
+  expToSpendLabel_.setOutlineColor( sf::Color::Black );
+  expToSpendValue_.setOutlineColor( sf::Color::Black );
+
+  expToSpendValue_.setJustification( MenAmongGods::JustifiableText::TextJustification::RIGHT );
+
+  expToSpendLabel_.setString( "Update" );
+  expToSpendValue_.setString( MenAmongGods::addThousandsSeparator( 1234251u ) );
 
   skillScrollBar_.setFillColor( sf::Color( 17, 87, 1, 128 ) );
   skillScrollBar_.setOutlineColor( sf::Color::Black );
-  skillScrollBar_.setPosition( sf::Vector2f { 207.0f, 149.0f } );
+  skillScrollBar_.setPosition( initialScrollBarPosition_ );
   skillScrollBar_.setSize( sf::Vector2f { 11.0f, 11.0f } );
 
   for ( unsigned int i = 0; i < MAX_SKILLS; ++i )
@@ -142,8 +219,6 @@ SkillsAndAttributesDisplay::SkillsAndAttributesDisplay( const sf::Font& font, Pl
     skills_[ i ].name_.setString( static_skilltab[ i ].name );
     skills_[ i ].displayValue_.setString( "0" );
     skills_[ i ].expRequired_.setString( MenAmongGods::addThousandsSeparator( 1000u ) );
-    skills_[ i ].plus_.setString( "+" );
-    skills_[ i ].minus_.setString( "-" );
 
     skills_[ i ].name_.setFont( font_ );
     skills_[ i ].displayValue_.setFont( font_ );
@@ -181,8 +256,6 @@ SkillsAndAttributesDisplay::SkillsAndAttributesDisplay( const sf::Font& font, Pl
 
     attributes_[ i ].displayValue_.setString( "0" );
     attributes_[ i ].expRequired_.setString( MenAmongGods::addThousandsSeparator( 1000u ) );
-    attributes_[ i ].plus_.setString( "+" );
-    attributes_[ i ].minus_.setString( "-" );
 
     attributes_[ i ].name_.setFont( font_ );
     attributes_[ i ].displayValue_.setFont( font_ );
@@ -197,6 +270,10 @@ SkillsAndAttributesDisplay::SkillsAndAttributesDisplay( const sf::Font& font, Pl
 
 void SkillsAndAttributesDisplay::draw( sf::RenderTarget& target, sf::RenderStates states ) const
 {
+
+  target.draw( expToSpendLabel_, states );
+  target.draw( expToSpendValue_, states );
+
   for ( unsigned int i = 0; i < attributes_.size(); ++i )
   {
     target.draw( attributes_[ i ].name_, states );
@@ -208,7 +285,6 @@ void SkillsAndAttributesDisplay::draw( sf::RenderTarget& target, sf::RenderState
 
   for ( unsigned int i = 0; i < skillsToDisplay_.size(); ++i )
   {
-    // TODO: Accomodate scrolling behavior
     if ( i == 10 || skillsToDisplay_[ i ] == nullptr )
     {
       break;
@@ -223,19 +299,48 @@ void SkillsAndAttributesDisplay::draw( sf::RenderTarget& target, sf::RenderState
 
   // Draw scrollbar
   target.draw( skillScrollBar_, states );
+
+  // Draw active spells
+  for ( const auto& s : spellsToDraw )
+  {
+    target.draw( s, states );
+  }
 }
 
 void SkillsAndAttributesDisplay::update()
 {
   cplayer& player = playerData_.getClientSidePlayerInfo();
 
+  expToSpendValue_.setString( std::to_string( player.points ) );
+
   // Attributes
   for ( unsigned int i = 0; i < MAX_ATTRIBUTES; ++i )
   {
-    attributes_[ i ].displayValue_.setString( std::to_string( player.attrib[ i ][ 5 ] ) );
-    attributes_[ i ].expRequired_.setString( std::to_string( attrib_needed( i, player.attrib[ i ][ 0 ], player ) ) );
+    int nTimesRaised = raiseMap_[ attributes_[ i ].name_.getString() ].size();
+
+    attributes_[ i ].displayValue_.setString( std::to_string( player.attrib[ i ][ 5 ] + nTimesRaised ) );
+
+    attributes_[ i ].expRequired_.setString( std::to_string( attrib_needed( i, player.attrib[ i ][ 0 ] + nTimesRaised, player ) ) );
     attributes_[ i ].displayValue_.update();
     attributes_[ i ].expRequired_.update();
+
+    if ( player.points >= attrib_needed( i, player.attrib[ i ][ 0 ] + nTimesRaised, player ) )
+    {
+      attributes_[ i ].plus_.setString( "+" );
+    }
+    else
+    {
+      attributes_[ i ].plus_.setString( "" );
+    }
+
+    if ( nTimesRaised > 0 )
+    {
+      attributes_[ i ].minus_.setString( "-" );
+    }
+    else
+    {
+      attributes_[ i ].minus_.setString( "" );
+    }
   }
 
   // Skills
@@ -245,7 +350,7 @@ void SkillsAndAttributesDisplay::update()
 
   skillsToDisplay_.fill( nullptr );
   unsigned int j = 0;
-  for ( unsigned int i = 0; i < MAX_SKILLS; ++i )
+  for ( unsigned int i = scrollPosition_; i < MAX_SKILLS; ++i )
   {
     // Player does not have the inspected skill
     if ( player.skill[ i ][ 0 ] == 0 )
@@ -255,12 +360,15 @@ void SkillsAndAttributesDisplay::update()
 
     // Player DOES have the skill, so appropriately set the delta value (based on how many skills)
     // we've added to the skillstodisplay list.
-    skillsToDisplay_[ j ] = &skills_[ i ];
+    skillsToDisplay_[ j ]               = &skills_[ i ];
+    skillsToDisplay_[ j ]->skillsIndex_ = i;
     const sf::Vector2f delta { 0.0f, j * 14.0f };
     j++;
 
-    skills_[ i ].displayValue_.setString( std::to_string( player.skill[ i ][ 5 ] ) );
-    skills_[ i ].expRequired_.setString( std::to_string( skill_needed( i, player.skill[ i ][ 0 ], player ) ) );
+    int nTimesRaised = raiseMap_[ skills_[ i ].name_.getString() ].size();
+
+    skills_[ i ].displayValue_.setString( std::to_string( player.skill[ i ][ 5 ] + nTimesRaised ) );
+    skills_[ i ].expRequired_.setString( std::to_string( skill_needed( i, player.skill[ i ][ 0 ] + nTimesRaised, player ) ) );
     skills_[ i ].name_.setPosition( MenAmongGods::initialSkillPosition + delta );
 
     skills_[ i ].displayValue_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 127.0f, delta.y } );
@@ -270,14 +378,250 @@ void SkillsAndAttributesDisplay::update()
 
     skills_[ i ].displayValue_.update();
     skills_[ i ].expRequired_.update();
+
+    if ( player.points >= skill_needed( i, player.skill[ i ][ 0 ] + nTimesRaised, player ) )
+    {
+      skills_[ i ].plus_.setString( "+" );
+    }
+    else
+    {
+      skills_[ i ].plus_.setString( "" );
+    }
+
+    if ( nTimesRaised > 0 )
+    {
+      skills_[ i ].minus_.setString( "-" );
+    }
+    else
+    {
+      skills_[ i ].minus_.setString( "" );
+    }
   }
+  skillScrollBar_.setPosition( initialScrollBarPosition_ +
+                               static_cast< float >( scrollPosition_ ) * MenAmongGods::scrollBarMovementPerClick );
+
+  // Update spells to draw
+  spellsToDraw.clear();
+  const cplayer& pl = playerData_.getClientSidePlayerInfo();
+
+  for ( int n = 0; n < 20; n++ )
+  {
+    if ( pl.spell[ n ] != 0 )
+    {
+      sf::Vector2f spellPosition { static_cast< float >( 374 + ( n % 5 ) * 24 ), static_cast< float >( 4 + ( n / 5 ) * 24 ) };
+
+      spellsToDraw.push_back( gfxCache_.getSprite( pl.spell[ n ] ) );
+
+      auto lastSprite = ( spellsToDraw.end() - 1 );
+      lastSprite->setPosition( spellPosition );
+    }
+  }
+
+  expToSpendValue_.update();
 }
 
-void SkillsAndAttributesDisplay::onUserInput( const sf::Event& )
+void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
 {
-  // Do nothing for now
+  if ( e.type == sf::Event::MouseButtonReleased && e.mouseButton.button == sf::Mouse::Button::Left )
+  {
+    sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
+
+    if ( scrollUpBox_.contains( mousePosition ) )
+    {
+      if ( scrollPosition_ > 0 )
+      {
+        scrollPosition_--;
+      }
+    }
+
+    if ( scrollDownBox_.contains( mousePosition ) )
+    {
+      scrollPosition_++;
+    }
+
+    // 10 skills displayable at most
+    for ( int i = 0; i < 10; ++i )
+    {
+      const sf::Vector2f  delta { 0.0f, i * 14.0f };
+      const sf::Vector2f  potentialSkillPosition = initialSkillPosition + delta;
+      const sf::Vector2f  skillBarSize { 105.0f, 10.0f };
+      const sf::FloatRect clickableSkillRegion { potentialSkillPosition, skillBarSize };
+
+      if ( clickableSkillRegion.contains( mousePosition ) )
+      {
+        if ( skillsToDisplay_[ i ] == nullptr )
+        {
+          return;
+        }
+
+        int  skillNr               = getSkillNumber( skillsToDisplay_[ i ]->name_.getString() );
+        int  baseAttributeModifier = getBaseAttributeModifier( skillsToDisplay_[ i ]->name_.getString() );
+        auto skillCommand          = std::make_shared< SkillCommand >( static_cast< unsigned int >( skillNr ), 0,
+                                                              static_cast< unsigned int >( baseAttributeModifier ) );
+
+        commands_.push_back( skillCommand );
+      }
+    }
+
+    // Check if a +/- area was clicked
+    if ( MenAmongGods::plusAreaRectangle.contains( mousePosition ) )
+    {
+      // Find out which row was clicked -- each row
+      int row         = ( mousePosition.y / 14.0f );
+      row             = std::max( 0, row ); // 0 - 4 attributes, 5-7 hp/end/mana, the rest are skills
+      cplayer& player = playerData_.getClientSidePlayerInfo();
+
+      if ( row >= 0 && row <= 4 ) // Attributes
+      {
+        std::cerr << "Raising attribute..." << std::endl;
+        int nTimesRaised   = raiseMap_[ attributes_[ row ].name_.getString() ].size();
+        int pointsRequired = attrib_needed( row, player.attrib[ row ][ 0 ] + nTimesRaised, player );
+        std::cerr << "Exp required to raise: " << pointsRequired << " out of " << player.points << std::endl;
+        if ( player.points >= pointsRequired )
+        {
+          std::string attributeName = attributes_.at( row ).name_.getString();
+          std::cerr << "Attribute name attempting to increase is: " << attributeName << std::endl;
+
+          raiseMap_[ attributeName ].push( pointsRequired );
+
+          player.points -= pointsRequired;
+        }
+      }
+      else if ( row >= 5 && row <= 7 ) // HP/END/MANA
+      {
+        // Nothing for now--need to move the logic into here (currently it is separated out)
+      }
+      else // Skills
+      {
+        if ( skillsToDisplay_[ row - 8 ] == nullptr )
+        {
+          return;
+        }
+
+        int m            = skillsToDisplay_[ row - 8 ]->skillsIndex_;
+        int nTimesRaised = raiseMap_[ skillsToDisplay_[ row - 8 ]->name_.getString() ].size();
+
+        int pointsRequired = skill_needed( m, player.skill[ m ][ 0 ] + nTimesRaised, player );
+        std::cerr << "Need " << pointsRequired << " points to raise skill" << std::endl;
+        if ( player.points >= pointsRequired )
+        {
+          std::string skillName = skillsToDisplay_[ row - 8 ]->name_.getString();
+          std::cerr << "Skill name attempting to increase is: " << skillName << std::endl;
+
+          raiseMap_[ skillName ].push( pointsRequired );
+
+          player.points -= pointsRequired;
+        }
+      }
+    }
+    else if ( MenAmongGods::minusAreaRectangle.contains( mousePosition ) )
+    {
+      // Find out which row was clicked -- each row
+      int row         = ( mousePosition.y / 14.0f );
+      row             = std::max( 0, row );
+      cplayer& player = playerData_.getClientSidePlayerInfo();
+
+      std::cerr << "User clicked - for index " << row << std::endl;
+
+      if ( row >= 0 && row <= 4 ) // Attributes
+      {
+        std::string attributeName = attributes_.at( row ).name_.getString();
+        std::cerr << "Attribute name attempting to decrease is: " << attributeName << std::endl;
+
+        if ( raiseMap_.count( attributeName ) != 0 && raiseMap_[ attributeName ].size() > 0 )
+        {
+          player.points += raiseMap_[ attributeName ].top();
+          raiseMap_[ attributeName ].pop();
+
+          std::cerr << "Size is now: " << raiseMap_[ attributeName ].size();
+        }
+      }
+      else if ( row >= 5 && row <= 7 ) // HP/END/MANA
+      {
+        // Nothing for now--need to move the logic into here (currently it is separated out)
+      }
+      else // Skills
+      {
+        if ( skillsToDisplay_[ row - 8 ] == nullptr )
+        {
+          return;
+        }
+
+        std::string skillName = skillsToDisplay_[ row - 8 ]->name_.getString();
+        std::cerr << "Skill name attempting to decrease is: " << skillName << std::endl;
+
+        if ( raiseMap_.count( skillName ) != 0 && raiseMap_[ skillName ].size() > 0 )
+        {
+          player.points += raiseMap_[ skillName ].top();
+          raiseMap_[ skillName ].pop();
+
+          std::cerr << "Size is now: " << raiseMap_[ skillName ].size();
+        }
+      }
+    }
+    else if ( expToSpendLabel_.getGlobalBounds().contains( mousePosition ) ) // User clicks "Update"
+    {
+      // Put commands into the command list so we communicate with the server with what we're trying to update
+      for ( auto& [ skillOrAttributeName, raiseStack ] : raiseMap_ )
+      {
+        std::cout << "Attempting to raise " << skillOrAttributeName << " by " << raiseStack.size() << std::endl;
+
+        // The stat number lines up with the attributes perfectly until we reach the skill section.
+        // It is at that point that we take the numerical index and ADD 8 to it (vs. subtract).
+        // Let's just do it stupidly for now and fix it later.
+        int skillNumber {};
+        if ( skillOrAttributeName == "Braveness" )
+        {
+          skillNumber = 0;
+        }
+        else if ( skillOrAttributeName == "Willpower" )
+        {
+          skillNumber = 1;
+        }
+        else if ( skillOrAttributeName == "Intuition" )
+        {
+          skillNumber = 2;
+        }
+        else if ( skillOrAttributeName == "Agility" )
+        {
+          skillNumber = 3;
+        }
+        else if ( skillOrAttributeName == "Strength" )
+        {
+          skillNumber = 4;
+        }
+        else if ( skillOrAttributeName == "Hitpoints" )
+        {
+          skillNumber = 5;
+        }
+        else if ( skillOrAttributeName == "Endurance" )
+        {
+          skillNumber = 6;
+        }
+        else if ( skillOrAttributeName == "Mana" )
+        {
+          skillNumber = 7;
+        }
+        else // Skill
+        {
+          skillNumber = getSkillNumber( skillOrAttributeName ) + 8;
+        }
+
+        LOG_DEBUG( "Attempting to update " << skillOrAttributeName << " " << raiseStack.size() << " times." );
+        commands_.push_back( std::make_shared< MenAmongGods::StatCommand >( skillNumber, raiseStack.size() ) );
+
+        // Optimistically assume the commands went through
+        while ( ! raiseStack.empty() )
+        {
+          raiseStack.pop();
+        }
+      }
+    }
+  }
 }
 
 void SkillsAndAttributesDisplay::finalize()
 {
+  expToSpendValue_.finalize();
 }
+} // namespace MenAmongGods
