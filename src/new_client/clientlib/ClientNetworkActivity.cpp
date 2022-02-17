@@ -2,6 +2,7 @@
 
 #include <cstring>
 
+#include "ClientConfiguration.h"
 #include "ClientMessage.h"
 #include "ConstantIdentifiers.h"
 #include "Logger.h"
@@ -123,7 +124,7 @@ void ClientNetworkActivity::startNetworkActivity()
 
     // This is really stupid, but somehow by injecting this delay, the
     // graphics suddently act normal.  Processing updates too quickly?
-    std::this_thread::sleep_for( std::chrono::milliseconds( 50 ) );
+    std::this_thread::sleep_for( std::chrono::milliseconds( MenAmongGods::ClientConfiguration::instance().networkThreadDelay() ) );
   }
 
   isRunning_ = false;

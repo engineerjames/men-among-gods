@@ -1,5 +1,6 @@
 set(target client)
 set( sources
+    ClientConfiguration.cpp
     ClientConnection.cpp
     ClientMessage.cpp
     ClientNetworkActivity.cpp
@@ -11,6 +12,7 @@ set( sources
     TickBuffer.cpp
 )
 set( headers
+    ClientConfiguration.h
     ClientConnection.h
     ClientMessage.h
     ClientNetworkActivity.h
