@@ -11,6 +11,13 @@ target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
 target_compile_definitions(${target} PRIVATE ${PROJECT_CXX_DEFINITIONS})
 
+add_custom_command(
+            TARGET ${target}
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E make_directory  ${RESOURCE_OUTPUT_DIRECTORY}/config
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/config/config.json ${RESOURCE_OUTPUT_DIRECTORY}/config
+            )
+
 if (ENABLE_CLANG_TIDY)
   set_target_properties(${target} PROPERTIES CXX_CLANG_TIDY clang-tidy-11)
 endif()
