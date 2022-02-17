@@ -34,6 +34,14 @@ inline std::string getTestRoot()
   return std::filesystem::exists( TEST_ROOT ) ? TEST_ROOT : ALT_TEST_ROOT;
 }
 
+inline std::string getConfigPath()
+{
+  static const std::string CONFIG_ROOT     = RESOURCE_ROOT + "/config/";
+  static const std::string ALT_CONFIG_ROOT = "./res/config/";
+
+  return std::filesystem::exists( CONFIG_ROOT ) ? CONFIG_ROOT : ALT_CONFIG_ROOT;
+}
+
 } // namespace MenAmongGods
 
 #endif
