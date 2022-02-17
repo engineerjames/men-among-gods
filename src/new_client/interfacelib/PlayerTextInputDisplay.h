@@ -2,6 +2,7 @@
 #define TEXT_INPUT_H
 
 #include <SFML/Graphics.hpp>
+#include <string>
 #include <vector>
 
 #include "Component.h"

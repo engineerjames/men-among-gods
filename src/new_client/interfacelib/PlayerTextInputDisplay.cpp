@@ -4,6 +4,8 @@
 #include "ConstantIdentifiers.h"
 #include "SayCommand.h"
 
+#include <iostream>
+
 namespace MenAmongGods
 {
 
@@ -34,6 +36,13 @@ void PlayerTextInputDisplay::update()
 
 void PlayerTextInputDisplay::onUserInput( const sf::Event& e )
 {
+  if ( e.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed( sf::Keyboard::Key::Up ) )
+  {
+  }
+  else if ( e.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed( sf::Keyboard::Key::Down ) )
+  {
+  }
+
   // Only want to act on text being entered--specifically ASCII characters
   if ( e.type != sf::Event::TextEntered || e.text.unicode >= 128 )
   {
