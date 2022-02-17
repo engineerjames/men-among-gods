@@ -16,7 +16,7 @@ std::string CommandHistory::getNextCommand()
     return "";
   }
 
-  if ( cmdIter_ == cmdHistory_.end() - 1 )
+  if ( cmdIter_ == cmdHistory_.end() - 1)
   {
     return "";
   }
@@ -39,7 +39,7 @@ std::string CommandHistory::getPreviousCommand()
   if ( cmdIter_ != cmdHistory_.begin() )
   {
     cmdIter_--;
-    return *( cmdIter_ + 1 );
+    return *cmdIter_;
   }
   else
   {
@@ -50,7 +50,7 @@ std::string CommandHistory::getPreviousCommand()
 void CommandHistory::addCommand( std::string command )
 {
   cmdHistory_.push_back( command );
-  cmdIter_ = cmdHistory_.end() - 1;
+  cmdIter_ = cmdHistory_.end();
 }
 
 } // namespace MenAmongGods

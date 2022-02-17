@@ -39,4 +39,27 @@ BOOST_AUTO_TEST_CASE( EMPTY_COMMAND_HISTORY )
   BOOST_CHECK_EQUAL( nextCommand, "" );
 }
 
+BOOST_AUTO_TEST_CASE( BACK_AND_FORTH )
+{
+  MenAmongGods::CommandHistory history {};
+
+  history.addCommand( "a" );
+  history.addCommand( "b" );
+  history.addCommand( "c" );
+
+  std::string firstCommand  = history.getPreviousCommand();
+  std::string secondCommand = history.getPreviousCommand();
+  std::string thirdCommand  = history.getNextCommand();
+  std::string fourthCommand = history.getPreviousCommand();
+  std::string fifthCommand  = history.getNextCommand();
+  std::string sixthCommand  = history.getNextCommand();
+
+  BOOST_CHECK_EQUAL( firstCommand, "c" );
+  BOOST_CHECK_EQUAL( secondCommand, "b" );
+  BOOST_CHECK_EQUAL( thirdCommand, "c" );
+  BOOST_CHECK_EQUAL( fourthCommand, "b" );
+  BOOST_CHECK_EQUAL( fifthCommand, "c" );
+  BOOST_CHECK_EQUAL( sixthCommand, "" );
+}
+
 BOOST_AUTO_TEST_SUITE_END()
