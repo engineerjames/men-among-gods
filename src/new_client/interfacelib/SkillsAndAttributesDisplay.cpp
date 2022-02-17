@@ -1,6 +1,7 @@
 #include "SkillsAndAttributesDisplay.h"
 
 #include "ClientTypes.h"
+#include "ColorPalette.h"
 #include "GraphicsCache.h"
 #include "GraphicsIndex.h"
 #include "GuiFormatters.h"
@@ -207,7 +208,7 @@ SkillsAndAttributesDisplay::SkillsAndAttributesDisplay( const sf::RenderWindow& 
   expToSpendLabel_.setString( "Update" );
   expToSpendValue_.setString( MenAmongGods::addThousandsSeparator( 1234251u ) );
 
-  skillScrollBar_.setFillColor( sf::Color( 17, 87, 1, 128 ) );
+  skillScrollBar_.setFillColor( MenAmongGods::ScrollBarGreen );
   skillScrollBar_.setOutlineColor( sf::Color::Black );
   skillScrollBar_.setPosition( initialScrollBarPosition_ );
   skillScrollBar_.setSize( sf::Vector2f { 11.0f, 11.0f } );
