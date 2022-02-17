@@ -13,9 +13,11 @@ RankDisplay::RankDisplay( const sf::Font& font, PlayerData& playerData, const Gr
     : font_( font )
     , gfxCache_( gfxCache )
     , playerData_( playerData )
-    , textualRank_( "Private", font, FONT_SIZE )
+    , textualRank_( font, FONT_SIZE, "Private" )
     , rankSprite_()
 {
+  textualRank_.setJustification( MenAmongGods::JustifiableText::TextJustification::CENTER );
+  textualRank_.setCenterWidth( 115 );
   textualRank_.setPosition( MenAmongGods::textualRankPosition );
   textualRank_.setFillColor( MenAmongGods::MsgYellow );
   textualRank_.setOutlineColor( sf::Color::Black );
@@ -33,6 +35,8 @@ void RankDisplay::update()
 
   rankSprite_ = gfxCache_.getSprite( 10 + std::min( 20, playerData_.getRank() ) );
   rankSprite_.setPosition( sf::Vector2f { 463, ( 54 - 16 ) } );
+
+  textualRank_.update();
 }
 
 void RankDisplay::onUserInput( const sf::Event& )
@@ -43,6 +47,7 @@ void RankDisplay::onUserInput( const sf::Event& )
 void RankDisplay::finalize()
 {
   // Do nothing for now
+  textualRank_.finalize();
 }
 
 } // namespace MenAmongGods

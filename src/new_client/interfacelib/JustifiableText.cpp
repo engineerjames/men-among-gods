@@ -11,6 +11,7 @@ JustifiableText::JustifiableText()
     , positionNeedsUpdating_( true )
     , justificationMode_( TextJustification::LEFT )
     , cachedPosition_()
+    , centerWidth_()
 {
 }
 
@@ -20,6 +21,7 @@ JustifiableText::JustifiableText( const sf::Font& font, unsigned int characterSi
     , positionNeedsUpdating_( true )
     , justificationMode_( TextJustification::LEFT )
     , cachedPosition_()
+    , centerWidth_()
 {
   text_.setFont( font );
 }
@@ -42,6 +44,11 @@ void JustifiableText::setFont( const sf::Font& font )
 void JustifiableText::setCharacterSize( unsigned int size )
 {
   text_.setCharacterSize( size );
+}
+
+void JustifiableText::setCenterWidth( int newValue )
+{
+  centerWidth_ = newValue;
 }
 
 void JustifiableText::setString( const std::string& text )
@@ -75,19 +82,20 @@ void JustifiableText::setJustification( JustifiableText::TextJustification mode 
 
 void JustifiableText::moveTextAccordingToJustification()
 {
-  // TBD
+  sf::FloatRect boundingBox = text_.getLocalBounds();
+
   if ( justificationMode_ == TextJustification::LEFT )
   {
     return;
   }
   else if ( justificationMode_ == TextJustification::RIGHT )
   {
-    sf::FloatRect boundingBox = text_.getLocalBounds();
     text_.setPosition( sf::Vector2f { cachedPosition_.x - boundingBox.width, cachedPosition_.y } );
   }
-  else
+  else if ( justificationMode_ == TextJustification::CENTER )
   {
-    LOG_ERROR( "UNIMPLEMENTED JUSTIFICATION!" );
+    float newXPosition = ( ( centerWidth_ - boundingBox.width ) / 2.0f ) + cachedPosition_.x;
+    text_.setPosition( sf::Vector2f { newXPosition, cachedPosition_.y } );
   }
 }
 

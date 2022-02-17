@@ -2,6 +2,7 @@
 set(target MenAmongGodsGraphics)
 
 set( sources 
+    CommandHistory.cpp
     Component.cpp
     FontCache.cpp
     GraphicsCache.cpp
@@ -12,6 +13,7 @@ set( sources
     MainUi.cpp
     MapDisplay.cpp
     PasswordTextInputDisplay.cpp
+    PlayerEquipmentDisplay.cpp
     PlayerInventoryDisplay.cpp
     PlayerLogDisplay.cpp
     PlayerTextInputDisplay.cpp
@@ -25,6 +27,7 @@ set( sources
 )
 
 set( headers 
+    CommandHistory.h
     ColorPalette.h
     Component.h
     FontCache.h
@@ -37,6 +40,7 @@ set( headers
     MainUi.h
     MapDisplay.h
     PasswordTextInputDisplay.h
+    PlayerEquipmentDisplay.h
     PlayerInventoryDisplay.h
     PlayerLogDisplay.h
     PlayerTextInputDisplay.h

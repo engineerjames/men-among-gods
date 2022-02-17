@@ -258,6 +258,19 @@ std::string PlayerData::getRankString() const
   return rankString;
 }
 
+int PlayerData::getItem( int index ) const
+{
+  if ( index < N_ITEMS && index >= 0 )
+  {
+    return clientSidePlayerInfo_.item[ index ];
+  }
+  else
+  {
+    LOG_ERROR( "Invalid item index: " << index );
+    return 0;
+  }
+}
+
 int PlayerData::getRank() const
 {
   return points2rank( clientSidePlayerInfo_.points_tot );

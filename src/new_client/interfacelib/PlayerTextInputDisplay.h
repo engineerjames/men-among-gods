@@ -2,8 +2,10 @@
 #define TEXT_INPUT_H
 
 #include <SFML/Graphics.hpp>
+#include <string>
 #include <vector>
 
+#include "CommandHistory.h"
 #include "Component.h"
 
 namespace MenAmongGods
@@ -26,6 +28,7 @@ private:
   unsigned int    maxCharacters_;
   const sf::Font& font_;
   std::string     text_;
+  CommandHistory  history_;
 };
 } // namespace MenAmongGods
 #endif

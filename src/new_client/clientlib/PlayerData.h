@@ -73,6 +73,7 @@ public:
   void setClientShouldShowPercentHealth( bool shouldShowPercentHealth );
   void setClientShouldHideWalls( bool shouldHideWalls );
   void setOkeyName( char ( &pdataName )[ 40 ] );
+  int  getItem( int index ) const;
 
   int               getRaceAndSex() const;
   std::string       getPassword() const;

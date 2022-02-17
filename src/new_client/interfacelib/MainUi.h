@@ -8,6 +8,7 @@
 #include "JustifiableText.h"
 #include "LifeDisplay.h"
 #include "MapDisplay.h"
+#include "PlayerEquipmentDisplay.h"
 #include "PlayerInventoryDisplay.h"
 #include "PlayerLogDisplay.h"
 #include "PlayerTextInputDisplay.h"
@@ -69,6 +70,7 @@ private:
 
   PlayerLogDisplay       msgBox_;
   PlayerTextInputDisplay userInput_;
+  PlayerEquipmentDisplay playerEquipment_;
   PlayerInventoryDisplay playerInventory_;
   UserOptionPanelDisplay userOptionPanel_;
   MapDisplay             mapDisplay_;

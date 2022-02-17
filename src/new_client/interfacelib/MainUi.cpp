@@ -27,7 +27,8 @@ MainUi::MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, con
     , lifeDisplay_( font_, pdata )
     , msgBox_()
     , userInput_( font_ )
-    , playerInventory_( pdata, gfxCache )
+    , playerEquipment_( pdata, gfxCache )
+    , playerInventory_( window, pdata, gfxCache )
     , userOptionPanel_( window, pdata )
     , mapDisplay_( font_, map, pdata, gfxCache, gfxIndex, window )
     , rankDisplay_( font_, pdata, gfxCache )
@@ -209,6 +210,7 @@ void MainUi::draw( sf::RenderTarget& target, sf::RenderStates states ) const
   target.draw( manaMaxValue_, states );
   target.draw( skillsAndAttributes_, states );
   target.draw( lifeDisplay_, states );
+  target.draw( playerEquipment_, states );
   target.draw( playerInventory_, states );
   target.draw( userOptionPanel_, states );
 }
@@ -220,6 +222,7 @@ void MainUi::onUserInput( const sf::Event& e )
   userInput_.onUserInput( e );
   skillsAndAttributes_.onUserInput( e );
   lifeDisplay_.onUserInput( e );
+  playerEquipment_.onUserInput( e );
   playerInventory_.onUserInput( e );
   userOptionPanel_.onUserInput( e );
 }
@@ -253,6 +256,8 @@ void MainUi::update()
 
   lifeDisplay_.update();
 
+  playerEquipment_.update();
+
   playerInventory_.update();
 
   // TODO: Fix naming consistency (user vs. client, vs. player)
@@ -280,6 +285,7 @@ void MainUi::populateCommands( std::vector< std::shared_ptr< ClientCommand > >& 
   skillsAndAttributes_.populateCommands( outCommands );
   lifeDisplay_.populateCommands( outCommands );
   msgBox_.populateCommands( outCommands );
+  playerEquipment_.populateCommands( outCommands );
   playerInventory_.populateCommands( outCommands );
 }
 
@@ -290,6 +296,7 @@ void MainUi::finalize()
   userInput_.finalize();
   msgBox_.finalize();
   lifeDisplay_.finalize();
+  playerEquipment_.finalize();
   playerInventory_.finalize();
   wvValue_.finalize();
   avValue_.finalize();

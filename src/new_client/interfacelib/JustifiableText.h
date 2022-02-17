@@ -19,7 +19,8 @@ public:
 
   // JustifiableText assumes that the position that the text occupies is the point at which (on the x-axis)
   // it is to justify to. That is, text position is the justification point.
-  JustifiableText( const sf::Font& font, unsigned int characterSize, std::string initialText = "" );
+  JustifiableText( const sf::Font& font, unsigned int characterSize,
+                   std::string initialText = "" ); // TODO: Match constructor parameter ordering as sf::Text
   JustifiableText();
 
   ~JustifiableText() = default;
@@ -31,6 +32,7 @@ public:
   void         setCharacterSize( unsigned int size );
   void         setFillColor( const sf::Color& color );
   void         setOutlineColor( const sf::Color& color );
+  void         setCenterWidth( int newValue );
   virtual void update() override;
 
   virtual void onUserInput( const sf::Event& e ) override;
@@ -47,6 +49,9 @@ private:
   bool              positionNeedsUpdating_;
   TextJustification justificationMode_;
   sf::Vector2f      cachedPosition_;
+
+  // Only needed for "CENTER" justification
+  int centerWidth_;
 };
 } // namespace MenAmongGods
 
