@@ -260,7 +260,7 @@ std::string PlayerData::getRankString() const
 
 int PlayerData::getItem( int index ) const
 {
-  if ( index < N_ITEMS && index > 0 )
+  if ( index < N_ITEMS && index >= 0 )
   {
     return clientSidePlayerInfo_.item[ index ];
   }
