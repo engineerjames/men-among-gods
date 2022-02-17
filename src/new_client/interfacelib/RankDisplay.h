@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "Component.h"
+#include "JustifiableText.h"
 
 class GraphicsCache;
 class PlayerData;
@@ -25,7 +26,7 @@ private:
   const sf::Font&      font_;
   const GraphicsCache& gfxCache_;
   PlayerData&          playerData_;
-  sf::Text             textualRank_;
+  JustifiableText      textualRank_;
   sf::Sprite           rankSprite_;
 };
 } // namespace MenAmongGods

@@ -26,7 +26,7 @@ static const sf::Vector2f scrollBoxSize { 10.0f, 32.0f };
 
 // Gold display and rank "Private" displayed below the 'self' view
 static const sf::Vector2f goldDisplayPosition { 452.0f, 185.0f };
-static const sf::Vector2f textualRankPosition { 413.0f, 171.0f };
+static const sf::Vector2f textualRankPosition { 377.0f, 169.0f };
 
 // User input text box
 static const sf::Vector2f userInputPosition { 500.0f, 227.0f };
