@@ -28,6 +28,12 @@ static const sf::Vector2f scrollBoxSize { 10.0f, 32.0f };
 static const sf::Vector2f goldDisplayPosition { 452.0f, 185.0f };
 static const sf::Vector2f textualRankPosition { 377.0f, 169.0f };
 
+// Inventory positions (size is the same as for the skills)
+static const sf::Vector2f inventoryScrollUpBoxPosition { 291.0f, 3.0f };
+static const sf::Vector2f inventoryScrollDownBoxPosition { 291.0f, 142.0f };
+static const sf::Vector2f inventoryScrollBarPosition { 291.0f, 37.0f };
+static const sf::Vector2f inventoryScrollBarSize { 9.0f, 9.0f };
+
 // User input text box
 static const sf::Vector2f userInputPosition { 500.0f, 227.0f };
 
