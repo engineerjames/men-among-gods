@@ -25,7 +25,7 @@ public:
 private:
   const PlayerData&         playerData_;
   const GraphicsCache&      gfxCache_;
-  std::vector< sf::Sprite > inventorySprites_;
+  std::vector< sf::Sprite > equipmentSprites_;
 };
 } // namespace MenAmongGods
 

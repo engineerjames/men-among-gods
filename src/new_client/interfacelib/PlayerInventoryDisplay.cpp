@@ -1,14 +1,8 @@
 #include "PlayerInventoryDisplay.h"
 
 #include "ConstantIdentifiers.h"
-#include "PlayerData.h"
 #include "GraphicsCache.h"
-
-namespace
-{
-static int wntab[ 20 ] = { WN_HEAD, WN_CLOAK, WN_BODY, WN_ARMS, WN_NECK, WN_BELT, WN_RHAND, WN_LHAND, WN_RRING, WN_LRING,
-                           WN_LEGS, WN_FEET,  0,       0,       0,       0,       0,        0,        0,        0 };
-}
+#include "PlayerData.h"
 
 namespace MenAmongGods
 {
@@ -16,13 +10,13 @@ namespace MenAmongGods
 PlayerInventoryDisplay::PlayerInventoryDisplay( const PlayerData& playerData, const GraphicsCache& gfxCache )
     : playerData_( playerData )
     , gfxCache_( gfxCache )
-    , inventorySprites_()
+    , equipmentSprites_()
 {
 }
 
 void PlayerInventoryDisplay::draw( sf::RenderTarget& target, sf::RenderStates states ) const
 {
-  for ( const auto& s : inventorySprites_ )
+  for ( const auto& s : equipmentSprites_ )
   {
     target.draw( s, states );
   }
@@ -30,19 +24,12 @@ void PlayerInventoryDisplay::draw( sf::RenderTarget& target, sf::RenderStates st
 
 void PlayerInventoryDisplay::update()
 {
-  inventorySprites_.clear();
-
-  for ( unsigned int n = 0; n < 12; n++ )
+  equipmentSprites_.clear();
+  for ( unsigned int i = 0; i < N_ITEMS; ++i )
   {
-    const int& itemReference = playerData_.getClientSidePlayerInfo().worn[ wntab[ n ] ];
-
-    if ( itemReference != 0 )
-    {
-      sf::Sprite newSprite = gfxCache_.getSprite( itemReference );
-      newSprite.setPosition( sf::Vector2f { static_cast< float >( 303 + ( n % 2 ) * 35 ), static_cast< float >( 2 + ( n / 2 ) * 35 ) } );
-      inventorySprites_.push_back( newSprite );
-    }
+    playerData_.getItem( i );
   }
+  // copyspritex(pl.item[n+inv_pos],220+(n%2)*35,2+(n/2)*35,0);
 }
 
 void PlayerInventoryDisplay::onUserInput( const sf::Event& )
