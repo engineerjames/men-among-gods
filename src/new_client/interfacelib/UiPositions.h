@@ -34,6 +34,10 @@ static const sf::Vector2f inventoryScrollDownBoxPosition { 291.0f, 142.0f };
 static const sf::Vector2f inventoryScrollBarPosition { 291.0f, 37.0f };
 static const sf::Vector2f inventoryScrollBarSize { 9.0f, 9.0f };
 
+static const sf::Vector2f  inventoryBoundingBoxPosition { 220.0f, 3.0f };
+static const sf::Vector2f  inventoryBoundingBoxSize { 66.0f, 172.0f };
+static const sf::FloatRect inventoryBoundingBox { inventoryBoundingBoxPosition, inventoryBoundingBoxSize };
+
 // User input text box
 static const sf::Vector2f userInputPosition { 500.0f, 227.0f };
 
