@@ -7,7 +7,12 @@
 #include "UiPositions.h"
 #include "UtilityFunctions.h"
 
+#include <cmath>
 #include <iostream>
+
+// Commands
+#include "InventoryCommand.h"
+#include "InventoryLookCommand.h"
 
 namespace MenAmongGods
 {
@@ -41,6 +46,7 @@ void PlayerInventoryDisplay::draw( sf::RenderTarget& target, sf::RenderStates st
 void PlayerInventoryDisplay::update()
 {
   equipmentSprites_.clear();
+  int drawnItems = 0;
   for ( unsigned int i = scrollPosition_ * 2; i < N_ITEMS; ++i )
   {
     int        pitem      = playerData_.getItem( i );
@@ -49,14 +55,21 @@ void PlayerInventoryDisplay::update()
     equipmentSprites_.push_back( itemSprite );
     auto& lastSprite = *( equipmentSprites_.end() - 1 );
 
-    sf::Vector2f spritePosition { static_cast< float >( 220 + ( i % 2 ) * 35 ), static_cast< float >( 2 + ( i / 2 ) * 35 ) };
+    sf::Vector2f spritePosition { static_cast< float >( 220 + ( drawnItems % 2 ) * 35 ),
+                                  static_cast< float >( 2 + ( drawnItems / 2 ) * 35 ) };
     lastSprite.setPosition( spritePosition );
+
     // Only 10 items can be displayed at once
-    if ( i == 10 )
+    drawnItems++;
+    if ( drawnItems == 10 )
     {
       break;
     }
   }
+
+  // Set scroll bar position
+  scrollBar_.setPosition( MenAmongGods::inventoryScrollBarPosition +
+                          MenAmongGods::scrollBarMovementPerClick * static_cast< float >( scrollPosition_ ) );
 }
 
 void PlayerInventoryDisplay::onUserInput( const sf::Event& e )
@@ -78,6 +91,31 @@ void PlayerInventoryDisplay::onUserInput( const sf::Event& e )
       scrollPosition_ = std::min( scrollPosition_ + 1, 15 );
 
       std::cerr << scrollPosition_ << std::endl;
+    }
+    else if ( MenAmongGods::inventoryBoundingBox.contains( mousePosition ) )
+    {
+      // If you draw out the positions involved the math makes more sense, but essentially it breaks
+      // down into these steps:
+      // 1. Offset the mouse position by the starting position of the inventory "bounding box"--that
+      //    way we can continue the math assuming our mouse position is relative to the upper left
+      //    corner of the inventory bounding box.
+      //
+      // 2. Since there are 5 rows, divide the height of the bounding box into 5 'slices', and see
+      //    how many times our mouse position offset (in Y) would fit into it.  We use the floor
+      //    of the value, since 3.5, 3.6, etc., we still want to associate with row 3 (otherwise, the
+      //    user clicking over halfway through box N would end up activating item in N + 1).
+      int itemRow = std::floor( ( mousePosition.y - MenAmongGods::inventoryBoundingBoxPosition.y ) /
+                                ( MenAmongGods::inventoryBoundingBox.height / 5.0f ) );
+
+      // We'll do a similar strategy for the columns, except there are only two columns in this case
+      int itemColumn = std::floor( ( mousePosition.x - MenAmongGods::inventoryBoundingBoxPosition.x ) /
+                                   ( MenAmongGods::inventoryBoundingBox.width / 2.0f ) );
+
+      int itemPosition = ( 2 * scrollPosition_ ) + ( 2 * itemRow ) + itemColumn;
+
+      // TODO: For now, always send the command to the server, even if it won't ultimately do anything
+      //       but we should probably evaluate if we _should_ do this.
+      commands_.push_back( std::make_shared< MenAmongGods::InventoryCommand >( 6u, itemPosition, 0 ) );
     }
   }
 }
