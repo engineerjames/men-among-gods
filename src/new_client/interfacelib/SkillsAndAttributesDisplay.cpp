@@ -457,7 +457,7 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
 
         int  skillNr               = getSkillNumber( skillsToDisplay_[ i ]->name_.getString() );
         int  baseAttributeModifier = getBaseAttributeModifier( skillsToDisplay_[ i ]->name_.getString() );
-        auto skillCommand          = std::make_shared< SkillCommand >( static_cast< unsigned int >( skillNr ), 0,
+        auto skillCommand = std::make_shared< SkillCommand >( static_cast< unsigned int >( skillNr ), playerData_.getSelectedCharacter(),
                                                               static_cast< unsigned int >( baseAttributeModifier ) );
 
         commands_.push_back( skillCommand );

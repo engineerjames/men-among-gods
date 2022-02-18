@@ -131,6 +131,24 @@ void PlayerInventoryDisplay::onUserInput( const sf::Event& e )
       }
     }
   }
+
+  if ( e.type == sf::Event::MouseButtonReleased && e.mouseButton.button == sf::Mouse::Button::Right )
+  {
+    sf::Vector2f mousePosition = MenAmongGods::getNormalizedMousePosition( window_ );
+
+    // TODO: Clean up this duplicate code
+    int itemRow = std::floor( ( mousePosition.y - MenAmongGods::inventoryBoundingBoxPosition.y ) /
+                              ( MenAmongGods::inventoryBoundingBox.height / 5.0f ) );
+
+    // We'll do a similar strategy for the columns, except there are only two columns in this case
+    int itemColumn = std::floor( ( mousePosition.x - MenAmongGods::inventoryBoundingBoxPosition.x ) /
+                                 ( MenAmongGods::inventoryBoundingBox.width / 2.0f ) );
+
+    int itemPosition = ( 2 * scrollPosition_ ) + ( 2 * itemRow ) + itemColumn;
+
+    // WHY do we pass in the selected_char when looking at an item? It doesn't seem to do anything..
+    commands_.push_back( std::make_shared< MenAmongGods::InventoryLookCommand >( itemPosition, 0 ) );
+  }
 }
 
 void PlayerInventoryDisplay::finalize()
