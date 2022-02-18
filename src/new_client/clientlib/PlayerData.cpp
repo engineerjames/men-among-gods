@@ -2,6 +2,7 @@
 
 #include <cstring>
 #include <fstream>
+#include <iostream>
 
 #include <boost/archive/text_iarchive.hpp>
 
@@ -236,6 +237,7 @@ PlayerData::PlayerData()
     , password_()
     , messages_()
     , playerSprite_()
+    , selectedCharacter_()
 {
   for ( unsigned int i = 0; i < SKILLTAB_SIZE; ++i )
   {
@@ -259,6 +261,16 @@ void PlayerData::setPlayerSprite( int spriteId )
 int PlayerData::getPlayerSprite() const
 {
   return playerSprite_;
+}
+
+void PlayerData::setSelectedCharacter( int characterId )
+{
+  selectedCharacter_ = characterId;
+}
+
+int PlayerData::getSelectedCharacter() const
+{
+  return selectedCharacter_;
 }
 
 std::string PlayerData::getRankString() const

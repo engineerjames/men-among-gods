@@ -78,6 +78,9 @@ public:
   void setPlayerSprite( int spriteId );
   int  getPlayerSprite() const;
 
+  void setSelectedCharacter( int characterId );
+  int  getSelectedCharacter() const;
+
   int               getRaceAndSex() const;
   std::string       getPassword() const;
   OkeyPasswordType  getPasswordOkeyValues() const;
@@ -104,6 +107,7 @@ private:
   static std::map< unsigned short, looks > lookMap_;
   static int                               lookAt_;
   int                                      playerSprite_;
+  int                                      selectedCharacter_;
 };
 
 #endif

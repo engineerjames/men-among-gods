@@ -37,7 +37,7 @@ private:
   int          getMapIndexFromMousePosition( const sf::Vector2f& mousePosition, bool setTileOutline );
   std::string  lookup( int nr, unsigned short id );
   void         set_look_proz( unsigned short nr, unsigned short id, int proz );
-  void         copysprite( int nr, int effect, int xpos, int ypos, int xoff, int yoff );
+  void         copysprite( int nr, int effect, int xpos, int ypos, int xoff, int yoff, bool isCharacterSelected = false );
   sf::Vector2i dd_gputtext( int xpos, int ypos, std::string text, int xoff, int yoff );
 
   const sf::Font&           font_;

@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "ConstantIdentifiers.h"
+#include "UiPositions.h"
 
 namespace MenAmongGods
 {

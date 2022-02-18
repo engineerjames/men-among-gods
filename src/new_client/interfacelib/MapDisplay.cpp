@@ -133,6 +133,29 @@ void MapDisplay::onUserInput( const sf::Event& e )
     }
   }
 
+  // User attempts to select a character
+  if ( e.type == sf::Event::MouseButtonReleased && e.mouseButton.button == sf::Mouse::Button::Left &&
+       sf::Keyboard::isKeyPressed( sf::Keyboard::Key::LAlt ) )
+  {
+    sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
+
+    int m = getMapIndexFromMousePosition( mousePosition, true );
+
+    int characterId = map_.getCharacterId( m );
+    if ( characterId != 0 )
+    {
+      if ( playerData_.getSelectedCharacter() == characterId )
+      {
+        playerData_.setSelectedCharacter( 0 );
+      }
+      else
+      {
+        playerData_.setSelectedCharacter( characterId );
+      }
+    }
+    return;
+  }
+
   // User faces his/her character a specific direction via a right mouse button click
   if ( e.type == sf::Event::MouseButtonReleased && e.mouseButton.button == sf::Mouse::Button::Right )
   {
@@ -234,7 +257,7 @@ void MapDisplay::update()
   int alpha {};
   int alphastr {};
   int hightlight {};
-  int selected_char {};
+  int selected_char = playerData_.getSelectedCharacter();
 
   int xoff       = -map_.getObjectXOffset( ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX ) - 176; //-176;
   int yoff       = -map_.getObjectYOffset( ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX );       //-176;
@@ -422,8 +445,9 @@ void MapDisplay::update()
 
       if ( map_.getObject2( m ) != 0 )
       {
+        bool isSelected = map_.getCharacterId( m ) == playerData_.getSelectedCharacter();
         copysprite( map_.getObject2( m ), map_.getLight( m ) | tmp, x * 32, y * 32, xoff + map_.getObjectXOffset( m ),
-                    yoff + map_.getObjectYOffset( m ) );
+                    yoff + map_.getObjectYOffset( m ), isSelected );
       }
 
       if ( playerData_.getAttackTarget() != 0 && playerData_.getAttackTarget() == map_.getCharacterId( m ) )
@@ -635,7 +659,7 @@ void MapDisplay::loadFromFile( std::string filePath )
   mapFile.close();
 }
 
-void MapDisplay::copysprite( int nr, int effect, int xpos, int ypos, int xoff, int yoff )
+void MapDisplay::copysprite( int nr, int effect, int xpos, int ypos, int xoff, int yoff, bool isCharacterSelected )
 {
   if ( nr == 0 )
   {
@@ -680,6 +704,11 @@ void MapDisplay::copysprite( int nr, int effect, int xpos, int ypos, int xoff, i
       sf::Sprite& newSprite = *( spritesToDraw_.end() - 1 );
       newSprite.setPosition( sf::Vector2f { static_cast< float >( rx + x * 32 ), static_cast< float >( ry + y * 32 ) } );
       ( void ) effect;
+
+      if ( isCharacterSelected )
+      {
+        newSprite.setColor( sf::Color::Green );
+      }
     }
   }
 }
