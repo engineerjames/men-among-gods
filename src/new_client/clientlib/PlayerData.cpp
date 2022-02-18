@@ -518,6 +518,11 @@ void PlayerData::setName( std::string newName )
   std::strncpy( playerInfo_.cname, newName.c_str(), newName.length() );
 }
 
+int PlayerData::getCarriedItem() const
+{
+  return clientSidePlayerInfo_.citem;
+}
+
 void PlayerData::setPassword( std::string password )
 {
   password_ = password;

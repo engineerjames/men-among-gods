@@ -39,6 +39,10 @@ static const sf::Vector2f  inventoryBoundingBoxPosition { 220.0f, 3.0f };
 static const sf::Vector2f  inventoryBoundingBoxSize { 66.0f, 172.0f };
 static const sf::FloatRect inventoryBoundingBox { inventoryBoundingBoxPosition, inventoryBoundingBoxSize };
 
+static const sf::Vector2f  equipmentBoundingBoxPosition { 304.0f, 3.0f };
+static const sf::Vector2f  equipmentBoundingBoxSize { 66.0f, 206.0f };
+static const sf::FloatRect equipmentBoundingBox { equipmentBoundingBoxPosition, equipmentBoundingBoxSize };
+
 // User input text box
 static const sf::Vector2f userInputPosition { 500.0f, 227.0f };
 
