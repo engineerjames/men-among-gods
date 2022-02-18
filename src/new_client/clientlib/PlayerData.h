@@ -75,6 +75,8 @@ public:
   void setOkeyName( char ( &pdataName )[ 40 ] );
   int  getItem( int index ) const;
   int  getCarriedItem() const;
+  void setPlayerSprite( int spriteId );
+  int  getPlayerSprite() const;
 
   int               getRaceAndSex() const;
   std::string       getPassword() const;
@@ -101,6 +103,7 @@ private:
   std::vector< LogMessage >                messages_;
   static std::map< unsigned short, looks > lookMap_;
   static int                               lookAt_;
+  int                                      playerSprite_;
 };
 
 #endif

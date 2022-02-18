@@ -16,6 +16,7 @@ namespace MenAmongGods
 MainUi::MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, const GraphicsCache& gfxCache, const GraphicsIndex& gfxIndex,
                 const FontCache& fontCache )
     : MenAmongGods::Component()
+    , gfxCache_( gfxCache )
     , playerData_( pdata )
     , font_( fontCache.getFont() )
     , goldDisplay_()
@@ -36,7 +37,9 @@ MainUi::MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, con
     , mapDisplay_( font_, map, pdata, gfxCache, gfxIndex, window )
     , rankDisplay_( font_, pdata, gfxCache )
     , background_()
+    , playerSprite_()
 {
+
   goldDisplay_.setPosition( MenAmongGods::goldDisplayPosition );
   playerNameDisplay_.setPosition( MenAmongGods::playerNamePosition );
   userInput_.setPosition( MenAmongGods::userInputPosition );
@@ -200,6 +203,8 @@ void MainUi::draw( sf::RenderTarget& target, sf::RenderStates states ) const
   // Draw the background first
   target.draw( background_, states );
 
+  target.draw( playerSprite_, states );
+
   target.draw( rankDisplay_, states );
   target.draw( goldDisplay_, states );
   target.draw( playerNameDisplay_, states );
@@ -286,6 +291,9 @@ void MainUi::update()
   {
     addMessage( m.type, m.msg );
   }
+
+  playerSprite_ = gfxCache_.getSprite( playerData_.getPlayerSprite() );
+  playerSprite_.setPosition( MenAmongGods::playerSpritePosition );
 
   playerData_.unlock();
 }

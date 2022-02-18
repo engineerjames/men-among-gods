@@ -15,9 +15,12 @@
 
 // Commands
 #include "AttackCommand.h"
+#include "DropCommand.h"
 #include "LookCommand.h"
 #include "MoveCommand.h"
+#include "PickupCommand.h"
 #include "TurnCommand.h"
+#include "UseCommand.h"
 
 namespace
 {
@@ -60,7 +63,7 @@ int facing( int x, int y, int dir )
 namespace MenAmongGods
 {
 
-MapDisplay::MapDisplay( const sf::Font& font, MenAmongGods::Map& map, const PlayerData& playerData, const GraphicsCache& cache,
+MapDisplay::MapDisplay( const sf::Font& font, MenAmongGods::Map& map, PlayerData& playerData, const GraphicsCache& cache,
                         const GraphicsIndex& index, const sf::RenderWindow& window )
     : MenAmongGods::Component()
     , font_( font )
@@ -157,6 +160,36 @@ void MapDisplay::onUserInput( const sf::Event& e )
       commands_.emplace_back( std::make_shared< MenAmongGods::AttackCommand >( map_.getCharacterId( m ) ) );
     }
   }
+
+  // PICKUP or drop items
+  if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Key::LShift ) && e.type == sf::Event::MouseButtonReleased &&
+       e.mouseButton.button == sf::Mouse::Button::Left )
+  {
+    sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
+
+    int m = getMapIndexFromMousePosition( mousePosition, false );
+
+    cmap      clickedTile = map_.getMap( m );
+    const int x           = clickedTile.x;
+    const int y           = clickedTile.y;
+
+    if ( playerData_.getCarriedItem() != 0 && ! ( map_.getFlags( m ) & ISITEM ) )
+    {
+      commands_.emplace_back( std::make_shared< MenAmongGods::DropCommand >( x, y ) );
+    }
+
+    if ( map_.getFlags( m ) & ISITEM )
+    {
+      if ( map_.getFlags( m ) & ISUSABLE )
+      {
+        commands_.emplace_back( std::make_shared< MenAmongGods::UseCommand >( x, y ) );
+      }
+      else
+      {
+        commands_.emplace_back( std::make_shared< MenAmongGods::PickupCommand >( x, y ) );
+      }
+    }
+  }
 }
 
 sf::Vector2i MapDisplay::dd_gputtext( int xpos, int ypos, std::string text, int xoff, int yoff )
@@ -207,8 +240,9 @@ void MapDisplay::update()
   int yoff       = -map_.getObjectYOffset( ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX );       //-176;
   int plr_sprite = map_.getObject2( ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX );
 
-  ( void ) plr_sprite;
   ( void ) selected_visible;
+
+  playerData_.setPlayerSprite( plr_sprite );
 
   for ( y = TILEY - 1; y >= 0; y-- )
   {
