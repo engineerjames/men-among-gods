@@ -6,6 +6,9 @@
 namespace MenAmongGods
 {
 
+// Player sprite position (the one in the UI, not the map)
+static const sf::Vector2f playerSpritePosition { 402.0f, 32.0f };
+
 // Skill and attributes
 static const sf::Vector2f initialAttributePosition { 3.0f, 1.0f };
 static const sf::Vector2f initialSkillPosition { 3.0f, 113.0f };

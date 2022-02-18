@@ -41,8 +41,9 @@ public:
   virtual void populateCommands( std::vector< std::shared_ptr< ClientCommand > >& outCommands ) override;
 
 private:
-  PlayerData& playerData_;
-  sf::Font    font_;
+  const GraphicsCache& gfxCache_;
+  PlayerData&          playerData_;
+  sf::Font             font_;
 
   sf::Text goldDisplay_;
   sf::Text playerNameDisplay_;
@@ -78,6 +79,7 @@ private:
   RankDisplay            rankDisplay_;
 
   sf::Sprite background_;
+  sf::Sprite playerSprite_;
 };
 } // namespace MenAmongGods
 #endif

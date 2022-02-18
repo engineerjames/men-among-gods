@@ -18,8 +18,8 @@ class Map;
 class MapDisplay : public MenAmongGods::Component
 {
 public:
-  MapDisplay( const sf::Font& font, MenAmongGods::Map& map, const PlayerData& playerData, const GraphicsCache& cache,
-              const GraphicsIndex& index, const sf::RenderWindow& window );
+  MapDisplay( const sf::Font& font, MenAmongGods::Map& map, PlayerData& playerData, const GraphicsCache& cache, const GraphicsIndex& index,
+              const sf::RenderWindow& window );
   virtual ~MapDisplay() = default;
 
   // Component interface
@@ -40,17 +40,17 @@ private:
   void         copysprite( int nr, int effect, int xpos, int ypos, int xoff, int yoff );
   sf::Vector2i dd_gputtext( int xpos, int ypos, std::string text, int xoff, int yoff );
 
-  const sf::Font&                   font_;
-  MenAmongGods::Map&                map_;
-  const PlayerData&                 playerData_;
-  const GraphicsCache&              cache_;
-  const GraphicsIndex&              index_;
-  const sf::RenderWindow&           window_;
-  std::vector< sf::Sprite >         spritesToDraw_;
-  std::vector< sf::Text >           textToDraw_;
-  int                               tileType_;
-  int                               tileX_;
-  int                               tileY_;
+  const sf::Font&           font_;
+  MenAmongGods::Map&        map_;
+  PlayerData&               playerData_;
+  const GraphicsCache&      cache_;
+  const GraphicsIndex&      index_;
+  const sf::RenderWindow&   window_;
+  std::vector< sf::Sprite > spritesToDraw_;
+  std::vector< sf::Text >   textToDraw_;
+  int                       tileType_;
+  int                       tileX_;
+  int                       tileY_;
 };
 } // namespace MenAmongGods
 

@@ -60,7 +60,7 @@ int facing( int x, int y, int dir )
 namespace MenAmongGods
 {
 
-MapDisplay::MapDisplay( const sf::Font& font, MenAmongGods::Map& map, const PlayerData& playerData, const GraphicsCache& cache,
+MapDisplay::MapDisplay( const sf::Font& font, MenAmongGods::Map& map, PlayerData& playerData, const GraphicsCache& cache,
                         const GraphicsIndex& index, const sf::RenderWindow& window )
     : MenAmongGods::Component()
     , font_( font )
@@ -207,8 +207,9 @@ void MapDisplay::update()
   int yoff       = -map_.getObjectYOffset( ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX );       //-176;
   int plr_sprite = map_.getObject2( ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX );
 
-  ( void ) plr_sprite;
   ( void ) selected_visible;
+
+  playerData_.setPlayerSprite( plr_sprite );
 
   for ( y = TILEY - 1; y >= 0; y-- )
   {

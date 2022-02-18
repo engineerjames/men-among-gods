@@ -235,6 +235,7 @@ PlayerData::PlayerData()
     , look_()
     , password_()
     , messages_()
+    , playerSprite_()
 {
   for ( unsigned int i = 0; i < SKILLTAB_SIZE; ++i )
   {
@@ -248,6 +249,16 @@ PlayerData::PlayerData()
 int PlayerData::getMode() const
 {
   return clientSidePlayerInfo_.mode;
+}
+
+void PlayerData::setPlayerSprite( int spriteId )
+{
+  playerSprite_ = spriteId;
+}
+
+int PlayerData::getPlayerSprite() const
+{
+  return playerSprite_;
 }
 
 std::string PlayerData::getRankString() const
