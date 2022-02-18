@@ -30,7 +30,7 @@ MainUi::MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, con
     , lifeDisplay_( font_, pdata )
     , msgBox_()
     , userInput_( font_ )
-    , playerEquipment_( pdata, gfxCache )
+    , playerEquipment_( window, pdata, gfxCache )
     , playerInventory_( window, pdata, gfxCache )
     , userOptionPanel_( window, pdata )
     , mapDisplay_( font_, map, pdata, gfxCache, gfxIndex, window )

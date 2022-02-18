@@ -74,6 +74,7 @@ public:
   void setClientShouldHideWalls( bool shouldHideWalls );
   void setOkeyName( char ( &pdataName )[ 40 ] );
   int  getItem( int index ) const;
+  int  getCarriedItem() const;
 
   int               getRaceAndSex() const;
   std::string       getPassword() const;

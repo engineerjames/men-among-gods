@@ -70,6 +70,14 @@ void PlayerInventoryDisplay::update()
   // Set scroll bar position
   scrollBar_.setPosition( MenAmongGods::inventoryScrollBarPosition +
                           MenAmongGods::scrollBarMovementPerClick * static_cast< float >( scrollPosition_ ) );
+
+  int carriedItem = playerData_.getCarriedItem();
+  if ( carriedItem != 0 )
+  {
+    sf::Sprite carriedItemSprite = gfxCache_.getSprite( carriedItem );
+    carriedItemSprite.setPosition( getNormalizedMousePosition( window_ ) );
+    equipmentSprites_.push_back( carriedItemSprite );
+  }
 }
 
 void PlayerInventoryDisplay::onUserInput( const sf::Event& e )
@@ -111,9 +119,16 @@ void PlayerInventoryDisplay::onUserInput( const sf::Event& e )
 
       int itemPosition = ( 2 * scrollPosition_ ) + ( 2 * itemRow ) + itemColumn;
 
-      // TODO: For now, always send the command to the server, even if it won't ultimately do anything
-      //       but we should probably evaluate if we _should_ do this.
-      commands_.push_back( std::make_shared< MenAmongGods::InventoryCommand >( 6u, itemPosition, 0 ) );
+      if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Key::LShift ) )
+      {
+        commands_.push_back( std::make_shared< MenAmongGods::InventoryCommand >( 0u, itemPosition, 0 ) );
+      }
+      else
+      {
+        // TODO: For now, always send the command to the server, even if it won't ultimately do anything
+        //       but we should probably evaluate if we _should_ do this.
+        commands_.push_back( std::make_shared< MenAmongGods::InventoryCommand >( 6u, itemPosition, 0 ) );
+      }
     }
   }
 }
