@@ -33,7 +33,8 @@ inline bool userClickedOnMap( const sf::Vector2f& pos )
   sf::FloatRect clientOptionsArea { sf::Vector2f { 600.0f, 500.0 }, sf::Vector2f { 200.0f, 100.0f } };
 
   // TODO: This needs some work, currently just a rough approximation
-  if ( skillsArea.contains( pos ) || clientOptionsArea.contains( pos ) )
+  if ( skillsArea.contains( pos ) || clientOptionsArea.contains( pos ) || inventoryBoundingBox.contains( pos ) ||
+       equipmentBoundingBox.contains( pos ) )
   {
     return false;
   }
