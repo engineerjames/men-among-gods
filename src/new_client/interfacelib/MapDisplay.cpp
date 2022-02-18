@@ -15,9 +15,12 @@
 
 // Commands
 #include "AttackCommand.h"
+#include "DropCommand.h"
 #include "LookCommand.h"
 #include "MoveCommand.h"
+#include "PickupCommand.h"
 #include "TurnCommand.h"
+#include "UseCommand.h"
 
 namespace
 {
@@ -155,6 +158,36 @@ void MapDisplay::onUserInput( const sf::Event& e )
     if ( map_.getCharacterId( m ) != 0 )
     {
       commands_.emplace_back( std::make_shared< MenAmongGods::AttackCommand >( map_.getCharacterId( m ) ) );
+    }
+  }
+
+  // PICKUP or drop items
+  if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Key::LShift ) && e.type == sf::Event::MouseButtonReleased &&
+       e.mouseButton.button == sf::Mouse::Button::Left )
+  {
+    sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
+
+    int m = getMapIndexFromMousePosition( mousePosition, false );
+
+    cmap      clickedTile = map_.getMap( m );
+    const int x           = clickedTile.x;
+    const int y           = clickedTile.y;
+
+    if ( playerData_.getCarriedItem() != 0 && ! ( map_.getFlags( m ) & ISITEM ) )
+    {
+      commands_.emplace_back( std::make_shared< MenAmongGods::DropCommand >( x, y ) );
+    }
+
+    if ( map_.getFlags( m ) & ISITEM )
+    {
+      if ( map_.getFlags( m ) & ISUSABLE )
+      {
+        commands_.emplace_back( std::make_shared< MenAmongGods::UseCommand >( x, y ) );
+      }
+      else
+      {
+        commands_.emplace_back( std::make_shared< MenAmongGods::PickupCommand >( x, y ) );
+      }
     }
   }
 }
