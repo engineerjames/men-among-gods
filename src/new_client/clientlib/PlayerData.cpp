@@ -288,7 +288,7 @@ void PlayerData::setShowLook( bool shouldShowLook )
 
 bool PlayerData::getShouldShowShop() const
 {
-  return shouldShowLook_;
+  return shouldShowShop_;
 }
 
 void PlayerData::setShouldShowShop( bool shouldShowShop )
