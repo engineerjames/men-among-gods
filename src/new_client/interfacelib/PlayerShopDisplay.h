@@ -15,8 +15,7 @@ namespace MenAmongGods
 class PlayerShopDisplay : public MenAmongGods::Component
 {
 public:
-  PlayerShopDisplay( const sf::RenderWindow& window, const PlayerData& pdata, const GraphicsCache& gfxCache,
-                     const GraphicsIndex& gfxIndex );
+  PlayerShopDisplay( const sf::RenderWindow& window, PlayerData& pdata, const GraphicsCache& gfxCache, const GraphicsIndex& gfxIndex );
   virtual ~PlayerShopDisplay() = default;
 
   // Component interface
@@ -29,7 +28,7 @@ public:
 
 private:
   const sf::RenderWindow& window_;
-  const PlayerData&       playerData_;
+  PlayerData&             playerData_;
   const GraphicsCache&    gfxCache_;
   const GraphicsIndex&    gfxIndex_;
 

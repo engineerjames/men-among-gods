@@ -7,7 +7,10 @@ namespace MenAmongGods
 {
 
 // Shop (and grave search) position
-static const sf::Vector2f shopPosition { 220.0f, 260.0f };
+static const sf::Vector2f  shopPosition { 220.0f, 260.0f };
+static const sf::Vector2f  closeShopButtonPosition { 500.0f, 260.0f };
+static const sf::Vector2f  closeShopButtonSize { 12.0f, 12.0f };
+static const sf::FloatRect closeShopButtonBoundingBox { closeShopButtonPosition, closeShopButtonSize };
 
 // Player sprite position (the one in the UI, not the map)
 static const sf::Vector2f playerSpritePosition { 402.0f, 32.0f };
