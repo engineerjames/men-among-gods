@@ -56,6 +56,15 @@ public:
   look&          getLook();
   void           sortSkills();
 
+  bool getShowLook() const;
+  void setShowLook( bool shouldShowLook );
+
+  bool               getShouldShowShop() const;
+  void               setShouldShowShop( bool shouldShowShop );
+  void               setShopOnCurrentLook();
+  look               getShop() const;
+  std::vector< int > getUnknownCharacterIds() const;
+
   void lock();
   void unlock();
 
@@ -108,6 +117,9 @@ private:
   static int                               lookAt_;
   int                                      playerSprite_;
   int                                      selectedCharacter_;
+  bool                                     shouldShowLook_;
+  bool                                     shouldShowShop_;
+  look                                     shop_;
 };
 
 #endif

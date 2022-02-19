@@ -238,6 +238,9 @@ PlayerData::PlayerData()
     , messages_()
     , playerSprite_()
     , selectedCharacter_()
+    , shouldShowLook_( false )
+    , shouldShowShop_( false )
+    , shop_()
 {
   for ( unsigned int i = 0; i < SKILLTAB_SIZE; ++i )
   {
@@ -273,6 +276,36 @@ int PlayerData::getSelectedCharacter() const
   return selectedCharacter_;
 }
 
+bool PlayerData::getShowLook() const
+{
+  return shouldShowLook_;
+}
+
+void PlayerData::setShowLook( bool shouldShowLook )
+{
+  shouldShowLook_ = shouldShowLook;
+}
+
+bool PlayerData::getShouldShowShop() const
+{
+  return shouldShowLook_;
+}
+
+void PlayerData::setShouldShowShop( bool shouldShowShop )
+{
+  shouldShowShop_ = shouldShowShop;
+}
+
+void PlayerData::setShopOnCurrentLook()
+{
+  shop_ = look_;
+}
+
+look PlayerData::getShop() const
+{
+  return shop_;
+}
+
 std::string PlayerData::getRankString() const
 {
   int         rank       = points2rank( clientSidePlayerInfo_.points_tot );
@@ -302,6 +335,20 @@ int PlayerData::getRank() const
 void PlayerData::setMode( int newMode )
 {
   clientSidePlayerInfo_.mode = newMode;
+}
+
+std::vector< int > PlayerData::getUnknownCharacterIds() const
+{
+  std::vector< int > unknownIds {};
+  for ( auto [ key, val ] : lookMap_ )
+  {
+    if ( val.known == 0 )
+    {
+      unknownIds.push_back( key );
+    }
+  }
+
+  return unknownIds;
 }
 
 std::string PlayerData::lookup( int nr, unsigned short id ) const

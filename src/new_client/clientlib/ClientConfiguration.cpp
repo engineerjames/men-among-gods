@@ -11,17 +11,6 @@ ClientConfiguration ClientConfiguration::instance()
 {
   static ClientConfiguration instance_ {};
 
-  // Read in the JSON parameters from the file
-  std::ifstream inputJsonFile { MenAmongGods::getConfigPath() + "config.json" };
-  Json::Value   root {};
-
-  inputJsonFile >> root;
-
-  instance_.networkThreadDelay_ = root.get( "networkThreadDelay", instance_.networkThreadDelay_ ).asInt();
-  instance_.frameLimit_         = root.get( "frameLimit", instance_.frameLimit_ ).asInt();
-
-  LOG_DEBUG_OBJ( instance_, "Client configuration parameters" );
-
   return instance_;
 }
 
@@ -49,6 +38,16 @@ ClientConfiguration::ClientConfiguration()
     : networkThreadDelay_( 50 )
     , frameLimit_( 10 )
 {
+  // Read in the JSON parameters from the file
+  std::ifstream inputJsonFile { MenAmongGods::getConfigPath() + "config.json" };
+  Json::Value   root {};
+
+  inputJsonFile >> root;
+
+  networkThreadDelay_ = root.get( "networkThreadDelay", networkThreadDelay_ ).asInt();
+  frameLimit_         = root.get( "frameLimit", frameLimit_ ).asInt();
+
+  LOG_DEBUG_OBJ( *this, "Client configuration parameters" );
 }
 
 } // namespace MenAmongGods

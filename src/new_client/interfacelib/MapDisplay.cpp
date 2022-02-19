@@ -2,6 +2,7 @@
 
 #include <boost/archive/text_iarchive.hpp>
 #include <fstream>
+#include <iostream>
 #include <set>
 
 #include "ColorPalette.h"
@@ -152,6 +153,22 @@ void MapDisplay::onUserInput( const sf::Event& e )
       {
         playerData_.setSelectedCharacter( characterId );
       }
+    }
+    return;
+  }
+
+  // User attempts to look at a character
+  if ( e.type == sf::Event::MouseButtonReleased && e.mouseButton.button == sf::Mouse::Button::Right &&
+       sf::Keyboard::isKeyPressed( sf::Keyboard::Key::LControl ) )
+  {
+    sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
+
+    int m = getMapIndexFromMousePosition( mousePosition, true );
+
+    int characterId = map_.getCharacterId( m );
+    if ( characterId != 0 )
+    {
+      commands_.push_back( std::make_shared< MenAmongGods::LookCommand >( characterId ) );
     }
     return;
   }
@@ -339,7 +356,6 @@ void MapDisplay::update()
       if ( playerData_.areWallsHidden() == 0 || ( map_.getFlags( m ) & ISITEM ) || autohide( x, y ) )
       {
         int tmp2 {};
-        ( void ) tmp2;
 
         if ( map_.getObject1( m ) > 16335 && map_.getObject1( m ) < 16422 && map_.getObject1( m ) != 16357 &&
              map_.getObject1( m ) != 16365 && map_.getObject1( m ) != 16373 && map_.getObject1( m ) != 16381 &&
@@ -610,19 +626,6 @@ void MapDisplay::update()
     }
   }
 
-  // eng_display_win( plr_sprite, init );
-
-  // ********************
-  // display cursors etc.
-  // ********************
-
-  //   if ( init && pl.citem )
-  //   {
-  //     if ( cursor_type == CT_DROP || cursor_type == CT_SWAP || cursor_type == CT_USE )
-  //       copyspritex( pl.citem, mouse_x - 16, mouse_y - 16, 16 );
-  //     else
-  //       copyspritex( pl.citem, mouse_x - 16, mouse_y - 16, 0 );
-  //   }
   sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
 
   if ( mousePosition.x > 0 && mousePosition.y > 0 )
@@ -635,6 +638,38 @@ void MapDisplay::update()
         break;
       }
     }
+  }
+
+
+  if ( playerData_.getShouldShowShop() )
+  {
+    look shop = playerData_.getShop();
+    copysprite( 92, 0, 220, 260, 0, 0 );
+    for ( int n = 0; n < 62; ++n )
+    {
+      if ( shop.item[ n ] == 0 )
+      {
+        continue;
+      }
+
+      copysprite( shop.item[ n ], 0, 222 + ( n % 8 ) * 35, 262 + ( n / 8 ) * 35, 0, 0 );
+    }
+    // 		copyspritex(92,220,260,0);
+    // for (n=0; n<62; n++) {
+    // 	if (!shop.item[n]) continue;
+    // 	if (hightlight==HL_SHOP && hightlight_sub==n) {
+    // 		copyspritex(shop.item[n],222+(n%8)*35,262+(n/8)*35,16);
+    // 		if (shop.price[n]) dd_xputtext(225,549,1,"Sell: %dG %dS",shop.price[n]/100,shop.price[n]%100);
+    // 	} else
+    // 		copyspritex(shop.item[n],222+(n%8)*35,262+(n/8)*35,0);
+    // }
+    // if (pl.citem && shop.pl_price)
+    // 	dd_xputtext(225,559,1,"Buy:  %dG %dS",shop.pl_price/100,shop.pl_price%100);
+
+    // if (shop.sprite) copyspritex(shop.sprite,402,32,0);
+    // copyspritex(10+min(20,points2rank(shop.points)),463,54-16,0);
+    // dd_xputtext(374+(125-strlen(rank[points2rank(shop.points)])*6)/2,172,1,rank[points2rank(shop.points)]);
+    // dd_xputtext(374+(125-strlen(shop.name)*6)/2,152,1,shop.name);
   }
 }
 

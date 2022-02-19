@@ -821,8 +821,7 @@ void TickBuffer::sv_look5( const unsigned char* buf )
   {
     if ( ! playerData_.getLook().autoflag )
     {
-      // playerData_.setShowLook( 1 );
-      // playerData_.setLook( tmplook );
+      playerData_.setShowLook( true );
       // look_timer = 10 * TICKS;
     }
     playerData_.add_look( playerData_.getLook().nr, playerData_.getLook().name, playerData_.getLook().id );
@@ -845,8 +844,8 @@ void TickBuffer::sv_look6( const unsigned char* buf )
   }
   if ( n == 62 )
   {
-    // show_shop = 1;
-    // shop      = tmplook;
+    playerData_.setShouldShowShop( true );
+    playerData_.setShopOnCurrentLook();
   }
 }
 

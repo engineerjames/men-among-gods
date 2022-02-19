@@ -7,7 +7,11 @@
 #include "ConstantIdentifiers.h"
 #include "Logger.h"
 #include "Map.h"
+#include "PlayerData.h"
 #include "TickBuffer.h"
+
+// Commands
+#include "AutoLookCommand.h"
 
 ClientNetworkActivity::~ClientNetworkActivity()
 {
@@ -121,6 +125,8 @@ void ClientNetworkActivity::startNetworkActivity()
       }
       commands_.clear();
     }
+
+    clientConnection_.getUnknownPlayerIds( playerData_ );
 
     // This is really stupid, but somehow by injecting this delay, the
     // graphics suddently act normal.  Processing updates too quickly?

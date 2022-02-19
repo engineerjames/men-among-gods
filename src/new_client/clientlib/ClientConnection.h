@@ -36,6 +36,9 @@ public:
   void setSocketMode( SocketIOMode newMode );
   void sendHardwareInfo();
 
+  // TODO: Get rid of this -- doesn't belong here
+  void getUnknownPlayerIds( const PlayerData& playerData );
+
   bool sendTick();
   bool receiveTick( TickBuffer& tickBuffer );
 

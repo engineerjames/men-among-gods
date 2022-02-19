@@ -12,6 +12,7 @@
 #include "TickBuffer.h"
 
 // Commands
+#include "AutoLookCommand.h"
 #include "ChallengeCommand.h"
 #include "NewLoginCommand.h"
 #include "PasswordCommand.h"
@@ -60,6 +61,16 @@ bool ClientConnection::connect()
   sf::Socket::Status status = clientSocket_.connect( hostIpAddress_, hostPort_ );
   isConnected_              = status == sf::Socket::Status::Done;
   return isConnected_;
+}
+
+void ClientConnection::getUnknownPlayerIds( const PlayerData& playerData )
+{
+  auto ids = playerData.getUnknownCharacterIds();
+  for ( const auto& id : ids )
+  {
+    auto command = std::make_unique< MenAmongGods::AutoLookCommand >( id );
+    command->send( clientSocket_ );
+  }
 }
 
 bool ClientConnection::login( PlayerData& playerData )
