@@ -16,6 +16,8 @@ endif()
 
 enable_testing()
 
+set(Boost_USE_STATIC_LIBS ON)
+set(BUILD_SHARED_LIBS OFF)
 find_package(Boost COMPONENTS unit_test_framework serialization REQUIRED)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)

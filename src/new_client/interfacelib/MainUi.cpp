@@ -36,6 +36,7 @@ MainUi::MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, con
     , userOptionPanel_( window, pdata )
     , mapDisplay_( font_, map, pdata, gfxCache, gfxIndex, window )
     , rankDisplay_( font_, pdata, gfxCache )
+    , playerShopDisplay_( window, pdata, gfxCache, gfxIndex )
     , background_()
     , playerSprite_()
 {
@@ -230,6 +231,7 @@ void MainUi::draw( sf::RenderTarget& target, sf::RenderStates states ) const
   target.draw( playerEquipment_, states );
   target.draw( playerInventory_, states );
   target.draw( userOptionPanel_, states );
+  target.draw( playerShopDisplay_, states );
 }
 
 void MainUi::onUserInput( const sf::Event& e )
@@ -242,6 +244,7 @@ void MainUi::onUserInput( const sf::Event& e )
   playerEquipment_.onUserInput( e );
   playerInventory_.onUserInput( e );
   userOptionPanel_.onUserInput( e );
+  playerShopDisplay_.onUserInput( e );
 }
 
 void MainUi::update()
@@ -295,6 +298,8 @@ void MainUi::update()
   playerSprite_ = gfxCache_.getSprite( playerData_.getPlayerSprite() );
   playerSprite_.setPosition( MenAmongGods::playerSpritePosition );
 
+  playerShopDisplay_.update();
+
   playerData_.unlock();
 }
 
@@ -308,6 +313,7 @@ void MainUi::populateCommands( std::vector< std::shared_ptr< ClientCommand > >& 
   msgBox_.populateCommands( outCommands );
   playerEquipment_.populateCommands( outCommands );
   playerInventory_.populateCommands( outCommands );
+  playerShopDisplay_.populateCommands( outCommands );
 }
 
 void MainUi::finalize()
@@ -323,5 +329,6 @@ void MainUi::finalize()
   avValue_.finalize();
   expValue_.finalize();
   userOptionPanel_.finalize();
+  playerShopDisplay_.finalize();
 }
 } // namespace MenAmongGods

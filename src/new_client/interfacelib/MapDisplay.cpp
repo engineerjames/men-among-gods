@@ -2,6 +2,7 @@
 
 #include <boost/archive/text_iarchive.hpp>
 #include <fstream>
+#include <iostream>
 #include <set>
 
 #include "ColorPalette.h"
@@ -152,6 +153,22 @@ void MapDisplay::onUserInput( const sf::Event& e )
       {
         playerData_.setSelectedCharacter( characterId );
       }
+    }
+    return;
+  }
+
+  // User attempts to look at a character
+  if ( e.type == sf::Event::MouseButtonReleased && e.mouseButton.button == sf::Mouse::Button::Right &&
+       sf::Keyboard::isKeyPressed( sf::Keyboard::Key::LControl ) )
+  {
+    sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
+
+    int m = getMapIndexFromMousePosition( mousePosition, true );
+
+    int characterId = map_.getCharacterId( m );
+    if ( characterId != 0 )
+    {
+      commands_.push_back( std::make_shared< MenAmongGods::LookCommand >( characterId ) );
     }
     return;
   }
@@ -339,7 +356,6 @@ void MapDisplay::update()
       if ( playerData_.areWallsHidden() == 0 || ( map_.getFlags( m ) & ISITEM ) || autohide( x, y ) )
       {
         int tmp2 {};
-        ( void ) tmp2;
 
         if ( map_.getObject1( m ) > 16335 && map_.getObject1( m ) < 16422 && map_.getObject1( m ) != 16357 &&
              map_.getObject1( m ) != 16365 && map_.getObject1( m ) != 16373 && map_.getObject1( m ) != 16381 &&
@@ -602,6 +618,7 @@ void MapDisplay::update()
         alpha |= 4;
         alphastr = std::max( ( unsigned ) alphastr, ( ( map_.getFlags( m ) & CMAGIC ) >> 28 ) );
       }
+
       if ( alpha )
       {
         // dd_alphaeffect_magic( alpha, alphastr, x * 32, y * 32, xoff + map_.getObjectXOffset(m), yoff + map_.getObjectYOffset(m)
@@ -610,19 +627,6 @@ void MapDisplay::update()
     }
   }
 
-  // eng_display_win( plr_sprite, init );
-
-  // ********************
-  // display cursors etc.
-  // ********************
-
-  //   if ( init && pl.citem )
-  //   {
-  //     if ( cursor_type == CT_DROP || cursor_type == CT_SWAP || cursor_type == CT_USE )
-  //       copyspritex( pl.citem, mouse_x - 16, mouse_y - 16, 16 );
-  //     else
-  //       copyspritex( pl.citem, mouse_x - 16, mouse_y - 16, 0 );
-  //   }
   sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
 
   if ( mousePosition.x > 0 && mousePosition.y > 0 )

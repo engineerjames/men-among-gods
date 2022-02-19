@@ -1,5 +1,4 @@
-set(SFML_STATIC_LIBRARIES FALSE)
-find_package(SFML 2.5 COMPONENTS graphics network REQUIRED)
+find_package(SFML 2.5 COMPONENTS audio network graphics window system REQUIRED)
 
 add_subdirectory(clientlib)
 
