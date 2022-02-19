@@ -63,5 +63,6 @@
         "list": "cpp",
         "typeindex": "cpp",
         "variant": "cpp"
-    }
+    },
+    "cmake.generator": "Ninja"
 }
