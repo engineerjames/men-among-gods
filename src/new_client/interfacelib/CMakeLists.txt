@@ -16,6 +16,7 @@ set( sources
     PlayerEquipmentDisplay.cpp
     PlayerInventoryDisplay.cpp
     PlayerLogDisplay.cpp
+    PlayerShopDisplay.cpp
     PlayerTextInputDisplay.cpp
     ProgressBarDisplay.cpp
     RadioButtonDisplay.cpp
@@ -43,6 +44,7 @@ set( headers
     PlayerEquipmentDisplay.h
     PlayerInventoryDisplay.h
     PlayerLogDisplay.h
+    PlayerShopDisplay.h
     PlayerTextInputDisplay.h
     ProgressBarDisplay.h
     RadioButtonDisplay.h

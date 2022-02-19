@@ -618,6 +618,7 @@ void MapDisplay::update()
         alpha |= 4;
         alphastr = std::max( ( unsigned ) alphastr, ( ( map_.getFlags( m ) & CMAGIC ) >> 28 ) );
       }
+
       if ( alpha )
       {
         // dd_alphaeffect_magic( alpha, alphastr, x * 32, y * 32, xoff + map_.getObjectXOffset(m), yoff + map_.getObjectYOffset(m)
@@ -638,38 +639,6 @@ void MapDisplay::update()
         break;
       }
     }
-  }
-
-
-  if ( playerData_.getShouldShowShop() )
-  {
-    look shop = playerData_.getShop();
-    copysprite( 92, 0, 220, 260, 0, 0 );
-    for ( int n = 0; n < 62; ++n )
-    {
-      if ( shop.item[ n ] == 0 )
-      {
-        continue;
-      }
-
-      copysprite( shop.item[ n ], 0, 222 + ( n % 8 ) * 35, 262 + ( n / 8 ) * 35, 0, 0 );
-    }
-    // 		copyspritex(92,220,260,0);
-    // for (n=0; n<62; n++) {
-    // 	if (!shop.item[n]) continue;
-    // 	if (hightlight==HL_SHOP && hightlight_sub==n) {
-    // 		copyspritex(shop.item[n],222+(n%8)*35,262+(n/8)*35,16);
-    // 		if (shop.price[n]) dd_xputtext(225,549,1,"Sell: %dG %dS",shop.price[n]/100,shop.price[n]%100);
-    // 	} else
-    // 		copyspritex(shop.item[n],222+(n%8)*35,262+(n/8)*35,0);
-    // }
-    // if (pl.citem && shop.pl_price)
-    // 	dd_xputtext(225,559,1,"Buy:  %dG %dS",shop.pl_price/100,shop.pl_price%100);
-
-    // if (shop.sprite) copyspritex(shop.sprite,402,32,0);
-    // copyspritex(10+min(20,points2rank(shop.points)),463,54-16,0);
-    // dd_xputtext(374+(125-strlen(rank[points2rank(shop.points)])*6)/2,172,1,rank[points2rank(shop.points)]);
-    // dd_xputtext(374+(125-strlen(shop.name)*6)/2,152,1,shop.name);
   }
 }
 
