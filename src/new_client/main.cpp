@@ -8,6 +8,7 @@
 #include "FontCache.h"
 #include "GraphicsCache.h"
 #include "GraphicsIndex.h"
+#include "Logger.h"
 #include "LoginUi.h"
 #include "MainUi.h"
 #include "Map.h"
@@ -26,6 +27,8 @@ static const constexpr int LOGIN_FONT_SIZE = 16;
 
 int main()
 {
+  LOG_SET_LEVEL( MenAmongGods::ClientConfiguration::instance().loggingEnabled() );
+  
   sf::RenderWindow window( sf::VideoMode( MODEX, MODEY ), "Men Among Gods - New Client" );
   window.setFramerateLimit( MenAmongGods::ClientConfiguration::instance().frameLimit() );
   window.requestFocus();
