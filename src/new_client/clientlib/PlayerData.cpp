@@ -706,6 +706,44 @@ unsigned int PlayerData::getOkeyUserNumber() const
   return okey_.usnr;
 }
 
+void PlayerData::loadFromJsonFile()
+{
+  std::ifstream playerFile { MenAmongGods::getConfigPath() + "playerdata.moa" };
+
+  ioMutex_.lock();
+
+  //
+  // Player data
+  //
+  Json::Value root {};
+
+  playerFile >> root;
+
+  std::strncpy( playerInfo_.cname, root[ "pdata" ][ "name" ].asCString(), 80 - 1 );
+  std::strncpy( playerInfo_.ref, root[ "pdata" ][ "ref" ].asCString(), 80 - 1 );
+  playerInfo_.show_names = root[ "pdata" ][ "show_names" ].asInt();
+  playerInfo_.show_proz  = root[ "pdata" ][ "show_percent_health" ].asInt();
+
+  // TODO: Load XButtons
+
+  //
+  // key data
+  //
+  okey_.usnr  = root[ "key" ][ "usnr" ].asUInt();
+  okey_.pass1 = root[ "key" ][ "pass1" ].asUInt();
+  okey_.pass2 = root[ "key" ][ "pass2" ].asUInt();
+  std::strncpy( okey_.name, root[ "key" ][ "name" ].asCString(), 40 - 1);
+  okey_.race = root[ "key" ][ "race" ].asInt();
+
+  //
+  // unique values
+  //
+  unique1_ = root[ "unique1" ].asInt();
+  unique2_ = root[ "unique2" ].asInt();
+
+  ioMutex_.unlock();
+}
+
 // save_options and save_unique combined
 void PlayerData::saveToJsonFile() const
 {

@@ -72,6 +72,7 @@ public:
   void loadFromFile( const std::string& filePath );
 
   void saveToJsonFile() const;
+  void loadFromJsonFile();
 
   void         setName( std::string newName );
   void         setPassword( std::string password );
