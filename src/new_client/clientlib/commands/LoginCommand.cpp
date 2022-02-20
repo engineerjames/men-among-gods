@@ -17,7 +17,7 @@ bool LoginCommand::send( sf::TcpSocket& socket ) const
 {
   std::array< std::uint8_t, 16 > buf {};
 
-  buf[ 0 ] = ClientMessages::getValue( ClientMessages::MessageTypes::NEWLOGIN );
+  buf[ 0 ] = ClientMessages::getValue( ClientMessages::MessageTypes::LOGIN );
 
   *( unsigned long* ) ( buf.data() + 1 ) = userNumber_;
   *( unsigned long* ) ( buf.data() + 5 ) = password1_;
