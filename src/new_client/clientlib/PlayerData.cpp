@@ -159,68 +159,6 @@ skilltab static_skilltab[SKILLTAB_SIZE]={
 	{49,   'Z',   "", "", {0,0,0,}}};
 // clang-format on
 
-int getOkeyRaceValue( MenAmongGods::Race race, MenAmongGods::Sex sex )
-{
-  if ( sex == MenAmongGods::Sex::Male )
-  {
-    switch ( race )
-    {
-    case MenAmongGods::Race::Templar:
-      return 3;
-    case MenAmongGods::Race::Mercenary:
-      return 2;
-    case MenAmongGods::Race::Harakim:
-      return 4;
-    case MenAmongGods::Race::Seyan:
-      return 13;
-    case MenAmongGods::Race::God:
-      return 543;
-    case MenAmongGods::Race::ArchTemplar:
-      return 544;
-    case MenAmongGods::Race::ArchHarakim:
-      return 545;
-    case MenAmongGods::Race::Sorceror:
-      return 546;
-    case MenAmongGods::Race::Warrior:
-      return 547;
-
-    default:
-      LOG_ERROR( "Invalid race and sex combination for male." );
-      break;
-    }
-  }
-  else // Female
-  {
-    switch ( race )
-    {
-    case MenAmongGods::Race::Templar:
-      return 77;
-    case MenAmongGods::Race::Mercenary:
-      return 76;
-    case MenAmongGods::Race::Harakim:
-      return 78;
-    case MenAmongGods::Race::Seyan:
-      return 79;
-    case MenAmongGods::Race::God:
-      return 548;
-    case MenAmongGods::Race::ArchTemplar:
-      return 549;
-    case MenAmongGods::Race::ArchHarakim:
-      return 550;
-    case MenAmongGods::Race::Sorceror:
-      return 551;
-    case MenAmongGods::Race::Warrior:
-      return 552;
-
-    default:
-      LOG_ERROR( "Invalid race and sex combination for female." );
-      break;
-    }
-  }
-
-  return -1;
-}
-
 } // namespace
 
 // NOLINTNEXTLINE
@@ -718,6 +656,7 @@ void PlayerData::loadFromJsonFile()
   playerFile >> root;
 
   std::strncpy( playerInfo_.cname, root[ "pdata" ][ "name" ].asCString(), 80 - 1 );
+  std::strncpy( playerInfo_.desc, root[ "pdata" ][ "desc" ].asCString(), 160 - 1 );
   std::strncpy( playerInfo_.ref, root[ "pdata" ][ "ref" ].asCString(), 80 - 1 );
   playerInfo_.show_names = root[ "pdata" ][ "show_names" ].asInt();
   playerInfo_.show_proz  = root[ "pdata" ][ "show_percent_health" ].asInt();
@@ -730,7 +669,7 @@ void PlayerData::loadFromJsonFile()
   okey_.usnr  = root[ "key" ][ "usnr" ].asUInt();
   okey_.pass1 = root[ "key" ][ "pass1" ].asUInt();
   okey_.pass2 = root[ "key" ][ "pass2" ].asUInt();
-  std::strncpy( okey_.name, root[ "key" ][ "name" ].asCString(), 40 - 1);
+  std::strncpy( okey_.name, root[ "key" ][ "name" ].asCString(), 40 - 1 );
   okey_.race = root[ "key" ][ "race" ].asInt();
 
   //
@@ -752,6 +691,7 @@ void PlayerData::saveToJsonFile() const
 
   root[ "pdata" ]                          = Json::objectValue;
   root[ "pdata" ][ "name" ]                = playerInfo_.cname;
+  root[ "pdata" ][ "desc" ]                = playerInfo_.desc;
   root[ "pdata" ][ "ref" ]                 = playerInfo_.ref;
   root[ "pdata" ][ "changed" ]             = playerInfo_.changed;
   root[ "pdata" ][ "show_names" ]          = playerInfo_.show_names;
