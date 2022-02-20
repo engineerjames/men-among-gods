@@ -76,6 +76,42 @@ bool LoginUi::hasSubmitted() const
 
 void LoginUi::update()
 {
+  static bool hasLoadedFile = false;
+  if ( ! hasSubmitted() && ! hasLoadedFile && playerData_.getOkeyUserNumber() != 0 )
+  {
+    hasLoadedFile = true;
+
+    // Load file details into UI elements.  This is super stupid but we can refactor later.
+    nameEntry_.setText( playerData_.getPlayerName() );
+    descriptionEntry_.setText( playerData_.getPlayerDescription() );
+
+    // Set race and sex
+    int raceAndSex     = playerData_.getRaceAndSex();
+    auto [ race, sex ] = getRaceAndSexFromInt( raceAndSex );
+
+    if ( sex == MenAmongGods::Sex::Female )
+    {
+      sexSelection_[ 1 ].setSelected( true );
+    }
+    else
+    {
+      sexSelection_[ 0 ].setSelected( true );
+    }
+
+    if ( race == MenAmongGods::Race::Harakim )
+    {
+      raceSelection_[ 0 ].setSelected( true );
+    }
+    else if ( race == MenAmongGods::Race::Templar )
+    {
+      raceSelection_[ 1 ].setSelected( true );
+    }
+    else if ( race == MenAmongGods::Race::Mercenary )
+    {
+      raceSelection_[ 2 ].setSelected( true );
+    }
+  }
+
   for ( auto& c : components_ )
   {
     c->update();
