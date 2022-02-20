@@ -15,15 +15,17 @@ public:
   virtual ~TextInputDisplay() = default;
 
   // Component interface
-  virtual void                                            update() override;
-  virtual void                                            onUserInput( const sf::Event& e ) override;
-  virtual void                                            finalize() override;
+  virtual void update() override;
+  virtual void onUserInput( const sf::Event& e ) override;
+  virtual void finalize() override;
 
   // Drawable interface
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
 
-  void                setPosition( sf::Vector2f newPosition );
+  void setPosition( sf::Vector2f newPosition );
+
   virtual std::string getText() const;
+  virtual void        setText( std::string text );
 
   void deselect();
 
