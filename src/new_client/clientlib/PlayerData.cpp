@@ -710,8 +710,6 @@ void PlayerData::loadFromJsonFile()
 {
   std::ifstream playerFile { MenAmongGods::getConfigPath() + "playerdata.moa" };
 
-  ioMutex_.lock();
-
   //
   // Player data
   //
@@ -740,16 +738,12 @@ void PlayerData::loadFromJsonFile()
   //
   unique1_ = root[ "unique1" ].asInt();
   unique2_ = root[ "unique2" ].asInt();
-
-  ioMutex_.unlock();
 }
 
 // save_options and save_unique combined
 void PlayerData::saveToJsonFile() const
 {
   std::ofstream playerFile( MenAmongGods::getConfigPath() + "playerdata.moa" );
-
-  ioMutex_.lock();
 
   //
   // Player data
@@ -789,8 +783,6 @@ void PlayerData::saveToJsonFile() const
   //
   root[ "unique1" ] = unique1_;
   root[ "unique2" ] = unique2_;
-
-  ioMutex_.unlock();
 
   playerFile << root.toStyledString();
 }
