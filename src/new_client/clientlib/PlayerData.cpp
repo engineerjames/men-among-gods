@@ -5,9 +5,11 @@
 #include <iostream>
 
 #include <boost/archive/text_iarchive.hpp>
+#include <json/json.h>
 
 #include "ConstantIdentifiers.h"
 #include "Logger.h"
+#include "ResourceLocations.h"
 
 namespace
 {
@@ -241,6 +243,8 @@ PlayerData::PlayerData()
     , shouldShowLook_( false )
     , shouldShowShop_( false )
     , shop_()
+    , unique1_()
+    , unique2_()
 {
   for ( unsigned int i = 0; i < SKILLTAB_SIZE; ++i )
   {
@@ -259,6 +263,26 @@ int PlayerData::getMode() const
 void PlayerData::setPlayerSprite( int spriteId )
 {
   playerSprite_ = spriteId;
+}
+
+void PlayerData::setUnique1( int newValue )
+{
+  unique1_ = newValue;
+}
+
+void PlayerData::setUnique2( int newValue )
+{
+  unique2_ = newValue;
+}
+
+int PlayerData::getUnique1() const
+{
+  return unique1_;
+}
+
+int PlayerData::getUnique2() const
+{
+  return unique2_;
 }
 
 int PlayerData::getPlayerSprite() const
@@ -675,6 +699,62 @@ void PlayerData::saveToFile() const
     playeroa << clientSidePlayerInfo_;
   }
   playerFile.close();
+}
+
+unsigned int PlayerData::getOkeyUserNumber() const
+{
+  return okey_.usnr;
+}
+
+// save_options and save_unique combined
+void PlayerData::saveToJsonFile() const
+{
+  std::ofstream playerFile( MenAmongGods::getConfigPath() + "playerdata.moa" );
+
+  ioMutex_.lock();
+
+  //
+  // Player data
+  //
+  Json::Value root {};
+
+  root[ "pdata" ]                          = Json::objectValue;
+  root[ "pdata" ][ "name" ]                = playerInfo_.cname;
+  root[ "pdata" ][ "ref" ]                 = playerInfo_.ref;
+  root[ "pdata" ][ "changed" ]             = playerInfo_.changed;
+  root[ "pdata" ][ "show_names" ]          = playerInfo_.show_names;
+  root[ "pdata" ][ "show_percent_health" ] = playerInfo_.show_proz;
+  root[ "pdata" ][ "xbutton" ]             = Json::arrayValue;
+
+  for ( unsigned int i = 0; i < 12; ++i )
+  {
+    Json::Value xbJson {};
+
+    xbJson[ "name" ]     = playerInfo_.xbutton[ i ].name;
+    xbJson[ "skill_id" ] = playerInfo_.xbutton[ i ].skill_nr;
+
+    root[ "pdata" ][ "xbutton" ].append( xbJson );
+  }
+
+  //
+  // key data
+  //
+  root[ "key" ]            = Json::objectValue;
+  root[ "key" ][ "usnr" ]  = okey_.usnr;
+  root[ "key" ][ "pass1" ] = okey_.pass1;
+  root[ "key" ][ "pass2" ] = okey_.pass2;
+  root[ "key" ][ "name" ]  = okey_.name;
+  root[ "key" ][ "race" ]  = okey_.race;
+
+  //
+  // unique values
+  //
+  root[ "unique1" ] = unique1_;
+  root[ "unique2" ] = unique2_;
+
+  ioMutex_.unlock();
+
+  playerFile << root.toStyledString();
 }
 
 void PlayerData::loadFromFile( const std::string& filePath )

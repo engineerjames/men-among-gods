@@ -358,7 +358,7 @@ void TickBuffer::sv_setchar_name3( const unsigned char* buf )
 
   playerData_.setOkeyName( playerData_.getClientSidePlayerInfo().name );
   playerData_.setRaceAndSex( *( unsigned long* ) ( buf + 11 ) );
-  // save_options();
+  playerData_.saveToJsonFile();
 }
 
 void TickBuffer::sv_setchar_mode( const unsigned char* buf )
@@ -902,16 +902,21 @@ void TickBuffer::sv_load( const unsigned char* )
   LOG_DEBUG( "TickBuffer::sv_load" );
 
   // int load <<--- EXTERN
-  // load = *( unsigned int * ) ( buf + 1 );
+  // load = *( unsigned int * ) ( buf + 1 ); // This is the server load; don't care about this
 }
 
-void TickBuffer::sv_unique( const unsigned char* )
+void TickBuffer::sv_unique( const unsigned char* buf )
 {
   LOG_DEBUG( "TickBuffer::sv_unique" );
 
-  // unique1 = *( unsigned int * ) ( buf + 1 );
-  // unique2 = *( unsigned int * ) ( buf + 5 );
-  // save_unique();
+  int unique1 = *( unsigned int* ) ( buf + 1 );
+  int unique2 = *( unsigned int* ) ( buf + 5 );
+
+  playerData_.setUnique1( unique1 );
+  playerData_.setUnique2( unique2 );
+
+  // save_unique
+  playerData_.saveToJsonFile();
 }
 
 int TickBuffer::sv_ignore( const unsigned char* buf )
