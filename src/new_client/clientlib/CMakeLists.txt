@@ -51,6 +51,7 @@ set( sources
     commands/GiveCommand.cpp
     commands/InventoryCommand.cpp
     commands/InventoryLookCommand.cpp
+    commands/LoginCommand.cpp
     commands/LookCommand.cpp
     commands/LookItemCommand.cpp
     commands/ModeCommand.cpp
@@ -79,6 +80,7 @@ set( headers
     commands/GiveCommand.h
     commands/InventoryCommand.h
     commands/InventoryLookCommand.h
+    commands/LoginCommand.h
     commands/LookCommand.h
     commands/LookItemCommand.h
     commands/ModeCommand.h

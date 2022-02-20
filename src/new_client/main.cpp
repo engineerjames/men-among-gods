@@ -8,6 +8,7 @@
 #include "FontCache.h"
 #include "GraphicsCache.h"
 #include "GraphicsIndex.h"
+#include "Logger.h"
 #include "LoginUi.h"
 #include "MainUi.h"
 #include "Map.h"
@@ -16,6 +17,8 @@
 #include "ResourceLocations.h"
 #include "TickBuffer.h"
 
+#include <filesystem>
+#include <iostream>
 #include <memory>
 #include <vector>
 
@@ -26,6 +29,21 @@ static const constexpr int LOGIN_FONT_SIZE = 16;
 
 int main()
 {
+  LOG_SET_LEVEL( MenAmongGods::ClientConfiguration::instance().loggingEnabled() );
+
+  MenAmongGods::Map map {};
+  PlayerData        playerData {};
+
+  if ( std::filesystem::exists( MenAmongGods::getConfigPath() + "playerdata.moa" ) )
+  {
+    std::cerr << "Loading data from playerdata.moa!" << std::endl;
+    playerData.loadFromJsonFile();
+  }
+  else
+  {
+    std::cerr << "No MOA file detected in ./config/playerdata.moa path.  Using defaults" << std::endl;
+  }
+
   sf::RenderWindow window( sf::VideoMode( MODEX, MODEY ), "Men Among Gods - New Client" );
   window.setFramerateLimit( MenAmongGods::ClientConfiguration::instance().frameLimit() );
   window.requestFocus();
@@ -41,10 +59,8 @@ int main()
   gfxCache->loadSprites( path, GraphicsCache::MAX_SPRITES );
   idxCache->load();
 
-  MenAmongGods::Map map {};
-  PlayerData        playerData {};
-  auto              tickBufferPtr = std::make_shared< TickBuffer >( playerData, map );
-  auto              client        = std::make_shared< ClientNetworkActivity >( *tickBufferPtr, playerData, MHOST, MHOST_PORT );
+  auto tickBufferPtr = std::make_shared< TickBuffer >( playerData, map );
+  auto client        = std::make_shared< ClientNetworkActivity >( *tickBufferPtr, playerData, MHOST, MHOST_PORT );
 
   auto mainUiPtr  = std::make_shared< MenAmongGods::MainUi >( window, map, playerData, *gfxCache, *idxCache, *fontCache );
   auto loginUiPtr = std::make_shared< MenAmongGods::LoginUi >( playerData, window, *fontCache, LOGIN_FONT_SIZE );

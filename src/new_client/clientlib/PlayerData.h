@@ -29,7 +29,7 @@ public:
     }
   };
 
-  typedef std::tuple< long unsigned int, long unsigned int > OkeyPasswordType;
+  typedef std::tuple< unsigned int, unsigned int > OkeyPasswordType;
 
   bool         hasPlayerDataChanged() const;
   const char*  getPlayerName() const;
@@ -71,21 +71,30 @@ public:
   void saveToFile() const;
   void loadFromFile( const std::string& filePath );
 
-  void setName( std::string newName );
-  void setPassword( std::string password );
-  void setPassword( long unsigned int pass1, long unsigned int pass2 );
-  void setDescription( std::string description );
-  void setRaceAndSex( std::string race, std::string sex );
-  void setRaceAndSex( long unsigned int race );
-  void setUserNumber( long unsigned int usnr );
-  void setClientShouldShowNames( bool shouldShowNames );
-  void setClientShouldShowPercentHealth( bool shouldShowPercentHealth );
-  void setClientShouldHideWalls( bool shouldHideWalls );
-  void setOkeyName( char ( &pdataName )[ 40 ] );
-  int  getItem( int index ) const;
-  int  getCarriedItem() const;
-  void setPlayerSprite( int spriteId );
-  int  getPlayerSprite() const;
+  void saveToJsonFile() const;
+  void loadFromJsonFile();
+
+  void         setName( std::string newName );
+  void         setPassword( std::string password );
+  void         setPassword( long unsigned int pass1, long unsigned int pass2 );
+  void         setDescription( std::string description );
+  void         setRaceAndSex( std::string race, std::string sex );
+  void         setRaceAndSex( long unsigned int race );
+  void         setUserNumber( long unsigned int usnr );
+  void         setClientShouldShowNames( bool shouldShowNames );
+  void         setClientShouldShowPercentHealth( bool shouldShowPercentHealth );
+  void         setClientShouldHideWalls( bool shouldHideWalls );
+  void         setOkeyName( char ( &pdataName )[ 40 ] );
+  unsigned int getOkeyUserNumber() const;
+  int          getItem( int index ) const;
+  int          getCarriedItem() const;
+  void         setPlayerSprite( int spriteId );
+  int          getPlayerSprite() const;
+
+  void setUnique1( int newValue );
+  void setUnique2( int newValue );
+  int  getUnique1() const;
+  int  getUnique2() const;
 
   void setSelectedCharacter( int characterId );
   int  getSelectedCharacter() const;
@@ -110,7 +119,7 @@ private:
   key                                      okey_;
   skilltab*                                skillsList_;
   look                                     look_;
-  std::mutex                               ioMutex_;
+  mutable std::mutex                       ioMutex_;
   std::string                              password_; // TODO: This is super insecure to store it like this long-term
   std::vector< LogMessage >                messages_;
   static std::map< unsigned short, looks > lookMap_;
@@ -120,6 +129,9 @@ private:
   bool                                     shouldShowLook_;
   bool                                     shouldShowShop_;
   look                                     shop_;
+
+  int unique1_;
+  int unique2_;
 };
 
 #endif

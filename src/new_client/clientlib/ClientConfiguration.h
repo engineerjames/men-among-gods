@@ -12,15 +12,17 @@ class ClientConfiguration
 public:
   static ClientConfiguration instance();
 
-  int         networkThreadDelay();
-  int         frameLimit();
+  int         networkThreadDelay() const;
+  int         frameLimit() const;
+  bool        loggingEnabled() const;
   Json::Value toJson() const;
 
 private:
   ClientConfiguration();
 
-  int networkThreadDelay_;
-  int frameLimit_;
+  int  networkThreadDelay_;
+  int  frameLimit_;
+  bool loggingEnabled_;
 };
 } // namespace MenAmongGods
 

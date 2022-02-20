@@ -1,4 +1,5 @@
 {
     "frameLimit" : 10,
-    "networkThreadDelay" : 50
+    "networkThreadDelay" : 50,
+    "loggingEnabled" : true
 }

@@ -14,6 +14,7 @@
 // Commands
 #include "AutoLookCommand.h"
 #include "ChallengeCommand.h"
+#include "LoginCommand.h"
 #include "NewLoginCommand.h"
 #include "PasswordCommand.h"
 #include "SayCommand.h"
@@ -87,16 +88,20 @@ bool ClientConnection::login( PlayerData& playerData )
   MenAmongGods::PasswordCommand passwordCommand { playerData.getPassword() };
   passwordCommand.send( clientSocket_ );
 
-  // Assume we're creating a new character each time.
-  // Normally you'd need to send the 'key' structure (username, pass1, pass2,
-  // etc. via:
-  // buf[0] = CL_LOGIN;
-  // *(unsigned long *)(buf + 1) = okey.usnr;
-  // *(unsigned long *)(buf + 5) = okey.pass1;
-  // *(unsigned long *)(buf + 9) = okey.pass2;
-  LOG_DEBUG( "Sending new login request..." );
-  MenAmongGods::NewLoginCommand newLoginCommand {};
-  newLoginCommand.send( clientSocket_ );
+  // Player is already known to the server?
+  if ( playerData.getOkeyUserNumber() != 0 )
+  {
+    LOG_DEBUG( "Sending known player login request..." );
+    auto [ pass1, pass2 ] = playerData.getPasswordOkeyValues();
+    MenAmongGods::LoginCommand loginCommand { playerData.getOkeyUserNumber(), pass1, pass2 };
+    loginCommand.send( clientSocket_ ); // usnr // pass1 //pass2
+  }
+  else
+  {
+    LOG_DEBUG( "Sending new player login request..." );
+    MenAmongGods::NewLoginCommand newLoginCommand {};
+    newLoginCommand.send( clientSocket_ );
+  }
 
   LOG_DEBUG( "Waiting for receipt of information..." );
   ProcessStatus procStatus = ProcessStatus::CONTINUE;
@@ -168,6 +173,8 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( PlayerDa
 
     LOG_DEBUG( "Received NEWPLAYER message from server: [usnr, pass1, pass2]=[" << playerData.getUserNumber() << ", " << storedPass1 << ", "
                                                                                 << storedPass2 << "]." );
+
+    playerData.saveToJsonFile();
 
     return ProcessStatus::DONE;
   }

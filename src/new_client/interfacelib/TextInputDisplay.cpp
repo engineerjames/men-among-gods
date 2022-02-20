@@ -70,6 +70,12 @@ std::string TextInputDisplay::getText() const
   return backingText_;
 }
 
+void TextInputDisplay::setText( std::string text )
+{
+  backingText_ = text;
+  text_.setString( backingText_ + "_" );
+}
+
 void TextInputDisplay::setPosition( sf::Vector2f newPosition )
 {
   boundingBox_.setPosition( newPosition );

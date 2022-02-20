@@ -39,7 +39,8 @@ public:
   {
     DEBUG,
     WARNING,
-    ERROR
+    ERROR,
+    OFF
   };
 
   struct LogEntry
@@ -86,6 +87,9 @@ public:
         break;
       case Level::ERROR:
         levelString = "ERROR";
+        break;
+      case Level::OFF:
+        levelString = "OFF";
         break;
       default:
         levelString = "UNKNOWN";
@@ -142,6 +146,11 @@ private:
 } // namespace MenAmongGods::detail
 
 #ifdef ENABLE_LOGGING
+
+// Currently set only by on/off value -- TODO: fix this
+#define LOG_SET_LEVEL( level )                                                                                                             \
+  MenAmongGods::detail::Logger::instance().setLogLevel( level ? MenAmongGods::detail::Logger::Level::DEBUG                                 \
+                                                              : MenAmongGods::detail::Logger::Level::OFF )
 
 // TODO: Reduce duplication here.
 #define LOG_DEBUG( msg )                                                                                                                   \
