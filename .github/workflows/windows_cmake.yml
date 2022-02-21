@@ -42,6 +42,9 @@ jobs:
       - name: List $RUNNER_WORKSPACE before build
         run: find $RUNNER_WORKSPACE
         shell: bash
+        
+      - name: Setup VS Dev Environment
+        uses: seanmiddleditch/gha-setup-vsdevenv@v4
 
       - name: Restore artifacts, or run vcpkg, build (and cache artifacts as post step)
         uses: lukka/run-vcpkg@v10.1
