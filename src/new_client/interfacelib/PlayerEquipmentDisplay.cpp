@@ -64,12 +64,12 @@ void PlayerEquipmentDisplay::onUserInput( const sf::Event& e )
 
     if ( MenAmongGods::equipmentBoundingBox.contains( mousePosition ) )
     {
-      int itemRow = std::floor( ( mousePosition.y - MenAmongGods::equipmentBoundingBoxPosition.y ) /
-                                ( MenAmongGods::equipmentBoundingBox.height / 6.0f ) );
+      int itemRow = static_cast< int >( std::floor( ( mousePosition.y - MenAmongGods::equipmentBoundingBoxPosition.y ) /
+                                                    ( MenAmongGods::equipmentBoundingBox.height / 6.0f ) ) );
 
       // We'll do a similar strategy for the columns, except there are only two columns in this case
-      int itemColumn = std::floor( ( mousePosition.x - MenAmongGods::equipmentBoundingBoxPosition.x ) /
-                                   ( MenAmongGods::equipmentBoundingBox.width / 2.0f ) );
+      int itemColumn = static_cast< int >( std::floor( ( mousePosition.x - MenAmongGods::equipmentBoundingBoxPosition.x ) /
+                                                       ( MenAmongGods::equipmentBoundingBox.width / 2.0f ) ) );
 
       // TODO: The last parameter should be the selected character--though
       // not sure why that would matter for equipping things...
@@ -130,12 +130,12 @@ void PlayerEquipmentDisplay::onUserInput( const sf::Event& e )
 
     if ( MenAmongGods::equipmentBoundingBox.contains( mousePosition ) )
     {
-      int itemRow = std::floor( ( mousePosition.y - MenAmongGods::equipmentBoundingBoxPosition.y ) /
-                                ( MenAmongGods::equipmentBoundingBox.height / 6.0f ) );
+      int itemRow = static_cast< int >( std::floor( ( mousePosition.y - MenAmongGods::equipmentBoundingBoxPosition.y ) /
+                                                    ( MenAmongGods::equipmentBoundingBox.height / 6.0f ) ) );
 
       // We'll do a similar strategy for the columns, except there are only two columns in this case
-      int itemColumn = std::floor( ( mousePosition.x - MenAmongGods::equipmentBoundingBoxPosition.x ) /
-                                   ( MenAmongGods::equipmentBoundingBox.width / 2.0f ) );
+      int itemColumn = static_cast< int >( std::floor( ( mousePosition.x - MenAmongGods::equipmentBoundingBoxPosition.x ) /
+                                                       ( MenAmongGods::equipmentBoundingBox.width / 2.0f ) ) );
 
       // TODO: The last parameter should be the selected character--though
       // not sure why that would matter for equipping things...

@@ -110,12 +110,12 @@ void PlayerInventoryDisplay::onUserInput( const sf::Event& e )
       //    how many times our mouse position offset (in Y) would fit into it.  We use the floor
       //    of the value, since 3.5, 3.6, etc., we still want to associate with row 3 (otherwise, the
       //    user clicking over halfway through box N would end up activating item in N + 1).
-      int itemRow = std::floor( ( mousePosition.y - MenAmongGods::inventoryBoundingBoxPosition.y ) /
-                                ( MenAmongGods::inventoryBoundingBox.height / 5.0f ) );
+      int itemRow = static_cast< int >( std::floor( ( mousePosition.y - MenAmongGods::inventoryBoundingBoxPosition.y ) /
+                                                    ( MenAmongGods::inventoryBoundingBox.height / 5.0f ) ) );
 
       // We'll do a similar strategy for the columns, except there are only two columns in this case
-      int itemColumn = std::floor( ( mousePosition.x - MenAmongGods::inventoryBoundingBoxPosition.x ) /
-                                   ( MenAmongGods::inventoryBoundingBox.width / 2.0f ) );
+      int itemColumn = static_cast< int >( std::floor( ( mousePosition.x - MenAmongGods::inventoryBoundingBoxPosition.x ) /
+                                                       ( MenAmongGods::inventoryBoundingBox.width / 2.0f ) ) );
 
       int itemPosition = ( 2 * scrollPosition_ ) + ( 2 * itemRow ) + itemColumn;
 
@@ -137,12 +137,12 @@ void PlayerInventoryDisplay::onUserInput( const sf::Event& e )
     sf::Vector2f mousePosition = MenAmongGods::getNormalizedMousePosition( window_ );
 
     // TODO: Clean up this duplicate code
-    int itemRow = std::floor( ( mousePosition.y - MenAmongGods::inventoryBoundingBoxPosition.y ) /
-                              ( MenAmongGods::inventoryBoundingBox.height / 5.0f ) );
+    int itemRow = static_cast< int >( std::floor( ( mousePosition.y - MenAmongGods::inventoryBoundingBoxPosition.y ) /
+                                                  ( MenAmongGods::inventoryBoundingBox.height / 5.0f ) ) );
 
     // We'll do a similar strategy for the columns, except there are only two columns in this case
-    int itemColumn = std::floor( ( mousePosition.x - MenAmongGods::inventoryBoundingBoxPosition.x ) /
-                                 ( MenAmongGods::inventoryBoundingBox.width / 2.0f ) );
+    int itemColumn = static_cast< int >( std::floor( ( mousePosition.x - MenAmongGods::inventoryBoundingBoxPosition.x ) /
+                                                     ( MenAmongGods::inventoryBoundingBox.width / 2.0f ) ) );
 
     int itemPosition = ( 2 * scrollPosition_ ) + ( 2 * itemRow ) + itemColumn;
 

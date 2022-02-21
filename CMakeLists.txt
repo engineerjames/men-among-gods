@@ -5,18 +5,22 @@ project(men-among-gods C CXX)
 option(ENABLE_CLANG_TIDY "Enable static analysis via clang-tidy" ON)
 option(ENABLE_LOGGING "Enable logging output from new client application" ON)
 
+if (MSVC)
+  set(ENABLE_CLANG_TIDY OFF)
+endif()
+
 if (ENABLE_CLANG_TIDY)
   message(STATUS "Enabling clang-tidy support")
 endif()
 
 if (ENABLE_LOGGING)
   message(STATUS "Enabling logging support")
-  set(PROJECT_CXX_DEFINITIONS -DENABLE_LOGGING=1)
+  list(APPEND PROJECT_CXX_DEFINITIONS ENABLE_LOGGING=1)
 endif()
 
 enable_testing()
 
-set(Boost_USE_STATIC_LIBS ON)
+set(Boost_USE_STATIC_LIBS OFF)
 set(BUILD_SHARED_LIBS OFF)
 find_package(Boost COMPONENTS unit_test_framework serialization REQUIRED)
 
@@ -38,10 +42,10 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ResourceLocations.h.in  ${CMAKE_BINAR
 include_directories(${CMAKE_BINARY_DIR}/res)
 
 if (MSVC)
-  set(PROJECT_CXX_FLAGS /W3 /WX)
-  set(PROJECT_CXX_DEFINITIONS -D_CRT_SECURE_NO_WARNINGS)
+  list( APPEND PROJECT_CXX_FLAGS /W3 /WX)
+  list( APPEND PROJECT_CXX_DEFINITIONS _CRT_SECURE_NO_WARNINGS _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS)
 else()
-  set( PROJECT_CXX_FLAGS -g3 -Wall -Wextra -Wshadow -Werror -Wpedantic -Wmissing-include-dirs -Wswitch-default -Wswitch-enum -Wfloat-equal)
+  list( APPEND PROJECT_CXX_FLAGS -g3 -Wall -Wextra -Wshadow -Werror -Wpedantic -Wmissing-include-dirs -Wswitch-default -Wswitch-enum -Wfloat-equal)
 endif()
 
 add_subdirectory(src/new_client)

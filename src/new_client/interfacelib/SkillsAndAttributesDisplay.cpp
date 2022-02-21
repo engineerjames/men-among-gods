@@ -468,7 +468,7 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
     if ( MenAmongGods::plusAreaRectangle.contains( mousePosition ) )
     {
       // Find out which row was clicked -- each row
-      int row         = ( mousePosition.y / 14.0f );
+      int row         = static_cast< int >( ( mousePosition.y / 14.0f ) );
       row             = std::max( 0, row ); // 0 - 4 attributes, 5-7 hp/end/mana, the rest are skills
       cplayer& player = playerData_.getClientSidePlayerInfo();
 
@@ -518,7 +518,7 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
     else if ( MenAmongGods::minusAreaRectangle.contains( mousePosition ) )
     {
       // Find out which row was clicked -- each row
-      int row         = ( mousePosition.y / 14.0f );
+      int row         = static_cast< int >( mousePosition.y / 14.0f );
       row             = std::max( 0, row );
       cplayer& player = playerData_.getClientSidePlayerInfo();
 

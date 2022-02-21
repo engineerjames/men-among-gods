@@ -1,5 +1,28 @@
 find_package(SFML 2.5 COMPONENTS audio network graphics window system REQUIRED)
 
+if (MSVC)
+  find_package(libzip CONFIG REQUIRED)
+  set(libzip_library libzip::zip)
+  
+  find_package(jsoncpp CONFIG REQUIRED)
+  set(jsoncpp_library JsonCpp::JsonCpp)
+  set(jsoncpp_includes ) # Empty on purpose
+
+  find_package(ZLIB REQUIRED)
+  set(zlib_library ZLIB::ZLIB)
+else()
+  set(zlib_library z)
+  set(libzip_library zip)
+    # Find JsonCPP
+    find_library(jsoncpp jsoncpp)
+
+    if (jsoncpp)
+      message(STATUS "JsonCpp found: ${jsoncpp}")
+      set(jsoncpp_includes /usr/include/jsoncpp)
+      set(jsoncpp_library ${jsoncpp})
+    endif()
+endif()
+
 add_subdirectory(clientlib)
 
 set(target MenAmongGods)

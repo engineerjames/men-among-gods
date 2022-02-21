@@ -619,7 +619,7 @@ void PlayerData::setOkeyName( char ( &pdataName )[ 40 ] )
 
 PlayerData::OkeyPasswordType PlayerData::getPasswordOkeyValues() const
 {
-  return std::make_tuple< long unsigned int, long unsigned int >( okey_.pass1, okey_.pass2 );
+  return std::make_tuple( okey_.pass1, okey_.pass2 );
 }
 
 void PlayerData::setUserNumber( long unsigned int usnr )

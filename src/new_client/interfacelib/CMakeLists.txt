@@ -57,9 +57,19 @@ set( headers
     UtilityFunctions.h
 )
 
+set( test_application_libs
+    sfml-graphics 
+    Boost::serialization 
+    ${zlib_library}
+    ${libzip_library}
+    client 
+    commands 
+    logging
+)
+
 add_library(${target} ${sources} ${headers})
 target_include_directories(${target} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(${target} PRIVATE sfml-graphics Boost::serialization z zip pthread client commands logging)
+target_link_libraries(${target} PRIVATE ${test_application_libs})
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS})
 target_compile_definitions(${target} PUBLIC ${PROJECT_CXX_DEFINITIONS})
@@ -67,7 +77,7 @@ target_compile_definitions(${target} PUBLIC ${PROJECT_CXX_DEFINITIONS})
 # Test Application For GUI
 set(target ui-gui-demo)
 add_executable(${target} test_applications/ui-gui-demo.cpp)
-target_link_libraries(${target} PRIVATE sfml-graphics MenAmongGodsGraphics Boost::serialization client commands logging)
+target_link_libraries(${target} PRIVATE MenAmongGodsGraphics ${test_application_libs})
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
 target_compile_definitions(${target} PUBLIC ${PROJECT_CXX_DEFINITIONS})
@@ -75,7 +85,7 @@ target_compile_definitions(${target} PUBLIC ${PROJECT_CXX_DEFINITIONS})
 # Test Application For Loading Legacy Sprites
 set(target gfx-load-test)
 add_executable(${target} test_applications/gfx-load-test.cpp)
-target_link_libraries(${target} PRIVATE sfml-graphics MenAmongGodsGraphics client commands logging)
+target_link_libraries(${target} PRIVATE MenAmongGodsGraphics ${test_application_libs})
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
 target_compile_definitions(${target} PUBLIC ${PROJECT_CXX_DEFINITIONS})
@@ -83,7 +93,7 @@ target_compile_definitions(${target} PUBLIC ${PROJECT_CXX_DEFINITIONS})
 # Test Application for reading the graphics-related .idx file
 set(target gfx-idx-load)
 add_executable(${target} test_applications/gfx-idx-load.cpp)
-target_link_libraries(${target} PRIVATE MenAmongGodsGraphics client commands logging)
+target_link_libraries(${target} PRIVATE MenAmongGodsGraphics ${test_application_libs})
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
 target_compile_definitions(${target} PUBLIC ${PROJECT_CXX_DEFINITIONS})
@@ -91,7 +101,7 @@ target_compile_definitions(${target} PUBLIC ${PROJECT_CXX_DEFINITIONS})
 # Test Application for text-related demos only
 set(target gfx-text-test)
 add_executable(${target} test_applications/gfx-text-test.cpp)
-target_link_libraries(${target} PRIVATE MenAmongGodsGraphics client commands logging)
+target_link_libraries(${target} PRIVATE MenAmongGodsGraphics ${test_application_libs})
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
 target_compile_definitions(${target} PUBLIC ${PROJECT_CXX_DEFINITIONS})
@@ -99,7 +109,7 @@ target_compile_definitions(${target} PUBLIC ${PROJECT_CXX_DEFINITIONS})
 # Test Application for login-related ui demos only
 set(target gfx-login-ui)
 add_executable(${target} test_applications/gfx-login-ui.cpp)
-target_link_libraries(${target} PRIVATE MenAmongGodsGraphics client commands logging)
+target_link_libraries(${target} PRIVATE MenAmongGodsGraphics ${test_application_libs})
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
 target_compile_definitions(${target} PUBLIC ${PROJECT_CXX_DEFINITIONS})
@@ -107,7 +117,7 @@ target_compile_definitions(${target} PUBLIC ${PROJECT_CXX_DEFINITIONS})
 # Test Application for login-related ui demos only
 set(target gfx-progress-bar)
 add_executable(${target} test_applications/gfx-progress-bar.cpp)
-target_link_libraries(${target} PRIVATE MenAmongGodsGraphics client commands logging)
+target_link_libraries(${target} PRIVATE MenAmongGodsGraphics ${test_application_libs})
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
 target_compile_definitions(${target} PUBLIC ${PROJECT_CXX_DEFINITIONS})

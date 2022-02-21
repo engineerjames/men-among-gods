@@ -14,6 +14,10 @@
 
 #include <json/json.h>
 
+#if WIN32
+#define __PRETTY_FUNCTION__ __FUNCSIG__
+#endif
+
 namespace MenAmongGods::detail
 {
 
@@ -203,12 +207,13 @@ private:
 
 #else // No-ops
 
+#define LOG_SET_LEVEL( level )
 #define LOG_DEBUG( msg )
 #define LOG_WARNING( msg )
 #define LOG_ERROR( msg )
-#define LOG_DEBUG_OBJ( msg )
-#define LOG_WARNING_OBJ( msg )
-#define LOG_ERROR_OBJ( msg )
+#define LOG_DEBUG_OBJ( obj, msg )
+#define LOG_WARNING_OBJ( obj, msg )
+#define LOG_ERROR_OBJ( obj, msg )
 
 #endif
 
