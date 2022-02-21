@@ -1,15 +1,23 @@
-# Copyright (c) 2021 Luca Cappa
+# Copyright (c) 2019-2020-2021-2022 Luca Cappa
 # Released under the term specified in file LICENSE.txt
 # SPDX short identifier: MIT
-
-# A "pure" GitHub workflow using CMake, Ninja and vcpkg to build a C/C++ codebase.
-# It leverages both CMakePresets.json and vcpkg.json to have consistent build locallly
-# and on continuous integration servers (aka build agents).
-# It is called "pure workflow" because it is an example which minimizes the usage of
-# custom GitHub actions, but leverages directly the tools that could be easily run on
-# your development machines (i.e. CMake, vcpkg, Ninja) to ensure a perfectly identical
-# and reproducible build locally (on your development machine) and remotely (on build agents).
-name: hosted-pure-workflow
+#
+# The peculiarity of this workflow is that runs `vcpkg install` at `run-vcpkg`, rather than with `run-camake.
+# Also, it does not assume that vcpkg is a submodule of this repository.
+#
+# This workflow does the following:
+# - Download and setup vcpkg (which is stored NOT in a Git submodule), then run `vcpkg install` to install the
+#   packages described in vcpkg.json manifest file.
+# - Note: at this point, all the vcpkg dependencies specified in vcpkg.json are installed, and it is possible to
+#   run anything that is needed to build the C++ application.
+#
+# - _Warning:_ in this sample, CMake is going to be used to build the application, but anything can be used. This
+#   means that vcpkg will be run again and it will quickly realize that all dependencies are already installed.
+#   In short: *it is not needed to run vcpkg* in the step before if you build with CMake, since CMake will run it
+#   for you already! Look to (hosted-ninja-vcpkg_submod.yml)[./hosted-ninja-vcpkg_submod.yml] sample.
+#
+# - Finally, it runs CMake with CMakePreset.json and vcpkg's toolchain file to build the C++ sources with Ninja.
+name: hosted-ninja-vcpkg-install-autocache
 on: [push, workflow_dispatch]
 
 jobs:
@@ -19,32 +27,44 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         include:
           - os: windows-latest
-            triplet: x64-windows
+            vcpkgCommitId: '5568f110b509a9fd90711978a7cb76bae75bb092'
           - os: ubuntu-latest
-            triplet: x64-linux
-    env:
-      # Indicates the location of the vcpkg as a Git submodule of the project repository.
-      VCPKG_ROOT: ${{ github.workspace }}/vcpkg
-      # Tells vcpkg where binary packages are stored.
-      VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}/vcpkg/bincache
-
+            vcpkgCommitId: '5568f110b509a9fd90711978a7cb76bae75bb092'
     steps:
       - uses: actions/checkout@v2
         with:
           submodules: true
-      - name: "Create directory '${{ env.VCPKG_DEFAULT_BINARY_CACHE }}'"
-        run: mkdir -p $VCPKG_DEFAULT_BINARY_CACHE
+
+      - uses: lukka/get-cmake@latest
+      - name: List $RUNNER_WORKSPACE before build
+        run: find $RUNNER_WORKSPACE
         shell: bash
 
-      # Setup the build machine with the most recent versions of CMake and Ninja. Both are cached if not already: on subsequent runs both will be quickly restored from GitHub cache service.
-      - uses: lukka/get-cmake@latest
-      
-      - name: run-vcpkg
+      - name: Restore artifacts, or run vcpkg, build (and cache artifacts as post step)
         uses: lukka/run-vcpkg@v10.1
+        id: runvcpkg
         with:
-          vcpkgArguments: 'boost libzip zlib jsoncpp sfml'
-          vcpkgDirectory: ${{ github.workspace }}/vcpkg
-          vcpkgGitCommitId: ${{ github.sha }}
+          vcpkgDirectory: '${{ runner.workspace }}/b/vcpkg'
+          vcpkgGitCommitId: '${{ matrix.vcpkgCommitId }}'
+          # Run vcpkg with the command specified by the `runVcpkgFormatString` input.
+          runVcpkgInstall: true
+          vcpkgJsonGlob: '**/vcpkg.json'
+          appendedCacheKey: vcpkginstall
+
+      - name: Prints output of run-vcpkg's action.
+        run: echo "root='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_ROOT_OUT }}', triplet='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_DEFAULT_TRIPLET_OUT }}' "
+
+      - name: Run CMake with Ninja
+        uses: lukka/run-cmake@v10
+        with:
+          cmakeListsTxtPath: '${{ github.workspace }}/cmakepresets/CMakeLists.txt'
+          configurePreset: 'ninja-multi-vcpkg'
+          buildPreset: 'ninja-multi-vcpkg'
+
+      - name: List $RUNNER_WORKSPACE after build
+        run: find $RUNNER_WORKSPACE
+        shell: bash
+
