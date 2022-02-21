@@ -42,7 +42,7 @@ template < typename T > std::string addThousandsSeparator( T value )
     else // more than 1,000
     {
       std::string newString = std::to_string( value );
-      for ( unsigned int i = newString.length() - 1; i > 0; --i )
+      for ( std::size_t i = newString.length() - 1; i > 0; --i )
       {
         if ( i % 3 == 0 )
         {

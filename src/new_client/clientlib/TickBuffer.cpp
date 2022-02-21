@@ -35,7 +35,7 @@ std::size_t TickBuffer::getAvailableBytes() noexcept
 bool TickBuffer::receive( const std::array< std::uint8_t, 1024 >* buffer, std::size_t bytesToReceive )
 {
   std::memcpy( getBufferStart(), buffer->data(), bytesToReceive );
-  tickSize_ += bytesToReceive;
+  tickSize_ += static_cast< unsigned int >( bytesToReceive );
 
   if ( tickSize_ >= tickStart_ + 2 )
   {

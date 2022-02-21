@@ -234,10 +234,7 @@ void MapDisplay::onUserInput( const sf::Event& e )
 
 sf::Vector2i MapDisplay::dd_gputtext( int xpos, int ypos, std::string text, int xoff, int yoff )
 {
-  int rx {};
-  int ry {};
-
-  rx = ( xpos / 2 ) + ( ypos / 2 ) + 32 - ( ( text.length() * 5 ) / 2 ) + XPOS;
+  int rx = static_cast< int >( ( xpos / 2 ) + ( ypos / 2 ) + 32 - ( ( text.length() * 5 ) / 2 ) + XPOS );
   if ( xpos < 0 && ( xpos & 1 ) )
   {
     rx--;
@@ -246,7 +243,7 @@ sf::Vector2i MapDisplay::dd_gputtext( int xpos, int ypos, std::string text, int 
   {
     rx--;
   }
-  ry = ( xpos / 4 ) - ( ypos / 4 ) + YPOS - 64;
+  int ry = static_cast< int >( ( xpos / 4 ) - ( ypos / 4 ) + YPOS - 64 );
   if ( xpos < 0 && ( xpos & 3 ) )
   {
     ry--;

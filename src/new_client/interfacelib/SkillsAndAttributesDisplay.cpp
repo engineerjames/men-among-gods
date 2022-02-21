@@ -147,6 +147,7 @@ SkillsAndAttributesDisplay::SkillRow::SkillRow()
     , expRequired_()
     , plus_()
     , minus_()
+    , skillsIndex_( 0 )
 {
   name_.setOutlineColor( sf::Color::Black );
   displayValue_.setOutlineColor( sf::Color::Black );
@@ -317,7 +318,7 @@ void SkillsAndAttributesDisplay::update()
   // Attributes
   for ( unsigned int i = 0; i < MAX_ATTRIBUTES; ++i )
   {
-    int nTimesRaised = raiseMap_[ attributes_[ i ].name_.getString() ].size();
+    int nTimesRaised = static_cast< int >( raiseMap_[ attributes_[ i ].name_.getString() ].size() );
 
     attributes_[ i ].displayValue_.setString( std::to_string( player.attrib[ i ][ 5 ] + nTimesRaised ) );
 
@@ -366,7 +367,7 @@ void SkillsAndAttributesDisplay::update()
     const sf::Vector2f delta { 0.0f, j * 14.0f };
     j++;
 
-    int nTimesRaised = raiseMap_[ skills_[ i ].name_.getString() ].size();
+    int nTimesRaised = static_cast< int >( raiseMap_[ skills_[ i ].name_.getString() ].size() );
 
     skills_[ i ].displayValue_.setString( std::to_string( player.skill[ i ][ 5 ] + nTimesRaised ) );
     skills_[ i ].expRequired_.setString( std::to_string( skill_needed( i, player.skill[ i ][ 0 ] + nTimesRaised, player ) ) );
@@ -475,7 +476,7 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
       if ( row >= 0 && row <= 4 ) // Attributes
       {
         std::cerr << "Raising attribute..." << std::endl;
-        int nTimesRaised   = raiseMap_[ attributes_[ row ].name_.getString() ].size();
+        int nTimesRaised   = static_cast< int >( raiseMap_[ attributes_[ row ].name_.getString() ].size() );
         int pointsRequired = attrib_needed( row, player.attrib[ row ][ 0 ] + nTimesRaised, player );
         std::cerr << "Exp required to raise: " << pointsRequired << " out of " << player.points << std::endl;
         if ( player.points >= pointsRequired )
@@ -500,7 +501,7 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
         }
 
         int m            = skillsToDisplay_[ row - 8 ]->skillsIndex_;
-        int nTimesRaised = raiseMap_[ skillsToDisplay_[ row - 8 ]->name_.getString() ].size();
+        int nTimesRaised = static_cast< int >( raiseMap_[ skillsToDisplay_[ row - 8 ]->name_.getString() ].size() );
 
         int pointsRequired = skill_needed( m, player.skill[ m ][ 0 ] + nTimesRaised, player );
         std::cerr << "Need " << pointsRequired << " points to raise skill" << std::endl;
@@ -609,7 +610,8 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
         }
 
         LOG_DEBUG( "Attempting to update " << skillOrAttributeName << " " << raiseStack.size() << " times." );
-        commands_.push_back( std::make_shared< MenAmongGods::StatCommand >( skillNumber, raiseStack.size() ) );
+        commands_.push_back( std::make_shared< MenAmongGods::StatCommand >( static_cast< std::uint16_t >( skillNumber ),
+                                                                            static_cast< std::uint32_t >( raiseStack.size() ) ) );
 
         // Optimistically assume the commands went through
         while ( ! raiseStack.empty() )
