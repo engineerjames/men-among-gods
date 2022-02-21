@@ -19,7 +19,7 @@ GraphicsCache::GraphicsCache()
 }
 
 // TODO: Fix this up later
-#ifndef WIN32
+#ifdef WIN32
 void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int howMany )
 {
   struct zip*      za  = nullptr;
