@@ -75,8 +75,11 @@ void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int
       else
       {
         // Write file to disk
-        std::ofstream outFile { gfxFile.filename(), std::ios::binary };
-        outFile.write( reinterpret_cast< const char* >( buf ), sb.size );
+        if ( ! std::filesystem::exists( gfxFile.filename() ) )
+        {
+          std::ofstream outFile { gfxFile.filename(), std::ios::binary };
+          outFile.write( reinterpret_cast< const char* >( buf ), sb.size );
+        }
       }
 
       if ( ! newImage.loadFromFile( gfxFile.filename().string() ) )
