@@ -97,8 +97,8 @@ int MapDisplay::getMapIndexFromMousePosition( const sf::Vector2f& mousePosition,
 {
   sf::Vector2f shiftedMousePosition = sf::Vector2f { mousePosition.x + ( 176 - 16 ), mousePosition.y + 8 };
 
-  int mx = 2 * shiftedMousePosition.y + shiftedMousePosition.x - ( YPOS * 2 ) - XPOS + ( ( TILEX - 34 ) / 2 * 32 );
-  int my = shiftedMousePosition.x - 2 * shiftedMousePosition.y + ( YPOS * 2 ) - XPOS + ( ( TILEX - 34 ) / 2 * 32 );
+  int mx = static_cast< int >( 2 * shiftedMousePosition.y + shiftedMousePosition.x - ( YPOS * 2 ) - XPOS + ( ( TILEX - 34 ) / 2 * 32 ) );
+  int my = static_cast< int >( shiftedMousePosition.x - 2 * shiftedMousePosition.y + ( YPOS * 2 ) - XPOS + ( ( TILEX - 34 ) / 2 * 32 ) );
 
   mx /= 32;
   my /= 32;

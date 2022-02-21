@@ -3,7 +3,6 @@
 #include <fcntl.h>
 #include <filesystem>
 #include <fstream>
-#include <unistd.h>
 #include <zip.h>
 
 #include <SFML/Graphics/Sprite.hpp>
@@ -71,7 +70,7 @@ void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int
         LOG_ERROR( "Unable to read the entire zip file." );
       }
 
-      if ( ! newImage.loadFromMemory( buf.get(), sb.size ) )
+      if ( ! newImage.loadFromMemory( buf.get(), static_cast< std::size_t >( sb.size ) ) )
       {
         LOG_ERROR( "Error loading image from memory" );
       }

@@ -39,7 +39,7 @@ include_directories(${CMAKE_BINARY_DIR}/res)
 
 if (MSVC)
   set(PROJECT_CXX_FLAGS /W3 /WX)
-  set(PROJECT_CXX_DEFINITIONS -D_CRT_SECURE_NO_WARNINGS)
+  set(PROJECT_CXX_DEFINITIONS -D_CRT_SECURE_NO_WARNINGS -D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS)
 else()
   set( PROJECT_CXX_FLAGS -g3 -Wall -Wextra -Wshadow -Werror -Wpedantic -Wmissing-include-dirs -Wswitch-default -Wswitch-enum -Wfloat-equal)
 endif()

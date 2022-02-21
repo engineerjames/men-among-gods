@@ -630,7 +630,7 @@ int TickBuffer::sv_setmap3( const unsigned char* buf, int cnt )
     return -1;
   }
 
-  map_.setLight( n, tmp );
+  map_.setLight( n, static_cast< unsigned char >( tmp ) );
 
   for ( m = n + 2, p = 3; m < n + cnt + 2; m += 2, p++ )
   {

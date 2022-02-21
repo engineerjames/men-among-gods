@@ -74,8 +74,8 @@ void PlayerShopDisplay::onUserInput( const sf::Event& e )
       playerData_.setShouldShowShop( false );
     }
 
-    int tx = ( mousePosition.x - MenAmongGods::shopPosition.x ) / 35;
-    int ty = ( mousePosition.y - MenAmongGods::shopPosition.y ) / 35;
+    int tx = static_cast< int >( ( mousePosition.x - MenAmongGods::shopPosition.x ) / 35 );
+    int ty = static_cast< int >( ( mousePosition.y - MenAmongGods::shopPosition.y ) / 35 );
     int nr = tx + ty * 8;
 
     look shop = playerData_.getShop();
