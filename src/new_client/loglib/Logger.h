@@ -14,6 +14,10 @@
 
 #include <json/json.h>
 
+#if WIN32
+#define __PRETTY_FUNCTION__ __FUNCSIG__
+#endif
+
 namespace MenAmongGods::detail
 {
 

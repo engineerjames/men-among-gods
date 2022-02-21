@@ -33,7 +33,7 @@ void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int
 
   LOG_DEBUG( "Loading " << zip_get_num_entries( za, 0 ) << " files from the ZIP." );
 
-  struct zip_stat sb;
+  struct zip_stat sb = {};
 
   unsigned int offSet = 0;
   for ( unsigned int i = 0; i < zip_get_num_entries( za, 0 ); ++i )

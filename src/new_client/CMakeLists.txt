@@ -1,4 +1,7 @@
 find_package(SFML 2.5 COMPONENTS audio network graphics window system REQUIRED)
+find_package(libzip CONFIG REQUIRED)
+find_package(jsoncpp CONFIG REQUIRED)
+find_package(ZLIB REQUIRED)
 
 add_subdirectory(clientlib)
 

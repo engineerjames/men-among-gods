@@ -26,7 +26,7 @@ set( headers
     TickBuffer.h
 )
 add_library(${target} ${sources} ${headers})
-target_link_libraries(${target} PRIVATE sfml-graphics sfml-network z zip pthread logging
+target_link_libraries(${target} PRIVATE sfml-graphics sfml-network logging
                                         Boost::serialization MenAmongGodsGraphics commands)
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )

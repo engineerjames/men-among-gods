@@ -21,3 +21,4 @@ src/client/*.tds
 
 # Ignore build directory
 **/build/**
+/.vs
