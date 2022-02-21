@@ -47,3 +47,4 @@ jobs:
         with:
           vcpkgArguments: 'boost libzip zlib jsoncpp sfml'
           vcpkgDirectory: ${{ github.workspace }}/vcpkg
+          vcpkgGitCommitId: ${{ github.sha }}
