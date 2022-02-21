@@ -5,6 +5,10 @@ project(men-among-gods C CXX)
 option(ENABLE_CLANG_TIDY "Enable static analysis via clang-tidy" ON)
 option(ENABLE_LOGGING "Enable logging output from new client application" ON)
 
+if (MSVC)
+  set(ENABLE_CLANG_TIDY OFF)
+endif()
+
 if (ENABLE_CLANG_TIDY)
   message(STATUS "Enabling clang-tidy support")
 endif()
@@ -16,7 +20,7 @@ endif()
 
 enable_testing()
 
-set(Boost_USE_STATIC_LIBS ON)
+set(Boost_USE_STATIC_LIBS OFF)
 set(BUILD_SHARED_LIBS OFF)
 find_package(Boost COMPONENTS unit_test_framework serialization REQUIRED)
 
