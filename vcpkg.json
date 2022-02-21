@@ -5,7 +5,8 @@
       "sfml",
       "libzip",
       "zlib",
-      "boost",
+      "boost-serialization",
+      "boost-test",
       "jsoncpp"
     ]
   }
