@@ -63,7 +63,7 @@ void PlayerTextInputDisplay::onUserInput( const sf::Event& e )
   {
     text_ = text_.substr( 0, text_.size() - 1 );
   } // Don't add control characters
-  else if ( text_.size() < maxCharacters_ && e.text.unicode != 8 && e.text.unicode != 13 )
+  else if ( text_.size() < maxCharacters_ && e.text.unicode != 8 && e.text.unicode != 13 && e.text.unicode != 27)
   {
     text_ += e.text.unicode;
   }
