@@ -128,9 +128,15 @@ void ClientNetworkActivity::startNetworkActivity()
 
     clientConnection_.getUnknownPlayerIds( playerData_ );
 
-    // This is really stupid, but somehow by injecting this delay, the
-    // graphics suddently act normal.  Processing updates too quickly?
-    std::this_thread::sleep_for( std::chrono::milliseconds( MenAmongGods::ClientConfiguration::instance().networkThreadDelay() ) );
+    int updateTimeInMilliseconds = ( clock.getElapsedTime() - now ).asMilliseconds();
+
+    if ( updateTimeInMilliseconds < MenAmongGods::ClientConfiguration::instance().networkThreadDelay() )
+    {
+      // Only sleep for the difference between the specified delay, and the amount of time it took to process the server updates
+      int millisecondsToDelay = MenAmongGods::ClientConfiguration::instance().networkThreadDelay() - updateTimeInMilliseconds;
+
+      std::this_thread::sleep_for( std::chrono::milliseconds( millisecondsToDelay ) );
+    }
   }
 
   isRunning_ = false;
