@@ -45,23 +45,21 @@ public:
   virtual void finalize() override;
 
 private:
-  const sf::RenderWindow&                window_;
-  const sf::Font&                        font_;
-  const GraphicsCache&                   gfxCache_;
-  const GraphicsIndex&                   gfxIndex_;
-  PlayerData&                            playerData_;
-  std::array< SkillRow, MAX_ATTRIBUTES > attributes_;
-  std::array< SkillRow, MAX_SKILLS >     skills_;
-  std::array< SkillRow*, MAX_SKILLS >    skillsToDisplay_;
-  sf::RectangleShape                     skillScrollBar_;
-
-  sf::FloatRect      scrollUpBox_;
-  sf::FloatRect      scrollDownBox_;
-  int                scrollPosition_;
-  const sf::Vector2f initialScrollBarPosition_;
-
-  std::vector< sf::Sprite > spellsToDraw;
-
+  const sf::RenderWindow&                    window_;
+  const sf::Font&                            font_;
+  const GraphicsCache&                       gfxCache_;
+  const GraphicsIndex&                       gfxIndex_;
+  PlayerData&                                playerData_;
+  std::array< SkillRow, MAX_ATTRIBUTES >     attributes_;
+  std::array< SkillRow, 3 >                  lifeDisplay_;
+  std::array< SkillRow, MAX_SKILLS >         skills_;
+  std::array< SkillRow*, MAX_SKILLS >        skillsToDisplay_;
+  sf::RectangleShape                         skillScrollBar_;
+  sf::FloatRect                              scrollUpBox_;
+  sf::FloatRect                              scrollDownBox_;
+  int                                        scrollPosition_;
+  const sf::Vector2f                         initialScrollBarPosition_;
+  std::vector< sf::Sprite >                  spellsToDraw;
   sf::Text                                   expToSpendLabel_;
   MenAmongGods::JustifiableText              expToSpendValue_;
   std::map< std::string, std::stack< int > > raiseMap_; // TODO: This should be in the player data class

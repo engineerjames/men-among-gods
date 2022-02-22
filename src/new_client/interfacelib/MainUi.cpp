@@ -28,7 +28,6 @@ MainUi::MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, con
     , expLabel_()
     , expValue_()
     , skillsAndAttributes_( window, font_, gfxCache, gfxIndex, pdata )
-    , lifeDisplay_( font_, pdata )
     , msgBox_()
     , userInput_( font_ )
     , playerEquipment_( window, pdata, gfxCache )
@@ -227,7 +226,6 @@ void MainUi::draw( sf::RenderTarget& target, sf::RenderStates states ) const
   target.draw( manaCurrentValue_, states );
   target.draw( manaMaxValue_, states );
   target.draw( skillsAndAttributes_, states );
-  target.draw( lifeDisplay_, states );
   target.draw( playerEquipment_, states );
   target.draw( playerInventory_, states );
   target.draw( userOptionPanel_, states );
@@ -240,7 +238,6 @@ void MainUi::onUserInput( const sf::Event& e )
   mapDisplay_.onUserInput( e );
   userInput_.onUserInput( e );
   skillsAndAttributes_.onUserInput( e );
-  lifeDisplay_.onUserInput( e );
   playerEquipment_.onUserInput( e );
   playerInventory_.onUserInput( e );
   userOptionPanel_.onUserInput( e );
@@ -275,8 +272,6 @@ void MainUi::update()
 
   skillsAndAttributes_.update();
 
-  lifeDisplay_.update();
-
   playerEquipment_.update();
 
   playerInventory_.update();
@@ -309,7 +304,6 @@ void MainUi::populateCommands( std::vector< std::shared_ptr< ClientCommand > >& 
   mapDisplay_.populateCommands( outCommands );
   userInput_.populateCommands( outCommands );
   skillsAndAttributes_.populateCommands( outCommands );
-  lifeDisplay_.populateCommands( outCommands );
   msgBox_.populateCommands( outCommands );
   playerEquipment_.populateCommands( outCommands );
   playerInventory_.populateCommands( outCommands );
@@ -322,7 +316,6 @@ void MainUi::finalize()
   mapDisplay_.finalize();
   userInput_.finalize();
   msgBox_.finalize();
-  lifeDisplay_.finalize();
   playerEquipment_.finalize();
   playerInventory_.finalize();
   wvValue_.finalize();

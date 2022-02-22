@@ -6,7 +6,6 @@
 #include "ClientTypes.h"
 #include "Component.h"
 #include "JustifiableText.h"
-#include "LifeDisplay.h"
 #include "MapDisplay.h"
 #include "PlayerEquipmentDisplay.h"
 #include "PlayerInventoryDisplay.h"
@@ -69,16 +68,14 @@ private:
   sf::Text manaMaxValue_;
 
   SkillsAndAttributesDisplay skillsAndAttributes_;
-  LifeDisplay                lifeDisplay_;
-
-  PlayerLogDisplay       msgBox_;
-  PlayerTextInputDisplay userInput_;
-  PlayerEquipmentDisplay playerEquipment_;
-  PlayerInventoryDisplay playerInventory_;
-  UserOptionPanelDisplay userOptionPanel_;
-  MapDisplay             mapDisplay_;
-  RankDisplay            rankDisplay_;
-  PlayerShopDisplay      playerShopDisplay_;
+  PlayerLogDisplay           msgBox_;
+  PlayerTextInputDisplay     userInput_;
+  PlayerEquipmentDisplay     playerEquipment_;
+  PlayerInventoryDisplay     playerInventory_;
+  UserOptionPanelDisplay     userOptionPanel_;
+  MapDisplay                 mapDisplay_;
+  RankDisplay                rankDisplay_;
+  PlayerShopDisplay          playerShopDisplay_;
 
   sf::Sprite background_;
   sf::Sprite playerSprite_;
