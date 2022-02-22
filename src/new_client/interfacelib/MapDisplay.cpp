@@ -207,6 +207,11 @@ void MapDisplay::onUserInput( const sf::Event& e )
   {
     sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
 
+    if ( ! userClickedOnMap( mousePosition ) )
+    {
+      return;
+    }
+
     int m = getMapIndexFromMousePosition( mousePosition, false );
 
     cmap      clickedTile = map_.getMap( m );
@@ -667,10 +672,12 @@ void MapDisplay::copysprite( int nr, int effect, int xpos, int ypos, int xoff, i
     return;
   }
 
+  spritesToDraw_.push_back( cache_.getSprite( nr ) );
+  sf::Sprite& newSprite = *( spritesToDraw_.end() - 1 );
+
   // xs / ys are the x and y size in tiles (width / 32), and height / 32 respectively
-  GraphicsIndex::Index gfxIndex = index_.getIndex( nr );
-  unsigned char        xs       = gfxIndex.xs / 32;
-  unsigned char        ys       = gfxIndex.ys / 32;
+  unsigned char xs = newSprite.getTexture()->getSize().x / 32;
+  unsigned char ys = newSprite.getTexture()->getSize().y / 32;
 
   unsigned int rx = ( xpos / 2 ) + ( ypos / 2 ) - ( xs * 16 ) + 32 + XPOS - ( ( TILEX - 34 ) / 2 * 32 );
   if ( xpos < 0 && ( xpos & 1 ) )
@@ -698,11 +705,8 @@ void MapDisplay::copysprite( int nr, int effect, int xpos, int ypos, int xoff, i
 
   for ( unsigned int y = 0; y < 1; y++ )
   {
-    for ( unsigned int x = 0; x < 1; x++ ) // TODO: Why does only `1` work here, vs. the legacy xs ys values?
+    for ( unsigned int x = 0; x < 1; x++ )
     {
-      // This is where we have all the data we need now to copy sprites out to a.. draw list?
-      spritesToDraw_.push_back( cache_.getSprite( nr ) );
-      sf::Sprite& newSprite = *( spritesToDraw_.end() - 1 );
       newSprite.setPosition( sf::Vector2f { static_cast< float >( rx + x * 32 ), static_cast< float >( ry + y * 32 ) } );
       ( void ) effect;
 

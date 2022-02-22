@@ -19,7 +19,6 @@ public:
 
 private:
   bool                       isLoaded_;
-  std::vector< sf::Image >   images_;
   std::vector< sf::Texture > textures_;
   std::vector< sf::Sprite >  sprites_;
 };

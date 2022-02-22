@@ -12,7 +12,6 @@
 
 GraphicsCache::GraphicsCache()
     : isLoaded_( false )
-    , images_( MAX_ID + 1 )
     , textures_( MAX_ID + 1 )
     , sprites_( MAX_ID + 1 )
 {
@@ -25,6 +24,8 @@ void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int
   struct zip*      za  = nullptr;
   struct zip_file* zf  = nullptr;
   std::byte*       buf = new std::byte[ 2 * 1024 * 1024 ](); // 2MB
+
+  std::vector< sf::Image > images { MAX_ID + 1 };
 
   int errors {};
   za = zip_open( filePath.c_str(), 0, &errors );
@@ -64,7 +65,7 @@ void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int
 
       // Ensure the filename matches with the index.
       // This will force some 'holes' in our data structure
-      sf::Image&   newImage   = images_[ i + offSet ];
+      sf::Image&   newImage   = images[ i + offSet ];
       sf::Texture& newTexture = textures_[ i + offSet ];
       sf::Sprite&  newSprite  = sprites_[ i + offSet ];
 
@@ -100,7 +101,7 @@ void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int
 
         newSprite.setTexture( newTexture );
 
-        if ( ( i + offSet ) > images_.capacity() )
+        if ( ( i + offSet ) > images.capacity() )
         {
           LOG_ERROR( "Underallocated buffers - need at least a capacity of " << ( i + offSet ) );
           return;
@@ -126,6 +127,9 @@ void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int
   struct zip*      za  = nullptr;
   struct zip_file* zf  = nullptr;
   std::byte*       buf = new std::byte[ 2 * 1024 * 1024 ](); // 2MB
+
+  std::vector< sf::Image > images { MAX_ID + 1 };
+
 
   int errors {};
   za = zip_open( filePath.c_str(), 0, &errors );
@@ -165,7 +169,7 @@ void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int
 
       // Ensure the filename matches with the index.
       // This will force some 'holes' in our data structure
-      sf::Image&   newImage   = images_[ i + offSet ];
+      sf::Image&   newImage   = images[ i + offSet ];
       sf::Texture& newTexture = textures_[ i + offSet ];
       sf::Sprite&  newSprite  = sprites_[ i + offSet ];
 
@@ -192,7 +196,7 @@ void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int
 
         newSprite.setTexture( newTexture );
 
-        if ( ( i + offSet ) > images_.capacity() )
+        if ( ( i + offSet ) > images.capacity() )
         {
           LOG_ERROR( "Underallocated buffers - need at least a capacity of " << ( i + offSet ) );
           return;
