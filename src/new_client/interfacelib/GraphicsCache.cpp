@@ -12,7 +12,6 @@
 
 GraphicsCache::GraphicsCache()
     : isLoaded_( false )
-    , images_( MAX_ID + 1 )
     , textures_( MAX_ID + 1 )
     , sprites_( MAX_ID + 1 )
 {
@@ -25,6 +24,8 @@ void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int
   struct zip*      za  = nullptr;
   struct zip_file* zf  = nullptr;
   std::byte*       buf = new std::byte[ 2 * 1024 * 1024 ](); // 2MB
+
+  std::vector< sf::Image > images_ { MAX_ID + 1 };
 
   int errors {};
   za = zip_open( filePath.c_str(), 0, &errors );
