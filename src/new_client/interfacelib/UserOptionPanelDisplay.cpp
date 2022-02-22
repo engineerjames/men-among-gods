@@ -5,6 +5,9 @@
 #include "UiPositions.h"
 #include "UtilityFunctions.h"
 
+// Commands
+#include "ModeCommand.h"
+
 namespace MenAmongGods
 {
 UserOptionPanelDisplay::UserOptionPanelDisplay( const sf::RenderWindow& window, PlayerData& playerData )
@@ -97,15 +100,21 @@ void UserOptionPanelDisplay::onUserInput( const sf::Event& e )
     // Slow/Normal/Fast modes
     if ( slowModeRectangle_.getGlobalBounds().contains( mousePosition ) )
     {
-      playerData_.setMode( 0 );
+      int slowMode = 0;
+      playerData_.setMode( slowMode );
+      commands_.push_back( std::make_shared< MenAmongGods::ModeCommand >( slowMode ) );
     }
     else if ( normModeRectangle_.getGlobalBounds().contains( mousePosition ) )
     {
-      playerData_.setMode( 1 );
+      int normMode = 1;
+      playerData_.setMode( normMode );
+      commands_.push_back( std::make_shared< MenAmongGods::ModeCommand >( normMode ) );
     }
     else if ( fastModeRectangle_.getGlobalBounds().contains( mousePosition ) )
     {
-      playerData_.setMode( 2 );
+      int fastMode = 2;
+      playerData_.setMode( fastMode );
+      commands_.push_back( std::make_shared< MenAmongGods::ModeCommand >( fastMode ) );
     }
 
     // Hide walls - true->false, false->true when clicked

@@ -126,6 +126,11 @@ void MapDisplay::onUserInput( const sf::Event& e )
     // Attempting to port similar logic from inter.c::mouse_mapbox()
     sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
 
+    if ( ! userClickedOnMap( mousePosition ) )
+    {
+      return;
+    }
+
     int m = getMapIndexFromMousePosition( mousePosition, true );
 
     if ( mapIndexIsValid( m ) && userClickedOnMap( mousePosition ) )
@@ -139,6 +144,11 @@ void MapDisplay::onUserInput( const sf::Event& e )
        sf::Keyboard::isKeyPressed( sf::Keyboard::Key::LAlt ) )
   {
     sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
+
+    if ( ! userClickedOnMap( mousePosition ) )
+    {
+      return;
+    }
 
     int m = getMapIndexFromMousePosition( mousePosition, true );
 
@@ -163,6 +173,11 @@ void MapDisplay::onUserInput( const sf::Event& e )
   {
     sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
 
+    if ( ! userClickedOnMap( mousePosition ) )
+    {
+      return;
+    }
+
     int m = getMapIndexFromMousePosition( mousePosition, true );
 
     int characterId = map_.getCharacterId( m );
@@ -179,6 +194,11 @@ void MapDisplay::onUserInput( const sf::Event& e )
     // Attempting to port similar logic from inter.c::mouse_mapbox()
     sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
 
+    if ( ! userClickedOnMap( mousePosition ) )
+    {
+      return;
+    }
+
     int m = getMapIndexFromMousePosition( mousePosition, false );
 
     if ( mapIndexIsValid( m ) )
@@ -191,6 +211,11 @@ void MapDisplay::onUserInput( const sf::Event& e )
        e.mouseButton.button == sf::Mouse::Button::Left )
   {
     sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
+
+    if ( ! userClickedOnMap( mousePosition ) )
+    {
+      return;
+    }
 
     int m = getMapIndexFromMousePosition( mousePosition, true );
 
@@ -281,8 +306,6 @@ void MapDisplay::update()
   int xoff       = -map_.getObjectXOffset( ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX ) - 176; //-176;
   int yoff       = -map_.getObjectYOffset( ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX );       //-176;
   int plr_sprite = map_.getObject2( ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX );
-
-  ( void ) selected_visible;
 
   playerData_.setPlayerSprite( plr_sprite );
 
@@ -627,6 +650,11 @@ void MapDisplay::update()
         // );
       }
     }
+  }
+
+  if ( ! selected_visible )
+  {
+    playerData_.setSelectedCharacter( 0 );
   }
 
   sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
