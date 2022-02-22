@@ -6,6 +6,7 @@
 #include <ctime>
 #include <fstream>
 #include <iomanip>
+#include <iostream>
 #include <locale>
 #include <mutex>
 #include <sstream>
@@ -68,7 +69,7 @@ public:
     {
     }
 
-    void toJson( Json::Value& arrayRoot ) const
+    Json::Value toJson() const
     {
       Json::Value root {};
 
@@ -104,24 +105,13 @@ public:
       root[ "lineNumber" ] = lineNumber_;
       root[ "function" ]   = functionName_;
 
-      arrayRoot.append( root );
+      return root;
     }
   };
 
   void setLogLevel( Level newLevel );
 
-  void addLogEntry( std::string msg, Level level, std::string file, int lineNumber, std::string function )
-  {
-    if ( level < currentLogLevel_ )
-    {
-      return;
-    }
-
-    LogEntry newEntry { Json::nullValue, msg, level, file, lineNumber, function };
-
-    std::lock_guard< std::mutex > lock( logMutex_ );
-    jsonLogEntries_.push_back( newEntry );
-  }
+  void addLogEntry( std::string msg, Level level, std::string file, int lineNumber, std::string function );
 
   template < typename T >
   void addLogEntry( const T& jsonifiedObject, std::string msg, Level level, std::string file, int lineNumber, std::string function )
@@ -134,17 +124,28 @@ public:
     LogEntry newEntry { jsonifiedObject.toJson(), msg, level, file, lineNumber, function };
 
     std::lock_guard< std::mutex > lock( logMutex_ );
-    jsonLogEntries_.push_back( newEntry );
+    writeEntryToFile( newEntry );
   }
 
 private:
   Logger( std::string fileName );
-  ~Logger();
 
-  std::vector< LogEntry > jsonLogEntries_;
-  std::fstream            outputFile_;
-  std::mutex              logMutex_;
-  Level                   currentLogLevel_;
+  void writeEntryToFile( const LogEntry& newEntry )
+  {
+
+    if ( outputFile_.is_open() )
+    {
+      outputFile_ << newEntry.toJson().toStyledString();
+    }
+    else
+    {
+      std::cerr << "Unable to write log file!" << std::endl;
+    }
+  }
+
+  std::fstream outputFile_;
+  std::mutex   logMutex_;
+  Level        currentLogLevel_;
 };
 
 } // namespace MenAmongGods::detail

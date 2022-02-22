@@ -2,8 +2,6 @@
 
 #include "ResourceLocations.h"
 
-#include <iostream>
-
 namespace MenAmongGods::detail
 {
 Logger& Logger::instance()
@@ -13,11 +11,11 @@ Logger& Logger::instance()
 }
 
 Logger::Logger( std::string fileName )
-    : jsonLogEntries_()
-    , outputFile_( fileName, std::ios::app )
+    : outputFile_( fileName, std::ios::app )
     , logMutex_()
     , currentLogLevel_( Logger::Level::DEBUG )
 {
+  addLogEntry( GIT_REVISION, Level::DEBUG, "Logger.cpp", 21, "Constructor" );
 }
 
 void Logger::setLogLevel( Logger::Level newLevel )
@@ -25,32 +23,16 @@ void Logger::setLogLevel( Logger::Level newLevel )
   currentLogLevel_ = newLevel;
 }
 
-Logger::~Logger()
+void Logger::addLogEntry( std::string msg, Level level, std::string file, int lineNumber, std::string function )
 {
-  Json::Value root = Json::arrayValue;
-
-  Json::Value header {};
-  header[ "revision" ] = GIT_REVISION;
-
-  root.append( header );
-
+  if ( level < currentLogLevel_ )
   {
-    std::lock_guard< std::mutex > lock( logMutex_ );
-    for ( const auto& e : jsonLogEntries_ )
-    {
-      e.toJson( root );
-    }
+    return;
   }
 
-  // TODO: Write things out as we receive them
-  if ( outputFile_.is_open() )
-  {
-    outputFile_ << root.toStyledString();
-  }
-  else
-  {
-    std::cerr << "Unable to write log file!" << std::endl;
-  }
+  LogEntry newEntry { Json::nullValue, msg, level, file, lineNumber, function };
+
+  std::lock_guard< std::mutex > lock( logMutex_ );
+  writeEntryToFile( newEntry );
 }
-
 } // namespace MenAmongGods::detail
