@@ -17,6 +17,35 @@
 
 namespace
 {
+int hp_needed( int v, cplayer& pl )
+{
+  if ( v >= pl.hp[ 2 ] )
+  {
+    return std::numeric_limits< int >::max();
+  }
+
+  return v * pl.hp[ 3 ];
+}
+
+int end_needed( int v, cplayer& pl )
+{
+  if ( v >= pl.end[ 2 ] )
+  {
+    return std::numeric_limits< int >::max();
+  }
+
+  return v * pl.end[ 3 ] / 2;
+}
+
+int mana_needed( int v, cplayer& pl )
+{
+  if ( v >= pl.mana[ 2 ] )
+  {
+    return std::numeric_limits< int >::max();
+  }
+
+  return v * pl.mana[ 3 ];
+}
 
 int attrib_needed( int n, int v, cplayer& pl )
 {
@@ -214,30 +243,6 @@ SkillsAndAttributesDisplay::SkillsAndAttributesDisplay( const sf::RenderWindow& 
   skillScrollBar_.setPosition( initialScrollBarPosition_ );
   skillScrollBar_.setSize( sf::Vector2f { 11.0f, 11.0f } );
 
-  for ( unsigned int i = 0; i < MAX_SKILLS; ++i )
-  {
-    const sf::Vector2f delta { 0.0f, i * 14.0f };
-
-    skills_[ i ].name_.setString( static_skilltab[ i ].name );
-    skills_[ i ].displayValue_.setString( "0" );
-    skills_[ i ].expRequired_.setString( MenAmongGods::addThousandsSeparator( 1000u ) );
-
-    skills_[ i ].name_.setFont( font_ );
-    skills_[ i ].displayValue_.setFont( font_ );
-    skills_[ i ].expRequired_.setFont( font_ );
-    skills_[ i ].plus_.setFont( font_ );
-    skills_[ i ].minus_.setFont( font_ );
-
-    skills_[ i ].name_.setPosition( MenAmongGods::initialSkillPosition + delta );
-    skills_[ i ].displayValue_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 127.0f, delta.y } );
-    skills_[ i ].plus_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 131.0f, delta.y } );
-    skills_[ i ].minus_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 146.0f, delta.y } );
-    skills_[ i ].expRequired_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 200.0f, delta.y } );
-
-    skills_[ i ].displayValue_.setJustification( MenAmongGods::JustifiableText::TextJustification::RIGHT );
-    skills_[ i ].expRequired_.setJustification( MenAmongGods::JustifiableText::TextJustification::RIGHT );
-  }
-
   attributes_[ 0 ].name_.setString( "Braveness" );
   attributes_[ 1 ].name_.setString( "Willpower" );
   attributes_[ 2 ].name_.setString( "Intuition" );
@@ -268,6 +273,59 @@ SkillsAndAttributesDisplay::SkillsAndAttributesDisplay( const sf::RenderWindow& 
     attributes_[ i ].displayValue_.setJustification( MenAmongGods::JustifiableText::TextJustification::RIGHT );
     attributes_[ i ].expRequired_.setJustification( MenAmongGods::JustifiableText::TextJustification::RIGHT );
   }
+
+  lifeDisplay_[ 0 ].name_.setString( "Hitpoints" );
+  lifeDisplay_[ 1 ].name_.setString( "Endurance" );
+  lifeDisplay_[ 2 ].name_.setString( "Mana" );
+
+  for ( unsigned int i = 0; i < lifeDisplay_.size(); ++i )
+  {
+    const sf::Vector2f delta { 0.0f, ( MAX_ATTRIBUTES + i ) * 14.0f };
+    lifeDisplay_[ i ].name_.setPosition( MenAmongGods::initialAttributePosition + delta );
+
+    lifeDisplay_[ i ].displayValue_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 127.0f, delta.y } );
+    lifeDisplay_[ i ].plus_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 131.0f, delta.y } );
+    lifeDisplay_[ i ].minus_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 146.0f, delta.y } );
+    lifeDisplay_[ i ].expRequired_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 200.0f, delta.y } );
+
+    lifeDisplay_[ i ].displayValue_.setString( "0" );
+    lifeDisplay_[ i ].expRequired_.setString( MenAmongGods::addThousandsSeparator( 1000u ) );
+    lifeDisplay_[ i ].plus_.setString( "+" );
+    lifeDisplay_[ i ].minus_.setString( "-" );
+
+    lifeDisplay_[ i ].name_.setFont( font_ );
+    lifeDisplay_[ i ].displayValue_.setFont( font_ );
+    lifeDisplay_[ i ].expRequired_.setFont( font_ );
+    lifeDisplay_[ i ].plus_.setFont( font_ );
+    lifeDisplay_[ i ].minus_.setFont( font_ );
+
+    lifeDisplay_[ i ].displayValue_.setJustification( MenAmongGods::JustifiableText::TextJustification::RIGHT );
+    lifeDisplay_[ i ].expRequired_.setJustification( MenAmongGods::JustifiableText::TextJustification::RIGHT );
+  }
+
+  for ( unsigned int i = 0; i < MAX_SKILLS; ++i )
+  {
+    const sf::Vector2f delta { 0.0f, i * 14.0f };
+
+    skills_[ i ].name_.setString( static_skilltab[ i ].name );
+    skills_[ i ].displayValue_.setString( "0" );
+    skills_[ i ].expRequired_.setString( MenAmongGods::addThousandsSeparator( 1000u ) );
+
+    skills_[ i ].name_.setFont( font_ );
+    skills_[ i ].displayValue_.setFont( font_ );
+    skills_[ i ].expRequired_.setFont( font_ );
+    skills_[ i ].plus_.setFont( font_ );
+    skills_[ i ].minus_.setFont( font_ );
+
+    skills_[ i ].name_.setPosition( MenAmongGods::initialSkillPosition + delta );
+    skills_[ i ].displayValue_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 127.0f, delta.y } );
+    skills_[ i ].plus_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 131.0f, delta.y } );
+    skills_[ i ].minus_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 146.0f, delta.y } );
+    skills_[ i ].expRequired_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 200.0f, delta.y } );
+
+    skills_[ i ].displayValue_.setJustification( MenAmongGods::JustifiableText::TextJustification::RIGHT );
+    skills_[ i ].expRequired_.setJustification( MenAmongGods::JustifiableText::TextJustification::RIGHT );
+  }
 }
 
 void SkillsAndAttributesDisplay::draw( sf::RenderTarget& target, sf::RenderStates states ) const
@@ -297,6 +355,15 @@ void SkillsAndAttributesDisplay::draw( sf::RenderTarget& target, sf::RenderState
     target.draw( skillsToDisplay_[ i ]->expRequired_, states );
     target.draw( skillsToDisplay_[ i ]->plus_, states );
     target.draw( skillsToDisplay_[ i ]->minus_, states );
+  }
+
+  for ( const auto& t : lifeDisplay_ )
+  {
+    target.draw( t.name_, states );
+    target.draw( t.displayValue_, states );
+    target.draw( t.expRequired_, states );
+    target.draw( t.plus_, states );
+    target.draw( t.minus_, states );
   }
 
   // Draw scrollbar
@@ -420,6 +487,85 @@ void SkillsAndAttributesDisplay::update()
   }
 
   expToSpendValue_.update();
+
+  // TODO: Reduce massive amounts of code duplication here
+
+  // Update HP
+  int nTimesRaisedHp = static_cast< int >( raiseMap_[ lifeDisplay_[ 0 ].name_.getString() ].size() );
+  lifeDisplay_[ 0 ].displayValue_.setString( std::to_string( playerData_.getClientSidePlayerInfo().a_hp ) );
+  lifeDisplay_[ 0 ].expRequired_.setString( MenAmongGods::addThousandsSeparator( hp_needed( player.hp[ 0 ] + nTimesRaisedHp, player ) ) );
+  lifeDisplay_[ 0 ].displayValue_.update();
+  lifeDisplay_[ 0 ].expRequired_.update();
+
+  if ( player.points >= hp_needed( player.hp[ 0 ] + nTimesRaisedHp, player ) )
+  {
+    lifeDisplay_[ 0 ].plus_.setString( "+" );
+  }
+  else
+  {
+    lifeDisplay_[ 0 ].plus_.setString( "" );
+  }
+
+  if ( nTimesRaisedHp > 0 )
+  {
+    lifeDisplay_[ 0 ].minus_.setString( "-" );
+  }
+  else
+  {
+    lifeDisplay_[ 0 ].minus_.setString( "" );
+  }
+
+  // Update End
+  int nTimesRaisedEnd = static_cast< int >( raiseMap_[ lifeDisplay_[ 1 ].name_.getString() ].size() );
+  lifeDisplay_[ 1 ].displayValue_.setString( std::to_string( playerData_.getClientSidePlayerInfo().a_end ) );
+  lifeDisplay_[ 1 ].expRequired_.setString(
+      MenAmongGods::addThousandsSeparator( end_needed( player.end[ 0 ] + nTimesRaisedEnd, player ) ) );
+  lifeDisplay_[ 1 ].displayValue_.update();
+  lifeDisplay_[ 1 ].expRequired_.update();
+
+  if ( player.points >= end_needed( player.end[ 0 ] + nTimesRaisedEnd, player ) )
+  {
+    lifeDisplay_[ 1 ].plus_.setString( "+" );
+  }
+  else
+  {
+    lifeDisplay_[ 1 ].plus_.setString( "" );
+  }
+
+  if ( nTimesRaisedEnd > 0 )
+  {
+    lifeDisplay_[ 1 ].minus_.setString( "-" );
+  }
+  else
+  {
+    lifeDisplay_[ 1 ].minus_.setString( "" );
+  }
+
+  // Update Mana
+  int nTimesRaisedMana = static_cast< int >( raiseMap_[ lifeDisplay_[ 2 ].name_.getString() ].size() );
+  lifeDisplay_[ 2 ].displayValue_.setString( std::to_string( playerData_.getClientSidePlayerInfo().a_mana ) );
+  lifeDisplay_[ 2 ].expRequired_.setString(
+      MenAmongGods::addThousandsSeparator( mana_needed( player.mana[ 0 ] + nTimesRaisedMana, player ) ) );
+  lifeDisplay_[ 2 ].displayValue_.update();
+  lifeDisplay_[ 2 ].expRequired_.update();
+
+  if ( player.points >= mana_needed( player.mana[ 0 ] + nTimesRaisedMana, player ) )
+  {
+    lifeDisplay_[ 2 ].plus_.setString( "+" );
+  }
+  else
+  {
+    lifeDisplay_[ 2 ].plus_.setString( "" );
+  }
+
+  if ( nTimesRaisedMana > 0 )
+  {
+    lifeDisplay_[ 2 ].minus_.setString( "-" );
+  }
+  else
+  {
+    lifeDisplay_[ 2 ].minus_.setString( "" );
+  }
 }
 
 void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
@@ -475,14 +621,11 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
 
       if ( row >= 0 && row <= 4 ) // Attributes
       {
-        std::cerr << "Raising attribute..." << std::endl;
         int nTimesRaised   = static_cast< int >( raiseMap_[ attributes_[ row ].name_.getString() ].size() );
         int pointsRequired = attrib_needed( row, player.attrib[ row ][ 0 ] + nTimesRaised, player );
-        std::cerr << "Exp required to raise: " << pointsRequired << " out of " << player.points << std::endl;
         if ( player.points >= pointsRequired )
         {
           std::string attributeName = attributes_.at( row ).name_.getString();
-          std::cerr << "Attribute name attempting to increase is: " << attributeName << std::endl;
 
           raiseMap_[ attributeName ].push( pointsRequired );
 
@@ -491,7 +634,45 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
       }
       else if ( row >= 5 && row <= 7 ) // HP/END/MANA
       {
-        // Nothing for now--need to move the logic into here (currently it is separated out)
+        if ( row == 5 ) // hp
+        {
+          int nTimesRaised   = static_cast< int >( raiseMap_[ lifeDisplay_[ 0 ].name_.getString() ].size() );
+          int pointsRequired = hp_needed( player.hp[ 0 ] + nTimesRaised, player );
+          if ( player.points >= pointsRequired )
+          {
+            std::string hpManaEndName = lifeDisplay_.at( 0 ).name_.getString();
+
+            raiseMap_[ hpManaEndName ].push( pointsRequired );
+
+            player.points -= pointsRequired;
+          }
+        }
+        else if ( row == 6 ) // end
+        {
+          int nTimesRaised   = static_cast< int >( raiseMap_[ lifeDisplay_[ 1 ].name_.getString() ].size() );
+          int pointsRequired = end_needed( player.end[ 0 ] + nTimesRaised, player );
+          if ( player.points >= pointsRequired )
+          {
+            std::string hpManaEndName = lifeDisplay_.at( 1 ).name_.getString();
+
+            raiseMap_[ hpManaEndName ].push( pointsRequired );
+
+            player.points -= pointsRequired;
+          }
+        }
+        else if ( row == 7 ) // mana
+        {
+          int nTimesRaised   = static_cast< int >( raiseMap_[ lifeDisplay_[ 2 ].name_.getString() ].size() );
+          int pointsRequired = mana_needed( player.mana[ 0 ] + nTimesRaised, player );
+          if ( player.points >= pointsRequired )
+          {
+            std::string hpManaEndName = lifeDisplay_.at( 2 ).name_.getString();
+
+            raiseMap_[ hpManaEndName ].push( pointsRequired );
+
+            player.points -= pointsRequired;
+          }
+        }
       }
       else // Skills
       {
@@ -504,11 +685,9 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
         int nTimesRaised = static_cast< int >( raiseMap_[ skillsToDisplay_[ row - 8 ]->name_.getString() ].size() );
 
         int pointsRequired = skill_needed( m, player.skill[ m ][ 0 ] + nTimesRaised, player );
-        std::cerr << "Need " << pointsRequired << " points to raise skill" << std::endl;
         if ( player.points >= pointsRequired )
         {
           std::string skillName = skillsToDisplay_[ row - 8 ]->name_.getString();
-          std::cerr << "Skill name attempting to increase is: " << skillName << std::endl;
 
           raiseMap_[ skillName ].push( pointsRequired );
 
@@ -523,24 +702,44 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
       row             = std::max( 0, row );
       cplayer& player = playerData_.getClientSidePlayerInfo();
 
-      std::cerr << "User clicked - for index " << row << std::endl;
-
       if ( row >= 0 && row <= 4 ) // Attributes
       {
         std::string attributeName = attributes_.at( row ).name_.getString();
-        std::cerr << "Attribute name attempting to decrease is: " << attributeName << std::endl;
-
         if ( raiseMap_.count( attributeName ) != 0 && raiseMap_[ attributeName ].size() > 0 )
         {
           player.points += raiseMap_[ attributeName ].top();
           raiseMap_[ attributeName ].pop();
-
-          std::cerr << "Size is now: " << raiseMap_[ attributeName ].size();
         }
       }
       else if ( row >= 5 && row <= 7 ) // HP/END/MANA
       {
-        // Nothing for now--need to move the logic into here (currently it is separated out)
+        if ( row == 5 ) // hp
+        {
+          std::string lifeName = lifeDisplay_.at( 0 ).name_.getString();
+          if ( raiseMap_.count( lifeName ) != 0 && raiseMap_[ lifeName ].size() > 0 )
+          {
+            player.points += raiseMap_[ lifeName ].top();
+            raiseMap_[ lifeName ].pop();
+          }
+        }
+        else if ( row == 6 ) // mana
+        {
+          std::string lifeName = lifeDisplay_.at( 1 ).name_.getString();
+          if ( raiseMap_.count( lifeName ) != 0 && raiseMap_[ lifeName ].size() > 0 )
+          {
+            player.points += raiseMap_[ lifeName ].top();
+            raiseMap_[ lifeName ].pop();
+          }
+        }
+        else if ( row == 7 ) // end
+        {
+          std::string lifeName = lifeDisplay_.at( 2 ).name_.getString();
+          if ( raiseMap_.count( lifeName ) != 0 && raiseMap_[ lifeName ].size() > 0 )
+          {
+            player.points += raiseMap_[ lifeName ].top();
+            raiseMap_[ lifeName ].pop();
+          }
+        }
       }
       else // Skills
       {
@@ -550,14 +749,10 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
         }
 
         std::string skillName = skillsToDisplay_[ row - 8 ]->name_.getString();
-        std::cerr << "Skill name attempting to decrease is: " << skillName << std::endl;
-
         if ( raiseMap_.count( skillName ) != 0 && raiseMap_[ skillName ].size() > 0 )
         {
           player.points += raiseMap_[ skillName ].top();
           raiseMap_[ skillName ].pop();
-
-          std::cerr << "Size is now: " << raiseMap_[ skillName ].size();
         }
       }
     }
@@ -566,8 +761,6 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
       // Put commands into the command list so we communicate with the server with what we're trying to update
       for ( auto& [ skillOrAttributeName, raiseStack ] : raiseMap_ )
       {
-        std::cout << "Attempting to raise " << skillOrAttributeName << " by " << raiseStack.size() << std::endl;
-
         // The stat number lines up with the attributes perfectly until we reach the skill section.
         // It is at that point that we take the numerical index and ADD 8 to it (vs. subtract).
         // Let's just do it stupidly for now and fix it later.

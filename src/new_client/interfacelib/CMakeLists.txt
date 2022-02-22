@@ -8,7 +8,6 @@ set( sources
     GraphicsCache.cpp
     GraphicsIndex.cpp
     JustifiableText.cpp
-    LifeDisplay.cpp
     LoginUi.cpp
     MainUi.cpp
     MapDisplay.cpp
@@ -36,7 +35,6 @@ set( headers
     GraphicsIndex.h
     GuiFormatters.h
     JustifiableText.h
-    LifeDisplay.h
     LoginUi.h
     MainUi.h
     MapDisplay.h
