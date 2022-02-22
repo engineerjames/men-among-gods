@@ -207,6 +207,11 @@ void MapDisplay::onUserInput( const sf::Event& e )
   {
     sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
 
+    if ( ! userClickedOnMap( mousePosition ) )
+    {
+      return;
+    }
+
     int m = getMapIndexFromMousePosition( mousePosition, false );
 
     cmap      clickedTile = map_.getMap( m );
