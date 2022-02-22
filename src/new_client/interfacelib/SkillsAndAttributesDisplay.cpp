@@ -634,7 +634,45 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
       }
       else if ( row >= 5 && row <= 7 ) // HP/END/MANA
       {
-        // Nothing for now--need to move the logic into here (currently it is separated out)
+        if ( row == 5 ) // hp
+        {
+          int nTimesRaised   = static_cast< int >( raiseMap_[ lifeDisplay_[ 0 ].name_.getString() ].size() );
+          int pointsRequired = hp_needed( player.hp[ 0 ] + nTimesRaised, player );
+          if ( player.points >= pointsRequired )
+          {
+            std::string hpManaEndName = lifeDisplay_.at( 0 ).name_.getString();
+
+            raiseMap_[ hpManaEndName ].push( pointsRequired );
+
+            player.points -= pointsRequired;
+          }
+        }
+        else if ( row == 6 ) // end
+        {
+          int nTimesRaised   = static_cast< int >( raiseMap_[ lifeDisplay_[ 1 ].name_.getString() ].size() );
+          int pointsRequired = end_needed( player.end[ 0 ] + nTimesRaised, player );
+          if ( player.points >= pointsRequired )
+          {
+            std::string hpManaEndName = lifeDisplay_.at( 1 ).name_.getString();
+
+            raiseMap_[ hpManaEndName ].push( pointsRequired );
+
+            player.points -= pointsRequired;
+          }
+        }
+        else if ( row == 7 ) // mana
+        {
+          int nTimesRaised   = static_cast< int >( raiseMap_[ lifeDisplay_[ 2 ].name_.getString() ].size() );
+          int pointsRequired = mana_needed( player.mana[ 0 ] + nTimesRaised, player );
+          if ( player.points >= pointsRequired )
+          {
+            std::string hpManaEndName = lifeDisplay_.at( 2 ).name_.getString();
+
+            raiseMap_[ hpManaEndName ].push( pointsRequired );
+
+            player.points -= pointsRequired;
+          }
+        }
       }
       else // Skills
       {
@@ -675,7 +713,33 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
       }
       else if ( row >= 5 && row <= 7 ) // HP/END/MANA
       {
-        // Nothing for now--need to move the logic into here (currently it is separated out)
+        if ( row == 5 ) // hp
+        {
+          std::string lifeName = lifeDisplay_.at( 0 ).name_.getString();
+          if ( raiseMap_.count( lifeName ) != 0 && raiseMap_[ lifeName ].size() > 0 )
+          {
+            player.points += raiseMap_[ lifeName ].top();
+            raiseMap_[ lifeName ].pop();
+          }
+        }
+        else if ( row == 6 ) // mana
+        {
+          std::string lifeName = lifeDisplay_.at( 1 ).name_.getString();
+          if ( raiseMap_.count( lifeName ) != 0 && raiseMap_[ lifeName ].size() > 0 )
+          {
+            player.points += raiseMap_[ lifeName ].top();
+            raiseMap_[ lifeName ].pop();
+          }
+        }
+        else if ( row == 7 ) // end
+        {
+          std::string lifeName = lifeDisplay_.at( 2 ).name_.getString();
+          if ( raiseMap_.count( lifeName ) != 0 && raiseMap_[ lifeName ].size() > 0 )
+          {
+            player.points += raiseMap_[ lifeName ].top();
+            raiseMap_[ lifeName ].pop();
+          }
+        }
       }
       else // Skills
       {
