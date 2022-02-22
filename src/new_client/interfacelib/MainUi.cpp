@@ -314,6 +314,7 @@ void MainUi::populateCommands( std::vector< std::shared_ptr< ClientCommand > >& 
   playerEquipment_.populateCommands( outCommands );
   playerInventory_.populateCommands( outCommands );
   playerShopDisplay_.populateCommands( outCommands );
+  userOptionPanel_.populateCommands( outCommands );
 }
 
 void MainUi::finalize()
