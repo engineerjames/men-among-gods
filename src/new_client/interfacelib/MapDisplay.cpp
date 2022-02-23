@@ -17,6 +17,7 @@
 // Commands
 #include "AttackCommand.h"
 #include "DropCommand.h"
+#include "GiveCommand.h"
 #include "LookCommand.h"
 #include "MoveCommand.h"
 #include "PickupCommand.h"
@@ -222,7 +223,14 @@ void MapDisplay::onUserInput( const sf::Event& e )
     // Check if character is present on tile?
     if ( map_.getCharacterId( m ) != 0 )
     {
-      commands_.emplace_back( std::make_shared< MenAmongGods::AttackCommand >( map_.getCharacterId( m ) ) );
+      if ( playerData_.getCarriedItem() == 0 )
+      {
+        commands_.emplace_back( std::make_shared< MenAmongGods::AttackCommand >( map_.getCharacterId( m ) ) );
+      }
+      else
+      {
+        commands_.emplace_back( std::make_shared< MenAmongGods::GiveCommand >( map_.getCharacterId( m ) ) );
+      }
     }
   }
 
@@ -704,6 +712,13 @@ void MapDisplay::copysprite( int nr, int effect, int xpos, int ypos, int xoff, i
   sf::Sprite& newSprite = *( spritesToDraw_.end() - 1 );
 
   // xs / ys are the x and y size in tiles (width / 32), and height / 32 respectively
+  auto newSpriteTexture = newSprite.getTexture();
+  if ( newSpriteTexture == nullptr )
+  {
+    LOG_ERROR( "Attempting to copy sprite for null texture." );
+    return;
+  }
+
   unsigned char xs = newSprite.getTexture()->getSize().x / 32;
   unsigned char ys = newSprite.getTexture()->getSize().y / 32;
 
