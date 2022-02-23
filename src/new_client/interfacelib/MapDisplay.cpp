@@ -736,7 +736,16 @@ void MapDisplay::copysprite( int nr, int effect, int xpos, int ypos, int xoff, i
     for ( unsigned int x = 0; x < 1; x++ )
     {
       newSprite.setPosition( sf::Vector2f { static_cast< float >( rx + x * 32 ), static_cast< float >( ry + y * 32 ) } );
-      ( void ) effect;
+
+      if ( effect & 128 )
+      {
+        newSprite.setColor( sf::Color { static_cast< std::uint8_t >( effect ), static_cast< std::uint8_t >( effect ),
+                                        static_cast< std::uint8_t >( effect ), 255 } );
+      }
+      else if ( effect & 64 )
+      {
+        newSprite.setColor( sf::Color { 0u, 0u, 0u, 255u } );
+      }
 
       if ( isCharacterSelected )
       {
