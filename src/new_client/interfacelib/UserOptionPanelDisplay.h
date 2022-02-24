@@ -36,6 +36,8 @@ private:
   sf::RectangleShape hideNamesRectangle_;
   sf::RectangleShape hideHealthRectangle_;
 
+  sf::RectangleShape exitRectangle_;
+
   std::vector< sf::RectangleShape* > rectangles_;
 };
 } // namespace MenAmongGods

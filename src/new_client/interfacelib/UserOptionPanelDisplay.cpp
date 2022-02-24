@@ -6,6 +6,7 @@
 #include "UtilityFunctions.h"
 
 // Commands
+#include "ExitCommand.h"
 #include "ModeCommand.h"
 
 namespace MenAmongGods
@@ -20,12 +21,13 @@ UserOptionPanelDisplay::UserOptionPanelDisplay( const sf::RenderWindow& window, 
     , hideWallsRectangle_()
     , hideNamesRectangle_()
     , hideHealthRectangle_()
+    , exitRectangle_()
     , rectangles_()
 {
 
   // TODO: should we have a clickable rectangle class? Perhaps...
-  rectangles_ = { &fastModeRectangle_,  &normModeRectangle_,  &slowModeRectangle_,
-                  &hideWallsRectangle_, &hideNamesRectangle_, &hideHealthRectangle_ };
+  rectangles_ = { &fastModeRectangle_,  &normModeRectangle_,   &slowModeRectangle_, &hideWallsRectangle_,
+                  &hideNamesRectangle_, &hideHealthRectangle_, &exitRectangle_ };
 
   for ( const auto& r : rectangles_ )
   {
@@ -47,6 +49,9 @@ UserOptionPanelDisplay::UserOptionPanelDisplay( const sf::RenderWindow& window, 
 
   hideWallsRectangle_.setPosition( MenAmongGods::clientOptionsOrigin + sf::Vector2f { 1.0f * MenAmongGods::CLIENT_SELECTION_SPACING_X,
                                                                                       MenAmongGods::CLIENT_SELECTION_SPACING_Y } );
+
+  exitRectangle_.setPosition( MenAmongGods::clientOptionsOrigin + sf::Vector2f { 3.0f * MenAmongGods::CLIENT_SELECTION_SPACING_X,
+                                                                                 +2.0f * MenAmongGods::CLIENT_SELECTION_SPACING_Y } );
 }
 
 void UserOptionPanelDisplay::update()
@@ -115,6 +120,12 @@ void UserOptionPanelDisplay::onUserInput( const sf::Event& e )
       int fastMode = 2;
       playerData_.setMode( fastMode );
       commands_.push_back( std::make_shared< MenAmongGods::ModeCommand >( fastMode ) );
+    }
+
+    // Exit
+    if ( exitRectangle_.getGlobalBounds().contains( mousePosition ) )
+    {
+      commands_.push_back( std::make_shared< MenAmongGods::ExitCommand >() );
     }
 
     // Hide walls - true->false, false->true when clicked
