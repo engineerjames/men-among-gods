@@ -19,6 +19,7 @@
 #include "DropCommand.h"
 #include "GiveCommand.h"
 #include "LookCommand.h"
+#include "LookItemCommand.h"
 #include "MoveCommand.h"
 #include "PickupCommand.h"
 #include "TurnCommand.h"
@@ -190,7 +191,8 @@ void MapDisplay::onUserInput( const sf::Event& e )
   }
 
   // User faces his/her character a specific direction via a right mouse button click
-  if ( e.type == sf::Event::MouseButtonReleased && e.mouseButton.button == sf::Mouse::Button::Right )
+  if ( e.type == sf::Event::MouseButtonReleased && e.mouseButton.button == sf::Mouse::Button::Right &&
+       ! sf::Keyboard::isKeyPressed( sf::Keyboard::Key::LShift ) )
   {
     // Attempting to port similar logic from inter.c::mouse_mapbox()
     sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
@@ -266,6 +268,28 @@ void MapDisplay::onUserInput( const sf::Event& e )
       {
         commands_.emplace_back( std::make_shared< MenAmongGods::PickupCommand >( x, y ) );
       }
+    }
+  }
+
+  // Look at item on the ground
+  if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Key::LShift ) && e.type == sf::Event::MouseButtonReleased &&
+       e.mouseButton.button == sf::Mouse::Button::Right )
+  {
+    sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
+
+    if ( ! userClickedOnMap( mousePosition ) )
+    {
+      return;
+    }
+
+    int m = getMapIndexFromMousePosition( mousePosition, false );
+
+    cmap      clickedTile = map_.getMap( m );
+    const int x           = clickedTile.x;
+    const int y           = clickedTile.y;
+    if ( map_.getFlags( m ) & ISITEM )
+    {
+      commands_.emplace_back( std::make_shared< MenAmongGods::LookItemCommand >( x, y ) );
     }
   }
 }

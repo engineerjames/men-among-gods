@@ -27,8 +27,12 @@ namespace
 static const constexpr int LOGIN_FONT_SIZE = 16;
 } // namespace
 
+std::atomic< bool > shouldExit {};
+
 int main()
 {
+  shouldExit.store( false );
+
   LOG_SET_LEVEL( MenAmongGods::ClientConfiguration::instance().loggingEnabled() );
 
   auto map        = std::make_unique< MenAmongGods::Map >();
@@ -145,6 +149,12 @@ int main()
     for ( auto& c : *currentComponents )
     {
       c->finalize();
+    }
+
+    if ( shouldExit.load() )
+    {
+      client->stop();
+      break;
     }
   }
 
