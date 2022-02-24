@@ -9,6 +9,8 @@
 #include "PlayerData.h"
 #include "ServerMessage.h"
 
+extern std::atomic< bool > shouldExit;
+
 TickBuffer::TickBuffer( PlayerData& playerData, MenAmongGods::Map& map )
     : compressor_()
     , playerData_( playerData )
@@ -894,7 +896,8 @@ void TickBuffer::sv_exit( const unsigned char* buf )
   {
     LOG_ERROR( "EXIT: " << logout_reason[ reason ] );
   }
-  // do_exit = 1;
+
+  shouldExit.store( true );
 }
 
 void TickBuffer::sv_load( const unsigned char* )

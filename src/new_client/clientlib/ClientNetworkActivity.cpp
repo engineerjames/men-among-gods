@@ -1,5 +1,6 @@
 #include "ClientNetworkActivity.h"
 
+#include <atomic>
 #include <cstring>
 
 #include "ClientConfiguration.h"
@@ -12,6 +13,8 @@
 
 // Commands
 #include "AutoLookCommand.h"
+
+extern std::atomic< bool > shouldExit; 
 
 ClientNetworkActivity::~ClientNetworkActivity()
 {
@@ -83,7 +86,15 @@ void ClientNetworkActivity::addClientCommands( const std::vector< std::shared_pt
 void ClientNetworkActivity::startNetworkActivity()
 {
   clientConnection_.connect();
-  clientConnection_.login( playerData_ );
+
+  bool loginSuccessful = clientConnection_.login( playerData_ );
+
+  if (!loginSuccessful)
+  {
+    LOG_ERROR( "Error logging in--exiting early." )
+    shouldExit.store( true );
+    return;
+  }
 
   clientConnection_.sendPlayerData( playerData_ );
 
