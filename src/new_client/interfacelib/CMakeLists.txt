@@ -21,6 +21,7 @@ set( sources
     RadioButtonDisplay.cpp
     RankDisplay.cpp
     SkillsAndAttributesDisplay.cpp
+    SaveButtonDisplay.cpp
     SubmitButtonDisplay.cpp
     TextInputDisplay.cpp
     UserOptionPanelDisplay.cpp
@@ -47,6 +48,7 @@ set( headers
     ProgressBarDisplay.h
     RadioButtonDisplay.h
     RankDisplay.h
+    SaveButtonDisplay.h
     SkillsAndAttributesDisplay.h
     SubmitButtonDisplay.h
     TextInputDisplay.h

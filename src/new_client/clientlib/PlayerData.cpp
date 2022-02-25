@@ -302,7 +302,7 @@ void PlayerData::setMode( int newMode )
 std::vector< int > PlayerData::getUnknownCharacterIds() const
 {
   std::vector< int > unknownIds {};
-  for ( auto [ key, val ] : lookMap_ )
+  for ( const auto& [ key, val ] : lookMap_ )
   {
     if ( val.known == 0 )
     {
@@ -680,9 +680,11 @@ void PlayerData::loadFromJsonFile()
 }
 
 // save_options and save_unique combined
-void PlayerData::saveToJsonFile() const
+void PlayerData::saveToJsonFile( const std::string& fileName ) const
 {
-  std::ofstream playerFile( MenAmongGods::getConfigPath() + "playerdata.moa" );
+  std::ofstream playerFile( MenAmongGods::getConfigPath() + fileName + ".moa" );
+
+  std::cerr << "Saved player file to: ./" << fileName + ".moa" << std::endl;
 
   //
   // Player data

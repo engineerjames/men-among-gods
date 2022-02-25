@@ -5,6 +5,7 @@
 #include "Component.h"
 #include "PasswordTextInputDisplay.h"
 #include "RadioButtonDisplay.h"
+#include "SaveButtonDisplay.h"
 #include "SubmitButtonDisplay.h"
 #include "TextInputDisplay.h"
 
@@ -48,6 +49,7 @@ private:
   std::vector< RadioButtonDisplay > raceSelection_;
   std::vector< RadioButtonDisplay > sexSelection_;
   SubmitButtonDisplay               submitButton_;
+  SaveButtonDisplay                 saveButton_;
 
   std::vector< MenAmongGods::Component* > components_;
 };
