@@ -644,9 +644,9 @@ unsigned int PlayerData::getOkeyUserNumber() const
   return okey_.usnr;
 }
 
-void PlayerData::loadFromJsonFile()
+void PlayerData::loadFromJsonFile(const std::string& fileName)
 {
-  std::ifstream playerFile { MenAmongGods::getConfigPath() + "playerdata.moa" };
+  std::ifstream playerFile { MenAmongGods::getConfigPath() + fileName };
 
   //
   // Player data

@@ -38,16 +38,6 @@ int main()
   auto map        = std::make_unique< MenAmongGods::Map >();
   auto playerData = std::make_unique< PlayerData >();
 
-  if ( std::filesystem::exists( MenAmongGods::getConfigPath() + "playerdata.moa" ) )
-  {
-    std::cerr << "Loading data from playerdata.moa!" << std::endl;
-    playerData->loadFromJsonFile();
-  }
-  else
-  {
-    std::cerr << "No MOA file detected in ./config/playerdata.moa path.  Using defaults" << std::endl;
-  }
-
   sf::RenderWindow window( sf::VideoMode( MODEX, MODEY ), "Men Among Gods - New Client" );
   window.setFramerateLimit( MenAmongGods::ClientConfiguration::instance().frameLimit() );
   window.requestFocus();
