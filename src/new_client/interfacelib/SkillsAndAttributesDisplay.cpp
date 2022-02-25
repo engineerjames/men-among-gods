@@ -389,7 +389,17 @@ void SkillsAndAttributesDisplay::update()
 
     attributes_[ i ].displayValue_.setString( std::to_string( player.attrib[ i ][ 5 ] + nTimesRaised ) );
 
-    attributes_[ i ].expRequired_.setString( std::to_string( attrib_needed( i, player.attrib[ i ][ 0 ] + nTimesRaised, player ) ) );
+    int expNeededToRaise = attrib_needed( i, player.attrib[ i ][ 0 ] + nTimesRaised, player );
+
+    if ( expNeededToRaise == std::numeric_limits< int >::max() )
+    {
+      attributes_[ i ].expRequired_.setString( "" );
+    }
+    else
+    {
+      attributes_[ i ].expRequired_.setString( MenAmongGods::addThousandsSeparator( expNeededToRaise ) );
+    }
+
     attributes_[ i ].displayValue_.update();
     attributes_[ i ].expRequired_.update();
 
@@ -437,7 +447,17 @@ void SkillsAndAttributesDisplay::update()
     int nTimesRaised = static_cast< int >( raiseMap_[ skills_[ i ].name_.getString() ].size() );
 
     skills_[ i ].displayValue_.setString( std::to_string( player.skill[ i ][ 5 ] + nTimesRaised ) );
-    skills_[ i ].expRequired_.setString( std::to_string( skill_needed( i, player.skill[ i ][ 0 ] + nTimesRaised, player ) ) );
+
+    int expNeededToRaise = skill_needed( i, player.skill[ i ][ 0 ] + nTimesRaised, player );
+    if ( expNeededToRaise == std::numeric_limits< int >::max() )
+    {
+      skills_[ i ].expRequired_.setString( "" );
+    }
+    else
+    {
+      skills_[ i ].expRequired_.setString( MenAmongGods::addThousandsSeparator( expNeededToRaise ) );
+    }
+
     skills_[ i ].name_.setPosition( MenAmongGods::initialSkillPosition + delta );
 
     skills_[ i ].displayValue_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 127.0f, delta.y } );
@@ -493,11 +513,21 @@ void SkillsAndAttributesDisplay::update()
   // Update HP
   int nTimesRaisedHp = static_cast< int >( raiseMap_[ lifeDisplay_[ 0 ].name_.getString() ].size() );
   lifeDisplay_[ 0 ].displayValue_.setString( std::to_string( playerData_.getClientSidePlayerInfo().a_hp ) );
-  lifeDisplay_[ 0 ].expRequired_.setString( MenAmongGods::addThousandsSeparator( hp_needed( player.hp[ 0 ] + nTimesRaisedHp, player ) ) );
+
+  int expNeededToRaiseHp = hp_needed( player.hp[ 0 ] + nTimesRaisedHp, player );
+  if ( expNeededToRaiseHp == std::numeric_limits< int >::max() )
+  {
+    lifeDisplay_[ 0 ].expRequired_.setString( "" );
+  }
+  else
+  {
+    lifeDisplay_[ 0 ].expRequired_.setString( MenAmongGods::addThousandsSeparator( expNeededToRaiseHp ) );
+  }
+
   lifeDisplay_[ 0 ].displayValue_.update();
   lifeDisplay_[ 0 ].expRequired_.update();
 
-  if ( player.points >= hp_needed( player.hp[ 0 ] + nTimesRaisedHp, player ) )
+  if ( player.points >= expNeededToRaiseHp )
   {
     lifeDisplay_[ 0 ].plus_.setString( "+" );
   }
@@ -518,12 +548,21 @@ void SkillsAndAttributesDisplay::update()
   // Update End
   int nTimesRaisedEnd = static_cast< int >( raiseMap_[ lifeDisplay_[ 1 ].name_.getString() ].size() );
   lifeDisplay_[ 1 ].displayValue_.setString( std::to_string( playerData_.getClientSidePlayerInfo().a_end ) );
-  lifeDisplay_[ 1 ].expRequired_.setString(
-      MenAmongGods::addThousandsSeparator( end_needed( player.end[ 0 ] + nTimesRaisedEnd, player ) ) );
+
+  int expNeededToRaiseEnd = end_needed( player.end[ 0 ] + nTimesRaisedEnd, player );
+  if ( expNeededToRaiseEnd == std::numeric_limits< int >::max() )
+  {
+    lifeDisplay_[ 1 ].expRequired_.setString( "" );
+  }
+  else
+  {
+    lifeDisplay_[ 1 ].expRequired_.setString( MenAmongGods::addThousandsSeparator( expNeededToRaiseEnd ) );
+  }
+
   lifeDisplay_[ 1 ].displayValue_.update();
   lifeDisplay_[ 1 ].expRequired_.update();
 
-  if ( player.points >= end_needed( player.end[ 0 ] + nTimesRaisedEnd, player ) )
+  if ( player.points >= end_needed( expNeededToRaiseEnd, player ) )
   {
     lifeDisplay_[ 1 ].plus_.setString( "+" );
   }
@@ -544,8 +583,17 @@ void SkillsAndAttributesDisplay::update()
   // Update Mana
   int nTimesRaisedMana = static_cast< int >( raiseMap_[ lifeDisplay_[ 2 ].name_.getString() ].size() );
   lifeDisplay_[ 2 ].displayValue_.setString( std::to_string( playerData_.getClientSidePlayerInfo().a_mana ) );
-  lifeDisplay_[ 2 ].expRequired_.setString(
-      MenAmongGods::addThousandsSeparator( mana_needed( player.mana[ 0 ] + nTimesRaisedMana, player ) ) );
+
+  int expNeededToRaiseMana = mana_needed( player.mana[ 0 ] + nTimesRaisedMana, player );
+  if ( expNeededToRaiseMana == std::numeric_limits< int >::max() )
+  {
+    lifeDisplay_[ 2 ].expRequired_.setString( "" );
+  }
+  else
+  {
+    lifeDisplay_[ 2 ].expRequired_.setString( MenAmongGods::addThousandsSeparator( expNeededToRaiseMana ) );
+  }
+
   lifeDisplay_[ 2 ].displayValue_.update();
   lifeDisplay_[ 2 ].expRequired_.update();
 
