@@ -105,11 +105,11 @@ void PlayerEquipmentDisplay::onUserInput( const sf::Event& e )
       {
         commands_.push_back( std::make_shared< MenAmongGods::InventoryCommand >( 1u, 7u, 0u ) );
       }
-      else if ( itemRow == 4 && itemColumn == 0 ) // right ring
+      else if ( itemRow == 4 && itemColumn == 1 ) // right ring
       {
         commands_.push_back( std::make_shared< MenAmongGods::InventoryCommand >( 1u, 10u, 0u ) );
       }
-      else if ( itemRow == 4 && itemColumn == 1 ) // left ring
+      else if ( itemRow == 4 && itemColumn == 0 ) // left ring
       {
         commands_.push_back( std::make_shared< MenAmongGods::InventoryCommand >( 1u, 11u, 0u ) );
       }
