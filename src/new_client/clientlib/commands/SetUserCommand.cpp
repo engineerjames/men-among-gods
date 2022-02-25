@@ -56,21 +56,46 @@ bool SetUserCommand::send( sf::TcpSocket& socket ) const
   const constexpr int N_CHUNKS            = 18;
   const constexpr int N_BYTES_PER_PAYLOAD = 13;
 
+  bool shouldStopEarly = false;
+
   sf::Socket::Status status = sf::Socket::Status::Done;
   for ( int i = 0; i < N_CHUNKS; ++i )
   {
+    if ( shouldStopEarly )
+    {
+      break;
+    }
+
     buffer[ 0 ] = ClientMessages::getValue( ClientMessages::MessageTypes::CMD_SETUSER );
     buffer[ 1 ] = offSetToInputMap.at( i ).first;
     buffer[ 2 ] = offSetToInputMap.at( i ).second;
 
     for ( int n = 0; n < N_BYTES_PER_PAYLOAD; ++n )
     {
+      if ( shouldStopEarly )
+      {
+        break;
+      }
+
+      std::size_t stringOffset = n + offSetToInputMap.at( i ).second;
       if ( i >= 6 )
       {
+        if ( stringOffset >= playerDescription_.length() )
+        {
+          shouldStopEarly = true;
+          break;
+        }
+
         buffer[ n + 3 ] = playerDescription_.c_str()[ n + offSetToInputMap.at( i ).second ];
       }
       else
       {
+        if ( stringOffset >= playerName_.length() )
+        {
+          shouldStopEarly = true;
+          break;
+        }
+
         buffer[ n + 3 ] = playerName_.c_str()[ n + offSetToInputMap.at( i ).second ];
       }
     }
