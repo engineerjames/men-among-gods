@@ -360,7 +360,7 @@ void TickBuffer::sv_setchar_name3( const unsigned char* buf )
 
   playerData_.setOkeyName( playerData_.getClientSidePlayerInfo().name );
   playerData_.setRaceAndSex( *( unsigned long* ) ( buf + 11 ) );
-  playerData_.saveToJsonFile();
+  playerData_.saveToJsonFile( playerData_.getPlayerName() );
 }
 
 void TickBuffer::sv_setchar_mode( const unsigned char* buf )
@@ -919,7 +919,7 @@ void TickBuffer::sv_unique( const unsigned char* buf )
   playerData_.setUnique2( unique2 );
 
   // save_unique
-  playerData_.saveToJsonFile();
+  playerData_.saveToJsonFile( playerData_.getPlayerName() );
 }
 
 int TickBuffer::sv_ignore( const unsigned char* buf )

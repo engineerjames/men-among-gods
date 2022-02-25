@@ -71,8 +71,8 @@ public:
   void saveToFile() const;
   void loadFromFile( const std::string& filePath );
 
-  void saveToJsonFile() const;
-  void loadFromJsonFile();
+  void saveToJsonFile( const std::string& fileName ) const;
+  void loadFromJsonFile( const std::string& fileName );
 
   void         setName( std::string newName );
   void         setPassword( std::string password );
@@ -110,6 +110,8 @@ public:
   void        set_look_proz( unsigned short nr, unsigned short id, int proz ) const;
   std::string lookup( int nr, unsigned short id ) const;
   void        add_look( unsigned short nr, char* name, unsigned short id );
+
+  void clear();
 
 private:
   // Holds the name, description, and some client-related settings (split apart later)

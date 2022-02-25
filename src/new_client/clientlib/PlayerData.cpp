@@ -302,7 +302,7 @@ void PlayerData::setMode( int newMode )
 std::vector< int > PlayerData::getUnknownCharacterIds() const
 {
   std::vector< int > unknownIds {};
-  for ( auto [ key, val ] : lookMap_ )
+  for ( const auto& [ key, val ] : lookMap_ )
   {
     if ( val.known == 0 )
     {
@@ -644,9 +644,18 @@ unsigned int PlayerData::getOkeyUserNumber() const
   return okey_.usnr;
 }
 
-void PlayerData::loadFromJsonFile()
+void PlayerData::clear()
 {
-  std::ifstream playerFile { MenAmongGods::getConfigPath() + "playerdata.moa" };
+  playerInfo_           = pdata();
+  clientSidePlayerInfo_ = cplayer();
+  okey_                 = key();
+  unique1_              = 0;
+  unique2_              = 0;
+}
+
+void PlayerData::loadFromJsonFile( const std::string& fileName )
+{
+  std::ifstream playerFile { MenAmongGods::getConfigPath() + fileName };
 
   //
   // Player data
@@ -680,9 +689,25 @@ void PlayerData::loadFromJsonFile()
 }
 
 // save_options and save_unique combined
-void PlayerData::saveToJsonFile() const
+void PlayerData::saveToJsonFile( const std::string& fileName ) const
 {
-  std::ofstream playerFile( MenAmongGods::getConfigPath() + "playerdata.moa" );
+  std::string fullFilePath = MenAmongGods::getConfigPath() + fileName + ".moa"; 
+
+  if ( fileName.empty() )
+  {
+    std::string playerName = getClientSidePlayerInfo().name;
+
+    if ( playerName.empty() )
+    {
+      fullFilePath = MenAmongGods::getConfigPath() + "playerData.moa";
+    }
+    else
+    {
+      fullFilePath = MenAmongGods::getConfigPath() + playerName + ".moa";
+    }
+  }
+
+  std::ofstream playerFile( fullFilePath );
 
   //
   // Player data
@@ -725,6 +750,8 @@ void PlayerData::saveToJsonFile() const
   root[ "unique2" ] = unique2_;
 
   playerFile << root.toStyledString();
+
+  std::cerr << "Saved player file to: ./" << fullFilePath << std::endl;
 }
 
 void PlayerData::loadFromFile( const std::string& filePath )

@@ -174,7 +174,7 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( PlayerDa
     LOG_DEBUG( "Received NEWPLAYER message from server: [usnr, pass1, pass2]=[" << playerData.getUserNumber() << ", " << storedPass1 << ", "
                                                                                 << storedPass2 << "]." );
 
-    playerData.saveToJsonFile();
+    playerData.saveToJsonFile( playerData.getPlayerName() );
 
     return ProcessStatus::DONE;
   }
