@@ -4,6 +4,7 @@
 #include "ClientTypes.h"
 #include "Component.h"
 #include "LoadButtonDisplay.h"
+#include "NewButtonDisplay.h"
 #include "PasswordTextInputDisplay.h"
 #include "RadioButtonDisplay.h"
 #include "SaveButtonDisplay.h"
@@ -52,6 +53,7 @@ private:
   SubmitButtonDisplay               submitButton_;
   SaveButtonDisplay                 saveButton_;
   LoadButtonDisplay                 loadButton_;
+  NewButtonDisplay                  newButton_;
 
   std::vector< MenAmongGods::Component* > components_;
 };

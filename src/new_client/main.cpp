@@ -148,5 +148,7 @@ int main()
     }
   }
 
+  playerData->saveToJsonFile( playerData->getPlayerName() );
+
   return 0;
 }

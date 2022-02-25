@@ -644,7 +644,16 @@ unsigned int PlayerData::getOkeyUserNumber() const
   return okey_.usnr;
 }
 
-void PlayerData::loadFromJsonFile(const std::string& fileName)
+void PlayerData::clear()
+{
+  playerInfo_           = pdata();
+  clientSidePlayerInfo_ = cplayer();
+  okey_                 = key();
+  unique1_              = 0;
+  unique2_              = 0;
+}
+
+void PlayerData::loadFromJsonFile( const std::string& fileName )
 {
   std::ifstream playerFile { MenAmongGods::getConfigPath() + fileName };
 
@@ -682,9 +691,23 @@ void PlayerData::loadFromJsonFile(const std::string& fileName)
 // save_options and save_unique combined
 void PlayerData::saveToJsonFile( const std::string& fileName ) const
 {
-  std::ofstream playerFile( MenAmongGods::getConfigPath() + fileName + ".moa" );
+  std::string fullFilePath = MenAmongGods::getConfigPath() + fileName + ".moa"; 
 
-  std::cerr << "Saved player file to: ./" << fileName + ".moa" << std::endl;
+  if ( fileName.empty() )
+  {
+    std::string playerName = getClientSidePlayerInfo().name;
+
+    if ( playerName.empty() )
+    {
+      fullFilePath = MenAmongGods::getConfigPath() + "playerData.moa";
+    }
+    else
+    {
+      fullFilePath = MenAmongGods::getConfigPath() + playerName + ".moa";
+    }
+  }
+
+  std::ofstream playerFile( fullFilePath );
 
   //
   // Player data
@@ -727,6 +750,8 @@ void PlayerData::saveToJsonFile( const std::string& fileName ) const
   root[ "unique2" ] = unique2_;
 
   playerFile << root.toStyledString();
+
+  std::cerr << "Saved player file to: ./" << fullFilePath << std::endl;
 }
 
 void PlayerData::loadFromFile( const std::string& filePath )

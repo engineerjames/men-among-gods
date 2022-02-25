@@ -111,6 +111,8 @@ public:
   std::string lookup( int nr, unsigned short id ) const;
   void        add_look( unsigned short nr, char* name, unsigned short id );
 
+  void clear();
+
 private:
   // Holds the name, description, and some client-related settings (split apart later)
   pdata                                    playerInfo_; // This is more what initially gets sent to the server

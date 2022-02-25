@@ -21,6 +21,7 @@ LoginUi::LoginUi( PlayerData& playerData, const sf::RenderWindow& window, const 
     , submitButton_( window, fontCache.getFont(), fontSize, sf::Vector2f { 75, 50 } )
     , saveButton_( window, playerData, fontCache.getFont(), fontSize, sf::Vector2f { 75, 50 } )
     , loadButton_( window, playerData, fontCache.getFont(), fontSize, sf::Vector2f { 75, 50 } )
+    , newButton_( window, playerData, fontCache.getFont(), fontSize, sf::Vector2f { 75, 50 } )
     , components_()
 {
   raceSelection_.emplace_back( window, fontCache.getFont(), "Harakim", 10.0f, fontSize );
@@ -51,12 +52,32 @@ LoginUi::LoginUi( PlayerData& playerData, const sf::RenderWindow& window, const 
     this->populatePlayerData();
   };
 
+  // Set up the new button callback
+  auto newCallback = [ this ]()
+  {
+    nameEntry_.setText( "" );
+    passwordEntry_.setText( "" );
+
+    for ( auto& r : raceSelection_ )
+    {
+      r.setSelected( false );
+    }
+
+    for ( auto& s : sexSelection_ )
+    {
+      s.setSelected( false );
+    }
+  };
+
   submitButton_.setPosition( sf::Vector2f { 10.0f, 200.0f } );
   submitButton_.setCallBack( callBack );
 
   saveButton_.setPosition( sf::Vector2f { 125.0f, 200.0f } );
 
   loadButton_.setPosition( sf::Vector2f { 240.0f, 200.0f } );
+
+  newButton_.setPosition( sf::Vector2f { 10.0f, 275.0f } );
+  newButton_.setCallBack( newCallback );
 
   // Register components
   components_.push_back( &nameEntry_ );
@@ -65,6 +86,7 @@ LoginUi::LoginUi( PlayerData& playerData, const sf::RenderWindow& window, const 
   components_.push_back( &submitButton_ );
   components_.push_back( &saveButton_ );
   components_.push_back( &loadButton_ );
+  components_.push_back( &newButton_ );
 
   for ( auto& r : raceSelection_ )
   {
