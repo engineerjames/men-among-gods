@@ -24,7 +24,7 @@ void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int
 {
   struct zip*      za  = nullptr;
   struct zip_file* zf  = nullptr;
-  std::byte*       buf = std::make_unique< std::byte[] >( 2 * 1024 * 1024 ); // 2MB
+  auto             buf = std::make_unique< std::byte[] >( 2 * 1024 * 1024 ); // 2MB
 
   std::vector< sf::Image > images { MAX_ID + 1 };
 
@@ -70,7 +70,7 @@ void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int
       sf::Texture& newTexture = textures_[ i + offSet ];
       sf::Sprite&  newSprite  = sprites_[ i + offSet ];
 
-      if ( static_cast< unsigned long >( zip_fread( zf, buf, sb.size ) ) != sb.size )
+      if ( static_cast< unsigned long >( zip_fread( zf, buf.get(), sb.size ) ) != sb.size )
       {
         LOG_ERROR( "Unable to read the entire zip file." );
       }
@@ -80,7 +80,7 @@ void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int
         if ( ! std::filesystem::exists( gfxFile.filename() ) )
         {
           std::ofstream outFile { gfxFile.filename(), std::ios::binary };
-          outFile.write( reinterpret_cast< const char* >( buf ), sb.size );
+          outFile.write( reinterpret_cast< const char* >( buf.get() ), sb.size );
         }
       }
 
