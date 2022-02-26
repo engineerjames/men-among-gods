@@ -122,8 +122,9 @@ void MapDisplay::finalize()
 
 void MapDisplay::onUserInput( const sf::Event& e )
 {
-  // User attempts to move by left clicking on the map
-  if ( e.type == sf::Event::MouseButtonReleased && e.mouseButton.button == sf::Mouse::Button::Left )
+  // User attempts to move by left clicking on the map ( NOT holding down alt or shift )
+  if ( e.type == sf::Event::MouseButtonReleased && e.mouseButton.button == sf::Mouse::Button::Left &&
+       ! sf::Keyboard::isKeyPressed( sf::Keyboard::Key::LShift ) && ! sf::Keyboard::isKeyPressed( sf::Keyboard::Key::LAlt ) )
   {
     // Attempting to port similar logic from inter.c::mouse_mapbox()
     sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
@@ -139,6 +140,8 @@ void MapDisplay::onUserInput( const sf::Event& e )
     {
       commands_.emplace_back( std::make_shared< MenAmongGods::MoveCommand >( map_.getX( m ), map_.getY( m ) ) );
     }
+
+    return;
   }
 
   // User attempts to select a character
@@ -152,20 +155,37 @@ void MapDisplay::onUserInput( const sf::Event& e )
       return;
     }
 
-    int m = getMapIndexFromMousePosition( mousePosition, true );
+    int m = getMapIndexFromMousePosition( mousePosition, false );
 
-    int characterId = map_.getCharacterId( m );
-    if ( characterId != 0 )
+    std::array< int, 5 > mapIndicesToCheck {};
+
+    // First check the original index specified
+    mapIndicesToCheck[ 0 ] = m;
+    mapIndicesToCheck[ 1 ] = getMapIndexFromMousePosition( mousePosition + sf::Vector2f { 16.0f, 0.0f }, false );
+    mapIndicesToCheck[ 2 ] = getMapIndexFromMousePosition( mousePosition + sf::Vector2f { -16.0f, 0.0f }, false );
+    mapIndicesToCheck[ 3 ] = getMapIndexFromMousePosition( mousePosition + sf::Vector2f { 0.0f, 16.0f }, false );
+    mapIndicesToCheck[ 4 ] = getMapIndexFromMousePosition( mousePosition + sf::Vector2f { 0.0f, 32.0f }, false );
+
+    int j = 0;
+    for ( const auto& i : mapIndicesToCheck )
     {
-      if ( playerData_.getSelectedCharacter() == characterId )
+      int characterId = map_.getCharacterId( i );
+      if ( characterId != 0 )
       {
-        playerData_.setSelectedCharacter( 0 );
+        if ( playerData_.getSelectedCharacter() == characterId )
+        {
+          playerData_.setSelectedCharacter( 0 );
+          return;
+        }
+        else
+        {
+          playerData_.setSelectedCharacter( characterId );
+          return;
+        }
       }
-      else
-      {
-        playerData_.setSelectedCharacter( characterId );
-      }
+      j++;
     }
+
     return;
   }
 
@@ -208,6 +228,8 @@ void MapDisplay::onUserInput( const sf::Event& e )
     {
       commands_.emplace_back( std::make_shared< MenAmongGods::TurnCommand >( map_.getX( m ), map_.getY( m ) ) );
     }
+
+    return;
   }
 
   if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Key::LControl ) && e.type == sf::Event::MouseButtonReleased &&
@@ -234,6 +256,8 @@ void MapDisplay::onUserInput( const sf::Event& e )
         commands_.emplace_back( std::make_shared< MenAmongGods::GiveCommand >( map_.getCharacterId( m ) ) );
       }
     }
+
+    return;
   }
 
   // PICKUP or drop items
@@ -269,6 +293,8 @@ void MapDisplay::onUserInput( const sf::Event& e )
         commands_.emplace_back( std::make_shared< MenAmongGods::PickupCommand >( x, y ) );
       }
     }
+
+    return;
   }
 
   // Look at item on the ground
@@ -291,6 +317,8 @@ void MapDisplay::onUserInput( const sf::Event& e )
     {
       commands_.emplace_back( std::make_shared< MenAmongGods::LookItemCommand >( x, y ) );
     }
+
+    return;
   }
 }
 
