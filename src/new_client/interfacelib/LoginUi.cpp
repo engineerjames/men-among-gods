@@ -112,7 +112,19 @@ void LoginUi::update()
     hasLoadedFile = true;
 
     // Load file details into UI elements.  This is super stupid but we can refactor later.
-    nameEntry_.setText( playerData_.getPlayerName() );
+    std::string playerName = playerData_.getPlayerName();
+
+    if ( playerName.empty() )
+    {
+      playerName = playerData_.getClientSidePlayerInfo().name;
+
+      if ( playerName.empty())
+      {
+        playerName = playerData_.getOkeyName();
+      }
+    }
+
+    nameEntry_.setText( playerName );
     descriptionEntry_.setText( playerData_.getPlayerDescription() );
 
     // Set race and sex
