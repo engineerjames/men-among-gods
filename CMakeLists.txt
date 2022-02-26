@@ -4,8 +4,8 @@ project(men-among-gods C CXX)
 
 option(ENABLE_CLANG_TIDY "Enable static analysis via clang-tidy" OFF)
 option(ENABLE_LOGGING "Enable logging output from new client application" ON)
-option(ENABLE_UBSAN "Enable undefined behavior sanitizer" ON)
-option(ENABLE_ASAN "Enable address sanitizer" ON)
+option(ENABLE_UBSAN "Enable undefined behavior sanitizer" OFF)
+option(ENABLE_ASAN "Enable address sanitizer" OFF)
 
 if (MSVC)
   set(ENABLE_CLANG_TIDY OFF)
