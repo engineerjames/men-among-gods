@@ -44,7 +44,7 @@ inline bool userClickedOnMap( const sf::Vector2f& pos )
   return true;
 }
 
-inline int getMapIndexFromMousePosition( const sf::Vector2f& mousePosition, bool setTileOutline )
+inline int getMapIndexFromMousePosition( const sf::Vector2f& mousePosition )
 {
   sf::Vector2f shiftedMousePosition = sf::Vector2f { mousePosition.x + ( 176 - 16 ), mousePosition.y + 8 };
 
