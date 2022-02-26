@@ -114,7 +114,7 @@ void MapDisplay::onUserInput( const sf::Event& e )
       return;
     }
 
-    int m = getMapIndexFromMousePosition( mousePosition, true );
+    int m = getMapIndexFromMousePosition( mousePosition );
 
     if ( mapIndexIsValid( m ) && userClickedOnMap( mousePosition ) )
     {
@@ -190,7 +190,7 @@ void MapDisplay::onUserInput( const sf::Event& e )
       return;
     }
 
-    int m = getMapIndexFromMousePosition( mousePosition, false );
+    int m = getMapIndexFromMousePosition( mousePosition );
 
     if ( mapIndexIsValid( m ) )
     {
@@ -241,7 +241,7 @@ void MapDisplay::onUserInput( const sf::Event& e )
       return;
     }
 
-    int m = getMapIndexFromMousePosition( mousePosition, false );
+    int m = getMapIndexFromMousePosition( mousePosition );
 
     cmap      clickedTile = map_.getMap( m );
     const int x           = clickedTile.x;
@@ -278,7 +278,7 @@ void MapDisplay::onUserInput( const sf::Event& e )
       return;
     }
 
-    int m = getMapIndexFromMousePosition( mousePosition, false );
+    int m = getMapIndexFromMousePosition( mousePosition );
 
     cmap      clickedTile = map_.getMap( m );
     const int x           = clickedTile.x;
