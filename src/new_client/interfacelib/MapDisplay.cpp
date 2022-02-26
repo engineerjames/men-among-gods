@@ -95,36 +95,16 @@ void MapDisplay::draw( sf::RenderTarget& target, sf::RenderStates states ) const
   }
 }
 
-int MapDisplay::getMapIndexFromMousePosition( const sf::Vector2f& mousePosition, bool setTileOutline )
-{
-  sf::Vector2f shiftedMousePosition = sf::Vector2f { mousePosition.x + ( 176 - 16 ), mousePosition.y + 8 };
-
-  int mx = static_cast< int >( 2 * shiftedMousePosition.y + shiftedMousePosition.x - ( YPOS * 2 ) - XPOS + ( ( TILEX - 34 ) / 2 * 32 ) );
-  int my = static_cast< int >( shiftedMousePosition.x - 2 * shiftedMousePosition.y + ( YPOS * 2 ) - XPOS + ( ( TILEX - 34 ) / 2 * 32 ) );
-
-  mx /= 32;
-  my /= 32;
-
-  if ( setTileOutline )
-  {
-    tileType_ = 0;
-    tileX_    = mx;
-    tileY_    = my;
-  }
-
-  // Map index
-  return mx + my * TILEX;
-}
-
 void MapDisplay::finalize()
 {
 }
 
 void MapDisplay::onUserInput( const sf::Event& e )
 {
-  // User attempts to move by left clicking on the map ( NOT holding down alt or shift )
+  // User attempts to move by left clicking on the map ( NOT holding down alt, shift, or control )
   if ( e.type == sf::Event::MouseButtonReleased && e.mouseButton.button == sf::Mouse::Button::Left &&
-       ! sf::Keyboard::isKeyPressed( sf::Keyboard::Key::LShift ) && ! sf::Keyboard::isKeyPressed( sf::Keyboard::Key::LAlt ) )
+       ! sf::Keyboard::isKeyPressed( sf::Keyboard::Key::LShift ) && ! sf::Keyboard::isKeyPressed( sf::Keyboard::Key::LAlt ) &&
+       ! sf::Keyboard::isKeyPressed( sf::Keyboard::Key::LControl ) )
   {
     // Attempting to port similar logic from inter.c::mouse_mapbox()
     sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
@@ -155,19 +135,7 @@ void MapDisplay::onUserInput( const sf::Event& e )
       return;
     }
 
-    int m = getMapIndexFromMousePosition( mousePosition, false );
-
-    std::array< int, 5 > mapIndicesToCheck {};
-
-    // First check the original index specified
-    mapIndicesToCheck[ 0 ] = m;
-    mapIndicesToCheck[ 1 ] = getMapIndexFromMousePosition( mousePosition + sf::Vector2f { 16.0f, 0.0f }, false );
-    mapIndicesToCheck[ 2 ] = getMapIndexFromMousePosition( mousePosition + sf::Vector2f { -16.0f, 0.0f }, false );
-    mapIndicesToCheck[ 3 ] = getMapIndexFromMousePosition( mousePosition + sf::Vector2f { 0.0f, 16.0f }, false );
-    mapIndicesToCheck[ 4 ] = getMapIndexFromMousePosition( mousePosition + sf::Vector2f { 0.0f, 32.0f }, false );
-
-    int j = 0;
-    for ( const auto& i : mapIndicesToCheck )
+    for ( const auto& i : getFuzzyMapIndices( mousePosition ) )
     {
       int characterId = map_.getCharacterId( i );
       if ( characterId != 0 )
@@ -183,7 +151,6 @@ void MapDisplay::onUserInput( const sf::Event& e )
           return;
         }
       }
-      j++;
     }
 
     return;
@@ -200,14 +167,15 @@ void MapDisplay::onUserInput( const sf::Event& e )
       return;
     }
 
-    int m = getMapIndexFromMousePosition( mousePosition, true );
-
-    int characterId = map_.getCharacterId( m );
-    if ( characterId != 0 )
+    for ( const auto& i : getFuzzyMapIndices( mousePosition ) )
     {
-      commands_.push_back( std::make_shared< MenAmongGods::LookCommand >( characterId ) );
+      int characterId = map_.getCharacterId( i );
+      if ( characterId != 0 )
+      {
+        commands_.push_back( std::make_shared< MenAmongGods::LookCommand >( characterId ) );
+        return;
+      }
     }
-    return;
   }
 
   // User faces his/her character a specific direction via a right mouse button click
@@ -242,22 +210,24 @@ void MapDisplay::onUserInput( const sf::Event& e )
       return;
     }
 
-    int m = getMapIndexFromMousePosition( mousePosition, true );
-
-    // Check if character is present on tile?
-    if ( map_.getCharacterId( m ) != 0 )
+    for ( const auto& i : getFuzzyMapIndices( mousePosition ) )
     {
-      if ( playerData_.getCarriedItem() == 0 )
+      int characterId = map_.getCharacterId( i );
+      // Check if character is present on tile?
+      if ( characterId != 0 )
       {
-        commands_.emplace_back( std::make_shared< MenAmongGods::AttackCommand >( map_.getCharacterId( m ) ) );
-      }
-      else
-      {
-        commands_.emplace_back( std::make_shared< MenAmongGods::GiveCommand >( map_.getCharacterId( m ) ) );
+        if ( playerData_.getCarriedItem() == 0 )
+        {
+          commands_.emplace_back( std::make_shared< MenAmongGods::AttackCommand >( characterId ) );
+          return;
+        }
+        else
+        {
+          commands_.emplace_back( std::make_shared< MenAmongGods::GiveCommand >( characterId ) );
+          return;
+        }
       }
     }
-
-    return;
   }
 
   // PICKUP or drop items
