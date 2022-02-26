@@ -85,6 +85,7 @@ public:
   void         setClientShouldShowPercentHealth( bool shouldShowPercentHealth );
   void         setClientShouldHideWalls( bool shouldHideWalls );
   void         setOkeyName( char ( &pdataName )[ 40 ] );
+  std::string  getOkeyName() const;
   unsigned int getOkeyUserNumber() const;
   int          getItem( int index ) const;
   int          getCarriedItem() const;
