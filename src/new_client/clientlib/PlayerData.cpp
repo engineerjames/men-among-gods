@@ -617,6 +617,11 @@ void PlayerData::setOkeyName( char ( &pdataName )[ 40 ] )
   std::strncpy( okey_.name, pdataName, sizeof( pdataName ) - 1 );
 }
 
+std::string PlayerData::getOkeyName() const
+{
+  return okey_.name;
+}
+
 PlayerData::OkeyPasswordType PlayerData::getPasswordOkeyValues() const
 {
   return std::make_tuple( okey_.pass1, okey_.pass2 );

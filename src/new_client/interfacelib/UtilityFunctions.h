@@ -2,6 +2,7 @@
 #define UTILITY_FUNCTIONS_H
 
 #include <SFML/Graphics.hpp>
+#include <array>
 
 #include "ConstantIdentifiers.h"
 #include "UiPositions.h"
@@ -41,6 +42,36 @@ inline bool userClickedOnMap( const sf::Vector2f& pos )
   }
 
   return true;
+}
+
+inline int getMapIndexFromMousePosition( const sf::Vector2f& mousePosition )
+{
+  sf::Vector2f shiftedMousePosition = sf::Vector2f { mousePosition.x + ( 176 - 16 ), mousePosition.y + 8 };
+
+  int mx = static_cast< int >( 2 * shiftedMousePosition.y + shiftedMousePosition.x - ( YPOS * 2 ) - XPOS + ( ( TILEX - 34 ) / 2 * 32 ) );
+  int my = static_cast< int >( shiftedMousePosition.x - 2 * shiftedMousePosition.y + ( YPOS * 2 ) - XPOS + ( ( TILEX - 34 ) / 2 * 32 ) );
+
+  mx /= 32;
+  my /= 32;
+
+  // Map index
+  return mx + my * TILEX;
+}
+
+inline std::array< int, 5 > getFuzzyMapIndices( sf::Vector2f centerMousePosition )
+{
+  int m = getMapIndexFromMousePosition( centerMousePosition );
+
+  std::array< int, 5 > mapIndicesToCheck {};
+
+  // First check the original index specified
+  mapIndicesToCheck[ 0 ] = m;
+  mapIndicesToCheck[ 1 ] = getMapIndexFromMousePosition( centerMousePosition + sf::Vector2f { 16.0f, 0.0f } );
+  mapIndicesToCheck[ 2 ] = getMapIndexFromMousePosition( centerMousePosition + sf::Vector2f { -16.0f, 0.0f } );
+  mapIndicesToCheck[ 3 ] = getMapIndexFromMousePosition( centerMousePosition + sf::Vector2f { 0.0f, 16.0f } );
+  mapIndicesToCheck[ 4 ] = getMapIndexFromMousePosition( centerMousePosition + sf::Vector2f { 0.0f, 32.0f } );
+
+  return mapIndicesToCheck;
 }
 
 } // namespace MenAmongGods
