@@ -135,8 +135,8 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( PlayerDa
     return ClientConnection::ProcessStatus::ERROR;
   }
 
-  unsigned int tmp {};
-  static int   capcnt {};
+  std::uint32_t tmp {};
+  static int    capcnt {};
 
   ServerMessages::MessageTypes serverMsgType = ServerMessages::getType( buffer[ 0 ] );
 
@@ -144,7 +144,7 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( PlayerDa
 
   if ( serverMsgType == MessageTypes::CHALLENGE )
   {
-    tmp = *( unsigned long* ) ( buffer.data() + 1 );
+    std::memcpy( &tmp, buffer.data() + 1, sizeof( tmp ) );
     tmp = Encoder::xcrypt( tmp );
 
     MenAmongGods::ChallengeCommand challengeCommand { tmp, VERSION, playerData.getRaceAndSex() };
@@ -158,9 +158,13 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( PlayerDa
   else if ( serverMsgType == MessageTypes::NEWPLAYER )
   {
     // Unique player ID
-    unsigned long clientDataUserNumber = *( unsigned long* ) ( buffer.data() + 1 );
-    unsigned long clientDataPass1      = *( unsigned long* ) ( buffer.data() + 5 );
-    unsigned long clientDataPass2      = *( unsigned long* ) ( buffer.data() + 9 );
+    std::uint32_t clientDataUserNumber {};
+    std::uint32_t clientDataPass1 {};
+    std::uint32_t clientDataPass2 {};
+
+    std::memcpy( &clientDataUserNumber, buffer.data() + 1, sizeof( std::uint32_t ) );
+    std::memcpy( &clientDataPass1, buffer.data() + 5, sizeof( std::uint32_t ) );
+    std::memcpy( &clientDataPass2, buffer.data() + 9, sizeof( std::uint32_t ) );
 
     playerData.setUserNumber( clientDataUserNumber );
     playerData.setPassword( clientDataPass1, clientDataPass2 );
@@ -180,13 +184,13 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( PlayerDa
   }
   else if ( serverMsgType == MessageTypes::LOGIN_OK )
   {
-    serverVersion_ = *( unsigned long* ) ( buffer.data() + 1 );
+    std::memcpy( &serverVersion_, buffer.data() + 1, sizeof( std::uint32_t ) );
     LOG_DEBUG( "LOGIN_OK from server: " << serverVersion_ );
     return ProcessStatus::DONE;
   }
   else if ( serverMsgType == MessageTypes::EXIT )
   {
-    tmp = *( unsigned int* ) ( buffer.data() + 1 );
+    std::memcpy( &tmp, buffer.data() + 1, sizeof( tmp ) );
 
     LOG_WARNING( "Server demands exit: " << logout_reason[ tmp ] );
 
@@ -194,7 +198,7 @@ ClientConnection::ProcessStatus ClientConnection::processLoginResponse( PlayerDa
   }
   else if ( serverMsgType == MessageTypes::CAP )
   {
-    tmp = *( unsigned int* ) ( buffer.data() + 1 );
+    std::memcpy( &tmp, buffer.data() + 1, sizeof( tmp ) );
     capcnt++;
     LOG_WARNING( "Player limit reached; player placed in queue: " << capcnt << ", " << tmp );
     return ProcessStatus::CONTINUE;

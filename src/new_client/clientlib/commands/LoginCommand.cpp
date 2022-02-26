@@ -19,9 +19,9 @@ bool LoginCommand::send( sf::TcpSocket& socket ) const
 
   buf[ 0 ] = ClientMessages::getValue( ClientMessages::MessageTypes::LOGIN );
 
-  *( unsigned long* ) ( buf.data() + 1 ) = userNumber_;
-  *( unsigned long* ) ( buf.data() + 5 ) = password1_;
-  *( unsigned long* ) ( buf.data() + 9 ) = password2_;
+  std::memcpy( buf.data() + 1, &userNumber_, sizeof( std::uint32_t ) );
+  std::memcpy( buf.data() + 5, &password1_, sizeof( std::uint32_t ) );
+  std::memcpy( buf.data() + 9, &password2_, sizeof( std::uint32_t ) );
 
   sf::Socket::Status status = socket.send( buf.data(), buf.size() );
 

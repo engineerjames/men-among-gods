@@ -6,6 +6,7 @@
 
 #include <SFML/Network.hpp>
 #include <array>
+#include <cstring>
 #include <json/json.h>
 
 namespace MenAmongGods
@@ -40,7 +41,7 @@ protected:
 
     buf[ 0 ] = ClientMessages::getValue( type_ );
 
-    *( std::uint32_t* ) ( buf.data() + 1 ) = x;
+    std::memcpy( buf.data() + 1, &x, sizeof( std::uint32_t ) );
 
     std::size_t bytesSent = 0;
 
@@ -60,8 +61,8 @@ protected:
 
     buf[ 0 ] = ClientMessages::getValue( type_ );
 
-    *( std::uint16_t* ) ( buf.data() + 1 ) = x;
-    *( std::uint32_t* ) ( buf.data() + 3 ) = y;
+    std::memcpy( buf.data() + 1, &x, sizeof( std::uint16_t ) );
+    std::memcpy( buf.data() + 3, &y, sizeof( std::uint32_t ) );
 
     std::size_t bytesSent = 0;
 
@@ -81,9 +82,9 @@ protected:
 
     buf[ 0 ] = ClientMessages::getValue( type_ );
 
-    *( std::uint32_t* ) ( buf.data() + 1 ) = x;
-    *( std::uint32_t* ) ( buf.data() + 5 ) = y;
-    *( std::uint32_t* ) ( buf.data() + 9 ) = z;
+    std::memcpy( buf.data() + 1, &x, sizeof( std::uint32_t ) );
+    std::memcpy( buf.data() + 5, &y, sizeof( std::uint32_t ) );
+    std::memcpy( buf.data() + 9, &z, sizeof( std::uint32_t ) );
 
     std::size_t bytesSent = 0;
 
