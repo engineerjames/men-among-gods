@@ -62,6 +62,7 @@ set( headers
 )
 
 set( test_application_libs
+    ${PROJECT_CXX_LIBS}
     sfml-graphics 
     Boost::serialization 
     ${zlib_library}

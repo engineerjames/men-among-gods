@@ -41,7 +41,9 @@ bool TickBuffer::receive( const std::array< std::uint8_t, 1024 >* buffer, std::s
 
   if ( tickSize_ >= tickStart_ + 2 )
   {
-    int tmp = *( unsigned short* ) ( tickBuffer_.data() + tickStart_ );
+    int tmp {};
+
+    std::memcpy( &tmp, tickBuffer_.data() + tickStart_, sizeof( std::uint16_t ) );
     tmp &= 0x7fff;
     if ( tmp < 2 )
     {
@@ -359,7 +361,10 @@ void TickBuffer::sv_setchar_name3( const unsigned char* buf )
   std::memcpy( playerData_.getClientSidePlayerInfo().name + 30, buf + 1, 10 );
 
   playerData_.setOkeyName( playerData_.getClientSidePlayerInfo().name );
-  playerData_.setRaceAndSex( *( unsigned long* ) ( buf + 11 ) );
+
+  std::uint32_t raceAndSexValue {};
+  std::memcpy( &raceAndSexValue, buf + 11, sizeof( std::uint32_t ) );
+  playerData_.setRaceAndSex( raceAndSexValue );
   playerData_.saveToJsonFile( playerData_.getPlayerName() );
 }
 
@@ -372,34 +377,34 @@ void TickBuffer::sv_setchar_mode( const unsigned char* buf )
 void TickBuffer::sv_setchar_hp( const unsigned char* buf )
 {
   LOG_DEBUG( "TickBuffer::sv_setchar_hp" );
-  playerData_.getClientSidePlayerInfo().hp[ 0 ] = *( unsigned short* ) ( buf + 1 );
-  playerData_.getClientSidePlayerInfo().hp[ 1 ] = *( unsigned short* ) ( buf + 3 );
-  playerData_.getClientSidePlayerInfo().hp[ 2 ] = *( unsigned short* ) ( buf + 5 );
-  playerData_.getClientSidePlayerInfo().hp[ 3 ] = *( unsigned short* ) ( buf + 7 );
-  playerData_.getClientSidePlayerInfo().hp[ 4 ] = *( unsigned short* ) ( buf + 9 );
-  playerData_.getClientSidePlayerInfo().hp[ 5 ] = *( unsigned short* ) ( buf + 11 );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().hp[ 0 ], buf + 1, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().hp[ 1 ], buf + 3, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().hp[ 2 ], buf + 5, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().hp[ 3 ], buf + 7, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().hp[ 4 ], buf + 9, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().hp[ 5 ], buf + 11, sizeof( std::uint16_t ) );
 }
 
 void TickBuffer::sv_setchar_endur( const unsigned char* buf )
 {
   LOG_DEBUG( "TickBuffer::sv_setchar_endur" );
-  playerData_.getClientSidePlayerInfo().end[ 0 ] = *( short int* ) ( buf + 1 );
-  playerData_.getClientSidePlayerInfo().end[ 1 ] = *( short int* ) ( buf + 3 );
-  playerData_.getClientSidePlayerInfo().end[ 2 ] = *( short int* ) ( buf + 5 );
-  playerData_.getClientSidePlayerInfo().end[ 3 ] = *( short int* ) ( buf + 7 );
-  playerData_.getClientSidePlayerInfo().end[ 4 ] = *( short int* ) ( buf + 9 );
-  playerData_.getClientSidePlayerInfo().end[ 5 ] = *( short int* ) ( buf + 11 );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().end[ 0 ], buf + 1, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().end[ 1 ], buf + 3, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().end[ 2 ], buf + 5, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().end[ 3 ], buf + 7, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().end[ 4 ], buf + 9, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().end[ 5 ], buf + 11, sizeof( std::uint16_t ) );
 }
 
 void TickBuffer::sv_setchar_mana( const unsigned char* buf )
 {
   LOG_DEBUG( "TickBuffer::sv_setchar_mana" );
-  playerData_.getClientSidePlayerInfo().mana[ 0 ] = *( short int* ) ( buf + 1 );
-  playerData_.getClientSidePlayerInfo().mana[ 1 ] = *( short int* ) ( buf + 3 );
-  playerData_.getClientSidePlayerInfo().mana[ 2 ] = *( short int* ) ( buf + 5 );
-  playerData_.getClientSidePlayerInfo().mana[ 3 ] = *( short int* ) ( buf + 7 );
-  playerData_.getClientSidePlayerInfo().mana[ 4 ] = *( short int* ) ( buf + 9 );
-  playerData_.getClientSidePlayerInfo().mana[ 5 ] = *( short int* ) ( buf + 11 );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().mana[ 0 ], buf + 1, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().mana[ 1 ], buf + 3, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().mana[ 2 ], buf + 5, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().mana[ 3 ], buf + 7, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().mana[ 4 ], buf + 9, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().mana[ 5 ], buf + 11, sizeof( std::uint16_t ) );
 }
 
 void TickBuffer::sv_setchar_attrib( const unsigned char* buf )
@@ -439,88 +444,92 @@ void TickBuffer::sv_setchar_skill( const unsigned char* buf )
 void TickBuffer::sv_setchar_ahp( const unsigned char* buf )
 {
   LOG_DEBUG( "TickBuffer::sv_setchar_ahp" );
-  playerData_.getClientSidePlayerInfo().a_hp = *( unsigned short* ) ( buf + 1 );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().a_hp, buf + 1, sizeof( std::uint16_t ) );
 }
 
 void TickBuffer::sv_setchar_aend( const unsigned char* buf )
 {
   LOG_DEBUG( "TickBuffer::sv_setchar_aend" );
-  playerData_.getClientSidePlayerInfo().a_end = *( unsigned short* ) ( buf + 1 );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().a_end, buf + 1, sizeof( std::uint16_t ) );
 }
 
 void TickBuffer::sv_setchar_amana( const unsigned char* buf )
 {
   LOG_DEBUG( "TickBuffer::sv_setchar_amana" );
-  playerData_.getClientSidePlayerInfo().a_mana = *( unsigned short* ) ( buf + 1 );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().a_mana, buf + 1, sizeof( std::uint16_t ) );
 }
 
 void TickBuffer::sv_setchar_dir( const unsigned char* buf )
 {
   LOG_DEBUG( "TickBuffer::sv_setchar_dir" );
-  playerData_.getClientSidePlayerInfo().dir = *( unsigned char* ) ( buf + 1 );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().dir, buf + 1, sizeof( std::uint8_t ) );
 }
 
 void TickBuffer::sv_setchar_pts( const unsigned char* buf )
 {
   LOG_DEBUG( "TickBuffer::sv_setchar_pts" );
-  playerData_.getClientSidePlayerInfo().points     = *( unsigned long* ) ( buf + 1 );
-  playerData_.getClientSidePlayerInfo().points_tot = *( unsigned long* ) ( buf + 5 );
-  playerData_.getClientSidePlayerInfo().kindred    = *( unsigned long* ) ( buf + 9 );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().points, buf + 1, sizeof( std::uint32_t ) );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().points_tot, buf + 5, sizeof( std::uint32_t ) );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().kindred, buf + 9, sizeof( std::uint32_t ) );
 }
 
 void TickBuffer::sv_setchar_gold( const unsigned char* buf )
 {
   LOG_DEBUG( "TickBuffer::sv_setchar_gold" );
-  playerData_.getClientSidePlayerInfo().gold   = *( unsigned long* ) ( buf + 1 );
-  playerData_.getClientSidePlayerInfo().armor  = *( unsigned long* ) ( buf + 5 );
-  playerData_.getClientSidePlayerInfo().weapon = *( unsigned long* ) ( buf + 9 );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().gold, buf + 1, sizeof( std::uint32_t ) );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().armor, buf + 5, sizeof( std::uint32_t ) );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().weapon, buf + 9, sizeof( std::uint32_t ) );
 }
 
 void TickBuffer::sv_setchar_item( const unsigned char* buf )
 {
   LOG_DEBUG( "TickBuffer::sv_setchar_item" );
 
-  int n = *( unsigned long* ) ( buf + 1 );
+  int n {};
+  std::memcpy( &n, buf + 1, sizeof( std::uint32_t ) );
   if ( n < 0 || n > 39 )
   {
     LOG_ERROR( "Invalid setchar item" );
   }
-  playerData_.getClientSidePlayerInfo().item[ n ]   = *( short int* ) ( buf + 5 );
-  playerData_.getClientSidePlayerInfo().item_p[ n ] = *( short int* ) ( buf + 7 );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().item[ n ], buf + 5, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().item_p[ n ], buf + 7, sizeof( std::uint16_t ) );
 }
 
 void TickBuffer::sv_setchar_worn( const unsigned char* buf )
 {
   LOG_DEBUG( "TickBuffer::sv_setchar_worn" );
 
-  int n = *( unsigned long* ) ( buf + 1 );
+  int n {};
+  std::memcpy( &n, buf + 1, sizeof( std::uint32_t ) );
+
   if ( n < 0 || n > 19 )
   {
     LOG_ERROR( "Invalid setchar worn" );
   }
-  playerData_.getClientSidePlayerInfo().worn[ n ]   = *( short int* ) ( buf + 5 );
-  playerData_.getClientSidePlayerInfo().worn_p[ n ] = *( short int* ) ( buf + 7 );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().worn[ n ], buf + 5, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().worn_p[ n ], buf + 7, sizeof( std::uint16_t ) );
 }
 
 void TickBuffer::sv_setchar_spell( const unsigned char* buf )
 {
   LOG_DEBUG( "TickBuffer::sv_setchar_spell" );
 
-  int n = *( unsigned long* ) ( buf + 1 );
+  int n {};
+  std::memcpy( &n, buf + 1, sizeof( std::uint32_t ) );
   if ( n < 0 || n > 19 )
   {
     LOG_ERROR( "Invalid setchar spell" );
   }
-  playerData_.getClientSidePlayerInfo().spell[ n ]  = *( short int* ) ( buf + 5 );
-  playerData_.getClientSidePlayerInfo().active[ n ] = *( short int* ) ( buf + 7 );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().spell[ n ], buf + 5, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().active[ n ], buf + 7, sizeof( std::uint16_t ) );
 }
 
 void TickBuffer::sv_setchar_obj( const unsigned char* buf )
 {
   LOG_DEBUG( "TickBuffer::sv_setchar_obj" );
 
-  playerData_.getClientSidePlayerInfo().citem   = *( short int* ) ( buf + 1 );
-  playerData_.getClientSidePlayerInfo().citem_p = *( short int* ) ( buf + 3 );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().citem, buf + 1, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().citem_p, buf + 3, sizeof( std::uint16_t ) );
 }
 
 int TickBuffer::sv_setmap( const unsigned char* buf, int off )
@@ -538,7 +547,7 @@ int TickBuffer::sv_setmap( const unsigned char* buf, int off )
   }
   else
   {
-    n = *( unsigned short* ) ( buf + 2 );
+    std::memcpy( &n, buf + 2, sizeof( std::uint16_t ) );
     p = 4;
   }
 
@@ -559,25 +568,33 @@ int TickBuffer::sv_setmap( const unsigned char* buf, int off )
 
   if ( buf[ 1 ] & 1 )
   {
-    map_.setBackgroundSprite( n, *( unsigned short* ) ( buf + p ) );
+    std::uint16_t newBackgroundSprite {};
+    std::memcpy( &newBackgroundSprite, buf + p, sizeof( std::uint16_t ) );
+    map_.setBackgroundSprite( n, newBackgroundSprite );
     p += 2;
     cnt[ 0 ]++;
   }
   if ( buf[ 1 ] & 2 )
   {
-    map_.setFlags( n, *( unsigned int* ) ( buf + p ) );
+    std::uint32_t newMapFlags {};
+    std::memcpy( &newMapFlags, buf + p, sizeof( std::uint32_t ) );
+    map_.setFlags( n, newMapFlags );
     p += 4;
     cnt[ 1 ]++;
   }
   if ( buf[ 1 ] & 4 )
   {
-    map_.setFlags2( n, *( unsigned int* ) ( buf + p ) );
+    std::uint32_t newMapFlags2 {};
+    std::memcpy( &newMapFlags2, buf + p, sizeof( std::uint32_t ) );
+    map_.setFlags2( n, newMapFlags2 );
     p += 4;
     cnt[ 2 ]++;
   }
   if ( buf[ 1 ] & 8 )
   {
-    map_.setItemSprite( n, *( unsigned short* ) ( buf + p ) );
+    std::uint16_t newItemSprite {};
+    std::memcpy( &newItemSprite, buf + p, sizeof( std::uint16_t ) );
+    map_.setItemSprite( n, newItemSprite );
     p += 2;
     cnt[ 3 ]++;
   }
@@ -589,7 +606,9 @@ int TickBuffer::sv_setmap( const unsigned char* buf, int off )
   }
   if ( buf[ 1 ] & 32 )
   {
-    map_.setCharacterSprite( n, *( unsigned short* ) ( buf + p ) );
+    std::uint16_t newCharacterSprite {};
+    std::memcpy( &newCharacterSprite, buf + p, sizeof( std::uint16_t ) );
+    map_.setCharacterSprite( n, newCharacterSprite );
     p += 2;
     map_.setCharacterStatus( n, *( unsigned char* ) ( buf + p ) );
     p += 1;
@@ -599,9 +618,15 @@ int TickBuffer::sv_setmap( const unsigned char* buf, int off )
   }
   if ( buf[ 1 ] & 64 )
   {
-    map_.setCharacterId( n, *( unsigned short* ) ( buf + p ) );
+    std::uint16_t newCharacterId {};
+    std::uint16_t newCharacterCrc {};
+
+    std::memcpy( &newCharacterId, buf + p, sizeof( std::uint16_t ) );
+    map_.setCharacterId( n, newCharacterId );
     p += 2;
-    map_.setCharacterCrc( n, *( unsigned short* ) ( buf + p ) );
+
+    std::memcpy( &newCharacterCrc, buf + p, sizeof( std::uint16_t ) );
+    map_.setCharacterCrc( n, newCharacterCrc );
     p += 2;
     map_.setCharacterSpeed( n, *( unsigned char* ) ( buf + p ) );
     p += 1;
@@ -624,8 +649,15 @@ int TickBuffer::sv_setmap3( const unsigned char* buf, int cnt )
   int m {};
   int p {};
 
-  int            n   = ( *( unsigned short* ) ( buf + 1 ) ) & 2047;
-  unsigned short tmp = ( *( unsigned short* ) ( buf + 1 ) ) >> 12;
+  int            n {};
+  unsigned short tmp {};
+
+  std::memcpy( &n, buf + 1, sizeof( std::uint16_t ) );
+  n &= 2047;
+
+  std::memcpy( &tmp, buf + 1, sizeof( std::uint16_t ) );
+  tmp >>= 12;
+
   if ( n < 0 || n >= TILEX * TILEY )
   {
     LOG_ERROR( "corrupt setmap3!" );
@@ -658,8 +690,8 @@ void TickBuffer::sv_setorigin( const unsigned char* buf )
   int yp {};
   int n {};
 
-  xp = *( short* ) ( buf + 1 );
-  yp = *( short* ) ( buf + 3 );
+  std::memcpy( &xp, buf + 1, sizeof( std::uint16_t ) );
+  std::memcpy( &yp, buf + 3, sizeof( std::uint16_t ) );
 
   for ( y = n = 0; y < TILEY; y++ )
   {
@@ -761,51 +793,51 @@ void TickBuffer::sv_look1( const unsigned char* buf )
 {
   LOG_DEBUG( "TickBuffer::sv_look1" );
 
-  playerData_.getLook().worn[ 0 ] = *( unsigned short* ) ( buf + 1 );
-  playerData_.getLook().worn[ 2 ] = *( unsigned short* ) ( buf + 3 );
-  playerData_.getLook().worn[ 3 ] = *( unsigned short* ) ( buf + 5 );
-  playerData_.getLook().worn[ 5 ] = *( unsigned short* ) ( buf + 7 );
-  playerData_.getLook().worn[ 6 ] = *( unsigned short* ) ( buf + 9 );
-  playerData_.getLook().worn[ 7 ] = *( unsigned short* ) ( buf + 11 );
-  playerData_.getLook().worn[ 8 ] = *( unsigned short* ) ( buf + 13 );
-  playerData_.getLook().autoflag  = *( unsigned char* ) ( buf + 15 );
+  std::memcpy( &playerData_.getLook().worn[ 0 ], buf + 1, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getLook().worn[ 2 ], buf + 3, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getLook().worn[ 3 ], buf + 5, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getLook().worn[ 5 ], buf + 7, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getLook().worn[ 6 ], buf + 9, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getLook().worn[ 7 ], buf + 11, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getLook().worn[ 8 ], buf + 13, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getLook().autoflag, buf + 15, sizeof( std::uint8_t ) );
 }
 
 void TickBuffer::sv_look2( const unsigned char* buf )
 {
   LOG_DEBUG( "TickBuffer::sv_look2" );
 
-  playerData_.getLook().worn[ 9 ]  = *( unsigned short* ) ( buf + 1 );  // 1 2
-  playerData_.getLook().sprite     = *( unsigned short* ) ( buf + 3 );  // 3 4
-  playerData_.getLook().points     = *( unsigned int* ) ( buf + 5 );    // 5 6 7 8
-  playerData_.getLook().hp         = *( unsigned int* ) ( buf + 9 );    // 9 10 11 12
-  playerData_.getLook().worn[ 10 ] = *( unsigned short* ) ( buf + 13 ); // 13 14
+  std::memcpy( &playerData_.getLook().worn[ 9 ], buf + 1, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getLook().sprite, buf + 3, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getLook().points, buf + 5, sizeof( std::uint32_t ) );
+  std::memcpy( &playerData_.getLook().hp, buf + 9, sizeof( std::uint32_t ) );
+  std::memcpy( &playerData_.getLook().worn[ 10 ], buf + 13, sizeof( std::uint16_t ) );
 }
 
 void TickBuffer::sv_look3( const unsigned char* buf )
 {
   LOG_DEBUG( "TickBuffer::sv_look3" );
 
-  playerData_.getLook().end    = *( unsigned short* ) ( buf + 1 );
-  playerData_.getLook().a_hp   = *( unsigned short* ) ( buf + 3 );
-  playerData_.getLook().a_end  = *( unsigned short* ) ( buf + 5 );
-  playerData_.getLook().nr     = *( unsigned short* ) ( buf + 7 );
-  playerData_.getLook().id     = *( unsigned short* ) ( buf + 9 );
-  playerData_.getLook().mana   = *( unsigned short* ) ( buf + 11 );
-  playerData_.getLook().a_mana = *( unsigned short* ) ( buf + 13 );
+  std::memcpy( &playerData_.getLook().end, buf + 1, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getLook().a_hp, buf + 3, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getLook().a_end, buf + 5, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getLook().nr, buf + 7, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getLook().id, buf + 9, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getLook().mana, buf + 11, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getLook().a_mana, buf + 13, sizeof( std::uint16_t ) );
 }
 
 void TickBuffer::sv_look4( const unsigned char* buf )
 {
   LOG_DEBUG( "TickBuffer::sv_look4" );
 
-  playerData_.getLook().worn[ 1 ]  = *( unsigned short* ) ( buf + 1 );
-  playerData_.getLook().worn[ 4 ]  = *( unsigned short* ) ( buf + 3 );
-  playerData_.getLook().extended   = buf[ 5 ];
-  playerData_.getLook().pl_price   = *( unsigned int* ) ( buf + 6 );
-  playerData_.getLook().worn[ 11 ] = *( unsigned short* ) ( buf + 10 );
-  playerData_.getLook().worn[ 12 ] = *( unsigned short* ) ( buf + 12 );
-  playerData_.getLook().worn[ 13 ] = *( unsigned short* ) ( buf + 14 );
+  std::memcpy( &playerData_.getLook().worn[ 1 ], buf + 1, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getLook().worn[ 4 ], buf + 3, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getLook().extended, &buf[ 5 ], sizeof( std::uint8_t ) );
+  std::memcpy( &playerData_.getLook().pl_price, buf + 6, sizeof( std::uint32_t ) );
+  std::memcpy( &playerData_.getLook().worn[ 11 ], buf + 10, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getLook().worn[ 12 ], buf + 12, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getLook().worn[ 13 ], buf + 14, sizeof( std::uint16_t ) );
 }
 
 void TickBuffer::sv_look5( const unsigned char* buf )
@@ -841,8 +873,8 @@ void TickBuffer::sv_look6( const unsigned char* buf )
 
   for ( n = s; n < std::min( 62, s + 2 ); n++ )
   {
-    playerData_.getLook().item[ n ]  = *( unsigned short* ) ( buf + 2 + ( n - s ) * 6 );
-    playerData_.getLook().price[ n ] = *( unsigned int* ) ( buf + 4 + ( n - s ) * 6 );
+    std::memcpy( &playerData_.getLook().item[ n ], ( buf + 2 + ( n - s ) * 6 ), sizeof( std::uint16_t ) );
+    std::memcpy( &playerData_.getLook().price[ n ], ( buf + 4 + ( n - s ) * 6 ), sizeof( std::uint32_t ) );
   }
   if ( n == 62 )
   {
@@ -855,12 +887,12 @@ void TickBuffer::sv_settarget( const unsigned char* buf )
 {
   LOG_DEBUG( "TickBuffer::sv_settarget" );
 
-  playerData_.getClientSidePlayerInfo().attack_cn    = *( unsigned short* ) ( buf + 1 );
-  playerData_.getClientSidePlayerInfo().goto_x       = *( unsigned short* ) ( buf + 3 );
-  playerData_.getClientSidePlayerInfo().goto_y       = *( unsigned short* ) ( buf + 5 );
-  playerData_.getClientSidePlayerInfo().misc_action  = *( unsigned short* ) ( buf + 7 );
-  playerData_.getClientSidePlayerInfo().misc_target1 = *( unsigned short* ) ( buf + 9 );
-  playerData_.getClientSidePlayerInfo().misc_target2 = *( unsigned short* ) ( buf + 11 );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().attack_cn, buf + 1, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().goto_x, buf + 3, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().goto_y, buf + 5, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().misc_action, buf + 7, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().misc_target1, buf + 9, sizeof( std::uint16_t ) );
+  std::memcpy( &playerData_.getClientSidePlayerInfo().misc_target2, buf + 11, sizeof( std::uint16_t ) );
 }
 
 void TickBuffer::sv_playsound( const unsigned char* buf )
@@ -872,13 +904,13 @@ void TickBuffer::sv_playsound( const unsigned char* buf )
   int                    pan {};
   std::array< char, 80 > name {};
 
-  nr  = *( unsigned int* ) ( buf + 1 );
-  vol = *( int* ) ( buf + 5 );
-  pan = *( int* ) ( buf + 9 );
+  std::memcpy( &nr, buf + 1, sizeof( std::uint32_t ) );
+  std::memcpy( &vol, buf + 5, sizeof( std::uint32_t ) );
+  std::memcpy( &pan, buf + 9, sizeof( std::uint32_t ) );
 
   ( void ) vol;
   ( void ) pan;
-  sprintf( name.data(), "sfx\\%d.wav", nr );
+  ( void ) name;
   // play_sound(name, vol, -pan); // add flag to reverse channels!!
 }
 
@@ -886,8 +918,8 @@ void TickBuffer::sv_exit( const unsigned char* buf )
 {
   LOG_DEBUG( "TickBuffer::sv_exit" );
 
-  int reason = *( unsigned int* ) ( buf + 1 );
-
+  int reason {};
+  std::memcpy( &reason, buf + 1, sizeof( std::uint32_t ) );
   if ( reason < 1 || reason > 12 )
   {
     LOG_ERROR( "EXIT: Reason unknown." );
@@ -912,8 +944,11 @@ void TickBuffer::sv_unique( const unsigned char* buf )
 {
   LOG_DEBUG( "TickBuffer::sv_unique" );
 
-  int unique1 = *( unsigned int* ) ( buf + 1 );
-  int unique2 = *( unsigned int* ) ( buf + 5 );
+  int unique1 {};
+  int unique2 {};
+
+  std::memcpy( &unique1, buf + 1, sizeof( std::uint32_t ) );
+  std::memcpy( &unique2, buf + 5, sizeof( std::uint32_t ) );
 
   playerData_.setUnique1( unique1 );
   playerData_.setUnique2( unique2 );

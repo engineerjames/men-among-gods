@@ -27,6 +27,7 @@ add_subdirectory(clientlib)
 
 set(target MenAmongGods)
 add_executable(${target} main.cpp)
+target_link_libraries(${target} PRIVATE ${PROJECT_CXX_LIBS})
 target_link_libraries(${target} PRIVATE client sfml-graphics sfml-network 
                                         Boost::serialization MenAmongGodsGraphics logging)
 target_compile_features(${target} PRIVATE cxx_std_17)

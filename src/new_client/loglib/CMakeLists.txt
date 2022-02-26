@@ -9,6 +9,7 @@ set(headers
 )
 
 add_library(${target} ${sources} ${headers})
+target_link_libraries(${target} PRIVATE ${PROJECT_CXX_LIBS})
 target_link_libraries(${target} PUBLIC ${jsoncpp_library})
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS})
