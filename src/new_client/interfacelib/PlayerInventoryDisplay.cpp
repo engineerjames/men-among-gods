@@ -75,7 +75,7 @@ void PlayerInventoryDisplay::update()
   if ( carriedItem != 0 )
   {
     sf::Sprite carriedItemSprite = gfxCache_.getSprite( carriedItem );
-    carriedItemSprite.setPosition( getNormalizedMousePosition( window_ ) );
+    carriedItemSprite.setPosition( getNormalizedMousePosition( window_ ) - sf::Vector2f { 10.0, 10.0 } );
     equipmentSprites_.push_back( carriedItemSprite );
   }
 }
