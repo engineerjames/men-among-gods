@@ -153,6 +153,8 @@ void MapDisplay::onUserInput( const sf::Event& e )
       }
     }
 
+    // If nothing was found, de-select as well.
+    playerData_.setSelectedCharacter( 0 );
     return;
   }
 
