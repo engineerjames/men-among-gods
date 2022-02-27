@@ -63,6 +63,7 @@ private:
   sf::Text                                   expToSpendLabel_;
   MenAmongGods::JustifiableText              expToSpendValue_;
   std::map< std::string, std::stack< int > > raiseMap_; // TODO: This should be in the player data class
+  int                                        totalPointsToSpend_;
 };
 } // namespace MenAmongGods
 

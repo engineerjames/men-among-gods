@@ -216,6 +216,7 @@ SkillsAndAttributesDisplay::SkillsAndAttributesDisplay( const sf::RenderWindow& 
     , expToSpendLabel_( "Update", font, FONT_SIZE )
     , expToSpendValue_()
     , raiseMap_()
+    , totalPointsToSpend_()
 {
 
   expToSpendLabel_.setPosition( MenAmongGods::expToSpendLabelPosition );
@@ -380,7 +381,28 @@ void SkillsAndAttributesDisplay::update()
 {
   cplayer& player = playerData_.getClientSidePlayerInfo();
 
-  expToSpendValue_.setString( std::to_string( player.points ) );
+  // Super hacky: TODO: change this data structure to match to something more appropriate
+  auto raiseMapCopy = raiseMap_;
+  int  totalSpent {};
+  for ( auto& [ skillOrAttributeName, raiseStack ] : raiseMapCopy )
+  {
+    while ( ! raiseStack.empty() )
+    {
+      totalSpent += raiseStack.top();
+      raiseStack.pop();
+    }
+  }
+
+  if ( totalSpent != 0 )
+  {
+
+    std::cerr << "Total spent: " << totalSpent << " out of " << player.points << std::endl;
+  }
+
+  totalPointsToSpend_ = player.points;
+  totalPointsToSpend_ -= totalSpent;
+
+  expToSpendValue_.setString( addThousandsSeparator( totalPointsToSpend_ ) );
 
   // Attributes
   for ( unsigned int i = 0; i < MAX_ATTRIBUTES; ++i )
@@ -403,7 +425,7 @@ void SkillsAndAttributesDisplay::update()
     attributes_[ i ].displayValue_.update();
     attributes_[ i ].expRequired_.update();
 
-    if ( player.points >= attrib_needed( i, player.attrib[ i ][ 0 ] + nTimesRaised, player ) )
+    if ( totalPointsToSpend_ >= attrib_needed( i, player.attrib[ i ][ 0 ] + nTimesRaised, player ) )
     {
       attributes_[ i ].plus_.setString( "+" );
     }
@@ -468,7 +490,7 @@ void SkillsAndAttributesDisplay::update()
     skills_[ i ].displayValue_.update();
     skills_[ i ].expRequired_.update();
 
-    if ( player.points >= skill_needed( i, player.skill[ i ][ 0 ] + nTimesRaised, player ) )
+    if ( totalPointsToSpend_ >= skill_needed( i, player.skill[ i ][ 0 ] + nTimesRaised, player ) )
     {
       skills_[ i ].plus_.setString( "+" );
     }
@@ -527,7 +549,7 @@ void SkillsAndAttributesDisplay::update()
   lifeDisplay_[ 0 ].displayValue_.update();
   lifeDisplay_[ 0 ].expRequired_.update();
 
-  if ( player.points >= expNeededToRaiseHp )
+  if ( totalPointsToSpend_ >= expNeededToRaiseHp )
   {
     lifeDisplay_[ 0 ].plus_.setString( "+" );
   }
@@ -562,7 +584,7 @@ void SkillsAndAttributesDisplay::update()
   lifeDisplay_[ 1 ].displayValue_.update();
   lifeDisplay_[ 1 ].expRequired_.update();
 
-  if ( player.points >= end_needed( expNeededToRaiseEnd, player ) )
+  if ( totalPointsToSpend_ >= end_needed( expNeededToRaiseEnd, player ) )
   {
     lifeDisplay_[ 1 ].plus_.setString( "+" );
   }
@@ -597,7 +619,7 @@ void SkillsAndAttributesDisplay::update()
   lifeDisplay_[ 2 ].displayValue_.update();
   lifeDisplay_[ 2 ].expRequired_.update();
 
-  if ( player.points >= mana_needed( player.mana[ 0 ] + nTimesRaisedMana, player ) )
+  if ( totalPointsToSpend_ >= mana_needed( player.mana[ 0 ] + nTimesRaisedMana, player ) )
   {
     lifeDisplay_[ 2 ].plus_.setString( "+" );
   }
@@ -671,13 +693,11 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
       {
         int nTimesRaised   = static_cast< int >( raiseMap_[ attributes_[ row ].name_.getString() ].size() );
         int pointsRequired = attrib_needed( row, player.attrib[ row ][ 0 ] + nTimesRaised, player );
-        if ( player.points >= pointsRequired )
+        if ( totalPointsToSpend_ >= pointsRequired )
         {
           std::string attributeName = attributes_.at( row ).name_.getString();
 
           raiseMap_[ attributeName ].push( pointsRequired );
-
-          player.points -= pointsRequired;
         }
       }
       else if ( row >= 5 && row <= 7 ) // HP/END/MANA
@@ -686,39 +706,33 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
         {
           int nTimesRaised   = static_cast< int >( raiseMap_[ lifeDisplay_[ 0 ].name_.getString() ].size() );
           int pointsRequired = hp_needed( player.hp[ 0 ] + nTimesRaised, player );
-          if ( player.points >= pointsRequired )
+          if ( totalPointsToSpend_ >= pointsRequired )
           {
             std::string hpManaEndName = lifeDisplay_.at( 0 ).name_.getString();
 
             raiseMap_[ hpManaEndName ].push( pointsRequired );
-
-            player.points -= pointsRequired;
           }
         }
         else if ( row == 6 ) // end
         {
           int nTimesRaised   = static_cast< int >( raiseMap_[ lifeDisplay_[ 1 ].name_.getString() ].size() );
           int pointsRequired = end_needed( player.end[ 0 ] + nTimesRaised, player );
-          if ( player.points >= pointsRequired )
+          if ( totalPointsToSpend_ >= pointsRequired )
           {
             std::string hpManaEndName = lifeDisplay_.at( 1 ).name_.getString();
 
             raiseMap_[ hpManaEndName ].push( pointsRequired );
-
-            player.points -= pointsRequired;
           }
         }
         else if ( row == 7 ) // mana
         {
           int nTimesRaised   = static_cast< int >( raiseMap_[ lifeDisplay_[ 2 ].name_.getString() ].size() );
           int pointsRequired = mana_needed( player.mana[ 0 ] + nTimesRaised, player );
-          if ( player.points >= pointsRequired )
+          if ( totalPointsToSpend_ >= pointsRequired )
           {
             std::string hpManaEndName = lifeDisplay_.at( 2 ).name_.getString();
 
             raiseMap_[ hpManaEndName ].push( pointsRequired );
-
-            player.points -= pointsRequired;
           }
         }
       }
@@ -733,13 +747,11 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
         int nTimesRaised = static_cast< int >( raiseMap_[ skillsToDisplay_[ row - 8 ]->name_.getString() ].size() );
 
         int pointsRequired = skill_needed( m, player.skill[ m ][ 0 ] + nTimesRaised, player );
-        if ( player.points >= pointsRequired )
+        if ( totalPointsToSpend_ >= pointsRequired )
         {
           std::string skillName = skillsToDisplay_[ row - 8 ]->name_.getString();
 
           raiseMap_[ skillName ].push( pointsRequired );
-
-          player.points -= pointsRequired;
         }
       }
     }
@@ -755,7 +767,6 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
         std::string attributeName = attributes_.at( row ).name_.getString();
         if ( raiseMap_.count( attributeName ) != 0 && raiseMap_[ attributeName ].size() > 0 )
         {
-          player.points += raiseMap_[ attributeName ].top();
           raiseMap_[ attributeName ].pop();
         }
       }
@@ -766,7 +777,6 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
           std::string lifeName = lifeDisplay_.at( 0 ).name_.getString();
           if ( raiseMap_.count( lifeName ) != 0 && raiseMap_[ lifeName ].size() > 0 )
           {
-            player.points += raiseMap_[ lifeName ].top();
             raiseMap_[ lifeName ].pop();
           }
         }
@@ -775,7 +785,6 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
           std::string lifeName = lifeDisplay_.at( 1 ).name_.getString();
           if ( raiseMap_.count( lifeName ) != 0 && raiseMap_[ lifeName ].size() > 0 )
           {
-            player.points += raiseMap_[ lifeName ].top();
             raiseMap_[ lifeName ].pop();
           }
         }
@@ -784,7 +793,6 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
           std::string lifeName = lifeDisplay_.at( 2 ).name_.getString();
           if ( raiseMap_.count( lifeName ) != 0 && raiseMap_[ lifeName ].size() > 0 )
           {
-            player.points += raiseMap_[ lifeName ].top();
             raiseMap_[ lifeName ].pop();
           }
         }
@@ -799,7 +807,6 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
         std::string skillName = skillsToDisplay_[ row - 8 ]->name_.getString();
         if ( raiseMap_.count( skillName ) != 0 && raiseMap_[ skillName ].size() > 0 )
         {
-          player.points += raiseMap_[ skillName ].top();
           raiseMap_[ skillName ].pop();
         }
       }
