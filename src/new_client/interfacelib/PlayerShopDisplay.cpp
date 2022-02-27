@@ -72,6 +72,7 @@ void PlayerShopDisplay::onUserInput( const sf::Event& e )
     if ( closeShopButtonBoundingBox.contains( mousePosition ) )
     {
       playerData_.setShouldShowShop( false );
+      return;
     }
 
     int tx = static_cast< int >( ( mousePosition.x - MenAmongGods::shopPosition.x ) / 35 );

@@ -75,7 +75,7 @@ void PlayerInventoryDisplay::update()
   if ( carriedItem != 0 )
   {
     sf::Sprite carriedItemSprite = gfxCache_.getSprite( carriedItem );
-    carriedItemSprite.setPosition( getNormalizedMousePosition( window_ ) );
+    carriedItemSprite.setPosition( getNormalizedMousePosition( window_ ) - sf::Vector2f { 10.0, 10.0 } );
     equipmentSprites_.push_back( carriedItemSprite );
   }
 }
@@ -131,6 +131,11 @@ void PlayerInventoryDisplay::onUserInput( const sf::Event& e )
   if ( e.type == sf::Event::MouseButtonReleased && e.mouseButton.button == sf::Mouse::Button::Right )
   {
     sf::Vector2f mousePosition = MenAmongGods::getNormalizedMousePosition( window_ );
+
+    if ( ! MenAmongGods::inventoryBoundingBox.contains( mousePosition ) )
+    {
+      return;
+    }
 
     // TODO: Clean up this duplicate code
     int itemRow = static_cast< int >( std::floor( ( mousePosition.y - MenAmongGods::inventoryBoundingBoxPosition.y ) /

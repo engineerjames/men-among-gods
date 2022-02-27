@@ -106,6 +106,11 @@ void MapDisplay::onUserInput( const sf::Event& e )
        ! sf::Keyboard::isKeyPressed( sf::Keyboard::Key::LShift ) && ! sf::Keyboard::isKeyPressed( sf::Keyboard::Key::LAlt ) &&
        ! sf::Keyboard::isKeyPressed( sf::Keyboard::Key::LControl ) )
   {
+    if ( playerData_.getShouldShowShop() )
+    {
+      return;
+    }
+
     // Attempting to port similar logic from inter.c::mouse_mapbox()
     sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
 
@@ -153,6 +158,8 @@ void MapDisplay::onUserInput( const sf::Event& e )
       }
     }
 
+    // If nothing was found, de-select as well.
+    playerData_.setSelectedCharacter( 0 );
     return;
   }
 

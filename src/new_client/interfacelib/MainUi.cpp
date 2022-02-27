@@ -261,9 +261,9 @@ void MainUi::update()
 
   // TODO: This has to be wrong--does a_* represent the max or current
   // values?
-  hpMaxValue_.setString( std::to_string( player.a_hp ) );
-  endMaxValue_.setString( std::to_string( player.a_end ) );
-  manaMaxValue_.setString( std::to_string( player.a_mana ) );
+  hpMaxValue_.setString( std::to_string( player.hp[ 5 ] ) );
+  endMaxValue_.setString( std::to_string( player.end[ 5 ] ) );
+  manaMaxValue_.setString( std::to_string( player.mana[ 5 ] ) );
 
   goldDisplay_.setString( MenAmongGods::goldToString( player.gold ) );
   playerNameDisplay_.setString( player.name );

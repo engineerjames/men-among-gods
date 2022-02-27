@@ -13,6 +13,7 @@ class Map;
 }
 
 class PlayerData;
+class SoundCache;
 struct skilltab;
 
 class TickBuffer
@@ -20,7 +21,7 @@ class TickBuffer
 public:
   static constexpr const unsigned int TSIZE = 131072;
 
-  TickBuffer( PlayerData& playerData, MenAmongGods::Map& map );
+  TickBuffer( PlayerData& playerData, MenAmongGods::Map& map, SoundCache& sfxCache );
   ~TickBuffer() = default;
 
   std::uint8_t* getBufferStart() noexcept;
@@ -92,6 +93,8 @@ private:
   unsigned int                      ticksInQueue_;
   unsigned int                      ctick_;
   int                               lastn_;
+
+  SoundCache& sfxCache_;
 };
 
 #endif
