@@ -15,14 +15,19 @@ public:
   int         networkThreadDelay() const;
   int         frameLimit() const;
   bool        loggingEnabled() const;
+  std::string hostIpAddress() const;
+  int         hostPort() const;
+
   Json::Value toJson() const;
 
 private:
   ClientConfiguration();
 
-  int  networkThreadDelay_;
-  int  frameLimit_;
-  bool loggingEnabled_;
+  int         networkThreadDelay_;
+  int         frameLimit_;
+  bool        loggingEnabled_;
+  std::string hostIpAddress_;
+  int         hostPort_;
 };
 } // namespace MenAmongGods
 

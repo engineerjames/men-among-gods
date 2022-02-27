@@ -38,7 +38,7 @@ int main()
   auto map        = std::make_unique< MenAmongGods::Map >();
   auto playerData = std::make_unique< PlayerData >();
 
-  sf::RenderWindow window( sf::VideoMode( MODEX, MODEY ), "Men Among Gods - New Client" );
+  sf::RenderWindow window( sf::VideoMode( MODEX, MODEY ), "Men Among Gods - v1.1.2" );
   window.setFramerateLimit( MenAmongGods::ClientConfiguration::instance().frameLimit() );
   window.requestFocus();
 
@@ -54,7 +54,9 @@ int main()
   idxCache->load();
 
   auto tickBufferPtr = std::make_shared< TickBuffer >( *playerData, *map );
-  auto client        = std::make_shared< ClientNetworkActivity >( *tickBufferPtr, *playerData, MHOST, MHOST_PORT );
+  auto client =
+      std::make_shared< ClientNetworkActivity >( *tickBufferPtr, *playerData, MenAmongGods::ClientConfiguration::instance().hostIpAddress(),
+                                                 MenAmongGods::ClientConfiguration::instance().hostPort() );
 
   auto mainUiPtr  = std::make_shared< MenAmongGods::MainUi >( window, *map, *playerData, *gfxCache, *idxCache, *fontCache );
   auto loginUiPtr = std::make_shared< MenAmongGods::LoginUi >( *playerData, window, *fontCache, LOGIN_FONT_SIZE );

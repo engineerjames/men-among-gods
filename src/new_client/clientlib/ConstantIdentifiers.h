@@ -8,8 +8,6 @@
 static const std::string   MNAME      = "Men Among Gods";
 static const std::string   MHELP      = "http://mercaston.dnsalias.net/help.html";
 static const std::string   MNEWS      = "http://mercaston.dnsalias.net/news.html";
-static const std::string   MHOST      = "ec2-3-90-219-226.compute-1.amazonaws.com";
-static const constexpr int MHOST_PORT = 5555;
 
 static const constexpr int AT_BRAVE = 0;
 static const constexpr int AT_WILL  = 1;
