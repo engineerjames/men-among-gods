@@ -132,6 +132,11 @@ void PlayerInventoryDisplay::onUserInput( const sf::Event& e )
   {
     sf::Vector2f mousePosition = MenAmongGods::getNormalizedMousePosition( window_ );
 
+    if ( ! MenAmongGods::inventoryBoundingBox.contains( mousePosition ) )
+    {
+      return;
+    }
+
     // TODO: Clean up this duplicate code
     int itemRow = static_cast< int >( std::floor( ( mousePosition.y - MenAmongGods::inventoryBoundingBoxPosition.y ) /
                                                   ( MenAmongGods::inventoryBoundingBox.height / 5.0f ) ) );
