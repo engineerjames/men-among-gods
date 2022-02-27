@@ -8,10 +8,11 @@
 #include "Map.h"
 #include "PlayerData.h"
 #include "ServerMessage.h"
+#include "SoundCache.h"
 
 extern std::atomic< bool > shouldExit;
 
-TickBuffer::TickBuffer( PlayerData& playerData, MenAmongGods::Map& map )
+TickBuffer::TickBuffer( PlayerData& playerData, MenAmongGods::Map& map, SoundCache& sfxCache )
     : compressor_()
     , playerData_( playerData )
     , map_( map )
@@ -21,6 +22,7 @@ TickBuffer::TickBuffer( PlayerData& playerData, MenAmongGods::Map& map )
     , ticksInQueue_( 0 )
     , ctick_( 0 )
     , lastn_( 0 )
+    , sfxCache_( sfxCache )
 {
 }
 
@@ -911,7 +913,7 @@ void TickBuffer::sv_playsound( const unsigned char* buf )
   ( void ) vol;
   ( void ) pan;
   ( void ) name;
-  // play_sound(name, vol, -pan); // add flag to reverse channels!!
+  sfxCache_.playSound( nr );
 }
 
 void TickBuffer::sv_exit( const unsigned char* buf )

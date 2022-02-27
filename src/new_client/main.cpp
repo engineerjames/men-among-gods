@@ -15,6 +15,7 @@
 #include "MapDisplay.h"
 #include "PlayerData.h"
 #include "ResourceLocations.h"
+#include "SoundCache.h"
 #include "TickBuffer.h"
 
 #include <filesystem>
@@ -46,14 +47,16 @@ int main()
   std::string path      = MenAmongGods::getGfxRoot() + "gfx.zip";
   std::string indexPath = MenAmongGods::getGfxRoot() + "gx00.idx";
 
-  auto fontCache = std::make_unique< MenAmongGods::FontCache >( fontPath );
-  auto gfxCache  = std::make_unique< GraphicsCache >();
-  auto idxCache  = std::make_unique< GraphicsIndex >( indexPath );
+  auto fontCache  = std::make_unique< MenAmongGods::FontCache >( fontPath );
+  auto gfxCache   = std::make_unique< GraphicsCache >();
+  auto idxCache   = std::make_unique< GraphicsIndex >( indexPath );
+  auto soundCache = std::make_unique< SoundCache >();
 
   gfxCache->loadSprites( path, GraphicsCache::MAX_SPRITES );
   idxCache->load();
+  soundCache->loadAudio( MenAmongGods::getSfxRoot() );
 
-  auto tickBufferPtr = std::make_shared< TickBuffer >( *playerData, *map );
+  auto tickBufferPtr = std::make_shared< TickBuffer >( *playerData, *map, *soundCache );
   auto client =
       std::make_shared< ClientNetworkActivity >( *tickBufferPtr, *playerData, MenAmongGods::ClientConfiguration::instance().hostIpAddress(),
                                                  MenAmongGods::ClientConfiguration::instance().hostPort() );

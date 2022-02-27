@@ -24,6 +24,7 @@ set( sources
     RankDisplay.cpp
     SkillsAndAttributesDisplay.cpp
     SaveButtonDisplay.cpp
+    SoundCache.cpp
     SubmitButtonDisplay.cpp
     TextInputDisplay.cpp
     UserOptionPanelDisplay.cpp
@@ -54,6 +55,7 @@ set( headers
     RankDisplay.h
     SaveButtonDisplay.h
     SkillsAndAttributesDisplay.h
+    SoundCache.h
     SubmitButtonDisplay.h
     TextInputDisplay.h
     UiPositions.h
@@ -64,6 +66,7 @@ set( headers
 set( test_application_libs
     ${PROJECT_CXX_LIBS}
     sfml-graphics 
+    sfml-audio
     Boost::serialization 
     ${zlib_library}
     ${libzip_library}
@@ -135,8 +138,30 @@ add_custom_command(
             COMMAND ${CMAKE_COMMAND} -E make_directory  ${RESOURCE_OUTPUT_DIRECTORY}/gfx
             COMMAND ${CMAKE_COMMAND} -E make_directory  ${RESOURCE_OUTPUT_DIRECTORY}/fonts
             COMMAND ${CMAKE_COMMAND} -E make_directory  ${RESOURCE_OUTPUT_DIRECTORY}/test
+            COMMAND ${CMAKE_COMMAND} -E make_directory  ${RESOURCE_OUTPUT_DIRECTORY}/sfx
 
             COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../gfx/gfx.zip ${RESOURCE_OUTPUT_DIRECTORY}/gfx
+
+            # Copy all sound files; TODO: Improve later once finalized (no need to list out every individual file)
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/1.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/2.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/3.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/4.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/5.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/6.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/7.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/8.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/9.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/10.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/11.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/12.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/13.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/14.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/15.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/16.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/17.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/18.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
+            
             COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/test_files/gx00.idx ${RESOURCE_OUTPUT_DIRECTORY}/gfx
 
             COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../fonts/onuava.ttf ${RESOURCE_OUTPUT_DIRECTORY}/fonts
