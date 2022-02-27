@@ -63,13 +63,13 @@ void PlayerTextInputDisplay::onUserInput( const sf::Event& e )
   {
     text_ = text_.substr( 0, text_.size() - 1 );
   } // Don't add control characters
-  else if ( text_.size() < maxCharacters_ && e.text.unicode != 8 && e.text.unicode != 13 && e.text.unicode != 27)
+  else if ( text_.size() < maxCharacters_ && e.text.unicode != 8 && e.text.unicode != 13 && e.text.unicode != 27 )
   {
     text_ += e.text.unicode;
   }
 
   // Enter
-  if ( e.text.unicode == 13 )
+  if ( e.text.unicode == 13 && ! text_.empty() )
   {
     // Copy command into command list
     commands_.emplace_back( std::make_shared< MenAmongGods::SayCommand >( text_ ) );
