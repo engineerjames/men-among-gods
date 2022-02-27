@@ -1,5 +1,7 @@
 #include "SetUserCommand.h"
 
+#include "Logger.h"
+
 #include <SFML/Network.hpp>
 #include <cstdint>
 #include <cstring>
@@ -45,57 +47,28 @@ SetUserCommand::SetUserCommand( const std::string& playerName, const std::string
 
 bool SetUserCommand::send( sf::TcpSocket& socket ) const
 {
-  // TODO: Accomodate this when we allow for saving/loading
-  // if ( ! playerData.hasPlayerDataChanged() )
-  // {
-  //   return false;
-  // }
+  LOG_DEBUG_OBJ( *this, "Sending CMD_SETUSER" );
 
   std::array< std::uint8_t, 16 > buffer {};
 
   const constexpr int N_CHUNKS            = 18;
   const constexpr int N_BYTES_PER_PAYLOAD = 13;
 
-  bool shouldStopEarly = false;
-
   sf::Socket::Status status = sf::Socket::Status::Done;
   for ( int i = 0; i < N_CHUNKS; ++i )
   {
-    if ( shouldStopEarly )
-    {
-      break;
-    }
-
     buffer[ 0 ] = ClientMessages::getValue( ClientMessages::MessageTypes::CMD_SETUSER );
     buffer[ 1 ] = offSetToInputMap.at( i ).first;
     buffer[ 2 ] = offSetToInputMap.at( i ).second;
 
     for ( int n = 0; n < N_BYTES_PER_PAYLOAD; ++n )
     {
-      if ( shouldStopEarly )
-      {
-        break;
-      }
-
-      std::size_t stringOffset = n + offSetToInputMap.at( i ).second;
       if ( i >= 6 )
       {
-        if ( stringOffset >= playerDescription_.length() )
-        {
-          shouldStopEarly = true;
-          break;
-        }
-
         buffer[ n + 3 ] = playerDescription_.c_str()[ n + offSetToInputMap.at( i ).second ];
       }
       else
       {
-        if ( stringOffset >= playerName_.length() )
-        {
-          shouldStopEarly = true;
-          break;
-        }
-
         buffer[ n + 3 ] = playerName_.c_str()[ n + offSetToInputMap.at( i ).second ];
       }
     }
@@ -105,6 +78,7 @@ bool SetUserCommand::send( sf::TcpSocket& socket ) const
 
   return status == sf::Socket::Status::Done;
 }
+
 
 Json::Value SetUserCommand::toJson() const
 {
