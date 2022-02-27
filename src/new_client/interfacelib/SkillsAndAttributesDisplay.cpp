@@ -393,12 +393,6 @@ void SkillsAndAttributesDisplay::update()
     }
   }
 
-  if ( totalSpent != 0 )
-  {
-
-    std::cerr << "Total spent: " << totalSpent << " out of " << player.points << std::endl;
-  }
-
   totalPointsToSpend_ = player.points;
   totalPointsToSpend_ -= totalSpent;
 
@@ -525,6 +519,10 @@ void SkillsAndAttributesDisplay::update()
 
       auto lastSprite = ( spellsToDraw.end() - 1 );
       lastSprite->setPosition( spellPosition );
+
+      // Set the transparency of the sprite based on the 'active' value.
+      std::uint8_t alpha = 255 * ( pl.active[ n ] ) / 15;
+      lastSprite->setColor( sf::Color { 255u, 255u, 255u, alpha } );
     }
   }
 
