@@ -1551,7 +1551,25 @@ void do_view_exp_to_rank( int cn )
 
   int expNeededToRank = expToNextRank - ch[ cn ].points;
 
-  do_char_log( cn, 0, "You need %i exp for  %s.\n", expNeededToRank, rank_name[ currentRank + 1 ] );
+  do_char_log( cn, 1, "You need %i exp for  %s.\n", expNeededToRank, rank_name[ currentRank + 1 ] );
+}
+
+extern int penta_needed;
+void do_check_pent_count( int cn )
+{
+  int activePents = 0;
+  for ( int n = 1; n < MAXITEM; n++ )
+  {
+    if ( it[ n ].used == USE_EMPTY )
+      continue;
+    if ( it[ n ].driver != 33 )
+      continue;
+    if ( it[ n ].active != -1 )
+      continue;
+    activePents++;
+  }
+
+  do_char_log( cn, 1, "There are %i pentagrams active. %i needed to solve.", activePents, penta_needed );
 }
 
 void do_emote( int cn, char* text )
@@ -2354,6 +2372,11 @@ void do_command( int cn, char* ptr )
       god_change_pass( cn, cn, arg[ 1 ] );
       return;
     };
+    if ( prefix( cmd, "pent" ) )
+    {
+      do_check_pent_count( cn );
+      return;
+    }
     if ( prefix( cmd, "poh" ) && f_pol )
     {
       god_set_flag( cn, dbatoi( arg[ 1 ] ), CF_POH );
