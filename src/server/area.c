@@ -162,6 +162,21 @@ struct area area[]={
 
 };
 
+int isInPentagramQuest( int cn )
+{
+  if ( cn < 1 || cn >= MAXCHARS )
+    return 0;
+
+  int n = 67; // Index of pentagram quest
+
+  if ( ch[ cn ].x >= area[ n ].x1 && ch[ cn ].y >= area[ n ].y1 && ch[ cn ].x <= area[ n ].x2 && ch[ cn ].y <= area[ n ].y2 )
+  {
+          return 1;
+  }
+
+  return 0;
+}
+
 // return a description of the area character cn is in
 char *get_area(int cn,int verbose)
 {
