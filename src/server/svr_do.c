@@ -1551,7 +1551,7 @@ void do_view_exp_to_rank( int cn )
 
   int expNeededToRank = expToNextRank - ch[ cn ].points;
 
-  do_char_log( cn, 1, "You need %i exp for  %s.\n", expNeededToRank, rank_name[ currentRank + 1 ] );
+  do_char_log( cn, 1, "You need %i exp for %s.\n", expNeededToRank, rank_name[ currentRank + 1 ] );
 }
 
 extern int penta_needed;
@@ -1569,7 +1569,7 @@ void do_check_pent_count( int cn )
     activePents++;
   }
 
-  do_char_log( cn, 1, "There are %i pentagrams active. %i needed to solve.", activePents, penta_needed );
+  do_char_log( cn, 1, "There are %i pentagrams active. %i needed to solve.\n", activePents, penta_needed );
 }
 
 void do_emote( int cn, char* text )
