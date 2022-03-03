@@ -32,16 +32,16 @@ sf::Sprite GraphicsCache::loadSprite( std::size_t id )
   std::string idString      = std::to_string( id );
   std::size_t numberOfZeros = 5 - idString.length();
 
-  std::stringstream ss {};
+  std::stringstream filenameStream {};
 
-  for ( int i = 0; i < numberOfZeros; ++i )
+  for ( std::size_t i = 0; i < numberOfZeros; ++i )
   {
-    ss << '0';
+    filenameStream << '0';
   }
 
-  ss << idString;
+  filenameStream << idString;
 
-  std::string fileName = ss.str();
+  std::string fileName = filenameStream.str();
 
   std::string sourceDirectory = MenAmongGods::getGfxRoot();
   for ( const auto& f : std::filesystem::recursive_directory_iterator( sourceDirectory ) )
