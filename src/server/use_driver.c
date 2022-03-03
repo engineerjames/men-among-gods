@@ -1813,7 +1813,7 @@ void solved_pentagram(int cn,int in)
         xlog( "Characters in pents: %i", charactersInPents );
 
         penta_needed = charactersInPents * 5 + RANDOM( 6 );
-        xlog( "New solve will be at %d (%d online)", penta_needed, globs->players_online );
+        xlog( "New solve will be at %d (%d online)", penta_needed, charactersInPents );
 }
 
 int use_pentagram(int cn,int in)
