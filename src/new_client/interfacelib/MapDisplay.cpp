@@ -250,28 +250,31 @@ void MapDisplay::onUserInput( const sf::Event& e )
 
     int m = getMapIndexFromMousePosition( mousePosition );
 
-    cmap      clickedTile = map_.getMap( m );
-    const int x           = clickedTile.x;
-    const int y           = clickedTile.y;
-
-    if ( playerData_.getCarriedItem() != 0 && ! ( map_.getFlags( m ) & ISITEM ) )
+    for ( const auto& i : getFuzzyMapIndices( mousePosition ) )
     {
-      commands_.emplace_back( std::make_shared< MenAmongGods::DropCommand >( x, y ) );
-    }
+      cmap      clickedTile = map_.getMap( i );
+      const int x           = clickedTile.x;
+      const int y           = clickedTile.y;
 
-    if ( map_.getFlags( m ) & ISITEM )
-    {
-      if ( map_.getFlags( m ) & ISUSABLE )
+      if ( playerData_.getCarriedItem() != 0 && ! ( map_.getFlags( m ) & ISITEM ) )
       {
-        commands_.emplace_back( std::make_shared< MenAmongGods::UseCommand >( x, y ) );
+        commands_.emplace_back( std::make_shared< MenAmongGods::DropCommand >( x, y ) );
       }
-      else
+
+      if ( map_.getFlags( m ) & ISITEM )
       {
-        commands_.emplace_back( std::make_shared< MenAmongGods::PickupCommand >( x, y ) );
+        if ( map_.getFlags( m ) & ISUSABLE )
+        {
+          commands_.emplace_back( std::make_shared< MenAmongGods::UseCommand >( x, y ) );
+        }
+        else
+        {
+          commands_.emplace_back( std::make_shared< MenAmongGods::PickupCommand >( x, y ) );
+        }
+
+        return;
       }
     }
-
-    return;
   }
 
   // Look at item on the ground
