@@ -1765,11 +1765,13 @@ int spawn_penta_enemy(int in)
         } else return cn;
 }
 
-static int penta_needed=54;
-
+// Default the first solve to be fast--5
+extern int penta_needed=5;
+int isInPentagramQuest( int cn );
 void solved_pentagram(int cn,int in)
 {
         int n,bonus;
+        int charactersInPents = 0;
 
         bonus=(it[in].data[0]*it[in].data[0]*3)/7+1;
         ch[cn].data[18]+=bonus;
@@ -1789,6 +1791,11 @@ void solved_pentagram(int cn,int in)
                         do_give_exp(n,ch[n].data[18],0,-1);
                         ch[n].data[18]=0;
                 }
+
+                if ( isInPentagramQuest( n ) != 0 )
+                {
+                  charactersInPents++;
+                }
         }
 
         for (n=1; n<MAXITEM; n++) {
@@ -1801,8 +1808,12 @@ void solved_pentagram(int cn,int in)
                 }
                 it[n].duration=it[n].active=TICKS*(10+RANDOM(20));
         }
-        penta_needed=globs->players_online+RANDOM(20)+RANDOM(20)+RANDOM(20);
-	xlog("New solve will be at %d (%d online)",penta_needed,globs->players_online);
+
+        // Modify the calculation such that we take into account how many players are IN the pentagram quest
+        xlog( "Characters in pents: %i", charactersInPents );
+
+        penta_needed = charactersInPents * 5 + RANDOM( 6 );
+        xlog( "New solve will be at %d (%d online)", penta_needed, charactersInPents );
 }
 
 int use_pentagram(int cn,int in)
