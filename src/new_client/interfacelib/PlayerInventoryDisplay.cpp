@@ -17,8 +17,7 @@
 namespace MenAmongGods
 {
 
-PlayerInventoryDisplay::PlayerInventoryDisplay( const sf::RenderWindow& window, const PlayerData& playerData,
-                                                const GraphicsCache& gfxCache )
+PlayerInventoryDisplay::PlayerInventoryDisplay( const sf::RenderWindow& window, const PlayerData& playerData, GraphicsCache& gfxCache )
     : window_( window )
     , playerData_( playerData )
     , gfxCache_( gfxCache )

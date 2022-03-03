@@ -14,7 +14,7 @@ namespace MenAmongGods
 class RankDisplay : public MenAmongGods::Component
 {
 public:
-  RankDisplay( const sf::Font& font, PlayerData& playerData, const GraphicsCache& gfxCache );
+  RankDisplay( const sf::Font& font, PlayerData& playerData, GraphicsCache& gfxCache );
   virtual ~RankDisplay() = default;
 
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
@@ -23,11 +23,11 @@ public:
   virtual void finalize() override;
 
 private:
-  const sf::Font&      font_;
-  const GraphicsCache& gfxCache_;
-  PlayerData&          playerData_;
-  JustifiableText      textualRank_;
-  sf::Sprite           rankSprite_;
+  const sf::Font& font_;
+  GraphicsCache&  gfxCache_;
+  PlayerData&     playerData_;
+  JustifiableText textualRank_;
+  sf::Sprite      rankSprite_;
 };
 } // namespace MenAmongGods
 

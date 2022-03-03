@@ -13,7 +13,7 @@
 namespace MenAmongGods
 {
 
-MainUi::MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, const GraphicsCache& gfxCache, const GraphicsIndex& gfxIndex,
+MainUi::MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, GraphicsCache& gfxCache, const GraphicsIndex& gfxIndex,
                 const FontCache& fontCache )
     : MenAmongGods::Component()
     , gfxCache_( gfxCache )
