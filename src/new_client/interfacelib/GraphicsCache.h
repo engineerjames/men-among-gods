@@ -2,7 +2,7 @@
 #define GRAPHICS_LOADER_H
 
 #include <SFML/Graphics.hpp>
-#include <string>
+#include <unordered_map>
 #include <vector>
 
 class GraphicsCache
@@ -14,13 +14,13 @@ public:
   static const constexpr unsigned int MAX_SPRITES = 13976;
   static const constexpr unsigned int MAX_ID      = 34191;
 
-  void       loadSprites( const std::string& filePath, const unsigned int howMany );
-  sf::Sprite getSprite( std::size_t id ) const;
+  sf::Sprite getSprite( std::size_t id );
 
 private:
-  bool                       isLoaded_;
-  std::vector< sf::Texture > textures_;
-  std::vector< sf::Sprite >  sprites_;
+  sf::Sprite                                            loadSprite( std::size_t id );
+  mutable std::vector< sf::Texture >                    textures_;
+  mutable std::vector< sf::Sprite >                     sprites_;
+  mutable std::unordered_map< std::size_t, sf::Sprite > spriteCache_;
 };
 
 #endif

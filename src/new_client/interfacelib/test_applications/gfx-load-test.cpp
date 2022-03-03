@@ -21,8 +21,6 @@ int main()
   std::string indexPath = MenAmongGods::getGfxRoot() + "gx00.idx";
 
   GraphicsCache cache {};
-  cache.loadSprites( path, GraphicsCache::MAX_SPRITES );
-
   sf::Font font {};
   if ( ! font.loadFromFile( MenAmongGods::getFontRoot() + "onuava.ttf" ) )
   {

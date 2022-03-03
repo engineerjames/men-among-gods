@@ -29,7 +29,6 @@ int main()
   std::string indexPath = MenAmongGods::getGfxRoot() + "gx00.idx";
 
   auto cache = std::make_unique< GraphicsCache >();
-  cache->loadSprites( path, GraphicsCache::MAX_SPRITES );
 
   GraphicsIndex index { indexPath };
   index.load();

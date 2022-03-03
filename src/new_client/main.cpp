@@ -52,7 +52,6 @@ int main()
   auto idxCache   = std::make_unique< GraphicsIndex >( indexPath );
   auto soundCache = std::make_unique< SoundCache >();
 
-  gfxCache->loadSprites( path, GraphicsCache::MAX_SPRITES );
   idxCache->load();
   soundCache->loadAudio( MenAmongGods::getSfxRoot() );
 

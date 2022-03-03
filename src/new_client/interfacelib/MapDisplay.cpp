@@ -66,7 +66,7 @@ int facing( int x, int y, int dir )
 namespace MenAmongGods
 {
 
-MapDisplay::MapDisplay( const sf::Font& font, MenAmongGods::Map& map, PlayerData& playerData, const GraphicsCache& cache,
+MapDisplay::MapDisplay( const sf::Font& font, MenAmongGods::Map& map, PlayerData& playerData, GraphicsCache& cache,
                         const GraphicsIndex& index, const sf::RenderWindow& window )
     : MenAmongGods::Component()
     , font_( font )

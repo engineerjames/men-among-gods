@@ -9,7 +9,7 @@
 
 namespace MenAmongGods
 {
-RankDisplay::RankDisplay( const sf::Font& font, PlayerData& playerData, const GraphicsCache& gfxCache )
+RankDisplay::RankDisplay( const sf::Font& font, PlayerData& playerData, GraphicsCache& gfxCache )
     : font_( font )
     , gfxCache_( gfxCache )
     , playerData_( playerData )

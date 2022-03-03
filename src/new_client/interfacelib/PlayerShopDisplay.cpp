@@ -14,7 +14,7 @@
 
 namespace MenAmongGods
 {
-PlayerShopDisplay::PlayerShopDisplay( const sf::RenderWindow& window, PlayerData& pdata, const GraphicsCache& gfxCache,
+PlayerShopDisplay::PlayerShopDisplay( const sf::RenderWindow& window, PlayerData& pdata, GraphicsCache& gfxCache,
                                       const GraphicsIndex& gfxIndex )
     : MenAmongGods::Component()
     , window_( window )

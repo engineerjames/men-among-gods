@@ -18,7 +18,7 @@ class Map;
 class MapDisplay : public MenAmongGods::Component
 {
 public:
-  MapDisplay( const sf::Font& font, MenAmongGods::Map& map, PlayerData& playerData, const GraphicsCache& cache, const GraphicsIndex& index,
+  MapDisplay( const sf::Font& font, MenAmongGods::Map& map, PlayerData& playerData, GraphicsCache& cache, const GraphicsIndex& index,
               const sf::RenderWindow& window );
   virtual ~MapDisplay() = default;
 
@@ -40,7 +40,7 @@ private:
   const sf::Font&           font_;
   MenAmongGods::Map&        map_;
   PlayerData&               playerData_;
-  const GraphicsCache&      cache_;
+  GraphicsCache&            cache_;
   const GraphicsIndex&      index_;
   const sf::RenderWindow&   window_;
   std::vector< sf::Sprite > spritesToDraw_;

@@ -197,7 +197,7 @@ SkillsAndAttributesDisplay::SkillRow::SkillRow()
   minus_.setCharacterSize( FONT_SIZE );
 }
 
-SkillsAndAttributesDisplay::SkillsAndAttributesDisplay( const sf::RenderWindow& window, const sf::Font& font, const GraphicsCache& gfxCache,
+SkillsAndAttributesDisplay::SkillsAndAttributesDisplay( const sf::RenderWindow& window, const sf::Font& font, GraphicsCache& gfxCache,
                                                         const GraphicsIndex& gfxIndex, PlayerData& playerData )
     : window_( window )
     , font_( font )
@@ -756,8 +756,8 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
     else if ( MenAmongGods::minusAreaRectangle.contains( mousePosition ) )
     {
       // Find out which row was clicked -- each row
-      int row         = static_cast< int >( mousePosition.y / 14.0f );
-      row             = std::max( 0, row );
+      int row = static_cast< int >( mousePosition.y / 14.0f );
+      row     = std::max( 0, row );
 
       if ( row >= 0 && row <= 4 ) // Attributes
       {

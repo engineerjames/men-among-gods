@@ -5,86 +5,56 @@
 #include <fstream>
 #include <iostream>
 #include <memory>
+#include <sstream>
+#include <string>
 #include <zip.h>
 
 #include <SFML/Graphics/Sprite.hpp>
 
+#include "ResourceLocations.h"
+
 #include "Logger.h"
 
 GraphicsCache::GraphicsCache()
-    : isLoaded_( false )
-    , textures_( MAX_ID + 1 )
+    : textures_( MAX_ID + 1 )
     , sprites_( MAX_ID + 1 )
+    , spriteCache_()
 {
 }
 
-// TODO: Fix this up later
-#ifdef WIN32
-void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int howMany )
+sf::Sprite GraphicsCache::loadSprite( std::size_t id )
 {
-  struct zip*      za  = nullptr;
-  struct zip_file* zf  = nullptr;
-  auto             buf = std::make_unique< std::byte[] >( 2 * 1024 * 1024 ); // 2MB
+  static std::vector< sf::Image > images { MAX_ID + 1 };
 
-  std::vector< sf::Image > images { MAX_ID + 1 };
+  // All BMP and PNG images have 5 places
+  // 1     --> 00001.bmp
+  // 23532 --> 23532.bmp
+  std::string idString      = std::to_string( id );
+  std::size_t numberOfZeros = 5 - idString.length();
 
-  int errors {};
-  za = zip_open( filePath.c_str(), 0, &errors );
+  std::stringstream filenameStream {};
 
-  if ( za == nullptr )
+  for ( std::size_t i = 0; i < numberOfZeros; ++i )
   {
-    LOG_ERROR( "Unable to open the zip file!" );
+    filenameStream << '0';
   }
 
-  LOG_DEBUG( "Loading " << zip_get_num_entries( za, 0 ) << " files from the ZIP." );
+  filenameStream << idString;
 
-  struct zip_stat sb = {};
+  std::string fileName = filenameStream.str();
 
-  unsigned int offSet = 0;
-  for ( unsigned int i = 0; i < zip_get_num_entries( za, 0 ); ++i )
+  std::string sourceDirectory = MenAmongGods::getGfxRoot();
+  for ( const auto& f : std::filesystem::recursive_directory_iterator( sourceDirectory ) )
   {
-    if ( zip_stat_index( za, i, 0, &sb ) == 0 )
+    if ( f.is_regular_file() && f.path().has_filename() && ( f.path().filename().replace_extension() == fileName ) )
     {
-      zf = zip_fopen_index( za, i, 0 );
-      if ( ! zf )
-      {
-        LOG_ERROR( "Error loading file." );
-        return;
-      }
+      std::string fileToLoad = f.path().string();
 
-      // bmp/00001.bmp - example of sb.name
-      // But we want the index in the vector to align with the filename itself.
-      // For example... we want 00001.bmp to be sprites_[1];
-      //                        00047.bmp to be sprites_[47];
-      std::filesystem::path gfxFile { sb.name };
-      if ( gfxFile.has_filename() )
-      {
-        auto gfxName = gfxFile.filename();
-        int  index   = std::stoi( gfxName.string() );
-        offSet       = index - i;
-      }
+      sf::Image&   newImage   = images[ id ];
+      sf::Texture& newTexture = textures_[ id ];
+      sf::Sprite&  newSprite  = sprites_[ id ];
 
-      // Ensure the filename matches with the index.
-      // This will force some 'holes' in our data structure
-      sf::Image&   newImage   = images[ i + offSet ];
-      sf::Texture& newTexture = textures_[ i + offSet ];
-      sf::Sprite&  newSprite  = sprites_[ i + offSet ];
-
-      if ( static_cast< unsigned long >( zip_fread( zf, buf.get(), sb.size ) ) != sb.size )
-      {
-        LOG_ERROR( "Unable to read the entire zip file." );
-      }
-      else
-      {
-        // Write file to disk
-        if ( ! std::filesystem::exists( gfxFile.filename() ) )
-        {
-          std::ofstream outFile { gfxFile.filename(), std::ios::binary };
-          outFile.write( reinterpret_cast< const char* >( buf.get() ), sb.size );
-        }
-      }
-
-      if ( ! newImage.loadFromFile( gfxFile.filename().string() ) )
+      if ( ! newImage.loadFromFile( fileToLoad ) )
       {
         LOG_ERROR( "Error loading image from memory" );
       }
@@ -102,124 +72,22 @@ void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int
 
         newSprite.setTexture( newTexture );
 
-        if ( ( i + offSet ) > images.capacity() )
-        {
-          LOG_ERROR( "Underallocated buffers - need at least a capacity of " << ( i + offSet ) );
-          return;
-        }
-
-        if ( i == howMany )
-        {
-          break;
-        }
+        return newSprite;
       }
-
-      zip_fclose( zf );
     }
   }
 
-  zip_close( za );
-
-  isLoaded_ = true;
-}
-#else
-void GraphicsCache::loadSprites( const std::string& filePath, const unsigned int howMany )
-{
-  struct zip*      za  = nullptr;
-  struct zip_file* zf  = nullptr;
-  auto             buf = std::make_unique< std::byte[] >( 2 * 1024 * 1024 ); // 2MB
-
-  std::vector< sf::Image > images { MAX_ID + 1 };
-
-  int errors {};
-  za = zip_open( filePath.c_str(), 0, &errors );
-
-  if ( za == nullptr )
-  {
-    LOG_ERROR( "Unable to open the zip file!" );
-  }
-
-  LOG_DEBUG( "Loading " << zip_get_num_entries( za, 0 ) << " files from the ZIP." );
-
-  struct zip_stat sb = {};
-
-  unsigned int offSet = 0;
-  for ( unsigned int i = 0; i < zip_get_num_entries( za, 0 ); ++i )
-  {
-    if ( zip_stat_index( za, i, 0, &sb ) == 0 )
-    {
-      zf = zip_fopen_index( za, i, 0 );
-      if ( ! zf )
-      {
-        LOG_ERROR( "Error loading file." );
-        return;
-      }
-
-      // bmp/00001.bmp - example of sb.name
-      // But we want the index in the vector to align with the filename itself.
-      // For example... we want 00001.bmp to be sprites_[1];
-      //                        00047.bmp to be sprites_[47];
-      std::filesystem::path gfxFile { sb.name };
-      if ( gfxFile.has_filename() )
-      {
-        auto gfxName = gfxFile.filename();
-        int  index   = std::stoi( gfxName.string() );
-        offSet       = index - i;
-      }
-
-      // Ensure the filename matches with the index.
-      // This will force some 'holes' in our data structure
-      sf::Image&   newImage   = images[ i + offSet ];
-      sf::Texture& newTexture = textures_[ i + offSet ];
-      sf::Sprite&  newSprite  = sprites_[ i + offSet ];
-
-      if ( static_cast< unsigned long >( zip_fread( zf, buf.get(), sb.size ) ) != sb.size )
-      {
-        LOG_ERROR( "Unable to read the entire zip file." );
-      }
-
-      if ( ! newImage.loadFromMemory( reinterpret_cast< void* >( buf.get() ), sb.size ) )
-      {
-        LOG_ERROR( "Error loading image from memory" );
-      }
-      else
-      {
-        // Great, some images have masks of 254 0 254 as well
-        newImage.createMaskFromColor( sf::Color { 0xFF00FFFF } );
-        newImage.createMaskFromColor( sf::Color { 0xFE00FEFF } );
-
-        // Yeah, there's just a FEW that have 251 0 251 as well...
-        newImage.createMaskFromColor( sf::Color { 0xFB00FBFF } );
-
-        // Load in textures and sprites for now, though this is probably unnecessary work
-        newTexture.loadFromImage( newImage );
-
-        newSprite.setTexture( newTexture );
-
-        if ( ( i + offSet ) > images.capacity() )
-        {
-          LOG_ERROR( "Underallocated buffers - need at least a capacity of " << ( i + offSet ) );
-          return;
-        }
-
-        if ( i == howMany )
-        {
-          break;
-        }
-      }
-
-      zip_fclose( zf );
-    }
-  }
-
-  zip_close( za );
-
-  isLoaded_ = true;
+  // Worst-case just return a default-constructed sprite which will render white on the screen
+  // which will look obviously wrong...
+  return sf::Sprite {};
 }
 
-#endif
-
-sf::Sprite GraphicsCache::getSprite( std::size_t id ) const
+sf::Sprite GraphicsCache::getSprite( std::size_t id )
 {
-  return sprites_.at( id );
+  if ( spriteCache_.count( id ) == 0 )
+  {
+    spriteCache_[ id ] = loadSprite( id );
+  }
+
+  return spriteCache_[ id ];
 }

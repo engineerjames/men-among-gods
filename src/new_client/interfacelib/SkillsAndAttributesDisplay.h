@@ -35,8 +35,8 @@ public:
     ~SkillRow() = default;
   };
 
-  SkillsAndAttributesDisplay( const sf::RenderWindow& window, const sf::Font& font, const GraphicsCache& gfxCache,
-                              const GraphicsIndex& gfxIndex, PlayerData& playerData );
+  SkillsAndAttributesDisplay( const sf::RenderWindow& window, const sf::Font& font, GraphicsCache& gfxCache, const GraphicsIndex& gfxIndex,
+                              PlayerData& playerData );
   ~SkillsAndAttributesDisplay() = default;
 
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
@@ -47,7 +47,7 @@ public:
 private:
   const sf::RenderWindow&                    window_;
   const sf::Font&                            font_;
-  const GraphicsCache&                       gfxCache_;
+  GraphicsCache&                             gfxCache_;
   const GraphicsIndex&                       gfxIndex_;
   PlayerData&                                playerData_;
   std::array< SkillRow, MAX_ATTRIBUTES >     attributes_;

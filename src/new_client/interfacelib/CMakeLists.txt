@@ -168,4 +168,15 @@ add_custom_command(
 
             COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/test_files/mapfile.archive ${RESOURCE_OUTPUT_DIRECTORY}/test
             COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/test_files/player.archive ${RESOURCE_OUTPUT_DIRECTORY}/test
+
+            COMMAND ${CMAKE_COMMAND} -E tar xzf ${RESOURCE_OUTPUT_DIRECTORY}/gfx/gfx.zip
+            COMMENT "Running post build script..."
+  )
+
+  add_custom_command(
+            TARGET ${target}
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E tar xzf ${RESOURCE_OUTPUT_DIRECTORY}/gfx/gfx.zip
+            WORKING_DIRECTORY ${RESOURCE_OUTPUT_DIRECTORY}/gfx/
+            COMMENT "Running post build script..."
             )

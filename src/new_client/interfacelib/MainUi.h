@@ -28,7 +28,7 @@ class FontCache;
 class MainUi : public MenAmongGods::Component
 {
 public:
-  MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, const GraphicsCache& gfxCache, const GraphicsIndex& gfxIndex,
+  MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, GraphicsCache& gfxCache, const GraphicsIndex& gfxIndex,
           const FontCache& fontCache );
   ~MainUi() = default;
 
@@ -41,9 +41,9 @@ public:
   virtual void populateCommands( std::vector< std::shared_ptr< ClientCommand > >& outCommands ) override;
 
 private:
-  const GraphicsCache& gfxCache_;
-  PlayerData&          playerData_;
-  sf::Font             font_;
+  GraphicsCache& gfxCache_;
+  PlayerData&    playerData_;
+  sf::Font       font_;
 
   sf::Text goldDisplay_;
   sf::Text playerNameDisplay_;

@@ -21,8 +21,7 @@ static int wntab[ 20 ] = { WN_HEAD, WN_CLOAK, WN_BODY, WN_ARMS, WN_NECK, WN_BELT
 namespace MenAmongGods
 {
 
-PlayerEquipmentDisplay::PlayerEquipmentDisplay( const sf::RenderWindow& window, const PlayerData& playerData,
-                                                const GraphicsCache& gfxCache )
+PlayerEquipmentDisplay::PlayerEquipmentDisplay( const sf::RenderWindow& window, const PlayerData& playerData, GraphicsCache& gfxCache )
     : window_( window )
     , playerData_( playerData )
     , gfxCache_( gfxCache )
