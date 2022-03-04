@@ -30,10 +30,6 @@ set( sources
 )
 
 set( headers
-    cgilib/cgi-lib.h
-    cgilib/cgi-priv.h
-    cgilib/html-lib.h
-    cgilib/list-lib.h
     client.h
     data.h
     driver.h
@@ -49,8 +45,6 @@ set( headers
 
 # TODO: Add respawn / password executables?
 add_executable(${target} ${sources} ${headers})
-
-target_include_directories(${target} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/cgilib)
 target_link_libraries(${target} PRIVATE -m32 z m crypt)
 target_compile_options(${target} PRIVATE -Wall -Wextra -m32 -w -fno-strict-aliasing)
 
