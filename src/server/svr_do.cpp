@@ -1555,7 +1555,7 @@ void do_view_exp_to_rank( int cn )
 }
 
 extern int penta_needed;
-void do_check_pent_count( int cn )
+void       do_check_pent_count( int cn )
 {
   int activePents = 0;
   for ( int n = 1; n < MAXITEM; n++ )
@@ -5503,7 +5503,7 @@ void do_look_char( int cn, int co, int godflag, int autoflag, int lootflag )
     *( unsigned short* ) ( buf + 13 ) = 35;
     *( unsigned char* ) ( buf + 15 )  = autoflag;
   }
-  xsend( nr, reinterpret_cast<unsigned char*>(buf), 16 );
+  xsend( nr, reinterpret_cast< unsigned char* >( buf ), 16 );
 
   buf[ 0 ] = SV_LOOK2;
 
@@ -5527,7 +5527,7 @@ void do_look_char( int cn, int co, int godflag, int autoflag, int lootflag )
     mana_diff = ch[ co ].mana[ 5 ] / 2 - RANDOM( ch[ co ].mana[ 5 ] + 1 );
   }
   *( unsigned int* ) ( buf + 9 ) = ch[ co ].hp[ 5 ] + hp_diff;
-  xsend( nr, reinterpret_cast<unsigned char*>(buf), 16 );
+  xsend( nr, reinterpret_cast< unsigned char* >( buf ), 16 );
 
   buf[ 0 ]                          = SV_LOOK3;
   *( unsigned short* ) ( buf + 1 )  = ch[ co ].end[ 5 ] + end_diff;
@@ -5538,7 +5538,7 @@ void do_look_char( int cn, int co, int godflag, int autoflag, int lootflag )
   *( unsigned short* ) ( buf + 11 ) = ch[ co ].mana[ 5 ] + mana_diff;
   *( unsigned short* ) ( buf + 13 ) = ( ch[ co ].a_mana + 500 ) / 1000 + mana_diff;
 
-  xsend( nr, reinterpret_cast<unsigned char*>(buf), 16 );
+  xsend( nr, reinterpret_cast< unsigned char* >( buf ), 16 );
 
   buf[ 0 ] = SV_LOOK4;
   if ( p <= 75 )
@@ -5578,12 +5578,12 @@ void do_look_char( int cn, int co, int godflag, int autoflag, int lootflag )
     *( unsigned char* ) ( buf + 5 ) = 0;
   }
 
-  xsend( nr, reinterpret_cast<unsigned char*>(buf), 16 );
+  xsend( nr, reinterpret_cast< unsigned char* >( buf ), 16 );
 
   buf[ 0 ] = SV_LOOK5;
   for ( n = 0; n < 15; n++ )
     buf[ n + 1 ] = ch[ co ].name[ n ];
-  xsend( nr, reinterpret_cast<unsigned char*>(buf), 16 );
+  xsend( nr, reinterpret_cast< unsigned char* >( buf ), 16 );
 
   if ( ( ch[ co ].flags & ( CF_MERCHANT | CF_BODY ) ) && ! autoflag )
   {
@@ -5610,7 +5610,7 @@ void do_look_char( int cn, int co, int godflag, int autoflag, int lootflag )
         *( unsigned short* ) ( buf + 2 + ( m - n ) * 6 ) = spr;
         *( unsigned int* ) ( buf + 4 + ( m - n ) * 6 )   = pr;
       }
-      xsend( nr, reinterpret_cast<unsigned char*>(buf), 16 );
+      xsend( nr, reinterpret_cast< unsigned char* >( buf ), 16 );
     }
 
     for ( n = 0; n < 20; n += 2 )
@@ -5631,7 +5631,7 @@ void do_look_char( int cn, int co, int godflag, int autoflag, int lootflag )
         *( unsigned short* ) ( buf + 2 + ( m - n ) * 6 ) = spr;
         *( unsigned int* ) ( buf + 4 + ( m - n ) * 6 )   = pr;
       }
-      xsend( nr, reinterpret_cast<unsigned char*>(buf), 16 );
+      xsend( nr, reinterpret_cast< unsigned char* >( buf ), 16 );
     }
 
     buf[ 0 ] = SV_LOOK6;
@@ -5672,7 +5672,7 @@ void do_look_char( int cn, int co, int godflag, int autoflag, int lootflag )
     }
     *( unsigned short* ) ( buf + 2 + 1 * 6 ) = spr;
     *( unsigned int* ) ( buf + 4 + 1 * 6 )   = pr;
-    xsend( nr, reinterpret_cast<unsigned char*>(buf), 16 );
+    xsend( nr, reinterpret_cast< unsigned char* >( buf ), 16 );
   }
 
   if ( ( ch[ cn ].flags & ( CF_GOD | CF_IMP | CF_USURP ) ) && ! autoflag && ! ( ch[ co ].flags & CF_MERCHANT ) &&
@@ -5713,7 +5713,7 @@ void do_look_depot( int cn, int co )
   *( unsigned short* ) ( buf + 11 ) = 35;
   *( unsigned short* ) ( buf + 13 ) = 35;
   *( unsigned char* ) ( buf + 15 )  = 0;
-  xsend( nr, reinterpret_cast<unsigned char*>(buf), 16 );
+  xsend( nr, reinterpret_cast< unsigned char* >( buf ), 16 );
 
   buf[ 0 ] = SV_LOOK2;
 
@@ -5724,7 +5724,7 @@ void do_look_depot( int cn, int co )
   *( unsigned int* ) ( buf + 5 )   = ch[ co ].points_tot;
 
   *( unsigned int* ) ( buf + 9 ) = ch[ co ].hp[ 5 ];
-  xsend( nr, reinterpret_cast<unsigned char*>(buf), 16 );
+  xsend( nr, reinterpret_cast< unsigned char* >( buf ), 16 );
 
   buf[ 0 ]                          = SV_LOOK3;
   *( unsigned short* ) ( buf + 1 )  = ch[ co ].end[ 5 ];
@@ -5735,7 +5735,7 @@ void do_look_depot( int cn, int co )
   *( unsigned short* ) ( buf + 11 ) = ch[ co ].mana[ 5 ];
   *( unsigned short* ) ( buf + 13 ) = ( ch[ co ].a_mana + 500 ) / 1000;
 
-  xsend( nr, reinterpret_cast<unsigned char*>(buf), 16 );
+  xsend( nr, reinterpret_cast< unsigned char* >( buf ), 16 );
 
   buf[ 0 ]                          = SV_LOOK4;
   *( unsigned short* ) ( buf + 1 )  = 35;
@@ -5752,12 +5752,12 @@ void do_look_depot( int cn, int co )
     pr = 0;
 
   *( unsigned int* ) ( buf + 6 ) = pr;
-  xsend( nr, reinterpret_cast<unsigned char*>(buf), 16 );
+  xsend( nr, reinterpret_cast< unsigned char* >( buf ), 16 );
 
   buf[ 0 ] = SV_LOOK5;
   for ( n = 0; n < 15; n++ )
     buf[ n + 1 ] = ch[ co ].name[ n ];
-  xsend( nr, reinterpret_cast<unsigned char*>(buf), 16 );
+  xsend( nr, reinterpret_cast< unsigned char* >( buf ), 16 );
 
   for ( n = 0; n < 62; n += 2 )
   {
@@ -5777,7 +5777,7 @@ void do_look_depot( int cn, int co )
       *( unsigned short* ) ( buf + 2 + ( m - n ) * 6 ) = spr;
       *( unsigned int* ) ( buf + 4 + ( m - n ) * 6 )   = pr;
     }
-    xsend( nr, reinterpret_cast<unsigned char*>(buf), 16 );
+    xsend( nr, reinterpret_cast< unsigned char* >( buf ), 16 );
   }
 }
 
