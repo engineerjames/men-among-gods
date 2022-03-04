@@ -85,7 +85,7 @@ int main(int argc, char *args[])
         n=atoi(args[1]);
         if (n==0) {
         	for (n=0; n<MAXTCHARS; n++) {
-        		if (strstr(ch[n].name,args[1]))  printf("%d: %s (%d)\n",n,ch[n].name,ch[n].class);
+        		if (strstr(ch[n].name,args[1]))  printf("%d: %s (%d)\n",n,ch[n].name,ch[n].monsterClass);
         	}
         } else {
 	        globs->reset_char=n;

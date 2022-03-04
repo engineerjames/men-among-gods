@@ -150,7 +150,7 @@ int npc_cityattack_high(int cn)
 
 int npc_moveto(int cn,int x,int y)
 {
-	int dx,dy,try;
+	int dx,dy,tryCount;
 
 	if (abs(ch[cn].x-x)<3 && abs(ch[cn].y-y)<3) {
 		ch[cn].data[1]=0;
@@ -164,27 +164,27 @@ int npc_moveto(int cn,int x,int y)
 		return 0;
 	}
 
-	for (dx=0,try=1; dx<3; dx++) {
-		for (dy=0; dy<3; dy++,try++) {
-			if (ch[cn].data[1]<try && npc_check_target(x+dx,y+dy)) {
+	for (dx=0,tryCount=1; dx<3; dx++) {
+		for (dy=0; dy<3; dy++,tryCount++) {
+			if (ch[cn].data[1]<tryCount && npc_check_target(x+dx,y+dy)) {
 				ch[cn].data[1]++;
 				ch[cn].goto_x=x+dx;
 				ch[cn].goto_y=y+dy;
 				return 0;
 			}
-			if (ch[cn].data[1]<try && npc_check_target(x-dx,y+dy)) {
+			if (ch[cn].data[1]<tryCount && npc_check_target(x-dx,y+dy)) {
 				ch[cn].data[1]++;
 				ch[cn].goto_x=x-dx;
 				ch[cn].goto_y=y+dy;
 				return 0;
 			}
-			if (ch[cn].data[1]<try && npc_check_target(x+dx,y-dy)) {
+			if (ch[cn].data[1]<tryCount && npc_check_target(x+dx,y-dy)) {
 				ch[cn].data[1]++;
 				ch[cn].goto_x=x+dx;
 				ch[cn].goto_y=y-dy;
 				return 0;
 			}
-			if (ch[cn].data[1]<try && npc_check_target(x-dx,y-dy)) {
+			if (ch[cn].data[1]<tryCount && npc_check_target(x-dx,y-dy)) {
 				ch[cn].data[1]++;
 				ch[cn].goto_x=x-dx;
 				ch[cn].goto_y=y-dy;
@@ -199,7 +199,7 @@ int npc_moveto(int cn,int x,int y)
 	return 0;
 }
 
-int npc_cityattack_wait(cn)
+int npc_cityattack_wait()
 {
 	if ((globs->mdtime%28800)<20) return 1;
 
@@ -215,7 +215,7 @@ void npc_cityattack_low(int cn)
 		case	1:	ret=npc_moveto(cn,447,356); break;
 		case	2:	ret=npc_moveto(cn,447,362); break;
 		case	3:	ret=npc_moveto(cn,474,362); break;
-		case	4:	ret=npc_cityattack_wait(cn); break;
+		case	4:	ret=npc_cityattack_wait(); break;
 		case	5:	ret=npc_moveto(cn,486,362); break;
 		case	6:	ret=npc_moveto(cn,509,362); break;
 		case	7:	ret=npc_moveto(cn,526,362); break;

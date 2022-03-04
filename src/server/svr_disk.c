@@ -68,7 +68,7 @@ int load(void)
         tmap.sprite = SPR_GROUND1;
         if (!extend(handle, MAPSIZE, sizeof(struct map), &tmap)) return -1;
 
-        map=mmap(NULL,MAPSIZE,PROT_READ|PROT_WRITE,MAP_SHARED,handle,0);
+        map=static_cast<struct map*>(mmap(NULL,MAPSIZE,PROT_READ|PROT_WRITE,MAP_SHARED,handle,0));
         if (map==(void*)-1) return -1;
         close(handle);
 
@@ -83,7 +83,7 @@ int load(void)
         }
         if (!extend(handle, CHARSIZE, sizeof(struct character), NULL)) return -1;
 
-        ch=mmap(NULL,CHARSIZE,PROT_READ|PROT_WRITE,MAP_SHARED,handle,0);
+        ch=static_cast<character*>(mmap(NULL,CHARSIZE,PROT_READ|PROT_WRITE,MAP_SHARED,handle,0));
         if (ch==(void*)-1) return -1;
         close(handle);
 
@@ -98,7 +98,7 @@ int load(void)
         }
         if (!extend(handle, TCHARSIZE, sizeof(struct character), NULL)) return -1;
 
-        ch_temp=mmap(NULL,TCHARSIZE,PROT_READ|PROT_WRITE,MAP_SHARED,handle,0);
+        ch_temp=static_cast<struct character*>(mmap(NULL,TCHARSIZE,PROT_READ|PROT_WRITE,MAP_SHARED,handle,0));
         if (ch_temp==(void*)-1) return -1;
         close(handle);
 
@@ -114,7 +114,7 @@ int load(void)
         if (!extend(handle, ITEMSIZE, sizeof(struct item), NULL)) return -1;
 
 
-        it=mmap(NULL,ITEMSIZE,PROT_READ|PROT_WRITE,MAP_SHARED,handle,0);
+        it=static_cast<struct item*>(mmap(NULL,ITEMSIZE,PROT_READ|PROT_WRITE,MAP_SHARED,handle,0));
         if (it==(void*)-1) return -1;
         close(handle);
 
@@ -129,7 +129,7 @@ int load(void)
         }
         if (!extend(handle, TITEMSIZE, sizeof(struct item), NULL)) return -1;
 
-        it_temp=mmap(NULL,TITEMSIZE,PROT_READ|PROT_WRITE,MAP_SHARED,handle,0);
+        it_temp=static_cast<struct item*>(mmap(NULL,TITEMSIZE,PROT_READ|PROT_WRITE,MAP_SHARED,handle,0));
         if (it==(void*)-1) return -1;
         close(handle);
 
@@ -144,7 +144,7 @@ int load(void)
         }
         if (!extend(handle, EFFECTSIZE, sizeof(struct effect), NULL)) return -1;
 
-        fx=mmap(NULL,EFFECTSIZE,PROT_READ|PROT_WRITE,MAP_SHARED,handle,0);
+        fx=static_cast<struct effect*>(mmap(NULL,EFFECTSIZE,PROT_READ|PROT_WRITE,MAP_SHARED,handle,0));
         if (fx==(void*)-1) return -1;
         close(handle);
 
@@ -159,7 +159,7 @@ int load(void)
         }
         if (!extend(handle, GLOBSIZE, sizeof(struct global), NULL)) return -1;
 
-        globs=mmap(NULL,sizeof(struct global),PROT_READ|PROT_WRITE,MAP_SHARED,handle,0);
+        globs=static_cast<struct global*>(mmap(NULL,sizeof(struct global),PROT_READ|PROT_WRITE,MAP_SHARED,handle,0));
         if (globs==(void*)-1) return -1;
         close(handle);
 

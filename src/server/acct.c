@@ -305,7 +305,7 @@ void view_character(LIST *head)
                 ch[cn].sound);
 
         printf("<tr><td valign=top>Class:</td><td><input type=text name=class value=\"%d\" size=10 maxlength=10></td></tr>",
-                ch[cn].class);
+                ch[cn].monsterClass);
 
         printf("<tr><td valign=top>Flags:</td><td>");
         printf("Infrared <input type=checkbox name=flags value=%Lu %s><br>",
@@ -766,7 +766,7 @@ void update_character(LIST *head)
         else { printf("SOUND not specified."); return; }
 
         tmp=find_val(head,"class");
-        if (tmp) ch[cn].class=atoi(tmp);
+        if (tmp) ch[cn].monsterClass=atoi(tmp);
         else { printf("CLASS not specified."); return; }
 
         cnt=find_val_multi(head,"flags",&tmps);

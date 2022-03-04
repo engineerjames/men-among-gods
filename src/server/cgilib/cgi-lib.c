@@ -186,7 +186,7 @@ LIST *cgi_input_parse(void)
 		if (CONTENT_LENGTH != NULL) /* make sure that we did receive data */
 		  {
 			content_length = atoi(CONTENT_LENGTH); /* convert the string length to integer */
-			if ((postData = malloc(sizeof(char) * content_length + 1)) != NULL) /* allocate memory  */
+			if ((postData = static_cast<char*>(malloc(sizeof(char) * content_length + 1))) != NULL) /* allocate memory  */
 			  {   /* check that everything was read into postData*/
 				if((fread(postData,sizeof(char),content_length,stdin)) == content_length)
 				  {
@@ -456,7 +456,7 @@ long find_val_multi(LIST *head, char *key, char ***Vals)
 			break;
 		else
 		{
-			tmpData = CurrentEntry->data;
+			tmpData = static_cast<CGI_LIST*>(CurrentEntry->data);
 			*Vals = (char**)realloc(*Vals, sizeof(char*) * (found + 1));
 			(*Vals)[found++] = tmpData->value;
 			headcpy->ListHead = CurrentEntry->nextlink;
@@ -507,7 +507,7 @@ long find_key_multi(LIST *head, char *value, char ***Vals)
 			break;
 		else
 		{
-			tmpData = CurrentEntry->data;
+			tmpData = static_cast<CGI_LIST*>(CurrentEntry->data);
 			*Vals = (char**)realloc(*Vals, sizeof(char*) * (found + 1));
 			(*Vals)[found++] = tmpData->key;
 			headcpy->ListHead = CurrentEntry->nextlink;
@@ -544,7 +544,7 @@ static LIST *parse_data_record(const char *data, LIST *head)
   int returnValue=0;
 
 
-  if((localData = malloc(sizeof(char) * strlen(data) + 1)) != NULL) /* allocate data that we can modify */
+  if((localData = static_cast<char*>(malloc(sizeof(char) * strlen(data) + 1))) != NULL) /* allocate data that we can modify */
 	{
 	  strcpy(localData, data); /* copy the raw data into our variable to modify */
 	}
@@ -603,7 +603,7 @@ static CGI_LIST parse_data_keyvalue(const char *record)
 
   loc = strcspn(record,"="); /* find the location of our delimiter */
 
-  tempStr = malloc(sizeof(char) * loc + 1); /* loc is the = which be replaced by the null character */
+  tempStr = static_cast<char*>(malloc(sizeof(char) * loc + 1)); /* loc is the = which be replaced by the null character */
   strncpy(tempStr,record,loc); /* copy the key name only */
   tempStr[loc] = '\0'; /* add our terminating null char */
   key = unescape_url(tempStr);
@@ -612,7 +612,7 @@ static CGI_LIST parse_data_keyvalue(const char *record)
   if(loc != strlen(record)) /* first check that we did find an = sign, */
   {
 	record = record + loc + 1; /* re-assign our pointer to go one passed the delimiter */
-	tempStr = malloc(sizeof(char) * strlen(record) + 1); /* need to include the 1 for null char */
+	tempStr = static_cast<char*>(malloc(sizeof(char) * strlen(record) + 1)); /* need to include the 1 for null char */
 	strcpy(tempStr,record); /* copy the rest of our data into the value variable */
 	value = unescape_url(tempStr);
 	free(tempStr);
@@ -650,7 +650,7 @@ static char *unescape_url(const char *string) /* use const cause we don't want t
   numEncodedItems = num_encoded_data_items(string);
 
   count = 0;
-  if((newString = malloc(sizeof(char) * (strlen(string) + 1 - (numEncodedItems * 2)))) != NULL)
+  if((newString = static_cast<char*>(malloc(sizeof(char) * (strlen(string) + 1 - (numEncodedItems * 2))))) != NULL)
 	{
 
 	  /* copy the new sring with the values decoded */

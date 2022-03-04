@@ -64,7 +64,7 @@ static inline unsigned int _mcmp(unsigned char *a, unsigned char *b, unsigned in
 }
 
 // some magic to avoid a lot of casts
-static inline unsigned int mcmp(void *a, void *b, unsigned int len) { return _mcmp(a, b, len); }
+static inline unsigned int mcmp(void *a, void *b, unsigned int len) { return _mcmp(static_cast<unsigned char*>(a), static_cast<unsigned char*>(b), len); }
 
 static inline void *_fdiff(unsigned char *a, unsigned char *b, unsigned int len)
 {
@@ -106,7 +106,7 @@ static inline void *_fdiff(unsigned char *a, unsigned char *b, unsigned int len)
 }
 
 // some magic to avoid a lot of casts
-static inline void *fdiff(void *a, void *b, unsigned int len) { return _fdiff(a, b, len); }
+static inline void *fdiff(void *a, void *b, unsigned int len) { return _fdiff(static_cast<unsigned char*>(a), static_cast<unsigned char*>(b), len); }
 
 static inline unsigned int _mcpy(unsigned char *a, unsigned char *b, unsigned int len)
 {
@@ -138,7 +138,7 @@ static inline unsigned int _mcpy(unsigned char *a, unsigned char *b, unsigned in
 }
 
 // some magic to avoid a lot of casts
-static inline unsigned int mcpy(void *a, void *b, unsigned int len) { return _mcpy(a, b, len); }
+static inline unsigned int mcpy(void *a, void *b, unsigned int len) { return _mcpy(static_cast<unsigned char*>(a), static_cast<unsigned char*>(b), len); }
 
 static char secret[ 256 ] = { "\
 Ifhjf64hH8sa,-#39ddj843tvxcv0434dvsdc40G#34Trefc349534Y5#34trecerr943\
@@ -305,7 +305,7 @@ void plr_unique(int nr)
 
     buf[0]                           = SV_UNIQUE;
     *(unsigned long long *)(buf + 1) = player[nr].unique;
-    xsend(nr, buf, 9);
+    xsend(nr, reinterpret_cast<unsigned char*>(buf), 9);
 
     plog(nr, "sent unique %llX", player[nr].unique);
   }
@@ -1667,7 +1667,7 @@ void plr_change_power(int nr, unsigned short *a, unsigned short *b, unsigned cha
   }
 }
 
-inline int ch_base_status(int n)
+int ch_base_status(int n)
 {
   if (n < 4)
     return n;
@@ -1797,7 +1797,7 @@ int cl_light_26(int n, int dosend, struct cmap *cmap, struct cmap *smap)
       cmap[m].light               = smap[m].light;
       cmap[m - 1].light           = smap[m - 1].light;
     }
-    xsend(dosend, buf, 16);
+    xsend(dosend, reinterpret_cast<unsigned char*>(buf), 16);
     return 1;
   }
 }
@@ -1815,7 +1815,7 @@ int cl_light_one(int n, int dosend, struct cmap *cmap, struct cmap *smap)
     buf[0]                       = SV_SETMAP4;
     *(unsigned short *)(buf + 1) = (unsigned short)(n | ((unsigned short)(smap[n].light) << 12));
     cmap[n].light                = smap[n].light;
-    xsend(dosend, buf, 3);
+    xsend(dosend, reinterpret_cast<unsigned char*>(buf), 3);
     return 1;
   }
 }
@@ -1846,7 +1846,7 @@ int cl_light_three(int n, int dosend, struct cmap *cmap, struct cmap *smap)
       cmap[m].light               = smap[m].light;
       cmap[m - 1].light           = smap[m - 1].light;
     }
-    xsend(dosend, buf, 4);
+    xsend(dosend, reinterpret_cast<unsigned char*>(buf), 4);
     return 1;
   }
   return 0;
@@ -1878,7 +1878,7 @@ int cl_light_seven(int n, int dosend, struct cmap *cmap, struct cmap *smap)
       cmap[m].light               = smap[m].light;
       cmap[m - 1].light           = smap[m - 1].light;
     }
-    xsend(dosend, buf, 6);
+    xsend(dosend, reinterpret_cast<unsigned char*>(buf), 6);
     return 1;
   }
 }
@@ -2293,7 +2293,7 @@ void plr_change(int nr)
   {
     unsigned char *tmp;
 
-    tmp = fdiff(cmap + n, smap + n, sizeof(struct cmap) * (TILEX * TILEY - n)); // find address of first difference
+    tmp = static_cast<unsigned char*>(fdiff(cmap + n, smap + n, sizeof(struct cmap) * (TILEX * TILEY - n))); // find address of first difference
     if (!tmp)
       break; // no difference found? then we're done
 
@@ -2421,7 +2421,7 @@ void char_play_sound(int cn, int sound, int vol, int pan)
   xsend(nr, buf, 13);
 }
 
-inline int do_char_calc_light(int cn, int light)
+int do_char_calc_light(int cn, int light)
 {
   int val;
 
@@ -2439,7 +2439,7 @@ inline int do_char_calc_light(int cn, int light)
   return val;
 }
 
-inline int check_dlight(int x, int y)
+int check_dlight(int x, int y)
 {
   int m;
 
@@ -3248,7 +3248,7 @@ void check_expire(int cn)
   }
 }
 
-inline int group_active(int cn)
+int group_active(int cn)
 {
   if ((ch[cn].flags & (CF_PLAYER | CF_USURP | CF_NOSLEEP)) && ch[cn].used == USE_ACTIVE)
     return 1;

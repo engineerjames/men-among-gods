@@ -887,7 +887,7 @@ int warcry(int cn,int co,int power)
         return 1;
 }
 
-void skill_warcry(cn)
+void skill_warcry(int cn)
 {
 	int power,xf,yf,xt,yt,x,y,co,hit=0,miss=0;
 	

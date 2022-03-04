@@ -74,13 +74,13 @@ static int cost(int fx,int fy,int cdir)
 
 int init_node(void)
 {
-        nmap=calloc(MAPX*MAPY,sizeof(struct node *));
+        nmap=static_cast<node**>(calloc(MAPX*MAPY,sizeof(struct node *)));
         if (!nmap) return 0;
 
-        nodes=malloc(sizeof(struct node)*MAXNODE);
+        nodes=static_cast<node*>(malloc(sizeof(struct node)*MAXNODE));
         if (!nodes) return 0;
         
-        bad=calloc(MAPX*MAPY,sizeof(struct badtarget));
+        bad=static_cast<badtarget*>(calloc(MAPX*MAPY,sizeof(struct badtarget)));
 
         return 1;
 }

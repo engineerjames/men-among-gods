@@ -156,7 +156,7 @@ void new_player( int sock )
   int                n, m, nsock, len = sizeof( struct sockaddr_in ), one = 1, onek = 65536, zero = 0;
   struct sockaddr_in addr;
 
-  nsock = accept( sock, ( struct sockaddr * ) &addr, &len );
+  nsock = accept( sock, ( struct sockaddr * ) &addr, reinterpret_cast<socklen_t*>(&len) );
   if ( nsock == -1 )
   {
     xlog( "new_player (server.c): accept() failed" );
@@ -231,12 +231,12 @@ void send_player( int nr )
   if ( player[ nr ].iptr < player[ nr ].optr )
   {
     len = OBUFSIZE - player[ nr ].optr;
-    ptr = player[ nr ].obuf + player[ nr ].optr;
+    ptr = reinterpret_cast<char*>(player[ nr ].obuf + player[ nr ].optr);
   }
   else
   {
     len = player[ nr ].iptr - player[ nr ].optr;
-    ptr = player[ nr ].obuf + player[ nr ].optr;
+    ptr = reinterpret_cast<char*>(player[ nr ].obuf + player[ nr ].optr);
   }
 
   ret = send( player[ nr ].sock, ptr, len, 0 );
@@ -425,12 +425,12 @@ void compress_ticks( void )
       csize = 65536 - player[ n ].zs.avail_out;
 
       olen = ( csize + 2 ) | 0x8000;
-      csend( n, ( void * ) ( &olen ), 2 );
+      csend( n, reinterpret_cast<unsigned char*>(&olen), 2 );
       csend( n, obuf, csize );
     }
     else
     {
-      csend( n, ( void * ) ( &olen ), 2 );
+      csend( n, reinterpret_cast<unsigned char*>(&olen), 2 );
       if ( ilen )
         csend( n, player[ n ].tbuf, ilen );
     }
@@ -808,7 +808,7 @@ int main( int argc, char *args[] )
       exit( 1 );
   }
 
-  see = malloc( sizeof( struct see_map ) * MAXCHARS );
+  see = static_cast<struct see_map*>(malloc( sizeof( struct see_map ) * MAXCHARS ));
   if ( see == NULL )
   {
     xlog( "Memory low!" );
@@ -895,8 +895,8 @@ int main( int argc, char *args[] )
   for ( n = 1; n < MAXPLAYER; n++ )
   {
     player[ n ].sock  = 0;
-    player[ n ].tbuf  = malloc( 16 * TBUFSIZE );
-    player[ n ].obuf  = malloc( OBUFSIZE );
+    player[ n ].tbuf  = static_cast<unsigned char*>(malloc( 16 * TBUFSIZE ));
+    player[ n ].obuf  = static_cast<unsigned char*>(malloc( OBUFSIZE ));
     player[ n ].ltick = 0;
     player[ n ].rtick = 0;
   }

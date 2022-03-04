@@ -2600,7 +2600,7 @@ void god_init_badnames(void)
 
                 if (cursize>=maxsize) {
                         maxsize+=256;
-                        badname=realloc(badname,maxsize*sizeof(char**));
+                        badname=static_cast<char**>(realloc(badname,maxsize*sizeof(char**)));
                 }
                 badname[cursize++]=strdup(buf);
         }

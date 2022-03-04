@@ -851,7 +851,7 @@ void init_badwords(void)
 
                 if (cursize>=maxsize) {
                         maxsize+=256;
-                        badword=realloc(badword,maxsize*sizeof(char**));
+                        badword=static_cast<char**>(realloc(badword,maxsize*sizeof(char**)));
                 }
                 badword[cursize++]=strdup(buf);
         }

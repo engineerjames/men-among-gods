@@ -175,7 +175,7 @@ struct seen
 {
 	int co;
 	int dist;
-	int friend;
+	int isFriend;
 	int stun;
 	int help;
 };
@@ -196,7 +196,7 @@ int npc_stunrun_high(int cn)
 			if (ch[co].data[42]==ch[cn].data[42]) {
 				seen[maxseen].co=co;
 				seen[maxseen].dist=npc_dist(cn,co);
-				seen[maxseen].friend=1;
+				seen[maxseen].isFriend=1;
 				seen[maxseen].stun=0;
 				seen[maxseen].help=(ch[co].a_hp<ch[co].hp[5]*400);
 				help=max(seen[maxseen].help,help);
@@ -204,7 +204,7 @@ int npc_stunrun_high(int cn)
 			} else {
 				seen[maxseen].co=co;
 				seen[maxseen].dist=npc_dist(cn,co);
-				seen[maxseen].friend=0;
+				seen[maxseen].isFriend=0;
 				if (!npc_is_stunned(co)) seen[maxseen].stun=(ch[cn].skill[SK_STUN][5]*12>ch[co].skill[SK_RESIST][5]*10);
 				else seen[maxseen].stun=0;
 				stun=max(seen[maxseen].stun,stun);
@@ -252,7 +252,7 @@ int npc_stunrun_high(int cn)
 		if (m==maxseen) {
 			seen[maxseen].co=co;
 			seen[maxseen].dist=npc_dist(cn,co);
-			seen[maxseen].friend=0;
+			seen[maxseen].isFriend=0;
 			seen[maxseen].stun=(ch[cn].skill[SK_STUN][5]*12>ch[co].skill[SK_RESIST][5]*10);
 			if (seen[maxseen].stun) seen[maxseen].stun+=5; else flee+=2;
 			stun=max(seen[m].stun,stun);
@@ -298,7 +298,7 @@ int npc_stunrun_high(int cn)
 		else ch[cn].mode=1;
 
 		for (n=0; n<maxseen; n++) {
-			if (!seen[n].friend) {
+			if (!seen[n].isFriend) {
 				if (seen[n].dist<6) tmp=-2000;
 				else tmp=-1000;
 			} else tmp=150;
