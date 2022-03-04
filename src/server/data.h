@@ -455,7 +455,7 @@ struct character
 
         int unreach,unreachx,unreachy;
 
-        int class;                      // monster class
+        int monsterClass;                      // monster class
 
         int future3[12];
 

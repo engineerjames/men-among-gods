@@ -34,18 +34,18 @@ volatile int quit = 0;
 
 // Array of current players
 struct player   player[ MAXPLAYER ];
-struct see_map *see;
+struct see_map* see;
 
-FILE *logfp;
+FILE* logfp;
 
 char mod[ 256 ];
 
 /* disembodied server log */
-void xlog( char *format, ... )
+void xlog( char* format, ... )
 {
   va_list    args;
   char       buf[ 1024 ];
-  struct tm *tm;
+  struct tm* tm;
   time_t     t;
 
   va_start( args, format );
@@ -60,16 +60,16 @@ void xlog( char *format, ... )
 }
 
 /* server log message about a character */
-void chlog( int cn, char *format, ... )
+void chlog( int cn, char* format, ... )
 {
   va_list            args;
   char               buf[ 1024 ];
-  struct tm *        tm;
+  struct tm*         tm;
   time_t             t;
   int                nr, co;
   unsigned int       addr;
-  char *             name;
-  char *             usurp = NULL;
+  char*              name;
+  char*              usurp = NULL;
   unsigned long long unique;
 
   nr = ch[ cn ].player;
@@ -106,15 +106,15 @@ void chlog( int cn, char *format, ... )
 }
 
 /* server log about a player */
-void plog( int nr, char *format, ... )
+void plog( int nr, char* format, ... )
 {
   va_list            args;
   char               buf[ 1024 ];
-  struct tm *        tm;
+  struct tm*         tm;
   time_t             t;
   int                cn, x, y;
   unsigned int       addr;
-  char *             name;
+  char*              name;
   unsigned long long unique;
 
   cn = player[ nr ].usnr;
@@ -156,19 +156,19 @@ void new_player( int sock )
   int                n, m, nsock, len = sizeof( struct sockaddr_in ), one = 1, onek = 65536, zero = 0;
   struct sockaddr_in addr;
 
-  nsock = accept( sock, ( struct sockaddr * ) &addr, &len );
+  nsock = accept( sock, ( struct sockaddr* ) &addr, reinterpret_cast< socklen_t* >( &len ) );
   if ( nsock == -1 )
   {
     xlog( "new_player (server.c): accept() failed" );
     return;
   }
-  ioctl( nsock, FIONBIO, ( u_long * ) &one ); // non-blocking mode
+  ioctl( nsock, FIONBIO, ( u_long* ) &one ); // non-blocking mode
 
   // setsockopt(nsock,IPPROTO_TCP,TCP_NODELAY,(const char *)&one,sizeof(int));
-  setsockopt( nsock, SOL_SOCKET, SO_SNDBUF, ( const char * ) &onek, sizeof( int ) );
-  setsockopt( nsock, SOL_SOCKET, SO_RCVBUF, ( const char * ) &onek, sizeof( int ) );
-  setsockopt( nsock, SOL_SOCKET, SO_LINGER, ( const char * ) &zero, sizeof( int ) );
-  setsockopt( nsock, SOL_SOCKET, SO_KEEPALIVE, ( const char * ) &one, sizeof( int ) );
+  setsockopt( nsock, SOL_SOCKET, SO_SNDBUF, ( const char* ) &onek, sizeof( int ) );
+  setsockopt( nsock, SOL_SOCKET, SO_RCVBUF, ( const char* ) &onek, sizeof( int ) );
+  setsockopt( nsock, SOL_SOCKET, SO_LINGER, ( const char* ) &zero, sizeof( int ) );
+  setsockopt( nsock, SOL_SOCKET, SO_KEEPALIVE, ( const char* ) &one, sizeof( int ) );
 
   for ( n = 1; n < MAXPLAYER; n++ )
     if ( ! player[ n ].sock )
@@ -226,17 +226,17 @@ void new_player( int sock )
 void send_player( int nr )
 {
   int   ret, len;
-  char *ptr;
+  char* ptr;
 
   if ( player[ nr ].iptr < player[ nr ].optr )
   {
     len = OBUFSIZE - player[ nr ].optr;
-    ptr = player[ nr ].obuf + player[ nr ].optr;
+    ptr = reinterpret_cast< char* >( player[ nr ].obuf + player[ nr ].optr );
   }
   else
   {
     len = player[ nr ].iptr - player[ nr ].optr;
-    ptr = player[ nr ].obuf + player[ nr ].optr;
+    ptr = reinterpret_cast< char* >( player[ nr ].obuf + player[ nr ].optr );
   }
 
   ret = send( player[ nr ].sock, ptr, len, 0 );
@@ -259,7 +259,7 @@ void send_player( int nr )
     player[ nr ].optr = 0;
 }
 
-int csend( int nr, unsigned char *buf, int len )
+int csend( int nr, unsigned char* buf, int len )
 {
   int tmp;
 
@@ -320,7 +320,7 @@ void pkt_list( void )
   n++;
 }
 
-void xsend( int nr, unsigned char *buf, int len )
+void xsend( int nr, unsigned char* buf, int len )
 {
   int pnr;
 
@@ -357,7 +357,7 @@ void rec_player( int nr )
 {
   int len;
 
-  len = recv( player[ nr ].sock, ( char * ) player[ nr ].inbuf + player[ nr ].in_len, 256 - player[ nr ].in_len, 0 );
+  len = recv( player[ nr ].sock, ( char* ) player[ nr ].inbuf + player[ nr ].in_len, 256 - player[ nr ].in_len, 0 );
 
   if ( len < 1 )
   { // receive failure
@@ -425,12 +425,12 @@ void compress_ticks( void )
       csize = 65536 - player[ n ].zs.avail_out;
 
       olen = ( csize + 2 ) | 0x8000;
-      csend( n, ( void * ) ( &olen ), 2 );
+      csend( n, reinterpret_cast< unsigned char* >( &olen ), 2 );
       csend( n, obuf, csize );
     }
     else
     {
-      csend( n, ( void * ) ( &olen ), 2 );
+      csend( n, reinterpret_cast< unsigned char* >( &olen ), 2 );
       if ( ilen )
         csend( n, player[ n ].tbuf, ilen );
     }
@@ -587,7 +587,7 @@ void leave( int dummy )
 
 unsigned long long proftab[ 100 ];
 
-char *profname[ 100 ] = {
+char* profname[ 100 ] = {
     "misc",                 // 0
     "  pathfinder",         // 1
     "  area_log",           // 2
@@ -745,7 +745,7 @@ void tmplabcheck( int in )
 
 int see_hit = 0, see_miss = 0;
 
-int main( int argc, char *args[] )
+int main( int argc, char* args[] )
 {
   int                sock, n, one = 1, doleave = 0, ltimer = 0;
   struct sockaddr_in addr;
@@ -808,7 +808,7 @@ int main( int argc, char *args[] )
       exit( 1 );
   }
 
-  see = malloc( sizeof( struct see_map ) * MAXCHARS );
+  see = static_cast< struct see_map* >( malloc( sizeof( struct see_map ) * MAXCHARS ) );
   if ( see == NULL )
   {
     xlog( "Memory low!" );
@@ -873,14 +873,14 @@ int main( int argc, char *args[] )
     return 1;
   }
 
-  ioctl( sock, FIONBIO, ( u_long * ) &one ); // non-blocking mode
-  setsockopt( sock, SOL_SOCKET, SO_REUSEADDR, ( const char * ) &one, sizeof( int ) );
+  ioctl( sock, FIONBIO, ( u_long* ) &one ); // non-blocking mode
+  setsockopt( sock, SOL_SOCKET, SO_REUSEADDR, ( const char* ) &one, sizeof( int ) );
 
   addr.sin_family      = AF_INET;
   addr.sin_port        = htons( 5555 );
   addr.sin_addr.s_addr = 0;
 
-  if ( bind( sock, ( struct sockaddr * ) &addr, sizeof( addr ) ) )
+  if ( bind( sock, ( struct sockaddr* ) &addr, sizeof( addr ) ) )
   {
     xlog( "bind() failed.\n" );
     return 1;
@@ -895,8 +895,8 @@ int main( int argc, char *args[] )
   for ( n = 1; n < MAXPLAYER; n++ )
   {
     player[ n ].sock  = 0;
-    player[ n ].tbuf  = malloc( 16 * TBUFSIZE );
-    player[ n ].obuf  = malloc( OBUFSIZE );
+    player[ n ].tbuf  = static_cast< unsigned char* >( malloc( 16 * TBUFSIZE ) );
+    player[ n ].obuf  = static_cast< unsigned char* >( malloc( OBUFSIZE ) );
     player[ n ].ltick = 0;
     player[ n ].rtick = 0;
   }

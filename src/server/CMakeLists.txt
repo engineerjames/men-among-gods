@@ -1,42 +1,35 @@
 set(target server)
 
 set( sources
-    area.c
-    build.c
-    ccp_driver.c
-    cgilib/cgi-lib.c
-    cgilib/html-lib.c
-    cgilib/list-lib.c
-    cityattack.c
-    driver.c
-    driver_etc.c
-    driver_generic.c
-    helper.c
-    lab9.c
-    look_driver.c
-    npc_malte.c
-    path.c
-    populate.c
-    server.c
-    skill.c
-    skill_driver.c
-    stunrun.c
-    svr_act.c
-    svr_disk.c
-    svr_do.c
-    svr_effect.c
-    svr_glob.c
-    svr_god.c
-    svr_tick.c
-    talk.c
-    use_driver.c
+    area.cpp
+    build.cpp
+    ccp_driver.cpp
+    cityattack.cpp
+    driver.cpp
+    driver_etc.cpp
+    driver_generic.cpp
+    helper.cpp
+    lab9.cpp
+    look_driver.cpp
+    npc_malte.cpp
+    path.cpp
+    populate.cpp
+    server.cpp
+    skill.cpp
+    skill_driver.cpp
+    stunrun.cpp
+    svr_act.cpp
+    svr_disk.cpp
+    svr_do.cpp
+    svr_effect.cpp
+    svr_glob.cpp
+    svr_god.cpp
+    svr_tick.cpp
+    talk.cpp
+    use_driver.cpp
 )
 
 set( headers
-    cgilib/cgi-lib.h
-    cgilib/cgi-priv.h
-    cgilib/html-lib.h
-    cgilib/list-lib.h
     client.h
     data.h
     driver.h
@@ -52,7 +45,6 @@ set( headers
 
 # TODO: Add respawn / password executables?
 add_executable(${target} ${sources} ${headers})
-target_include_directories(${target} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/cgilib)
 target_link_libraries(${target} PRIVATE -m32 z m crypt)
 target_compile_options(${target} PRIVATE -Wall -Wextra -m32 -w -fno-strict-aliasing)
 
@@ -62,17 +54,3 @@ add_custom_command(
             POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E make_directory  $<TARGET_FILE_DIR:${target}>/.dat
             COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/.dat/*.dat $<TARGET_FILE_DIR:${target}>/.dat)
-
-# CGI Output
-set(target acct)
-add_executable(${target} acct.c skill.c gendefs.h data.h)
-target_compile_options(${target} PRIVATE -m32)
-target_include_directories(${target} SYSTEM PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/cgilib)
-target_link_libraries(${target} PRIVATE -m32 ${CMAKE_CURRENT_SOURCE_DIR}/cgilib/cgi-lib.a)
-set_target_properties(${target} PROPERTIES SUFFIX ".cgi")
-
-set(target info)
-add_executable(${target} info.c gendefs.h data.h)
-target_compile_options(${target} PRIVATE -m32)
-target_link_libraries(${target} PRIVATE -m32)
-set_target_properties(${target} PROPERTIES SUFFIX ".cgi")
