@@ -9,6 +9,8 @@ namespace api
 namespace v1
 {
 
+const constexpr int MAX_TITEMS = 4548;
+
 ItemTemplateApi::ItemTemplateApi()
     : itemTemplates_()
 {
@@ -16,27 +18,37 @@ ItemTemplateApi::ItemTemplateApi()
 
   std::ifstream datFile { "./titem.dat", std::ios::binary | std::ios::in };
 
-  for ( int i = 0; i < 4548; ++i )
+  for ( int i = 0; i < MAX_TITEMS; ++i )
   {
-    item newItem {};
-    datFile.read( reinterpret_cast< char* >( &newItem ), sizeof( item ) );
-    std::cerr << "Reading item: " << newItem.name << std::endl;
-    itemTemplates_.push_back( newItem );
+    auto newItem = std::make_unique< item >();
+
+    datFile.read( reinterpret_cast< char* >( newItem.get() ), sizeof( item ) );
+    std::cerr << "Reading item: " << newItem->name << std::endl;
+    itemTemplates_.push_back( std::move( newItem ) );
   }
 
   std::cerr << "Done." << std::endl;
 }
 
 void ItemTemplateApi::getItemTemplates( const drogon::HttpRequestPtr&                             req,
-                                        std::function< void( const drogon::HttpResponsePtr& ) >&& callback ) const
+                                        std::function< void( const drogon::HttpResponsePtr& ) >&& callback, int id ) const
 {
   ( void ) req;
 
-  auto response = drogon::HttpResponse::newHttpResponse();
-  response->setStatusCode( drogon::HttpStatusCode::k200OK );
-  callback( response );
-
-  std::cerr << "GET DEM ITEMS!" << std::endl;
+  if ( id >= 0 && id < MAX_TITEMS && itemTemplates_[ id ] != nullptr )
+  {
+    Json::Value jsonResponse = itemTemplates_[ id ]->toJson();
+    auto        response     = drogon::HttpResponse::newHttpJsonResponse( jsonResponse );
+    response->setStatusCode( drogon::HttpStatusCode::k200OK );
+    callback( response );
+  }
+  else
+  {
+    auto response = drogon::HttpResponse::newHttpResponse();
+    response->setStatusCode( drogon::HttpStatusCode::k404NotFound );
+    callback( response );
+  }
 }
+
 } // namespace v1
 } // namespace api
