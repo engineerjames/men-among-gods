@@ -4,10 +4,12 @@ set(target api)
 
 set(sources 
   main.cpp
+  CharacterTemplateApi.cpp
   ItemTemplateApi.cpp
 )
 
 set(headers
+  CharacterTemplateApi.h
   ItemTemplateApi.h
   apiTypes.h
 )

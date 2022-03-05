@@ -11,20 +11,21 @@ namespace api
 {
 namespace v1
 {
-class ItemTemplateApi : public drogon::HttpController< ItemTemplateApi >
+class items : public drogon::HttpController< items >
 {
 public:
   METHOD_LIST_BEGIN
-  METHOD_ADD( ItemTemplateApi::getItemTemplates, "/{1}", drogon::Get );
+  METHOD_ADD( items::getItemTemplates, "/{1}", drogon::Get );
   METHOD_LIST_END
 
   // your declaration of processing function maybe like this:
-  void getItemTemplates( const drogon::HttpRequestPtr& req, std::function< void( const drogon::HttpResponsePtr& ) >&& callback, int id ) const;
+  void getItemTemplates( const drogon::HttpRequestPtr& req, std::function< void( const drogon::HttpResponsePtr& ) >&& callback,
+                         int id ) const;
 
-  ItemTemplateApi();
+  items();
 
 private:
-  std::vector< std::unique_ptr<item> > itemTemplates_;
+  std::vector< std::unique_ptr< item > > itemTemplates_;
 };
 } // namespace v1
 } // namespace api

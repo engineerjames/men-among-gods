@@ -11,7 +11,7 @@ namespace v1
 
 const constexpr int MAX_TITEMS = 4548;
 
-ItemTemplateApi::ItemTemplateApi()
+items::items()
     : itemTemplates_()
 {
   std::cerr << "Attempting to load item templates..." << std::endl;
@@ -30,7 +30,7 @@ ItemTemplateApi::ItemTemplateApi()
   std::cerr << "Done." << std::endl;
 }
 
-void ItemTemplateApi::getItemTemplates( const drogon::HttpRequestPtr&                             req,
+void items::getItemTemplates( const drogon::HttpRequestPtr&                             req,
                                         std::function< void( const drogon::HttpResponsePtr& ) >&& callback, int id ) const
 {
   ( void ) req;
