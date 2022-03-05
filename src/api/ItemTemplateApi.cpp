@@ -23,7 +23,7 @@ items::items()
     auto newItem = std::make_unique< item >();
 
     datFile.read( reinterpret_cast< char* >( newItem.get() ), sizeof( item ) );
-    std::cerr << "Reading item: " << newItem->name << std::endl;
+    std::cerr << "Reading in template for: " << newItem->name << std::endl;
     itemTemplates_.push_back( std::move( newItem ) );
   }
 

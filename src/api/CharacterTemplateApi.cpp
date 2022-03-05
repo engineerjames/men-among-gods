@@ -1,4 +1,4 @@
-#include "ItemTemplateApi.h"
+#include "CharacterTemplateApi.h"
 
 #include <fstream>
 #include <iostream>
@@ -9,35 +9,36 @@ namespace api
 namespace v1
 {
 
-const constexpr int MAX_TITEMS = 4548;
+const constexpr int MAX_TCHARS = 4548;
 
-items::items()
-    : itemTemplates_()
+characters::characters()
+    : characterTemplates_()
 {
-  std::cerr << "Attempting to load item templates..." << std::endl;
+  std::cerr << "Attempting to load character templates..." << std::endl;
 
-  std::ifstream datFile { "./titem.dat", std::ios::binary | std::ios::in };
+  std::ifstream datFile { "./tchar.dat", std::ios::binary | std::ios::in };
 
-  for ( int i = 0; i < MAX_TITEMS; ++i )
+  for ( int i = 0; i < MAX_TCHARS; ++i )
   {
-    auto newItem = std::make_unique< item >();
+    auto newCharacter = std::make_unique< character >();
 
-    datFile.read( reinterpret_cast< char* >( newItem.get() ), sizeof( item ) );
-    std::cerr << "Reading item: " << newItem->name << std::endl;
-    itemTemplates_.push_back( std::move( newItem ) );
+    datFile.read( reinterpret_cast< char* >( newCharacter.get() ), sizeof( character ) );
+    std::cerr << "Reading in template for: " << newCharacter->name << std::endl;
+
+    characterTemplates_.push_back( std::move( newCharacter ) );
   }
 
   std::cerr << "Done." << std::endl;
 }
 
-void items::getItemTemplates( const drogon::HttpRequestPtr&                             req,
+void characters::getCharacterTemplates( const drogon::HttpRequestPtr&                             req,
                                         std::function< void( const drogon::HttpResponsePtr& ) >&& callback, int id ) const
 {
   ( void ) req;
 
-  if ( id >= 0 && id < MAX_TITEMS && itemTemplates_[ id ] != nullptr )
+  if ( id >= 0 && id < MAX_TCHARS && characterTemplates_[ id ] != nullptr )
   {
-    Json::Value jsonResponse = itemTemplates_[ id ]->toJson();
+    Json::Value jsonResponse = characterTemplates_[ id ]->toJson();
     auto        response     = drogon::HttpResponse::newHttpJsonResponse( jsonResponse );
     response->setStatusCode( drogon::HttpStatusCode::k200OK );
     callback( response );

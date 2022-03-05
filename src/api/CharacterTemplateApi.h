@@ -15,17 +15,17 @@ class characters : public drogon::HttpController< characters >
 {
 public:
   METHOD_LIST_BEGIN
-  METHOD_ADD( items::getCharacterTemplates, "/{1}", drogon::Get );
+  METHOD_ADD( characters::getCharacterTemplates, "/{1}", drogon::Get );
   METHOD_LIST_END
 
   // your declaration of processing function maybe like this:
-  void getItemTemplates( const drogon::HttpRequestPtr& req, std::function< void( const drogon::HttpResponsePtr& ) >&& callback,
+  void getCharacterTemplates( const drogon::HttpRequestPtr& req, std::function< void( const drogon::HttpResponsePtr& ) >&& callback,
                          int id ) const;
 
   characters();
 
 private:
-  std::vector< std::unique_ptr< item > > itemTemplates_;
+  std::vector< std::unique_ptr< character > > characterTemplates_;
 };
 } // namespace v1
 } // namespace api
