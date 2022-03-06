@@ -56,8 +56,9 @@ int main()
   soundCache->loadAudio( MenAmongGods::getSfxRoot() );
 
   auto tickBufferPtr = std::make_shared< TickBuffer >( *playerData, *map, *soundCache );
-  auto client        = std::make_shared< ClientNetworkActivity >( *tickBufferPtr, *playerData, "192.168.62.114",
-                                                           MenAmongGods::ClientConfiguration::instance().hostPort() );
+  auto client =
+      std::make_shared< ClientNetworkActivity >( *tickBufferPtr, *playerData, MenAmongGods::ClientConfiguration::instance().hostIpAddress(),
+                                                 MenAmongGods::ClientConfiguration::instance().hostPort() );
 
   auto mainUiPtr  = std::make_shared< MenAmongGods::MainUi >( window, *map, *playerData, *gfxCache, *idxCache, *fontCache );
   auto loginUiPtr = std::make_shared< MenAmongGods::LoginUi >( *playerData, window, *fontCache, LOGIN_FONT_SIZE );
