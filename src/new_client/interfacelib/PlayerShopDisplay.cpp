@@ -61,7 +61,7 @@ void PlayerShopDisplay::update()
 
       newItem.setPosition( newItemPosition );
            
-      if ( newItem.getGlobalBounds().contains( mousePosition ) )
+      if ( newItem.getGlobalBounds().contains( mousePosition ) && shop.price[n] != 0)
       {
         priceCursor_.setString( MenAmongGods::goldToString( shop.price[ n ] ) );
         priceCursor_.setPosition( mousePosition + sf::Vector2f { 16.0f, 16.0f } );
