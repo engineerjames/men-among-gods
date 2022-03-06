@@ -242,6 +242,7 @@ void MainUi::onUserInput( const sf::Event& e )
   playerInventory_.onUserInput( e );
   userOptionPanel_.onUserInput( e );
   playerShopDisplay_.onUserInput( e );
+  msgBox_.onUserInput( e );
 }
 
 void MainUi::update()

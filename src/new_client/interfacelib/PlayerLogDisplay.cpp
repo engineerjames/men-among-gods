@@ -1,6 +1,7 @@
 #include "PlayerLogDisplay.h"
 
 #include <fstream>
+#include <iostream>
 
 #include "ColorPalette.h"
 #include "ConstantIdentifiers.h"
@@ -11,6 +12,8 @@ PlayerLogDisplay::PlayerLogDisplay()
     : sf::Transformable()
     , MenAmongGods::Component()
     , messageLog_()
+    , charactersPerLine_( 48 )
+    , chatLogOffset_( 0 )
 {
 }
 
@@ -21,7 +24,20 @@ void PlayerLogDisplay::update()
 
 void PlayerLogDisplay::onUserInput( const sf::Event& )
 {
-  // Do nothing for now.
+
+  if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Key::PageUp ) )
+  {
+    chatLogOffset_++;
+    std::cerr << "offset is now: " << chatLogOffset_ << std::endl;
+    recalculateMessagePositions();
+  }
+
+  if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Key::PageDown ) )
+  {
+    chatLogOffset_ == 0 ? chatLogOffset_ : chatLogOffset_--;
+    std::cerr << "offset is now: " << chatLogOffset_ << std::endl;
+    recalculateMessagePositions();
+  }
 }
 
 void PlayerLogDisplay::finalize()
@@ -29,22 +45,29 @@ void PlayerLogDisplay::finalize()
   // Do nothing for now.
 }
 
-void PlayerLogDisplay::addMessage( const sf::Text& newMsg )
+void PlayerLogDisplay::recalculateMessagePositions()
 {
-  messageLog_.push_back( newMsg );
-
   const sf::Vector2f startPosition { 500.0f, 224.0f };
 
   // Start at end of message list and work backwards from the start.
   unsigned int i = 1;
-  for ( auto&& m = std::rbegin( messageLog_ ); m != std::rend( messageLog_ ); ++m )
+  for ( auto&& m = std::rbegin( messageLog_ ) + chatLogOffset_; m != std::rend( messageLog_ ); ++m )
   {
     sf::Vector2f newPosition = startPosition - sf::Vector2f { 0.0f, static_cast< float >( i * FONT_SIZE ) };
+
+    int lineCount = static_cast< int >( m->getString().toAnsiString().length() / charactersPerLine_ ) + 1;
 
     // Need to handle the case where each message could take up multiple lines
     m->setPosition( newPosition );
     ++i;
   }
+}
+
+void PlayerLogDisplay::addMessage( const sf::Text& newMsg )
+{
+  messageLog_.push_back( newMsg );
+
+  recalculateMessagePositions();
 }
 
 void PlayerLogDisplay::writeLogToFile( const std::string& pathToFile ) const
@@ -64,7 +87,7 @@ void PlayerLogDisplay::draw( sf::RenderTarget& target, sf::RenderStates states )
 {
   const float minimumYPosition = 3.0f;
 
-  for ( auto&& msg = std::rbegin( messageLog_ ); msg != std::rend( messageLog_ ); msg++ )
+  for ( auto&& msg = std::rbegin( messageLog_ ) + chatLogOffset_; msg != std::rend( messageLog_ ); msg++ )
   {
     // If we're already above what's going to be rendered
     // just break out early.
