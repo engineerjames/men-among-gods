@@ -3,8 +3,10 @@
 #include <iostream>
 
 #include "ClientTypes.h"
+#include "ColorPalette.h"
 #include "GraphicsCache.h"
 #include "GraphicsIndex.h"
+#include "GuiFormatters.h"
 #include "PlayerData.h"
 #include "UiPositions.h"
 #include "UtilityFunctions.h"
@@ -14,16 +16,24 @@
 
 namespace MenAmongGods
 {
-PlayerShopDisplay::PlayerShopDisplay( const sf::RenderWindow& window, PlayerData& pdata, GraphicsCache& gfxCache,
+PlayerShopDisplay::PlayerShopDisplay( const sf::RenderWindow& window, const sf::Font& font, PlayerData& pdata, GraphicsCache& gfxCache,
                                       const GraphicsIndex& gfxIndex )
     : MenAmongGods::Component()
     , window_( window )
     , playerData_( pdata )
     , gfxCache_( gfxCache )
     , gfxIndex_( gfxIndex )
+    , priceCursor_()
 {
   shopBackground_ = gfxCache_.getSprite( 92 );
   shopBackground_.setPosition( MenAmongGods::shopPosition );
+
+  priceCursor_.setFont( font );
+  priceCursor_.setCharacterSize( FONT_SIZE );
+  priceCursor_.setOutlineColor( sf::Color::Black );
+  priceCursor_.setOutlineThickness( 1.0f );
+  priceCursor_.setFillColor( MenAmongGods::MsgYellow );
+  priceCursor_.setString( "" );
 }
 
 void PlayerShopDisplay::update()
@@ -32,9 +42,11 @@ void PlayerShopDisplay::update()
   {
     itemSprites_.clear();
   }
-
+    
   if ( playerData_.getShouldShowShop() )
   {
+    auto mousePosition = getNormalizedMousePosition( window_ );
+
     look shop = playerData_.getShop();
 
     for ( int n = 0; n < 62; ++n )
@@ -48,9 +60,24 @@ void PlayerShopDisplay::update()
       sf::Vector2f newItemPosition { static_cast< float >( 222 + ( n % 8 ) * 35 ), static_cast< float >( 262 + ( n / 8 ) * 35 ) };
 
       newItem.setPosition( newItemPosition );
+           
+      if ( newItem.getGlobalBounds().contains( mousePosition ) && shop.price[n] != 0)
+      {
+        priceCursor_.setString( MenAmongGods::goldToString( shop.price[ n ] ) );
+        priceCursor_.setPosition( mousePosition + sf::Vector2f { 16.0f, 16.0f } );
+      }
+
       itemSprites_.push_back( std::move( newItem ) );
     }
+
+    if ( !shopBackground_.getGlobalBounds().contains( mousePosition ) )
+    {
+      priceCursor_.setString( "" );
+    }
+      
   }
+
+  
 }
 
 void PlayerShopDisplay::onUserInput( const sf::Event& e )
@@ -100,11 +127,13 @@ void PlayerShopDisplay::draw( sf::RenderTarget& target, sf::RenderStates states 
   }
 
   target.draw( shopBackground_, states );
-
+  
   for ( const auto& i : itemSprites_ )
   {
     target.draw( i, states );
   }
+
+  target.draw( priceCursor_, states );
 }
 
 } // namespace MenAmongGods

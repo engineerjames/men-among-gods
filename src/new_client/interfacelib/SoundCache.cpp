@@ -8,6 +8,7 @@ SoundCache::SoundCache()
     : isLoaded_( false )
     , audioFiles_( N_AUDIO_FILES )
     , sounds_( N_AUDIO_FILES )
+    , volume_( 100.0f )
 {
 }
 
@@ -30,7 +31,42 @@ void SoundCache::loadAudio( const std::string& filePath )
   }
 }
 
+void SoundCache::increaseVolume()
+{
+  if ( volume_ >= 100.0f )
+  {
+    return;
+  }
+
+  volume_ += 10.0f;
+
+  for ( auto&& s : sounds_ )
+  {
+    s.setVolume( volume_ );
+  }
+
+  std::cerr << "Increased volume." << std::endl;
+}
+
+void SoundCache::decreaseVolume()
+{
+  if ( volume_ <= 0.0f )
+  {
+    return;
+  }
+
+  volume_ -= 10.0f;
+
+  for ( auto&& s : sounds_ )
+  {
+    s.setVolume( volume_ );
+  }
+
+  std::cerr << "Decreased volume." << std::endl;
+}
+
 void SoundCache::playSound( std::size_t id )
 {
+
   sounds_[ id - 1 ].play();
 }
