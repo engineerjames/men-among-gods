@@ -1,12 +1,13 @@
 {
-    "name": "men-among-gods",
-    "version-string": "0.1.0",
-    "dependencies": [
-      "sfml",
-      "libzip",
-      "zlib",
-      "boost-serialization",
-      "boost-test",
-      "jsoncpp"
-    ]
-  }
+  "name": "men-among-gods",
+  "version-string": "0.1.0",
+  "dependencies": [
+    "sfml",
+    "libzip",
+    "zlib",
+    "boost-serialization",
+    "boost-test",
+    "jsoncpp",
+    "drogon"
+  ]
+}

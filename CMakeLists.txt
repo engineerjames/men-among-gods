@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(men-among-gods C CXX)
+project(men-among-gods CXX)
+set (CMAKE_CXX_STANDARD 17)
 
 option(ENABLE_CLANG_TIDY "Enable static analysis via clang-tidy" OFF)
 option(ENABLE_LOGGING "Enable logging output from new client application" ON)
@@ -71,3 +72,5 @@ endif()
 if (NOT WIN32)
   add_subdirectory(src/server)
 endif()
+
+add_subdirectory(src/api)

@@ -1,34 +1,15 @@
-find_package(SFML 2.5 COMPONENTS audio network graphics window system REQUIRED)
-
-if (MSVC)
-  find_package(libzip CONFIG REQUIRED)
-  set(libzip_library libzip::zip)
-  
-  find_package(jsoncpp CONFIG REQUIRED)
-  set(jsoncpp_library JsonCpp::JsonCpp)
-  set(jsoncpp_includes ) # Empty on purpose
-
-  find_package(ZLIB REQUIRED)
-  set(zlib_library ZLIB::ZLIB)
-else()
-  set(zlib_library z)
-  set(libzip_library zip)
-    # Find JsonCPP
-    find_library(jsoncpp jsoncpp)
-
-    if (jsoncpp)
-      message(STATUS "JsonCpp found: ${jsoncpp}")
-      set(jsoncpp_includes /usr/include/jsoncpp)
-      set(jsoncpp_library ${jsoncpp})
-    endif()
-endif()
+set(SFML_STATIC_LIBRARIES OFF)
+find_package(SFML 2.5 COMPONENTS audio network graphics window system CONFIG REQUIRED)
+find_package(libzip CONFIG REQUIRED)
+find_package(jsoncpp CONFIG REQUIRED)
+find_package(ZLIB REQUIRED)
 
 add_subdirectory(clientlib)
 
 set(target MenAmongGods)
 add_executable(${target} main.cpp)
 target_link_libraries(${target} PRIVATE ${PROJECT_CXX_LIBS})
-target_link_libraries(${target} PRIVATE client sfml-graphics sfml-network 
+target_link_libraries(${target} PRIVATE client sfml-graphics sfml-network sfml-audio
                                         Boost::serialization MenAmongGodsGraphics logging)
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )

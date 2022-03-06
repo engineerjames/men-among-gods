@@ -68,8 +68,8 @@ set( test_application_libs
     sfml-graphics 
     sfml-audio
     Boost::serialization 
-    ${zlib_library}
-    ${libzip_library}
+    ZLIB::ZLIB
+    libzip::zip
     client 
     commands 
     logging
@@ -77,7 +77,8 @@ set( test_application_libs
 
 add_library(${target} ${sources} ${headers})
 target_include_directories(${target} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(${target} PRIVATE ${test_application_libs})
+target_link_libraries(${target} PRIVATE ${PROJECT_CXX_LIBS} Boost::serialization sfml-graphics 
+                                sfml-system sfml-audio clientInterface logging commands)
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS})
 target_compile_definitions(${target} PUBLIC ${PROJECT_CXX_DEFINITIONS})
