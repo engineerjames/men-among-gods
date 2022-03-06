@@ -30,8 +30,8 @@ items::items()
   std::cerr << "Done." << std::endl;
 }
 
-void items::getItemTemplates( const drogon::HttpRequestPtr&                             req,
-                                        std::function< void( const drogon::HttpResponsePtr& ) >&& callback, int id ) const
+void items::getItemTemplates( const drogon::HttpRequestPtr& req, std::function< void( const drogon::HttpResponsePtr& ) >&& callback,
+                              int id ) const
 {
   ( void ) req;
 
