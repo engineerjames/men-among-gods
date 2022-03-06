@@ -27,15 +27,13 @@ void PlayerLogDisplay::onUserInput( const sf::Event& )
 
   if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Key::PageUp ) )
   {
-    chatLogOffset_++;
-    std::cerr << "offset is now: " << chatLogOffset_ << std::endl;
+    chatLogOffset_+= 5;
     recalculateMessagePositions();
   }
 
   if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Key::PageDown ) )
   {
-    chatLogOffset_ == 0 ? chatLogOffset_ : chatLogOffset_--;
-    std::cerr << "offset is now: " << chatLogOffset_ << std::endl;
+    chatLogOffset_ == 0 ? chatLogOffset_ : chatLogOffset_-= 5;
     recalculateMessagePositions();
   }
 }
@@ -43,6 +41,24 @@ void PlayerLogDisplay::onUserInput( const sf::Event& )
 void PlayerLogDisplay::finalize()
 {
   // Do nothing for now.
+}
+
+std::string PlayerLogDisplay::splitStringWithNewlines( const std::string& input, int lineCount )
+{
+  std::string output = input;
+  for ( int i = 0; i < lineCount; ++i )
+  {
+    int offset = lineCount * charactersPerLine_;
+
+    if ( offset >= input.length() )
+    {
+      break;
+    }
+
+    output.insert( lineCount * charactersPerLine_, "\n" );
+  }
+
+  return output + "\n";
 }
 
 void PlayerLogDisplay::recalculateMessagePositions()
@@ -53,13 +69,21 @@ void PlayerLogDisplay::recalculateMessagePositions()
   unsigned int i = 1;
   for ( auto&& m = std::rbegin( messageLog_ ) + chatLogOffset_; m != std::rend( messageLog_ ); ++m )
   {
-    sf::Vector2f newPosition = startPosition - sf::Vector2f { 0.0f, static_cast< float >( i * FONT_SIZE ) };
+    std::string  textStr                = m->getString().toAnsiString();
+    bool         stringContainsNewlines = std::find( std::begin( textStr ), std::end( textStr ), '\n' ) != textStr.end();
+    int          lineCount              = static_cast< int >( textStr.length() / charactersPerLine_ );
+    sf::Vector2f newPosition            = startPosition - sf::Vector2f { 0.0f, static_cast< float >( ( i + lineCount ) * FONT_SIZE ) };
 
-    int lineCount = static_cast< int >( m->getString().toAnsiString().length() / charactersPerLine_ ) + 1;
+    if ( lineCount > 0 && ! stringContainsNewlines )
+    {
+      textStr = splitStringWithNewlines( textStr, lineCount );
+      m->setString( textStr );
+      m->setLineSpacing( 0.8f );
+    }
 
     // Need to handle the case where each message could take up multiple lines
     m->setPosition( newPosition );
-    ++i;
+    i += lineCount + 1;
   }
 }
 
