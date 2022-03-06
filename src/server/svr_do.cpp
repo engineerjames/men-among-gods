@@ -1546,10 +1546,10 @@ int rank2points( int rank )
 
 void do_view_exp_to_rank( int cn )
 {
-  int currentRank   = points2rank( ch[ cn ].points );
+  int currentRank   = points2rank( ch[ cn ].points_tot );
   int expToNextRank = rank2points( currentRank );
 
-  int expNeededToRank = expToNextRank - ch[ cn ].points;
+  int expNeededToRank = expToNextRank - ch[ cn ].points_tot;
 
   do_char_log( cn, 1, "You need %i exp for %s.\n", expNeededToRank, rank_name[ currentRank + 1 ] );
 }
