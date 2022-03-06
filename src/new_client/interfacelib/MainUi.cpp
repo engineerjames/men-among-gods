@@ -41,6 +41,7 @@ MainUi::MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, Gra
 {
 
   goldDisplay_.setPosition( MenAmongGods::goldDisplayPosition );
+  goldLabel_.setPosition( MenAmongGods::goldLabelPosition );
   playerNameDisplay_.setPosition( MenAmongGods::playerNamePosition );
   userInput_.setPosition( MenAmongGods::userInputPosition );
 
@@ -66,6 +67,7 @@ MainUi::MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, Gra
   manaMaxValue_.setPosition( MenAmongGods::manaMaxValuePosition );
 
   goldDisplay_.setFont( font_ );
+  goldLabel_.setFont( font_ );
   playerNameDisplay_.setFont( font_ );
   avLabel_.setFont( font_ );
   avValue_.setFont( font_ );
@@ -83,6 +85,7 @@ MainUi::MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, Gra
   manaCurrentValue_.setFont( font_ );
   manaMaxValue_.setFont( font_ );
 
+  goldLabel_.setCharacterSize( FONT_SIZE );
   goldDisplay_.setCharacterSize( FONT_SIZE );
   playerNameDisplay_.setCharacterSize( FONT_SIZE );
   avLabel_.setCharacterSize( FONT_SIZE );
@@ -101,6 +104,7 @@ MainUi::MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, Gra
   manaCurrentValue_.setCharacterSize( FONT_SIZE );
   manaMaxValue_.setCharacterSize( FONT_SIZE );
 
+  goldLabel_.setFillColor( MenAmongGods::MsgYellow );
   goldDisplay_.setFillColor( MenAmongGods::MsgYellow );
   playerNameDisplay_.setFillColor( MenAmongGods::MsgYellow );
   avLabel_.setFillColor( MenAmongGods::MsgYellow );
@@ -119,6 +123,7 @@ MainUi::MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, Gra
   manaCurrentValue_.setFillColor( MenAmongGods::MsgYellow );
   manaMaxValue_.setFillColor( MenAmongGods::MsgYellow );
 
+  goldLabel_.setOutlineColor( sf::Color::Black );
   goldDisplay_.setOutlineColor( sf::Color::Black );
   playerNameDisplay_.setOutlineColor( sf::Color::Black );
   avLabel_.setOutlineColor( sf::Color::Black );
@@ -139,6 +144,7 @@ MainUi::MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, Gra
 
   playerNameDisplay_.setOutlineThickness( 1.0f );
 
+  goldLabel_.setString( "Gold:" );
   goldDisplay_.setString( "5g 52s" );
   playerNameDisplay_.setString( "PlayerName" );
   avLabel_.setString( "Armor Value" );
@@ -160,6 +166,7 @@ MainUi::MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, Gra
   wvValue_.setJustification( MenAmongGods::JustifiableText::TextJustification::RIGHT );
   avValue_.setJustification( MenAmongGods::JustifiableText::TextJustification::RIGHT );
   expValue_.setJustification( MenAmongGods::JustifiableText::TextJustification::RIGHT );
+  goldDisplay_.setJustification( MenAmongGods::JustifiableText::TextJustification::RIGHT );
 
   background_ = gfxCache.getSprite( 1 );
   background_.setPosition( sf::Vector2f { 0.0f, 0.0f } );
@@ -207,6 +214,7 @@ void MainUi::draw( sf::RenderTarget& target, sf::RenderStates states ) const
 
   target.draw( rankDisplay_, states );
   target.draw( goldDisplay_, states );
+  target.draw( goldLabel_, states );
   target.draw( playerNameDisplay_, states );
   target.draw( msgBox_, states );
   target.draw( userInput_, states );
@@ -268,6 +276,7 @@ void MainUi::update()
 
   goldDisplay_.setString( MenAmongGods::goldToString( player.gold ) );
   playerNameDisplay_.setString( player.name );
+  goldDisplay_.update();
 
   expValue_.setString( std::to_string( player.points_tot ) );
 
