@@ -1,28 +1,25 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
 import Button from '@mui/material/Button';
 import { TextField } from '@mui/material';
 
 function App() {
+  const [idToSearch, setIdToSearch] = useState('');
+  
+  const onClickHandler = async () => {
+    const response = await fetch('http://localhost:5556/api/v1/characters/' + idToSearch);
+    const myJson = await response.json(); //extract JSON from the http response
+    
+    console.log(myJson);
+  }
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <h1>Men Among Gods - Game Designer</h1>
       </header>
-      <TextField id="standard-basic" label="Enter Id" variant="standard" />
-      <Button variant="contained">Search</Button>
+      <TextField onChange={(event)=>{ setIdToSearch(event.target.value) }} id="standard-basic" label="Enter Id" variant="standard" />
+      <Button onClick={onClickHandler} variant="contained">Search</Button>
     </div>
   );
 }
