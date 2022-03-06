@@ -31,7 +31,7 @@ target_link_libraries(${target} PRIVATE sfml-graphics sfml-network logging
                                         Boost::serialization MenAmongGodsGraphics commands)
 
 if (NOT MSVC)
-target_link_libraries(${target} PRIVATE pthread)
+target_link_libraries(${target} PRIVATE pthread GL)
 endif()
 
 target_compile_features(${target} PRIVATE cxx_std_17)
@@ -106,7 +106,7 @@ set( headers
     commands/UseCommand.h
 )
 add_library(${target} ${sources} ${headers})
-target_link_libraries(${target} PRIVATE sfml-network MenAmongGodsGraphics clientInterface logging)
+target_link_libraries(${target} PRIVATE sfml-network MenAmongGodsGraphics clientInterface logging client)
 target_link_libraries(${target} PRIVATE ${PROJECT_CXX_LIBS})
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )

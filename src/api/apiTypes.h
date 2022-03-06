@@ -84,7 +84,7 @@ struct item
     root[ "description" ] = description;
 
     // TODO: Breakout into the actual item flags...
-    root[ "flags" ] = flags;
+    root[ "flags" ] = static_cast< int >( flags );
 
     root[ "value" ]        = value;
     root[ "placement" ]    = placement;
@@ -323,7 +323,7 @@ struct character
   std::int32_t monsterClass; // monster class
 
   std::int32_t future3[ 12 ];
-  
+
   // In reality this should be time_t
   std::uint32_t logout_date;
 

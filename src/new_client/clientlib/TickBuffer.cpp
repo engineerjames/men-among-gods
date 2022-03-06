@@ -1,5 +1,6 @@
 #include "TickBuffer.h"
 
+#include <atomic>
 #include <cstring>
 
 #include "ClientTypes.h"
