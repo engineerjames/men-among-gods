@@ -27,13 +27,16 @@ void PlayerLogDisplay::onUserInput( const sf::Event& )
 
   if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Key::PageUp ) )
   {
-    chatLogOffset_+= 5;
-    recalculateMessagePositions();
+    if ( messageLog_.size() > ( chatLogOffset_ + 5 ) )
+    {
+      chatLogOffset_ += 5;
+      recalculateMessagePositions();
+    }
   }
 
   if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Key::PageDown ) )
   {
-    chatLogOffset_ == 0 ? chatLogOffset_ : chatLogOffset_-= 5;
+    chatLogOffset_ == 0 ? chatLogOffset_ : chatLogOffset_ -= 5;
     recalculateMessagePositions();
   }
 }
@@ -69,6 +72,11 @@ void PlayerLogDisplay::recalculateMessagePositions()
   unsigned int i = 1;
   for ( auto&& m = std::rbegin( messageLog_ ) + chatLogOffset_; m != std::rend( messageLog_ ); ++m )
   {
+    if ( m >= std::rend( messageLog_ ) || m < std::rbegin( messageLog_ ) )
+    {
+      return;
+    }
+
     std::string  textStr                = m->getString().toAnsiString();
     bool         stringContainsNewlines = std::find( std::begin( textStr ), std::end( textStr ), '\n' ) != textStr.end();
     int          lineCount              = static_cast< int >( textStr.length() / charactersPerLine_ );
@@ -114,8 +122,8 @@ void PlayerLogDisplay::draw( sf::RenderTarget& target, sf::RenderStates states )
   for ( auto&& msg = std::rbegin( messageLog_ ) + chatLogOffset_; msg != std::rend( messageLog_ ); msg++ )
   {
     // If we're already above what's going to be rendered
-    // just break out early.
-    if ( msg->getPosition().y < minimumYPosition )
+    // just break out early.    
+    if ( msg >= std::rend( messageLog_ ) || msg < std::rbegin( messageLog_ ) || msg->getPosition().y < minimumYPosition )
     {
       return;
     }
