@@ -107,6 +107,17 @@ int main()
       {
         c->onUserInput( event );
       }
+
+      // User request to modify sound volume (TODO: Move later)
+      if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Key::F2 ) )
+      {
+        soundCache->increaseVolume();
+      }
+
+      if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Key::F1 ) )
+      {
+        soundCache->decreaseVolume();
+      }
     }
 
     //
