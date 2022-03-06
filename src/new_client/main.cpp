@@ -39,7 +39,7 @@ int main()
   auto map        = std::make_unique< MenAmongGods::Map >();
   auto playerData = std::make_unique< PlayerData >();
 
-  sf::RenderWindow window( sf::VideoMode( MODEX, MODEY ), "Men Among Gods - v1.1.2" );
+  sf::RenderWindow window( sf::VideoMode( MODEX, MODEY ), "Men Among Gods - v1.1.4" );
   window.setFramerateLimit( MenAmongGods::ClientConfiguration::instance().frameLimit() );
   window.requestFocus();
 
