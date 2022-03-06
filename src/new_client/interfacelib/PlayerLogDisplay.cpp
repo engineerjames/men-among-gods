@@ -27,7 +27,7 @@ void PlayerLogDisplay::onUserInput( const sf::Event& )
 
   if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Key::PageUp ) )
   {
-    if ( messageLog_.size() > ( chatLogOffset_ + 5 ) )
+    if ( static_cast< int >( messageLog_.size() ) > ( chatLogOffset_ + 5 ) )
     {
       chatLogOffset_ += 5;
       recalculateMessagePositions();
@@ -53,7 +53,7 @@ std::string PlayerLogDisplay::splitStringWithNewlines( const std::string& input,
   {
     int offset = lineCount * charactersPerLine_;
 
-    if ( offset >= input.length() )
+    if ( offset >= static_cast< int >( input.length() ) )
     {
       break;
     }
