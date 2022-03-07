@@ -13,6 +13,7 @@ const constexpr int MAX_TCHARS = 4548;
 
 characters::characters()
     : characterTemplates_()
+    , characterMap_()
 {
   std::cerr << "Attempting to load character templates..." << std::endl;
 
@@ -23,7 +24,8 @@ characters::characters()
     auto newCharacter = std::make_unique< character >();
 
     datFile.read( reinterpret_cast< char* >( newCharacter.get() ), sizeof( character ) );
-    std::cerr << "Reading in template for: " << newCharacter->name << std::endl;
+
+    characterMap_[ newCharacter->name ].push_back( newCharacter.get() );
 
     characterTemplates_.push_back( std::move( newCharacter ) );
   }
@@ -32,13 +34,40 @@ characters::characters()
 }
 
 void characters::getCharacterTemplates( const drogon::HttpRequestPtr&                             req,
-                                        std::function< void( const drogon::HttpResponsePtr& ) >&& callback, int id ) const
+                                        std::function< void( const drogon::HttpResponsePtr& ) >&& callback, int id )
 {
   ( void ) req;
 
   if ( id >= 0 && id < MAX_TCHARS && characterTemplates_[ id ] != nullptr )
   {
     Json::Value jsonResponse = characterTemplates_[ id ]->toJson();
+    auto        response     = drogon::HttpResponse::newHttpJsonResponse( jsonResponse );
+    response->setStatusCode( drogon::HttpStatusCode::k200OK );
+    callback( response );
+  }
+  else
+  {
+    auto response = drogon::HttpResponse::newHttpResponse();
+    response->setStatusCode( drogon::HttpStatusCode::k404NotFound );
+    callback( response );
+  }
+}
+
+void characters::getCharacterTemplatesByName( const drogon::HttpRequestPtr&                             req,
+                                              std::function< void( const drogon::HttpResponsePtr& ) >&& callback,
+                                              const std::string&                                        name )
+{
+  ( void ) req;
+
+  if ( ! name.empty() && characterMap_.count( name ) != 0 )
+  {
+    Json::Value jsonResponse = Json::arrayValue;
+
+    for ( auto&& c : characterMap_[ name ] )
+    {
+      jsonResponse.append( c->toJson() );
+    }
+
     auto        response     = drogon::HttpResponse::newHttpJsonResponse( jsonResponse );
     response->setStatusCode( drogon::HttpStatusCode::k200OK );
     callback( response );
