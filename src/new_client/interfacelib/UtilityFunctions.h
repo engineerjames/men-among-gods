@@ -58,11 +58,11 @@ inline int getMapIndexFromMousePosition( const sf::Vector2f& mousePosition )
   return mx + my * TILEX;
 }
 
-inline std::array< int, 5 > getFuzzyMapIndices( sf::Vector2f centerMousePosition )
+inline std::array< int, 10 > getFuzzyMapIndices( sf::Vector2f centerMousePosition )
 {
   int m = getMapIndexFromMousePosition( centerMousePosition );
 
-  std::array< int, 5 > mapIndicesToCheck {};
+  std::array< int, 10 > mapIndicesToCheck {};
 
   // First check the original index specified
   mapIndicesToCheck[ 0 ] = m;
@@ -70,6 +70,11 @@ inline std::array< int, 5 > getFuzzyMapIndices( sf::Vector2f centerMousePosition
   mapIndicesToCheck[ 2 ] = getMapIndexFromMousePosition( centerMousePosition + sf::Vector2f { -16.0f, 0.0f } );
   mapIndicesToCheck[ 3 ] = getMapIndexFromMousePosition( centerMousePosition + sf::Vector2f { 0.0f, 16.0f } );
   mapIndicesToCheck[ 4 ] = getMapIndexFromMousePosition( centerMousePosition + sf::Vector2f { 0.0f, 32.0f } );
+  mapIndicesToCheck[ 5 ] = getMapIndexFromMousePosition( centerMousePosition + sf::Vector2f { 0.0f, 32.0f } );
+  mapIndicesToCheck[ 6 ] = getMapIndexFromMousePosition( centerMousePosition + sf::Vector2f { 32.0f, 0.0f } );
+  mapIndicesToCheck[ 7 ] = getMapIndexFromMousePosition( centerMousePosition + sf::Vector2f { -32.0f, 0.0f } );
+  mapIndicesToCheck[ 8 ] = getMapIndexFromMousePosition( centerMousePosition + sf::Vector2f { 32.0f, 32.0f } );
+  mapIndicesToCheck[ 9 ] = getMapIndexFromMousePosition( centerMousePosition + sf::Vector2f { -32.0f, -32.0f } );
 
   return mapIndicesToCheck;
 }

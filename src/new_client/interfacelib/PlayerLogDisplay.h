@@ -2,6 +2,7 @@
 #define TEXT_BOX_H
 
 #include <SFML/Graphics.hpp>
+#include <string>
 #include <vector>
 
 #include "Component.h"
@@ -22,7 +23,12 @@ public:
   void         writeLogToFile( const std::string& pathToFile ) const;
 
 private:
+  void        recalculateMessagePositions();
+  std::string splitStringWithNewlines( const std::string& input, int lineCount );
+
   std::vector< sf::Text > messageLog_;
+  const int               charactersPerLine_;
+  int                     chatLogOffset_;
 };
 } // namespace MenAmongGods
 #endif

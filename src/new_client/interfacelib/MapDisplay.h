@@ -34,7 +34,7 @@ public:
   void saveToFile() const;
 
 private:
-  void         copysprite( int nr, int effect, int xpos, int ypos, int xoff, int yoff, bool isCharacterSelected = false );
+  void         copysprite( int nr, int effect, int xpos, int ypos, int xoff, int yoff, unsigned char light, bool isCharacterSelected = false );
   sf::Vector2i dd_gputtext( int xpos, int ypos, std::string text, int xoff, int yoff );
 
   const sf::Font&           font_;

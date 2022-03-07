@@ -45,8 +45,9 @@ private:
   PlayerData&    playerData_;
   sf::Font       font_;
 
-  sf::Text goldDisplay_;
-  sf::Text playerNameDisplay_;
+  MenAmongGods::JustifiableText goldDisplay_;
+  sf::Text                      goldLabel_;
+  sf::Text                      playerNameDisplay_;
 
   sf::Text                      avLabel_;
   MenAmongGods::JustifiableText avValue_;

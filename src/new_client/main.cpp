@@ -39,7 +39,7 @@ int main()
   auto map        = std::make_unique< MenAmongGods::Map >();
   auto playerData = std::make_unique< PlayerData >();
 
-  sf::RenderWindow window( sf::VideoMode( MODEX, MODEY ), "Men Among Gods - v1.1.2" );
+  sf::RenderWindow window( sf::VideoMode( MODEX, MODEY ), "Men Among Gods - v1.1.4" );
   window.setFramerateLimit( MenAmongGods::ClientConfiguration::instance().frameLimit() );
   window.requestFocus();
 
@@ -107,6 +107,17 @@ int main()
       for ( auto& c : *currentComponents )
       {
         c->onUserInput( event );
+      }
+
+      // User request to modify sound volume (TODO: Move later)
+      if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Key::F2 ) )
+      {
+        soundCache->increaseVolume();
+      }
+
+      if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Key::F1 ) )
+      {
+        soundCache->decreaseVolume();
       }
     }
 

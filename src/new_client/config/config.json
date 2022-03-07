@@ -2,6 +2,6 @@
   "frameLimit": 10,
   "hostIpAddress": "ec2-3-90-219-226.compute-1.amazonaws.com",
   "hostPort": 5555,
-  "loggingEnabled": true,
+  "loggingEnabled": false,
   "networkThreadDelay": 50
 }

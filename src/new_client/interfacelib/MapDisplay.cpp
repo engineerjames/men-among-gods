@@ -384,11 +384,11 @@ void MapDisplay::update()
 
       // What is the difference between ba_sprite and back? Can I always use ba_sprite?
       // by using ba_sprite instead; we fixed the intermittent "blank" sprite issue
-      copysprite( map_.getBackground( m ), map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff );
+      copysprite( map_.getBackground( m ), map_.getLight( m ), x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
 
       if ( playerData_.getGotoPosition().x == map_.getX( m ) && playerData_.getGotoPosition().y == map_.getY( m ) )
       {
-        copysprite( 31, 0, x * 32, y * 32, xoff, yoff );
+        copysprite( 31, 0, x * 32, y * 32, xoff, yoff, 0 );
       }
     }
   }
@@ -399,7 +399,7 @@ void MapDisplay::update()
     {
       int m = x + y * MAPX;
 
-      if ( map_.getFlags( x + y * MAPX ) & INVIS )
+      if ( map_.getFlags( m ) & INVIS )
       {
         tmp = 128;
       }
@@ -467,28 +467,28 @@ void MapDisplay::update()
 
           if ( hightlight == HL_MAP && tileType_ == 1 && tileX_ == x && tileY_ == y )
           {
-            copysprite( tmp2, map_.getLight( m ) | 16 | tmp, x * 32, y * 32, xoff, yoff );
+            copysprite( tmp2, map_.getLight( m ) | 16 | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
           }
           else
           {
-            copysprite( tmp2, map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff );
+            copysprite( tmp2, map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
           }
         }
         else
         {
           if ( hightlight == HL_MAP && tileType_ == 1 && tileX_ == x && tileY_ == y )
           {
-            copysprite( map_.getObject1( m ), map_.getLight( m ) | 16 | tmp, x * 32, y * 32, xoff, yoff );
+            copysprite( map_.getObject1( m ), 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
           }
           else
           {
-            copysprite( map_.getObject1( m ), map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff );
+            copysprite( map_.getObject1( m ), 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
           }
         }
       }
       else if ( map_.getObject1( m ) )
       {
-        copysprite( map_.getObject1( m ) + 1, map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff );
+        copysprite( map_.getObject1( m ) + 1, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
       }
 
       // character
@@ -528,17 +528,17 @@ void MapDisplay::update()
       {
         bool isSelected = map_.getCharacterId( m ) == playerData_.getSelectedCharacter();
         copysprite( map_.getObject2( m ), map_.getLight( m ) | tmp, x * 32, y * 32, xoff + map_.getObjectXOffset( m ),
-                    yoff + map_.getObjectYOffset( m ), isSelected );
+                    yoff + map_.getObjectYOffset( m ), map_.getLight( m ), isSelected );
       }
 
       if ( playerData_.getAttackTarget() != 0 && playerData_.getAttackTarget() == map_.getCharacterId( m ) )
       {
-        copysprite( 34, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ) );
+        copysprite( 34, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ), map_.getLight( m ) );
       }
 
       if ( playerData_.getPlayerAction() == DR_GIVE && playerData_.getFirstTarget() == map_.getCharacterCrc( m ) )
       {
-        copysprite( 45, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ) );
+        copysprite( 45, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ), map_.getLight( m ) );
       }
 
       if ( ( playerData_.clientShouldShowNames() | playerData_.clientShouldShowPercentHealth() ) && map_.getCharacterId( m ) )
@@ -562,88 +562,88 @@ void MapDisplay::update()
       if ( playerData_.getPlayerAction() == DR_DROP && playerData_.getFirstTarget() == map_.getX( m ) &&
            playerData_.getSecondTarget() == map_.getY( m ) )
       {
-        copysprite( 32, 0, x * 32, y * 32, xoff, yoff );
+        copysprite( 32, 0, x * 32, y * 32, xoff, yoff, 0 );
       }
       if ( playerData_.getPlayerAction() == DR_PICKUP && playerData_.getFirstTarget() == map_.getX( m ) &&
            playerData_.getSecondTarget() == map_.getY( m ) )
       {
-        copysprite( 33, 0, x * 32, y * 32, xoff, yoff );
+        copysprite( 33, 0, x * 32, y * 32, xoff, yoff, 0 );
       }
       if ( playerData_.getPlayerAction() == DR_USE && playerData_.getFirstTarget() == map_.getX( m ) &&
            playerData_.getSecondTarget() == map_.getY( m ) )
       {
-        copysprite( 45, 0, x * 32, y * 32, xoff, yoff );
+        copysprite( 45, 0, x * 32, y * 32, xoff, yoff, 0 );
       }
 
       // effects
       if ( map_.getFlags2( m ) & MF_MOVEBLOCK )
       {
-        copysprite( 55, 0, x * 32, y * 32, xoff, yoff );
+        copysprite( 55, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
       }
       if ( map_.getFlags2( m ) & MF_SIGHTBLOCK )
       {
-        copysprite( 84, 0, x * 32, y * 32, xoff, yoff );
+        copysprite( 84, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
       }
       if ( map_.getFlags2( m ) & MF_INDOORS )
       {
-        copysprite( 56, 0, x * 32, y * 32, xoff, yoff );
+        copysprite( 56, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
       }
       if ( map_.getFlags2( m ) & MF_UWATER )
       {
-        copysprite( 75, 0, x * 32, y * 32, xoff, yoff );
+        copysprite( 75, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
       }
       if ( map_.getFlags2( m ) & MF_NOMONST )
       {
-        copysprite( 59, 0, x * 32, y * 32, xoff, yoff );
+        copysprite( 59, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
       }
       if ( map_.getFlags2( m ) & MF_BANK )
       {
-        copysprite( 60, 0, x * 32, y * 32, xoff, yoff );
+        copysprite( 60, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
       }
       if ( map_.getFlags2( m ) & MF_TAVERN )
       {
-        copysprite( 61, 0, x * 32, y * 32, xoff, yoff );
+        copysprite( 61, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
       }
       if ( map_.getFlags2( m ) & MF_NOMAGIC )
       {
-        copysprite( 62, 0, x * 32, y * 32, xoff, yoff );
+        copysprite( 62, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
       }
       if ( map_.getFlags2( m ) & MF_DEATHTRAP )
       {
-        copysprite( 73, 0, x * 32, y * 32, xoff, yoff );
+        copysprite( 73, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
       }
       if ( map_.getFlags2( m ) & MF_NOLAG )
       {
-        copysprite( 57, 0, x * 32, y * 32, xoff, yoff );
+        copysprite( 57, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
       }
       if ( map_.getFlags2( m ) & MF_ARENA )
       {
-        copysprite( 76, 0, x * 32, y * 32, xoff, yoff );
+        copysprite( 76, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
       }
       if ( map_.getFlags2( m ) & MF_NOEXPIRE )
       {
-        copysprite( 82, 0, x * 32, y * 32, xoff, yoff );
+        copysprite( 82, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
       }
       if ( map_.getFlags2( m ) & 0x80000000 )
       {
-        copysprite( 72, 0, x * 32, y * 32, xoff, yoff );
+        copysprite( 72, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
       }
 
       if ( ( map_.getFlags( m ) & ( INJURED | INJURED1 | INJURED2 ) ) == INJURED )
       {
-        copysprite( 1079, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ) );
+        copysprite( 1079, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ), map_.getLight( m ) );
       }
       if ( ( map_.getFlags( m ) & ( INJURED | INJURED1 | INJURED2 ) ) == ( INJURED | INJURED1 ) )
       {
-        copysprite( 1080, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ) );
+        copysprite( 1080, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ), map_.getLight( m ) );
       }
       if ( ( map_.getFlags( m ) & ( INJURED | INJURED1 | INJURED2 ) ) == ( INJURED | INJURED2 ) )
       {
-        copysprite( 1081, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ) );
+        copysprite( 1081, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ), map_.getLight( m ) );
       }
       if ( ( map_.getFlags( m ) & ( INJURED | INJURED1 | INJURED2 ) ) == ( INJURED | INJURED1 | INJURED2 ) )
       {
-        copysprite( 1082, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ) );
+        copysprite( 1082, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ), map_.getLight( m ) );
       }
 
       if ( map_.getFlags( m ) & DEATH )
@@ -651,16 +651,16 @@ void MapDisplay::update()
         if ( map_.getObject2( m ) )
         {
           copysprite( 280 + ( ( map_.getFlags( m ) & DEATH ) >> 17 ) - 1, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ),
-                      yoff + map_.getObjectYOffset( m ) );
+                      yoff + map_.getObjectYOffset( m ), map_.getLight( m ) );
         }
         else
         {
-          copysprite( 280 + ( ( map_.getFlags( m ) & DEATH ) >> 17 ) - 1, 0, x * 32, y * 32, xoff, yoff );
+          copysprite( 280 + ( ( map_.getFlags( m ) & DEATH ) >> 17 ) - 1, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
         }
       }
       if ( map_.getFlags( m ) & TOMB )
       {
-        copysprite( 240 + ( ( map_.getFlags( m ) & TOMB ) >> 12 ) - 1, map_.getLight( m ), x * 32, y * 32, xoff, yoff );
+        copysprite( 240 + ( ( map_.getFlags( m ) & TOMB ) >> 12 ) - 1, map_.getLight( m ), x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
       }
 
       alpha    = 0;
@@ -733,7 +733,7 @@ void MapDisplay::loadFromFile( std::string filePath )
   mapFile.close();
 }
 
-void MapDisplay::copysprite( int nr, int effect, int xpos, int ypos, int xoff, int yoff, bool isCharacterSelected )
+void MapDisplay::copysprite( int nr, int effect, int xpos, int ypos, int xoff, int yoff, unsigned char light, bool isCharacterSelected )
 {
   if ( nr == 0 )
   {
@@ -784,16 +784,24 @@ void MapDisplay::copysprite( int nr, int effect, int xpos, int ypos, int xoff, i
     {
       newSprite.setPosition( sf::Vector2f { static_cast< float >( rx + x * 32 ), static_cast< float >( ry + y * 32 ) } );
 
+      // Apply light effects
+      // Light values range from 0 - 15
+      std::uint8_t lightValue = 255u - static_cast< uint8_t >( static_cast< float >( light ) / 15.0f * 255u );
+      newSprite.setColor( sf::Color { lightValue, lightValue, lightValue, 255u } );
+
+      if ( effect & 64 )
+      {
+        newSprite.setColor( sf::Color { 0u, 0u, 0u, 0u } );
+        effect -= 64;
+      }
+
       if ( effect & 128 )
       {
         newSprite.setColor( sf::Color { static_cast< std::uint8_t >( effect ), static_cast< std::uint8_t >( effect ),
                                         static_cast< std::uint8_t >( effect ), 255 } );
+        effect -= 128;
       }
-      else if ( effect & 64 )
-      {
-        newSprite.setColor( sf::Color { 0u, 0u, 0u, 255u } );
-      }
-
+      
       if ( isCharacterSelected )
       {
         newSprite.setColor( sf::Color::Green );
