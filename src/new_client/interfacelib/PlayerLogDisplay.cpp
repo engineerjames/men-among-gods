@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 #include "ColorPalette.h"
 #include "ConstantIdentifiers.h"
@@ -46,22 +47,38 @@ void PlayerLogDisplay::finalize()
   // Do nothing for now.
 }
 
-std::string PlayerLogDisplay::splitStringWithNewlines( const std::string& input, int lineCount )
+std::string PlayerLogDisplay::splitStringWithNewlines( std::string& input )
 {
-  std::string output = input;
-  for ( int i = 0; i < lineCount; ++i )
+  for ( int i = 0; i < static_cast< int >( input.size() ); i += charactersPerLine_ )
   {
-    int offset = lineCount * charactersPerLine_;
-
-    if ( offset >= static_cast< int >( input.length() ) )
+    if ( i == 0 )
     {
-      break;
+      continue;
     }
 
-    output.insert( lineCount * charactersPerLine_, "\n" );
+    if ( static_cast< int >( input.size() ) > ( i + 1 ) )
+    {
+      if ( std::isalpha(input[i + 1]) )
+      {
+        int j = i;
+        while (j > 0)
+        {
+          if (std::isspace(input[j]))
+          {
+            break;
+          }
+
+          j--;
+        }
+
+        i = j;
+      }
+    }
+
+    input.insert( i, "\n" );
   }
 
-  return output + "\n";
+  return input;
 }
 
 void PlayerLogDisplay::recalculateMessagePositions()
@@ -77,26 +94,37 @@ void PlayerLogDisplay::recalculateMessagePositions()
       return;
     }
 
-    std::string  textStr                = m->getString().toAnsiString();
-    bool         stringContainsNewlines = std::find( std::begin( textStr ), std::end( textStr ), '\n' ) != textStr.end();
-    int          lineCount              = static_cast< int >( textStr.length() / charactersPerLine_ );
-    sf::Vector2f newPosition            = startPosition - sf::Vector2f { 0.0f, static_cast< float >( ( i + lineCount ) * FONT_SIZE ) };
+    std::string textStr                = m->getString().toAnsiString();
+    bool        stringContainsNewlines = std::find( std::begin( textStr ), std::end( textStr ), '\n' ) != textStr.end();
 
-    if ( lineCount > 0 && ! stringContainsNewlines )
+    if ( ! stringContainsNewlines )
     {
-      textStr = splitStringWithNewlines( textStr, lineCount );
+      textStr = splitStringWithNewlines( textStr );
       m->setString( textStr );
       m->setLineSpacing( 0.8f );
     }
 
+    auto additionalNewLines = std::count_if( std::begin( textStr ), std::end( textStr ),
+                                             []( char c )
+                                             {
+                                               return c == '\n';
+                                             } );
+
+    sf::Vector2f newPosition = startPosition - sf::Vector2f { 0.0f, static_cast< float >( ( i + additionalNewLines ) * FONT_SIZE ) };
+
     // Need to handle the case where each message could take up multiple lines
     m->setPosition( newPosition );
-    i += lineCount + 1;
+    i += static_cast< int >( additionalNewLines ) + 1;
   }
 }
 
-void PlayerLogDisplay::addMessage( const sf::Text& newMsg )
+void PlayerLogDisplay::addMessage( sf::Text newMsg )
 {
+  std::string msgText = newMsg.getString().toAnsiString();
+  msgText.erase( std::remove( std::begin( msgText ), std::end( msgText ), '\n' ) );
+
+  newMsg.setString( msgText );
+
   messageLog_.push_back( newMsg );
 
   recalculateMessagePositions();
@@ -122,7 +150,7 @@ void PlayerLogDisplay::draw( sf::RenderTarget& target, sf::RenderStates states )
   for ( auto&& msg = std::rbegin( messageLog_ ) + chatLogOffset_; msg != std::rend( messageLog_ ); msg++ )
   {
     // If we're already above what's going to be rendered
-    // just break out early.    
+    // just break out early.
     if ( msg >= std::rend( messageLog_ ) || msg < std::rbegin( messageLog_ ) || msg->getPosition().y < minimumYPosition )
     {
       return;

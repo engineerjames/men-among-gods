@@ -60,12 +60,15 @@ sf::Sprite GraphicsCache::loadSprite( std::size_t id )
       }
       else
       {
-        // Great, some images have masks of 254 0 254 as well
-        newImage.createMaskFromColor( sf::Color { 0xFF00FFFF } );
-        newImage.createMaskFromColor( sf::Color { 0xFE00FEFF } );
+        // The BMP graphics files are NOT consistent in their usage of masks for transparency...
+        static std::array< sf::Color, 9 > masks = { sf::Color { 0xFF00FFFF }, sf::Color { 0xFE00FEFF }, sf::Color { 0xFD00FDFF },
+                                                    sf::Color { 0xFC00FCFF }, sf::Color { 0xFB00FBFF }, sf::Color { 0xFA00FAFF },
+                                                    sf::Color { 0xF900F9FF }, sf::Color { 0xF800F8FF }, sf::Color { 0xF700F7FF } };
 
-        // Yeah, there's just a FEW that have 251 0 251 as well...
-        newImage.createMaskFromColor( sf::Color { 0xFB00FBFF } );
+        for (auto&& mask : masks)
+        {
+          newImage.createMaskFromColor( mask );
+        }
 
         // Load in textures and sprites for now, though this is probably unnecessary work
         newTexture.loadFromImage( newImage );
