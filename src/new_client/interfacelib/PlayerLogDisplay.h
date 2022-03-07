@@ -15,7 +15,7 @@ public:
   PlayerLogDisplay();
   ~PlayerLogDisplay() = default;
 
-  void         addMessage( const sf::Text& newMsg );
+  void         addMessage( sf::Text newMsg );
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
   virtual void update() override;
   virtual void onUserInput( const sf::Event& e ) override;

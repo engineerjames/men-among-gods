@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 #include "ColorPalette.h"
 #include "ConstantIdentifiers.h"
@@ -49,19 +50,25 @@ void PlayerLogDisplay::finalize()
 std::string PlayerLogDisplay::splitStringWithNewlines( const std::string& input, int lineCount )
 {
   std::string output = input;
+
+  std::cerr << "INPUT" << std::endl;
+  std::cerr << output;
   for ( int i = 0; i < lineCount; ++i )
   {
     int offset = lineCount * charactersPerLine_;
 
-    if ( offset >= static_cast< int >( input.length() ) )
+    if ( offset >= static_cast< int >( output.length() ) )
     {
       break;
     }
 
-    output.insert( lineCount * charactersPerLine_, "\n" );
+    output.insert( offset - 1, "\n" );
   }
 
-  return output + "\n";
+  std::cerr << "OUTPUT" << std::endl;
+  std::cerr << output;
+
+  return output;
 }
 
 void PlayerLogDisplay::recalculateMessagePositions()
@@ -79,8 +86,10 @@ void PlayerLogDisplay::recalculateMessagePositions()
 
     std::string  textStr                = m->getString().toAnsiString();
     bool         stringContainsNewlines = std::find( std::begin( textStr ), std::end( textStr ), '\n' ) != textStr.end();
-    int          lineCount              = static_cast< int >( textStr.length() / charactersPerLine_ );
+    int          lineCount              = static_cast< int >( std::ceil( ( textStr.length() / charactersPerLine_ ) ) );
     sf::Vector2f newPosition            = startPosition - sf::Vector2f { 0.0f, static_cast< float >( ( i + lineCount ) * FONT_SIZE ) };
+
+    std::cerr << textStr << " containsNewLines: " << stringContainsNewlines << std::endl;
 
     if ( lineCount > 0 && ! stringContainsNewlines )
     {
@@ -95,7 +104,7 @@ void PlayerLogDisplay::recalculateMessagePositions()
   }
 }
 
-void PlayerLogDisplay::addMessage( const sf::Text& newMsg )
+void PlayerLogDisplay::addMessage( sf::Text newMsg )
 {
   messageLog_.push_back( newMsg );
 
@@ -122,7 +131,7 @@ void PlayerLogDisplay::draw( sf::RenderTarget& target, sf::RenderStates states )
   for ( auto&& msg = std::rbegin( messageLog_ ) + chatLogOffset_; msg != std::rend( messageLog_ ); msg++ )
   {
     // If we're already above what's going to be rendered
-    // just break out early.    
+    // just break out early.
     if ( msg >= std::rend( messageLog_ ) || msg < std::rbegin( messageLog_ ) || msg->getPosition().y < minimumYPosition )
     {
       return;
