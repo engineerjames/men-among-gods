@@ -19,6 +19,9 @@ class GraphicsIndex;
 
 namespace MenAmongGods
 {
+
+class MainUi;
+
 class SkillsAndAttributesDisplay : public MenAmongGods::Component
 {
 public:
@@ -35,8 +38,8 @@ public:
     ~SkillRow() = default;
   };
 
-  SkillsAndAttributesDisplay( const sf::RenderWindow& window, const sf::Font& font, GraphicsCache& gfxCache, const GraphicsIndex& gfxIndex,
-                              PlayerData& playerData );
+  SkillsAndAttributesDisplay( const sf::RenderWindow& window, MainUi& mainUI, const sf::Font& font, GraphicsCache& gfxCache,
+                              const GraphicsIndex& gfxIndex, PlayerData& playerData );
   ~SkillsAndAttributesDisplay() = default;
 
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
@@ -46,6 +49,7 @@ public:
 
 private:
   const sf::RenderWindow&                    window_;
+  MainUi&                                    mainUI_;
   const sf::Font&                            font_;
   GraphicsCache&                             gfxCache_;
   const GraphicsIndex&                       gfxIndex_;
