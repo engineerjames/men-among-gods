@@ -49,7 +49,7 @@ void PlayerLogDisplay::finalize()
 
 std::string PlayerLogDisplay::splitStringWithNewlines( std::string& input )
 {
-  for ( int i = 0; i < input.size(); i += charactersPerLine_ )
+  for ( int i = 0; i < static_cast< int >( input.size() ); i += charactersPerLine_ )
   {
     if ( i == 0 )
     {
