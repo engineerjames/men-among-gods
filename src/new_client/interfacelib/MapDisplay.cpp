@@ -259,6 +259,7 @@ void MapDisplay::onUserInput( const sf::Event& e )
       if ( playerData_.getCarriedItem() != 0 && ! ( map_.getFlags( m ) & ISITEM ) )
       {
         commands_.emplace_back( std::make_shared< MenAmongGods::DropCommand >( x, y ) );
+        return;
       }
 
       if ( map_.getFlags( m ) & ISITEM )
