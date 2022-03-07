@@ -15,7 +15,7 @@ public:
   PlayerLogDisplay();
   ~PlayerLogDisplay() = default;
 
-  void         addMessage( const sf::Text& newMsg );
+  void         addMessage( sf::Text newMsg );
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
   virtual void update() override;
   virtual void onUserInput( const sf::Event& e ) override;
@@ -24,7 +24,7 @@ public:
 
 private:
   void        recalculateMessagePositions();
-  std::string splitStringWithNewlines( const std::string& input, int lineCount );
+  std::string splitStringWithNewlines( std::string& input );
 
   std::vector< sf::Text > messageLog_;
   const int               charactersPerLine_;

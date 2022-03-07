@@ -5,6 +5,7 @@
 #include "GraphicsCache.h"
 #include "GraphicsIndex.h"
 #include "GuiFormatters.h"
+#include "MainUi.h"
 #include "PlayerData.h"
 #include "UiPositions.h"
 #include "UtilityFunctions.h"
@@ -197,9 +198,10 @@ SkillsAndAttributesDisplay::SkillRow::SkillRow()
   minus_.setCharacterSize( FONT_SIZE );
 }
 
-SkillsAndAttributesDisplay::SkillsAndAttributesDisplay( const sf::RenderWindow& window, const sf::Font& font, GraphicsCache& gfxCache,
-                                                        const GraphicsIndex& gfxIndex, PlayerData& playerData )
+SkillsAndAttributesDisplay::SkillsAndAttributesDisplay( const sf::RenderWindow& window, MainUi& mainUI, const sf::Font& font,
+                                                        GraphicsCache& gfxCache, const GraphicsIndex& gfxIndex, PlayerData& playerData )
     : window_( window )
+    , mainUI_( mainUI )
     , font_( font )
     , gfxCache_( gfxCache )
     , gfxIndex_( gfxIndex )
@@ -258,8 +260,8 @@ SkillsAndAttributesDisplay::SkillsAndAttributesDisplay( const sf::RenderWindow& 
     attributes_[ i ].name_.setPosition( MenAmongGods::initialAttributePosition + delta );
 
     attributes_[ i ].displayValue_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 127.0f, delta.y } );
-    attributes_[ i ].plus_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 131.0f, delta.y } );
-    attributes_[ i ].minus_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 146.0f, delta.y } );
+    attributes_[ i ].plus_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 133.0f, delta.y } );
+    attributes_[ i ].minus_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 146.0f, delta.y + 1 } );
     attributes_[ i ].expRequired_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 200.0f, delta.y } );
 
     attributes_[ i ].displayValue_.setString( "0" );
@@ -285,8 +287,8 @@ SkillsAndAttributesDisplay::SkillsAndAttributesDisplay( const sf::RenderWindow& 
     lifeDisplay_[ i ].name_.setPosition( MenAmongGods::initialAttributePosition + delta );
 
     lifeDisplay_[ i ].displayValue_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 127.0f, delta.y } );
-    lifeDisplay_[ i ].plus_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 131.0f, delta.y } );
-    lifeDisplay_[ i ].minus_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 146.0f, delta.y } );
+    lifeDisplay_[ i ].plus_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 133.0f, delta.y } );
+    lifeDisplay_[ i ].minus_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 146.0f, delta.y + 1 } );
     lifeDisplay_[ i ].expRequired_.setPosition( MenAmongGods::initialAttributePosition + sf::Vector2f { 200.0f, delta.y } );
 
     lifeDisplay_[ i ].displayValue_.setString( "0" );
@@ -320,8 +322,8 @@ SkillsAndAttributesDisplay::SkillsAndAttributesDisplay( const sf::RenderWindow& 
 
     skills_[ i ].name_.setPosition( MenAmongGods::initialSkillPosition + delta );
     skills_[ i ].displayValue_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 127.0f, delta.y } );
-    skills_[ i ].plus_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 131.0f, delta.y } );
-    skills_[ i ].minus_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 146.0f, delta.y } );
+    skills_[ i ].plus_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 133.0f, delta.y } );
+    skills_[ i ].minus_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 146.0f, delta.y + 1 } );
     skills_[ i ].expRequired_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 200.0f, delta.y } );
 
     skills_[ i ].displayValue_.setJustification( MenAmongGods::JustifiableText::TextJustification::RIGHT );
@@ -477,8 +479,8 @@ void SkillsAndAttributesDisplay::update()
     skills_[ i ].name_.setPosition( MenAmongGods::initialSkillPosition + delta );
 
     skills_[ i ].displayValue_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 127.0f, delta.y } );
-    skills_[ i ].plus_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 131.0f, delta.y } );
-    skills_[ i ].minus_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 146.0f, delta.y } );
+    skills_[ i ].plus_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 133.0f, delta.y } );
+    skills_[ i ].minus_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 146.0f, delta.y + 1 } );
     skills_[ i ].expRequired_.setPosition( MenAmongGods::initialSkillPosition + sf::Vector2f { 200.0f, delta.y } );
 
     skills_[ i ].displayValue_.update();
@@ -862,6 +864,40 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
         while ( ! raiseStack.empty() )
         {
           raiseStack.pop();
+        }
+      }
+    }
+
+    return;
+  }
+
+  if ( e.type == sf::Event::MouseButtonReleased && e.mouseButton.button == sf::Mouse::Button::Right )
+  {
+    sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
+
+    // Find out which row was clicked -- each row
+    int row = static_cast< int >( mousePosition.y / 14.0f );
+    row     = std::max( 0, row );
+
+    if ( row > 7 )
+    {
+      for ( int i = 0; i < 10; ++i )
+      {
+        const sf::Vector2f  delta { 0.0f, i * 14.0f };
+        const sf::Vector2f  potentialSkillPosition = initialSkillPosition + delta;
+        const sf::Vector2f  skillBarSize { 105.0f, 10.0f };
+        const sf::FloatRect clickableSkillRegion { potentialSkillPosition, skillBarSize };
+
+        if ( clickableSkillRegion.contains( mousePosition ) )
+        {
+          if ( skillsToDisplay_[ i ] == nullptr )
+          {
+            return;
+          }
+
+          int skillNr = getSkillNumber( skillsToDisplay_[ i ]->name_.getString() );
+
+          mainUI_.addMessage( LogType::INFO, static_skilltab[ skillNr ].desc );
         }
       }
     }
