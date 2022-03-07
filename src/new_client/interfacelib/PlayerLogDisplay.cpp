@@ -47,28 +47,21 @@ void PlayerLogDisplay::finalize()
   // Do nothing for now.
 }
 
-std::string PlayerLogDisplay::splitStringWithNewlines( const std::string& input, int lineCount )
+std::string PlayerLogDisplay::splitStringWithNewlines( std::string& input, int& additionalNewLines )
 {
-  std::string output = input;
-
-  std::cerr << "INPUT" << std::endl;
-  std::cerr << output;
-  for ( int i = 0; i < lineCount; ++i )
+  additionalNewLines = 0;
+  for ( int i = 0; i < input.size(); i += charactersPerLine_ )
   {
-    int offset = lineCount * charactersPerLine_;
-
-    if ( offset >= static_cast< int >( output.length() ) )
+    if ( i == 0 )
     {
-      break;
+      continue;
     }
 
-    output.insert( offset - 1, "\n" );
+    input.insert( i, "\n" );
+    additionalNewLines++;
   }
 
-  std::cerr << "OUTPUT" << std::endl;
-  std::cerr << output;
-
-  return output;
+  return input;
 }
 
 void PlayerLogDisplay::recalculateMessagePositions()
@@ -86,21 +79,23 @@ void PlayerLogDisplay::recalculateMessagePositions()
 
     std::string  textStr                = m->getString().toAnsiString();
     bool         stringContainsNewlines = std::find( std::begin( textStr ), std::end( textStr ), '\n' ) != textStr.end();
-    int          lineCount              = static_cast< int >( std::ceil( ( textStr.length() / charactersPerLine_ ) ) );
-    sf::Vector2f newPosition            = startPosition - sf::Vector2f { 0.0f, static_cast< float >( ( i + lineCount ) * FONT_SIZE ) };
 
-    std::cerr << textStr << " containsNewLines: " << stringContainsNewlines << std::endl;
-
-    if ( lineCount > 0 && ! stringContainsNewlines )
+    int additionalNewLines = 0;
+    if ( ! stringContainsNewlines )
     {
-      textStr = splitStringWithNewlines( textStr, lineCount );
+      textStr = splitStringWithNewlines( textStr, additionalNewLines );
       m->setString( textStr );
       m->setLineSpacing( 0.8f );
     }
 
+    std::cerr << textStr << std::endl;
+    std::cerr << "additional lines = " << additionalNewLines << std::endl;
+    sf::Vector2f newPosition = startPosition - sf::Vector2f { 0.0f, static_cast< float >( ( i + additionalNewLines ) * FONT_SIZE ) };
+
+
     // Need to handle the case where each message could take up multiple lines
     m->setPosition( newPosition );
-    i += lineCount + 1;
+    i += additionalNewLines + 1;
   }
 }
 

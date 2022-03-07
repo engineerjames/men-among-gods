@@ -24,7 +24,7 @@ public:
 
 private:
   void        recalculateMessagePositions();
-  std::string splitStringWithNewlines( const std::string& input, int lineCount );
+  std::string splitStringWithNewlines( std::string& input, int& additionalNewLines );
 
   std::vector< sf::Text > messageLog_;
   const int               charactersPerLine_;
