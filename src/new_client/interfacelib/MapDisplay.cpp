@@ -706,7 +706,7 @@ void MapDisplay::update()
     {
       if ( tile.getGlobalBounds().contains( mousePosition ) )
       {
-        tile.setColor( sf::Color { 255, 255, 255, 200 } );
+        tile.setColor( sf::Color { 128, 128, 128, 255 } );
         break;
       }
     }
