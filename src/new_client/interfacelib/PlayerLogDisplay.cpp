@@ -56,6 +56,25 @@ std::string PlayerLogDisplay::splitStringWithNewlines( std::string& input )
       continue;
     }
 
+    if ( static_cast< int >( input.size() ) > ( i + 1 ) )
+    {
+      if ( std::isalpha(input[i + 1]) )
+      {
+        int j = i;
+        while (j > 0)
+        {
+          if (std::isspace(input[j]))
+          {
+            break;
+          }
+
+          j--;
+        }
+
+        i = j;
+      }
+    }
+
     input.insert( i, "\n" );
   }
 
