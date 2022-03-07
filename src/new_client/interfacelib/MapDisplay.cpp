@@ -384,7 +384,7 @@ void MapDisplay::update()
 
       // What is the difference between ba_sprite and back? Can I always use ba_sprite?
       // by using ba_sprite instead; we fixed the intermittent "blank" sprite issue
-      copysprite( map_.getBackground( m ), map_.getLight( m ), x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+      copysprite( map_.getBackground( m ), map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
 
       if ( playerData_.getGotoPosition().x == map_.getX( m ) && playerData_.getGotoPosition().y == map_.getY( m ) )
       {
@@ -467,7 +467,7 @@ void MapDisplay::update()
 
           if ( hightlight == HL_MAP && tileType_ == 1 && tileX_ == x && tileY_ == y )
           {
-            copysprite( tmp2, map_.getLight( m ) | 16 | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+            copysprite( tmp2, map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
           }
           else
           {
@@ -478,17 +478,17 @@ void MapDisplay::update()
         {
           if ( hightlight == HL_MAP && tileType_ == 1 && tileX_ == x && tileY_ == y )
           {
-            copysprite( map_.getObject1( m ), 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+            copysprite( map_.getObject1( m ), map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
           }
           else
           {
-            copysprite( map_.getObject1( m ), 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+            copysprite( map_.getObject1( m ), map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
           }
         }
       }
       else if ( map_.getObject1( m ) )
       {
-        copysprite( map_.getObject1( m ) + 1, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+        copysprite( map_.getObject1( m ) + 1, map_.getLight(m)|tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
       }
 
       // character
@@ -797,8 +797,8 @@ void MapDisplay::copysprite( int nr, int effect, int xpos, int ypos, int xoff, i
 
       if ( effect & 128 )
       {
-        newSprite.setColor( sf::Color { static_cast< std::uint8_t >( effect ), static_cast< std::uint8_t >( effect ),
-                                        static_cast< std::uint8_t >( effect ), 255 } );
+        newSprite.setColor( sf::Color { 0u, 0u, 0u, 0u } );
+
         effect -= 128;
       }
       
