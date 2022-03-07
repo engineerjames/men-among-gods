@@ -47,9 +47,8 @@ void PlayerLogDisplay::finalize()
   // Do nothing for now.
 }
 
-std::string PlayerLogDisplay::splitStringWithNewlines( std::string& input, int& additionalNewLines )
+std::string PlayerLogDisplay::splitStringWithNewlines( std::string& input )
 {
-  additionalNewLines = 0;
   for ( int i = 0; i < input.size(); i += charactersPerLine_ )
   {
     if ( i == 0 )
@@ -58,7 +57,6 @@ std::string PlayerLogDisplay::splitStringWithNewlines( std::string& input, int& 
     }
 
     input.insert( i, "\n" );
-    additionalNewLines++;
   }
 
   return input;
@@ -77,30 +75,37 @@ void PlayerLogDisplay::recalculateMessagePositions()
       return;
     }
 
-    std::string  textStr                = m->getString().toAnsiString();
-    bool         stringContainsNewlines = std::find( std::begin( textStr ), std::end( textStr ), '\n' ) != textStr.end();
+    std::string textStr                = m->getString().toAnsiString();
+    bool        stringContainsNewlines = std::find( std::begin( textStr ), std::end( textStr ), '\n' ) != textStr.end();
 
-    int additionalNewLines = 0;
     if ( ! stringContainsNewlines )
     {
-      textStr = splitStringWithNewlines( textStr, additionalNewLines );
+      textStr = splitStringWithNewlines( textStr );
       m->setString( textStr );
       m->setLineSpacing( 0.8f );
     }
 
-    std::cerr << textStr << std::endl;
-    std::cerr << "additional lines = " << additionalNewLines << std::endl;
-    sf::Vector2f newPosition = startPosition - sf::Vector2f { 0.0f, static_cast< float >( ( i + additionalNewLines ) * FONT_SIZE ) };
+    auto additionalNewLines = std::count_if( std::begin( textStr ), std::end( textStr ),
+                                             []( char c )
+                                             {
+                                               return c == '\n';
+                                             } );
 
+    sf::Vector2f newPosition = startPosition - sf::Vector2f { 0.0f, static_cast< float >( ( i + additionalNewLines ) * FONT_SIZE ) };
 
     // Need to handle the case where each message could take up multiple lines
     m->setPosition( newPosition );
-    i += additionalNewLines + 1;
+    i += static_cast< int >( additionalNewLines ) + 1;
   }
 }
 
 void PlayerLogDisplay::addMessage( sf::Text newMsg )
 {
+  std::string msgText = newMsg.getString().toAnsiString();
+  msgText.erase( std::remove( std::begin( msgText ), std::end( msgText ), '\n' ) );
+
+  newMsg.setString( msgText );
+
   messageLog_.push_back( newMsg );
 
   recalculateMessagePositions();
