@@ -1,6 +1,153 @@
+
 #include <json/json.h>
 
 #include <cstdint>
+
+// TODO: Replace these with a game-wide  library
+static constexpr const std::size_t SKILLTAB_SIZE = 50;
+
+struct skilltab
+{
+  int  nr;
+  char sortkey;
+  char name[ 40 ];
+  char desc[ 200 ];
+
+  int attrib[ 3 ];
+};
+
+static const constexpr int AT_BRAVE = 0;
+static const constexpr int AT_WILL  = 1;
+static const constexpr int AT_INT   = 2;
+static const constexpr int AT_AGIL  = 3;
+static const constexpr int AT_STREN = 4;
+
+// clang-format off
+// NOLINTNEXTLINE
+inline skilltab static_skilltab[SKILLTAB_SIZE]={
+	{0,     'C',    "Hand to Hand", "Fighting without weapons.",                    {AT_BRAVE,AT_AGIL,AT_STREN}},
+	{1,     'C',    "Karate",       "Fighting without weapons and doing damage.",   {AT_BRAVE,AT_AGIL,AT_STREN}},
+	{2,     'C',    "Dagger",       "Fighting with daggers or similiar weapons.",   {AT_BRAVE,AT_AGIL,AT_INT}},
+	{3,     'C',    "Sword",        "Fighting with swords or similiar weapons.",    {AT_BRAVE,AT_AGIL,AT_STREN}},
+	{4,     'C',    "Axe",          "Fighting with axes or similiar weapons.",      {AT_BRAVE,AT_STREN,AT_STREN}},
+	{5,     'C',    "Staff",        "Fighting with staffs or similiar weapons.",    {AT_AGIL,AT_STREN,AT_STREN}},
+	{6,     'C',    "Two-Handed",   "Fighting with two-handed weapons.",            {AT_AGIL,AT_STREN,AT_STREN}},
+
+	{7,     'G',    "Lock-Picking", "Opening doors without keys.",                  {AT_INT,AT_WILL,AT_AGIL}},
+	{8,     'G',    "Stealth",      "Moving without being seen or heard.",          {AT_INT,AT_WILL,AT_AGIL}},
+	{9,     'G',    "Perception",   "Seeing and hearing.",                          {AT_INT,AT_WILL,AT_AGIL}},
+
+	{10,    'M',    "Swimming",     "Moving through water without drowning.",       {AT_INT,AT_WILL,AT_AGIL}},
+	{11,    'R',    "Magic Shield", "Spell: Create a magic shield (Cost: 25 Mana).",  {AT_BRAVE,AT_INT,AT_WILL}},
+
+	{12,    'G',    "Bartering",    "Getting good prices from merchants.",          {AT_BRAVE,AT_INT,AT_WILL}},
+	{13,    'G',    "Repair",       "Repairing items.",                             {AT_INT,AT_WILL,AT_AGIL}},
+
+	{14,    'R',    "Light",        "Spell: Create light (Cost: 5 Mana).",           {AT_BRAVE,AT_INT,AT_WILL}},
+	{15,    'R',    "Recall",       "Spell: Teleport to temple (Cost: 15 Mana).",    {AT_BRAVE,AT_INT,AT_WILL}},
+	{16,    'R',    "Guardian Angel","Spell: Avoid loss of HPs and items on death.", {AT_BRAVE,AT_INT,AT_WILL}},
+	{17,    'R',    "Protection",   "Spell: Enhance Armor of target (Cost: 15 Mana).", {AT_BRAVE,AT_INT,AT_WILL}},
+	{18,    'R',    "Enhance Weapon","Spell: Enhance Weapon of target (Cost: 15 Mana).", {AT_BRAVE,AT_INT,AT_WILL}},
+	{19,    'R',    "Stun",         "Spell: Make target motionless (Cost: 20 Mana).",   {AT_BRAVE,AT_INT,AT_WILL}},
+	{20,    'R',    "Curse",        "Spell: Decrease attributes of target (Cost: 35 Mana).",  {AT_BRAVE,AT_INT,AT_WILL}},
+	{21,    'R',    "Bless",        "Spell: Increase attributes of target (Cost: 35 Mana).", {AT_BRAVE,AT_INT,AT_WILL}},
+	{22,    'R',    "Identify",     "Spell: Read stats of item/character. (Cost: 25 Mana)",   {AT_BRAVE,AT_INT,AT_WILL}},
+
+	{23,    'G',    "Resistance",   "Resist against magic.",                        {AT_INT,AT_WILL,AT_STREN}},
+
+	{24,    'R',    "Blast",        "Spell: Inflict injuries to target (Cost: varies).", {AT_INT,AT_WILL,AT_STREN}},
+	{25,    'R',    "Dispel Magic", "Spell: Removes curse magic from target (Cost: 25 Mana).", {AT_BRAVE,AT_INT,AT_WILL}},
+
+	{26,    'R',    "Heal",         "Spell: Heal injuries (Cost: 25 Mana).",         {AT_BRAVE,AT_INT,AT_WILL}},
+	{27,    'R',    "Ghost Companion","Spell: Create a ghost to attack an enemy.",    {AT_BRAVE,AT_INT,AT_WILL}},
+
+	{28,    'B',    "Regenerate",   "Regenerate Hitpoints faster.",                 {AT_STREN,AT_STREN,AT_STREN}},
+	{29,    'B',    "Rest",         "Regenerate Endurance faster.",                 {AT_AGIL,AT_AGIL,AT_AGIL}},
+	{30,    'B',    "Meditate",     "Regenerate Mana faster.",                      {AT_INT,AT_WILL,AT_WILL}},
+
+	{31,    'G',    "Sense Magic",  "Find out who casts what at you.",              {AT_BRAVE,AT_INT,AT_WILL}},
+	{32,    'G',    "Immunity",     "Partial immunity against negative magic.",     {AT_BRAVE,AT_AGIL,AT_STREN}},
+	{33,    'G',    "Surround Hit", "Hit all your enemies at once.",                {AT_BRAVE,AT_AGIL,AT_STREN}},
+	{34,    'G',    "Concentrate",  "Reduces mana cost for all spells.",            {AT_WILL,AT_WILL,AT_WILL}},
+	{35,    'G',    "Warcry",       "Frighten all enemies in hearing distance.",    {AT_BRAVE,AT_BRAVE,AT_STREN}},
+
+	{36,   'Z',   "", "", {0,0,0,}},
+	{37,   'Z',   "", "", {0,0,0,}},
+	{38,   'Z',   "", "", {0,0,0,}},
+	{39,   'Z',   "", "", {0,0,0,}},
+
+	{40,   'Z',   "", "", {0,0,0,}},
+	{41,   'Z',   "", "", {0,0,0,}},
+	{42,   'Z',   "", "", {0,0,0,}},
+	{43,   'Z',   "", "", {0,0,0,}},
+	{44,   'Z',   "", "", {0,0,0,}},
+	{45,   'Z',   "", "", {0,0,0,}},
+	{46,   'Z',   "", "", {0,0,0,}},
+	{47,   'Z',   "", "", {0,0,0,}},
+	{48,   'Z',   "", "", {0,0,0,}},
+	{49,   'Z',   "", "", {0,0,0,}}};
+// clang-format on
+
+static const constexpr unsigned int KIN_MERCENARY   = ( 1u << 0 );
+static const constexpr unsigned int KIN_SEYAN_DU    = ( 1u << 1 );
+static const constexpr unsigned int KIN_PURPLE      = ( 1u << 2 );
+static const constexpr unsigned int KIN_MONSTER     = ( 1u << 3 );
+static const constexpr unsigned int KIN_TEMPLAR     = ( 1u << 4 );
+static const constexpr unsigned int KIN_ARCHTEMPLAR = ( 1u << 5 );
+static const constexpr unsigned int KIN_HARAKIM     = ( 1u << 6 );
+static const constexpr unsigned int KIN_MALE        = ( 1u << 7 );
+static const constexpr unsigned int KIN_FEMALE      = ( 1u << 8 );
+static const constexpr unsigned int KIN_ARCHHARAKIM = ( 1u << 9 );
+static const constexpr unsigned int KIN_WARRIOR     = ( 1u << 10 );
+static const constexpr unsigned int KIN_SORCERER    = ( 1u << 11 );
+
+static const constexpr unsigned long long CF_IMMORTAL    = ( 1ull << 0 );  // will not suffer any damage
+static const constexpr unsigned long long CF_GOD         = ( 1ull << 1 );  // may issue #god commands
+static const constexpr unsigned long long CF_CREATOR     = ( 1ull << 2 );  // may use #build
+static const constexpr unsigned long long CF_BUILDMODE   = ( 1ull << 3 );  // does use #build
+static const constexpr unsigned long long CF_RESPAWN     = ( 1ull << 4 );  // will respawn after death - not for players
+static const constexpr unsigned long long CF_PLAYER      = ( 1ull << 5 );  // is a player
+static const constexpr unsigned long long CF_NEWUSER     = ( 1ull << 6 );  // new account created. player may change name
+static const constexpr unsigned long long CF_NOTELL      = ( 1ull << 8 );  // tell will only work on him if used by a god
+static const constexpr unsigned long long CF_NOSHOUT     = ( 1ull << 9 );  // shout will only work in him if used by a god
+static const constexpr unsigned long long CF_MERCHANT    = ( 1ull << 10 ); // will sell his inventory if looked at
+static const constexpr unsigned long long CF_STAFF       = ( 1ull << 11 ); // member of the staff
+static const constexpr unsigned long long CF_NOHPREG     = ( 1ull << 12 ); // no hp regeneration
+static const constexpr unsigned long long CF_NOENDREG    = ( 1ull << 13 );
+static const constexpr unsigned long long CF_NOMANAREG   = ( 1ull << 14 );
+static const constexpr unsigned long long CF_INVISIBLE   = ( 1ull << 15 ); // character is completely invisible
+static const constexpr unsigned long long CF_INFRARED    = ( 1ull << 16 ); // sees in the dark
+static const constexpr unsigned long long CF_BODY        = ( 1ull << 17 ); // dead body
+static const constexpr unsigned long long CF_NOSLEEP     = ( 1ull << 18 ); // stay awake all the time
+static const constexpr unsigned long long CF_UNDEAD      = ( 1ull << 19 ); // is undead, can be killed with holy water
+static const constexpr unsigned long long CF_NOMAGIC     = ( 1ull << 20 ); // no magic zone
+static const constexpr unsigned long long CF_STONED      = ( 1ull << 21 ); // turned to stone due to lag
+static const constexpr unsigned long long CF_USURP       = ( 1ull << 22 ); // NPC is being played by player
+static const constexpr unsigned long long CF_IMP         = ( 1ull << 23 ); // may impersonate monsters
+static const constexpr unsigned long long CF_SHUTUP      = ( 1ull << 24 ); // player is unable to talk till next day
+static const constexpr unsigned long long CF_NODESC      = ( 1ull << 25 ); // player cannot change his description
+static const constexpr unsigned long long CF_PROF        = ( 1ull << 26 ); // profiler listing
+static const constexpr unsigned long long CF_SIMPLE      = ( 1ull << 27 ); // uses simple animation system (move, turn, 1 attack)
+static const constexpr unsigned long long CF_KICKED      = ( 1ull << 28 ); // player got kicked, may not login again for a certain time
+static const constexpr unsigned long long CF_NOLIST      = ( 1ull << 29 ); // dont list character in top ten
+static const constexpr unsigned long long CF_NOWHO       = ( 1ull << 30 ); // don't list character in #WHO
+static const constexpr unsigned long long CF_SPELLIGNORE = ( 1ull << 31 ); // ignore spells cast on me
+static const constexpr unsigned long long CF_CCP =
+    ( 1ull << 32 ); // Computer Controlled Player, does NOT log out and may have some extra logic
+static const constexpr unsigned long long CF_SAFE       = ( 1ull << 33 ); // safety measures for gods
+static const constexpr unsigned long long CF_NOSTAFF    = ( 1ull << 34 ); // #stell will only work if flag off
+static const constexpr unsigned long long CF_POH        = ( 1ull << 35 ); // clan purples of honor
+static const constexpr unsigned long long CF_POH_LEADER = ( 1ull << 36 ); // clan purples of honor
+static const constexpr unsigned long long CF_THRALL     = ( 1ull << 37 ); // is enthralled NPC
+static const constexpr unsigned long long CF_LABKEEPER  = ( 1ull << 38 ); // is labkeeper
+static const constexpr unsigned long long CF_ISLOOTING  = ( 1ull << 39 ); // is currently looting a grave
+static const constexpr unsigned long long CF_GOLDEN     = ( 1ull << 40 ); // is on "golden list" aka good player
+static const constexpr unsigned long long CF_BLACK      = ( 1ull << 41 ); // is on "black list" aka bad player
+static const constexpr unsigned long long CF_PASSWD     = ( 1ull << 42 ); // has passwd set
+static const constexpr unsigned long long CF_UPDATE     = ( 1ull << 43 ); // client side update needed
+static const constexpr unsigned long long CF_SAVEME     = ( 1ull << 44 ); // save this player to disk
+static const constexpr unsigned long long CF_GREATERGOD = ( 1ull << 45 ); // greater god
+static const constexpr unsigned long long CF_GREATERINV = ( 1ull << 46 ); // no one sees me, ever
 
 #pragma pack( push, 1 )
 struct item
@@ -83,9 +230,6 @@ struct item
     root[ "reference" ]   = reference;
     root[ "description" ] = description;
 
-    // TODO: Breakout into the actual item flags...
-    root[ "flags" ] = static_cast< int >( flags );
-
     root[ "value" ]        = value;
     root[ "placement" ]    = placement;
     root[ "temp" ]         = temp;
@@ -102,9 +246,6 @@ struct item
     root[ "current_damage" ] = current_damage;
     root[ "max_damage" ]     = max_damage;
 
-    // TODO: Fill this out
-    root[ "attributes" ] = Json::arrayValue;
-
     root[ "hp" ]   = Json::arrayValue;
     root[ "end" ]  = Json::arrayValue;
     root[ "mana" ] = Json::arrayValue;
@@ -115,9 +256,6 @@ struct item
       root[ "end" ][ i ]  = end[ i ];
       root[ "mana" ][ i ] = mana[ i ];
     }
-
-    // TODO: Fill this out
-    root[ "skills" ] = Json::arrayValue;
 
     root[ "armor" ]      = Json::arrayValue;
     root[ "weapon" ]     = Json::arrayValue;
@@ -146,7 +284,12 @@ struct item
     root[ "sprite_override" ] = sprite_override;
     root[ "min_rank" ]        = min_rank;
 
-    // TODO: Add in future and future 3
+    root[ "future" ]  = future;
+    root[ "future3" ] = Json::arrayValue;
+    for ( int i = 0; i < 9; ++i )
+    {
+      root[ "future3" ][ i ] = future3[ i ];
+    }
 
     root[ "t_bought" ] = t_bought;
     root[ "t_sold" ]   = t_sold;
@@ -163,6 +306,7 @@ struct item
   }
 };
 #pragma pack( pop )
+static_assert( sizeof( item ) == 634 );
 
 #pragma pack( push, 1 )
 struct character
@@ -335,25 +479,85 @@ struct character
   {
     Json::Value root {};
 
-    root[ "used" ]        = used;
-    root[ "name" ]        = name;
-    root[ "reference" ]   = reference;
-    root[ "description" ] = description;
-    root[ "kindred" ]     = kindred;
-    root[ "player" ]      = player;
-    root[ "pass1" ]       = pass1;
-    root[ "pass2" ]       = pass2;
-    root[ "sprite" ]      = sprite;
-    root[ "sound" ]       = sound;
-    root[ "flags" ]       = flags;
-    root[ "alignment" ]   = alignment;
-    root[ "temple_x" ]    = temple_x;
-    root[ "temple_y" ]    = temple_y;
-    root[ "tavern_x" ]    = tavern_x;
-    root[ "tavern_y" ]    = tavern_y;
-    root[ "temp" ]        = temp;
+    root[ "used" ]                              = used;
+    root[ "name" ]                              = name;
+    root[ "reference" ]                         = reference;
+    root[ "description" ]                       = description;
+    root[ "kindred" ]                           = kindred;
+    root[ "player" ]                            = player;
+    root[ "pass1" ]                             = pass1;
+    root[ "pass2" ]                             = pass2;
+    root[ "sprite" ]                            = sprite;
+    root[ "sound" ]                             = sound;
+    root[ "flags" ]                             = Json::objectValue;
+    root[ "flags" ][ "immortal" ]               = static_cast< bool >( flags & CF_IMMORTAL );
+    root[ "flags" ][ "god" ]                    = static_cast< bool >( flags & CF_GOD );
+    root[ "flags" ][ "creator" ]                = static_cast< bool >( flags & CF_CREATOR );
+    root[ "flags" ][ "build_mode" ]             = static_cast< bool >( flags & CF_BUILDMODE );
+    root[ "flags" ][ "respawn" ]                = static_cast< bool >( flags & CF_RESPAWN );
+    root[ "flags" ][ "player" ]                 = static_cast< bool >( flags & CF_PLAYER );
+    root[ "flags" ][ "new_user" ]               = static_cast< bool >( flags & CF_NEWUSER );
+    root[ "flags" ][ "no_tell" ]                = static_cast< bool >( flags & CF_NOTELL );
+    root[ "flags" ][ "no_shout" ]               = static_cast< bool >( flags & CF_NOSHOUT );
+    root[ "flags" ][ "merchant" ]               = static_cast< bool >( flags & CF_MERCHANT );
+    root[ "flags" ][ "staff" ]                  = static_cast< bool >( flags & CF_STAFF );
+    root[ "flags" ][ "no_hp_regen" ]            = static_cast< bool >( flags & CF_NOHPREG );
+    root[ "flags" ][ "no_end_regen" ]           = static_cast< bool >( flags & CF_NOENDREG );
+    root[ "flags" ][ "no_mana_regen" ]          = static_cast< bool >( flags & CF_NOMANAREG );
+    root[ "flags" ][ "invisible" ]              = static_cast< bool >( flags & CF_INVISIBLE );
+    root[ "flags" ][ "infrared" ]               = static_cast< bool >( flags & CF_INFRARED );
+    root[ "flags" ][ "body" ]                   = static_cast< bool >( flags & CF_BODY );
+    root[ "flags" ][ "no_sleep" ]               = static_cast< bool >( flags & CF_NOSLEEP );
+    root[ "flags" ][ "undead" ]                 = static_cast< bool >( flags & CF_UNDEAD );
+    root[ "flags" ][ "no_magic" ]               = static_cast< bool >( flags & CF_NOMAGIC );
+    root[ "flags" ][ "stoned" ]                 = static_cast< bool >( flags & CF_STONED );
+    root[ "flags" ][ "usurp" ]                  = static_cast< bool >( flags & CF_USURP );
+    root[ "flags" ][ "imp" ]                    = static_cast< bool >( flags & CF_IMP );
+    root[ "flags" ][ "shutup" ]                 = static_cast< bool >( flags & CF_SHUTUP );
+    root[ "flags" ][ "no_description" ]         = static_cast< bool >( flags & CF_NODESC );
+    root[ "flags" ][ "profiler" ]               = static_cast< bool >( flags & CF_PROF );
+    root[ "flags" ][ "simple_anim" ]            = static_cast< bool >( flags & CF_SIMPLE );
+    root[ "flags" ][ "kicked" ]                 = static_cast< bool >( flags & CF_KICKED );
+    root[ "flags" ][ "no_list" ]                = static_cast< bool >( flags & CF_NOLIST );
+    root[ "flags" ][ "no_who" ]                 = static_cast< bool >( flags & CF_NOWHO );
+    root[ "flags" ][ "spell_ignore" ]           = static_cast< bool >( flags & CF_SPELLIGNORE );
+    root[ "flags" ][ "computer_controlled" ]    = static_cast< bool >( flags & CF_CCP );
+    root[ "flags" ][ "safe" ]                   = static_cast< bool >( flags & CF_SAFE );
+    root[ "flags" ][ "no_staff" ]               = static_cast< bool >( flags & CF_NOSTAFF );
+    root[ "flags" ][ "purple_of_honor" ]        = static_cast< bool >( flags & CF_POH );
+    root[ "flags" ][ "purple_of_honor_leader" ] = static_cast< bool >( flags & CF_POH_LEADER );
+    root[ "flags" ][ "thrall" ]                 = static_cast< bool >( flags & CF_THRALL );
+    root[ "flags" ][ "lab_keeper" ]             = static_cast< bool >( flags & CF_LABKEEPER );
+    root[ "flags" ][ "is_looting" ]             = static_cast< bool >( flags & CF_ISLOOTING );
+    root[ "flags" ][ "golden" ]                 = static_cast< bool >( flags & CF_GOLDEN );
+    root[ "flags" ][ "black" ]                  = static_cast< bool >( flags & CF_BLACK );
+    root[ "flags" ][ "password" ]               = static_cast< bool >( flags & CF_PASSWD );
+    root[ "flags" ][ "update" ]                 = static_cast< bool >( flags & CF_UPDATE );
+    root[ "flags" ][ "save_me" ]                = static_cast< bool >( flags & CF_SAVEME );
+    root[ "flags" ][ "greater_god" ]            = static_cast< bool >( flags & CF_GREATERGOD );
+    root[ "flags" ][ "greater_invisibility" ]   = static_cast< bool >( flags & CF_GREATERINV );
+    root[ "alignment" ]                         = alignment;
+    root[ "temple_x" ]                          = temple_x;
+    root[ "temple_y" ]                          = temple_y;
+    root[ "tavern_x" ]                          = tavern_x;
+    root[ "tavern_y" ]                          = tavern_y;
+    root[ "temp" ]                              = temp;
 
-    // TODO: Fill in attributes
+    root[ "attributes" ]                        = Json::arrayValue;
+    std::array< const char*, 5 > attributeNames = { "Braveness", "Willpower", "Intuition", "Agility", "Strength" };
+    for ( int i = 0; i < 5; ++i )
+    {
+      Json::Value attributeRoot {};
+      attributeRoot[ "name" ] = attributeNames[ i ];
+      attributeRoot[ "data" ] = Json::arrayValue;
+      for ( int j = 0; j < 6; ++j )
+      {
+        attributeRoot[ "data" ].append( attrib[ i ][ j ] );
+      }
+
+      attributeRoot[ "attributes" ].append( attributeRoot );
+    }
+
     root[ "hp" ]   = Json::arrayValue;
     root[ "end" ]  = Json::arrayValue;
     root[ "mana" ] = Json::arrayValue;
@@ -365,7 +569,19 @@ struct character
       root[ "mana" ][ i ] = mana[ i ];
     }
 
-    // TODO: Add in skills
+    root[ "skills" ] = Json::arrayValue;
+    for ( int i = 0; i < 50; ++i )
+    {
+      Json::Value skillRoot {};
+      skillRoot[ "name" ] = static_skilltab[ i ].name;
+      skillRoot[ "data" ] = Json::arrayValue;
+      for ( int j = 0; j < 6; ++j )
+      {
+        skillRoot[ "data" ].append( skill[ i ][ j ] );
+      }
+
+      root[ "skills" ].append( skillRoot );
+    }
 
     root[ "weapon_bonus" ] = weapon_bonus;
     root[ "armor_bonus" ]  = armor_bonus;
@@ -389,12 +605,18 @@ struct character
     root[ "dir" ]          = dir;
     root[ "gold" ]         = gold;
 
-    // TODO: Add items carried, and active spells
+    root[ "item" ] = Json::arrayValue;
+    for ( int i = 0; i < 40; ++i )
+    {
+      root[ "item" ][ i ] = item[ i ];
+    }
 
-    root[ "worn" ] = Json::arrayValue;
+    root[ "worn" ]  = Json::arrayValue;
+    root[ "spell" ] = Json::arrayValue;
     for ( int i = 0; i < 20; ++i )
     {
-      root[ "worn" ][ i ] = worn[ i ];
+      root[ "worn" ][ i ]  = worn[ i ];
+      root[ "spell" ][ i ] = spell[ i ];
     }
 
     root[ "citem" ]               = citem;
@@ -438,7 +660,43 @@ struct character
     root[ "password" ]      = passwd;
     root[ "lastattack" ]    = lastattack;
 
-    // TODO: Add future1, future2, depot
+    root[ "future1" ] = Json::arrayValue;
+    root[ "future2" ] = Json::arrayValue;
+    root[ "depot" ]   = Json::arrayValue;
+    root[ "future3" ] = Json::arrayValue;
+    root[ "data" ]    = Json::arrayValue;
+    root[ "text" ]    = Json::arrayValue;
+
+    for ( int i = 0; i < 25; ++i )
+    {
+      root[ "future1" ][ i ] = future1[ i ];
+    }
+
+    for ( int i = 0; i < 49; ++i )
+    {
+      root[ "future2" ][ i ] = future2[ i ];
+    }
+
+    for ( int i = 0; i < 62; ++i )
+    {
+      root[ "depot" ][ i ] = depot[ i ];
+    }
+
+    for ( int i = 0; i < 12; ++i )
+    {
+      root[ "future3" ][ i ] = future3[ i ];
+    }
+
+    for ( int i = 0; i < 100; ++i )
+    {
+      root[ "data" ][ i ] = data[ i ];
+    }
+
+    for ( int i = 0; i < 10; ++i )
+    {
+      root[ "text" ][ i ] = std::string( text[ i ] );
+    }
+
     root[ "sprite_override" ] = sprite_override;
     root[ "depot_cost" ]      = depot_cost;
     root[ "luck" ]            = luck;
@@ -447,9 +705,8 @@ struct character
     root[ "unreach_y" ]       = unreachy;
     root[ "monsterClass" ]    = monsterClass;
 
-    // TODO: add future3, data, and text?
-
     return root;
   }
 };
 #pragma pack( pop )
+static_assert( sizeof( character ) == 3605 );
