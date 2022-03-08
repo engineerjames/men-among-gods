@@ -573,6 +573,12 @@ struct character
     for ( int i = 0; i < 50; ++i )
     {
       Json::Value skillRoot {};
+
+      if ( std::string( static_skilltab[ i ].name ).empty() )
+      {
+        continue;
+      }
+
       skillRoot[ "name" ] = static_skilltab[ i ].name;
       skillRoot[ "data" ] = Json::arrayValue;
       for ( int j = 0; j < 6; ++j )

@@ -1,6 +1,8 @@
 import { Checkbox, Divider, FormControlLabel, Stack, TextField } from '@mui/material';
 import React from 'react'
+import CharacterAttributes, { CharacterAttribute } from './CharacterAttributes';
 import CharacterFlags from './CharacterFlags';
+import CharacterSkills, { CharacterSkill } from './CharacterSkills';
 
 export interface CharacterFlag {
     name: string;
@@ -18,6 +20,8 @@ export interface CharacterDetail {
     hp?: Array<number>;
     mana?: Array<number>;
     end?: Array<number>;
+    attributes?: Array<CharacterAttribute>;
+    skills?: Array<CharacterSkill>;
 }
 
 export interface CharacterDetailProps {
@@ -40,9 +44,11 @@ const CharacterDetails = ({ details, loaded }: CharacterDetailProps) => {
                     <FormControlLabel control={<Checkbox />} label='Is Used' checked={details?.used === 1} />
                     <TextField id="filled-basic" label='Position' value={positionString} variant="filled" InputProps={{ readOnly: true }} />
                     <TextField id="filled-basic" label='Alignment' value={details?.alignment} variant="filled" InputProps={{ readOnly: true }} />
-                    <TextField id="filled-basic" label='Hp/Mana/End' value={lifeString} variant="filled" InputProps={{ readOnly: true }} />
+                    <TextField id="filled-basic" label='Hp/End/Mana' value={lifeString} variant="filled" InputProps={{ readOnly: true }} />
                 </Stack>
                 <CharacterFlags flags={details?.flags} />
+                <CharacterAttributes attributes={details?.attributes} />
+                <CharacterSkills skills={details?.skills} />
             </Stack>
         </>
         )

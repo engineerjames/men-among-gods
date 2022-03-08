@@ -8,7 +8,6 @@ export interface CharacterFlagsProps {
 }
 
 function FlagDisplay({ name, isActive }: CharacterFlag) {
-
     // Capitalize first letter of the flag
     name = name.at(0)?.toUpperCase() + name.substring(1);
 
@@ -35,11 +34,7 @@ function CharacterFlags(props: CharacterFlagsProps) {
     return (
         <div>
             <Accordion>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
-                >
+                <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header" >
                     <Typography>Character Flags</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
