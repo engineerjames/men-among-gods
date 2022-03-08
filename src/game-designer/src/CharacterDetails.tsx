@@ -27,7 +27,6 @@ const CharacterDetails = ({ details, loaded }: CharacterDetailProps) => {
 
     if (loaded) {
         return (<>
-            <h3>Character Template Details:</h3>
             <Stack spacing={2}>
                 <TextField id="filled-basic" label='Name' value={details?.name} variant="filled" InputProps={{ readOnly: true }} />
                 <TextField id="filled-basic" label='Description' value={details?.description} variant="filled" InputProps={{ readOnly: true }} />
