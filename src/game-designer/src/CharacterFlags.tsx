@@ -15,7 +15,7 @@ function FlagDisplay({ name, isActive }: CharacterFlag) {
     return (
         <>
             <Stack spacing={3} direction="row" divider={<Divider orientation="vertical" flexItem />}>
-                <FormControlLabel disabled control={<Switch />} label={name} checked={isActive} />
+                <FormControlLabel control={<Switch />} label={name} checked={isActive} />
             </Stack>
         </>
     )

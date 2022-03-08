@@ -555,7 +555,7 @@ struct character
         attributeRoot[ "data" ].append( attrib[ i ][ j ] );
       }
 
-      attributeRoot[ "attributes" ].append( attributeRoot );
+      root[ "attributes" ].append( attributeRoot );
     }
 
     root[ "hp" ]   = Json::arrayValue;
