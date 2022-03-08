@@ -1,4 +1,4 @@
-import { Button, Divider, Stack, TextField } from '@mui/material'
+import { Button, Stack, TextField } from '@mui/material'
 import React, { useState } from 'react'
 import CharacterDetails from './CharacterDetails';
 import { CharacterDetail } from './CharacterDetails';

@@ -1,6 +1,11 @@
-import { Checkbox, Divider, FormControlLabel, FormGroup, Grid, Stack, TextField } from '@mui/material';
+import { Checkbox, Divider, FormControlLabel, Stack, TextField } from '@mui/material';
 import React from 'react'
+import CharacterFlags from './CharacterFlags';
 
+export interface CharacterFlag {
+    name: string;
+    isActive: boolean;
+}
 
 export interface CharacterDetail {
     name?: string;
@@ -9,7 +14,7 @@ export interface CharacterDetail {
     x?: number;
     y?: number;
     alignment?: number;
-    flags?: Array<Boolean>;
+    flags?: Array<CharacterFlag>;
     hp?: Array<number>;
     mana?: Array<number>;
     end?: Array<number>;
@@ -37,6 +42,7 @@ const CharacterDetails = ({ details, loaded }: CharacterDetailProps) => {
                     <TextField id="filled-basic" label='Alignment' value={details?.alignment} variant="filled" InputProps={{ readOnly: true }} />
                     <TextField id="filled-basic" label='Hp/Mana/End' value={lifeString} variant="filled" InputProps={{ readOnly: true }} />
                 </Stack>
+                <CharacterFlags flags={details?.flags} />
             </Stack>
         </>
         )
