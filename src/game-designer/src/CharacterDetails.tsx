@@ -1,26 +1,28 @@
 import { Checkbox, FormControlLabel, FormGroup, Grid, Stack, TextField } from '@mui/material';
 import React from 'react'
 
-export interface CharacterDetailProps {
 
+export interface CharacterDetail {
     name?: string;
     description?: string;
-    loaded: boolean;
     used?: number;
 }
 
+export interface CharacterDetailProps {
+    details?: CharacterDetail
+    loaded: boolean;
+}
+
 //({ message }: AppProps) =>
-const CharacterDetails = (props: CharacterDetailProps) => {
+const CharacterDetails = ({details, loaded}: CharacterDetailProps) => {
 
-    console.log(props);
-
-    if (props.loaded) {
+    if (loaded) {
         return (<>
             <Stack spacing={2}>
                 <FormGroup>
-                <TextField id="standard-basic" label='Name' value={props.name} variant="standard" InputProps={{ readOnly: true }} />
-                <TextField id="standard-basic" label='Description' value={props.description} variant="standard" InputProps={{ readOnly: true }} />
-                <FormControlLabel disabled control={<Checkbox />} label='Is Used' checked={props.used == 1} />
+                    <TextField id="standard-basic" label='Name' value={details?.name} variant="standard" InputProps={{ readOnly: true }} />
+                    <TextField id="standard-basic" label='Description' value={details?.description} variant="standard" InputProps={{ readOnly: true }} />
+                    <FormControlLabel disabled control={<Checkbox />} label='Is Used' checked={details?.used == 1} />
                 </FormGroup>
             </Stack>
         </>
