@@ -1,7 +1,7 @@
 import { Button, Divider, Stack, TextField } from '@mui/material'
 import React, { useState } from 'react'
 import CharacterDetails from './CharacterDetails';
-import { CharacterDetailProps, CharacterDetail } from './CharacterDetails';
+import { CharacterDetail } from './CharacterDetails';
 
 function CharacterSearch() {
     const [idToSearch, setIdToSearch] = useState('');
@@ -28,13 +28,13 @@ function CharacterSearch() {
     }
 
     return (
-        <div>
+        <>
             <Stack direction="row" spacing={2}>
                 <TextField onChange={(event) => { setIdToSearch(event.target.value) }} id="standard-basic" label="Enter Id" variant="standard" />
                 <Button onClick={onClickHandler} variant="contained">Search</Button>
             </Stack>
             <CharacterDetails details={characterDetails} loaded={loaded} />
-        </div>
+        </>
     )
 }
 
