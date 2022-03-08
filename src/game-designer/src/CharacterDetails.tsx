@@ -10,13 +10,9 @@ export interface CharacterDetailProps {
 
 //({ message }: AppProps) =>
 const CharacterDetails = (props: CharacterDetailProps) => {
-    const { name, description, loaded, ...other } = props;
-
-    console.log(name);
-
-    if (loaded) {
+    if (props.loaded) {
         return (
-            <div><TextField id="standard-basic" label={name} variant="standard" InputProps={{
+            <div><TextField id="standard-basic" label={props.name} variant="standard" InputProps={{
                 readOnly: true
             }} /></div>
         )
