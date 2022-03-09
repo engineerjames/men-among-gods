@@ -3,6 +3,8 @@ import React from 'react'
 import CharacterAttributes, { CharacterAttribute } from './CharacterAttributes';
 import CharacterFlags from './CharacterFlags';
 import CharacterSkills, { CharacterSkill } from './CharacterSkills';
+import KindredDisplay from './KindredDisplay';
+import TextDisplay from './TextDisplay';
 
 export interface CharacterFlag {
     name: string;
@@ -22,6 +24,8 @@ export interface CharacterDetail {
     end?: Array<number>;
     attributes?: Array<CharacterAttribute>;
     skills?: Array<CharacterSkill>;
+    kindred?: number;
+    text?: Array<string>;
 }
 
 export interface CharacterDetailProps {
@@ -49,6 +53,8 @@ const CharacterDetails = ({ details, loaded }: CharacterDetailProps) => {
                 <CharacterFlags flags={details?.flags} />
                 <CharacterAttributes attributes={details?.attributes} />
                 <CharacterSkills skills={details?.skills} />
+                <KindredDisplay kindred={details?.kindred} />
+                <TextDisplay text={details?.text} />
             </Stack>
         </>
         )

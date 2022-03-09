@@ -42,7 +42,6 @@ function CharacterSkills(props: CharacterSkillsProps) {
                             <TableCell align="right">{skill.data[3]}</TableCell>
                             <TableCell align="right">{skill.data[4]}</TableCell>
                             <TableCell align="right">{skill.data[5]}</TableCell>
-
                         </TableRow>
                     ))}
                 </TableBody>
