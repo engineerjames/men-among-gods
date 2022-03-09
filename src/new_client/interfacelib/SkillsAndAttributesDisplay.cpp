@@ -897,7 +897,8 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
 
           int skillNr = getSkillNumber( skillsToDisplay_[ i ]->name_.getString() );
 
-          mainUI_.addMessage( LogType::INFO, static_skilltab[ skillNr ].desc );
+          std::string infoMessage = std::string( static_skilltab[ skillNr ].name ) + ": " + std::string( static_skilltab[ skillNr ].desc );
+          mainUI_.addMessage( LogType::INFO, infoMessage );
         }
       }
     }
