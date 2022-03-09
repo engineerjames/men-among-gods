@@ -25,7 +25,7 @@ characters::characters()
 
     datFile.read( reinterpret_cast< char* >( newCharacter.get() ), sizeof( character ) );
 
-    characterMap_[ newCharacter->name ].push_back( newCharacter.get() );
+    characterMap_[ newCharacter->name ].emplace_back( i, newCharacter.get() );
 
     characterTemplates_.push_back( std::move( newCharacter ) );
   }
@@ -41,7 +41,9 @@ void characters::getCharacterTemplates( const drogon::HttpRequestPtr&           
   if ( id >= 0 && id < MAX_TCHARS && characterTemplates_[ id ] != nullptr )
   {
     Json::Value jsonResponse = characterTemplates_[ id ]->toJson();
-    auto        response     = drogon::HttpResponse::newHttpJsonResponse( jsonResponse );
+    jsonResponse[ "id" ]     = id;
+
+    auto response = drogon::HttpResponse::newHttpJsonResponse( jsonResponse );
     response->setStatusCode( drogon::HttpStatusCode::k200OK );
     callback( response );
   }
@@ -66,9 +68,12 @@ void characters::getCharacterTemplatesByName( const drogon::HttpRequestPtr&     
     {
       if ( n.find( name ) != std::string::npos )
       {
-        for ( auto&& c : characterlist )
+        for ( auto&& [ cid, charptr ] : characterlist )
         {
-          jsonResponse.append( c->toJson() );
+          Json::Value root = charptr->toJson();
+          root[ "id" ]     = cid;
+
+          jsonResponse.append( root );
         }
       }
     }

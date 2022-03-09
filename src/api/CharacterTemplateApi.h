@@ -3,6 +3,7 @@
 
 #include <drogon/HttpController.h>
 #include <memory>
+#include <tuple>
 #include <vector>
 
 #include "apiTypes.h"
@@ -28,8 +29,8 @@ public:
   characters();
 
 private:
-  std::vector< std::unique_ptr< character > >                  characterTemplates_;
-  std::unordered_map< std::string, std::vector< character* > > characterMap_;
+  std::vector< std::unique_ptr< character > >                                     characterTemplates_;
+  std::unordered_map< std::string, std::vector< std::tuple< int, character* > > > characterMap_;
 };
 } // namespace v1
 } // namespace api
