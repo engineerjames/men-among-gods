@@ -11,48 +11,9 @@ function CharacterSearch() {
     const [multiCharacterDetails, setMultiCharacterDetails] = useState<Array<CharacterDetail>>();
     const [page, setPage] = useState(0);
 
-    const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
-        setPage(value - 1);
-    };
-
-    const onClickHandler = async () => {
-        try {
-            setLoaded(false);
-            setMultiCharacterDetails(undefined);
-
-            console.log(idToSearch);
-            const response = await fetch('http://localhost:5556/api/v1/characters/' + idToSearch);
-            const myJson = await response.json(); //extract JSON from the http response
-
-            if (response.status == 200) {
-                console.log(myJson);
-                setCharacterDetails(myJson)
-                setLoaded(true);
-            }
-
-        } catch (err) {
-            console.log(err);
-        }
-    }
-
-    const onNameClickHandler = async () => {
-        try {
-            setLoaded(false);
-            setCharacterDetails(undefined);
-
-            const response = await fetch('http://localhost:5556/api/v1/characters/name/' + nameToSearch);
-            const myJson = await response.json(); //extract JSON from the http response
-
-            if (response.status == 200) {
-                console.log(myJson);
-                setMultiCharacterDetails(myJson);
-                setLoaded(true);
-            }
-
-        } catch (err) {
-            console.log(err);
-        }
-    }
+    const handlePageChange = moduleHandlePageChange(setPage);
+    const onClickHandler = moduleClickHandler(setLoaded, setMultiCharacterDetails, idToSearch, setCharacterDetails);
+    const onNameClickHandler = moduleOnNameClickHandler(setLoaded, setCharacterDetails, nameToSearch, setMultiCharacterDetails);
 
     const onCopyTemplateHandler = async () => {
         // API should return the new template so that way we can load it on the screen
@@ -78,15 +39,16 @@ function CharacterSearch() {
 
         if (response.status == 200) {
             setIdToSearch(newestId.id);
+            moduleClickHandler(setLoaded, setMultiCharacterDetails, newestId.id, setCharacterDetails)();
         }
     }
 
     return (
         <>
             <Stack direction="row" spacing={2} margin={2}>
-                <TextField value={idToSearch} onChange={(event) => { setIdToSearch(event.target.value); setCharacterDetails(undefined); }} id="standard-basic" label="Enter Id" variant="standard" />
+                <TextField value={idToSearch} onChange={(event) => { setIdToSearch(event.target.value); setCharacterDetails(undefined); setMultiCharacterDetails(undefined); }} id="standard-basic" label="Enter Id" variant="standard" />
                 <Button onClick={onClickHandler} variant="contained">Search</Button>
-                <TextField value={nameToSearch} onChange={(event) => { setNameToSearch(event.target.value); setMultiCharacterDetails(undefined); }} id="standard-basic" label="Enter Name" variant="standard" />
+                <TextField value={nameToSearch} onChange={(event) => { setNameToSearch(event.target.value); setMultiCharacterDetails(undefined); setCharacterDetails(undefined); }} id="standard-basic" label="Enter Name" variant="standard" />
                 <Button onClick={onNameClickHandler} variant="contained">Search By Name</Button>
                 <Button onClick={onCopyTemplateHandler} variant="contained">Copy Template</Button>
             </Stack>
@@ -101,3 +63,52 @@ function CharacterSearch() {
 }
 
 export default CharacterSearch
+
+function moduleHandlePageChange(setPage: React.Dispatch<React.SetStateAction<number>>) {
+    return (event: React.ChangeEvent<unknown>, value: number) => {
+        setPage(value - 1);
+    };
+}
+
+function moduleOnNameClickHandler(setLoaded: React.Dispatch<React.SetStateAction<boolean>>, setCharacterDetails: React.Dispatch<React.SetStateAction<CharacterDetail | undefined>>, nameToSearch: string, setMultiCharacterDetails: React.Dispatch<React.SetStateAction<CharacterDetail[] | undefined>>) {
+    return async () => {
+        try {
+            setLoaded(false);
+            setCharacterDetails(undefined);
+
+            const response = await fetch('http://localhost:5556/api/v1/characters/name/' + nameToSearch);
+            const myJson = await response.json(); //extract JSON from the http response
+
+            if (response.status == 200) {
+                console.log(myJson);
+                setMultiCharacterDetails(myJson);
+                setLoaded(true);
+            }
+
+        } catch (err) {
+            console.log(err);
+        }
+    };
+}
+
+function moduleClickHandler(setLoaded: React.Dispatch<React.SetStateAction<boolean>>, setMultiCharacterDetails: React.Dispatch<React.SetStateAction<CharacterDetail[] | undefined>>, idToSearch: string, setCharacterDetails: React.Dispatch<React.SetStateAction<CharacterDetail | undefined>>) {
+    return async () => {
+        try {
+            setLoaded(false);
+            setMultiCharacterDetails(undefined);
+
+            console.log(idToSearch);
+            const response = await fetch('http://localhost:5556/api/v1/characters/' + idToSearch);
+            const myJson = await response.json(); //extract JSON from the http response
+
+            if (response.status == 200) {
+                console.log(myJson);
+                setCharacterDetails(myJson);
+                setLoaded(true);
+            }
+
+        } catch (err) {
+            console.log(err);
+        }
+    };
+}
