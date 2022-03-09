@@ -3,8 +3,8 @@
 
 #include "constants.h"
 
-#include <json/json.h>
 #include <cstdint>
+#include <json/json.h>
 
 #pragma pack( push, 1 )
 struct character
@@ -174,6 +174,7 @@ struct character
   char         text[ 10 ][ 160 ];
 
   Json::Value toJson() const;
+  character   fromJson( const Json::Value& json );
 };
 #pragma pack( pop )
 static_assert( sizeof( character ) == 3605 );

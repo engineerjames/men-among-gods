@@ -2,6 +2,11 @@
 
 #include "skilltab.h"
 
+character character::fromJson(const Json::Value& )
+{
+    return character{};
+}
+
 Json::Value character::toJson() const
 {
   Json::Value root {};
