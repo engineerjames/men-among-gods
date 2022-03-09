@@ -22,3 +22,6 @@ src/client/*.tds
 # Ignore build directory
 **/build/**
 /.vs
+
+# Ignore npm packages
+src/game-designer/node_modules/**

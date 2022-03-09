@@ -16,16 +16,20 @@ class characters : public drogon::HttpController< characters >
 public:
   METHOD_LIST_BEGIN
   METHOD_ADD( characters::getCharacterTemplates, "/{1}", drogon::Get );
+  METHOD_ADD( characters::getCharacterTemplatesByName, "/name/{1}", drogon::Get );
   METHOD_LIST_END
 
   // your declaration of processing function maybe like this:
   void getCharacterTemplates( const drogon::HttpRequestPtr& req, std::function< void( const drogon::HttpResponsePtr& ) >&& callback,
-                         int id ) const;
+                              int id );
+  void getCharacterTemplatesByName( const drogon::HttpRequestPtr& req, std::function< void( const drogon::HttpResponsePtr& ) >&& callback,
+                                    const std::string& name );
 
   characters();
 
 private:
-  std::vector< std::unique_ptr< character > > characterTemplates_;
+  std::vector< std::unique_ptr< character > >                  characterTemplates_;
+  std::unordered_map< std::string, std::vector< character* > > characterMap_;
 };
 } // namespace v1
 } // namespace api
