@@ -1,10 +1,176 @@
 #include "character.h"
 
+#include <array>
+
 #include "skilltab.h"
 
-character character::fromJson(const Json::Value& )
+character character::fromJson( const Json::Value& json )
 {
-    return character{};
+  character newChar {};
+
+  newChar.used = json[ "used" ].asInt();
+
+  std::strncpy( newChar.name, json[ "name" ].asString().c_str(), sizeof( newChar.name ) );
+  std::strncpy( newChar.reference, json[ "reference" ].asString().c_str(), sizeof( newChar.reference ) );
+  std::strncpy( newChar.description, json[ "description" ].asString().c_str(), sizeof( newChar.description ) );
+
+  newChar.kindred = json[ "kindred" ].asInt();
+  newChar.player  = json[ "player" ].asInt();
+  newChar.pass1   = json[ "pass1" ].asUInt();
+  newChar.pass2   = json[ "pass2" ].asUInt();
+  newChar.sprite  = json[ "sprite" ].asUInt();
+  newChar.sound   = json[ "sound" ].asUInt();
+
+  // TODO: Figure out how to do the flags
+  // newChar.flags   = json[ "flags" ].asUInt64();
+
+  newChar.alignment = json[ "alignment" ].asInt();
+  newChar.temple_x  = json[ "temple_x" ].asUInt();
+  newChar.temple_y  = json[ "temple_y" ].asUInt();
+  newChar.tavern_x  = json[ "tavern_x" ].asUInt();
+  newChar.tavern_y  = json[ "tavern_y" ].asUInt();
+  newChar.temp      = json[ "temp" ].asUInt();
+
+  const Json::Value& jsonAttributes = json[ "attributes" ];
+  for ( int i = 0; i < 5; ++i )
+  {
+    for ( int j = 0; j < 6; ++j )
+    {
+      newChar.attrib[ i ][ j ] = jsonAttributes[ i ][ "data" ][ j ].asUInt();
+    }
+  }
+
+  for ( int i = 0; i < 6; ++i )
+  {
+    newChar.hp[ i ]   = json[ "hp" ][ i ].asUInt();
+    newChar.end[ i ]  = json[ "end" ][ i ].asUInt();
+    newChar.mana[ i ] = json[ "mana" ][ i ].asUInt();
+  }
+
+  const Json::Value& jsonSkills = json[ "skills" ];
+  for ( int i = 0; i < 50; ++i )
+  {
+    for ( int j = 0; j < 6; ++j )
+    {
+      newChar.skill[ i ][ j ] = jsonSkills[ i ][ "data" ][ j ].asUInt();
+    }
+  }
+
+  newChar.weapon_bonus = json[ "weapon_bonus" ].asUInt();
+  newChar.armor_bonus  = json[ "armor_bonus" ].asUInt();
+  newChar.a_hp         = json[ "a_hp" ].asInt();
+  newChar.a_end        = json[ "a_end" ].asInt();
+  newChar.a_mana       = json[ "a_mana" ].asInt();
+  newChar.light        = json[ "light" ].asUInt();
+  newChar.mode         = json[ "mode" ].asUInt();
+  newChar.speed        = json[ "speed" ].asInt();
+  newChar.points       = json[ "points" ].asInt();
+  newChar.points_tot   = json[ "points_tot" ].asInt();
+  newChar.armor        = json[ "armor" ].asInt();
+  newChar.weapon       = json[ "weapon" ].asInt();
+  newChar.x            = json[ "x" ].asInt();
+  newChar.y            = json[ "y" ].asInt();
+  newChar.tox          = json[ "tox" ].asInt();
+  newChar.toy          = json[ "toy" ].asInt();
+  newChar.frx          = json[ "frx" ].asInt();
+  newChar.fry          = json[ "fry" ].asInt();
+  newChar.status       = json[ "status" ].asInt();
+  newChar.status2      = json[ "status2" ].asInt();
+  newChar.dir          = json[ "dir" ].asUInt();
+  newChar.gold         = json[ "gold" ].asInt();
+
+  for ( int i = 0; i < 40; ++i )
+  {
+    newChar.item[ i ] = json[ "item" ][ i ].asUInt();
+  }
+
+  for ( int i = 0; i < 20; ++i )
+  {
+    newChar.worn[ i ]  = json[ "worn" ][ i ].asUInt();
+    newChar.spell[ i ] = json[ "spell" ][ i ].asUInt();
+  }
+
+  newChar.citem               = json[ "citem" ].asUInt();
+  newChar.creation_date       = json[ "creation_date" ].asUInt();
+  newChar.login_date          = json[ "login_date" ].asUInt();
+  newChar.addr                = json[ "addr" ].asUInt();
+  newChar.current_online_time = json[ "current_online_time" ].asUInt();
+  newChar.total_online_time   = json[ "total_online_time" ].asUInt();
+  newChar.comp_volume         = json[ "comp_volume" ].asUInt();
+  newChar.raw_volume          = json[ "raw_volume" ].asUInt();
+  newChar.idle                = json[ "idle" ].asUInt();
+  newChar.attack_cn           = json[ "attack_cn" ].asUInt();
+  newChar.skill_nr            = json[ "skill_nr" ].asUInt();
+  newChar.skill_target1       = json[ "skill_target1" ].asUInt();
+  newChar.skill_target2       = json[ "skill_target2" ].asUInt();
+  newChar.goto_x              = json[ "goto_x" ].asUInt();
+  newChar.goto_y              = json[ "goto_y" ].asUInt();
+  newChar.use_nr              = json[ "use_nr" ].asUInt();
+  newChar.misc_action         = json[ "misc_action" ].asUInt();
+  newChar.misc_target1        = json[ "misc_target1" ].asUInt();
+  newChar.misc_target2        = json[ "misc_target2" ].asUInt();
+  newChar.cerrno              = json[ "cerrno" ].asUInt();
+  newChar.escape_timer        = json[ "escape_timer" ].asUInt();
+
+  for ( int i = 0; i < 4; ++i )
+  {
+    newChar.enemy[ i ] = json[ "enemy" ][ i ].asUInt();
+  }
+
+  newChar.current_enemy = json[ "current_enemy" ].asUInt();
+  newChar.retry         = json[ "retry" ].asUInt();
+  newChar.stunned       = json[ "stunned" ].asUInt();
+  newChar.speed_mod     = json[ "speed_mode" ].asInt();
+  newChar.last_action   = json[ "last_action" ].asInt();
+  newChar.unused        = json[ "unused" ].asInt();
+  newChar.depot_sold    = json[ "depot_sold" ].asInt();
+  newChar.gethit_dam    = json[ "gethit_dam" ].asInt();
+  newChar.gethit_bonus  = json[ "gethit_bonus" ].asInt();
+  newChar.light_bonus   = json[ "light_bonus" ].asUInt();
+
+  std::strncpy( newChar.passwd, json[ "password" ].asString().c_str(), sizeof( newChar.passwd ) );
+
+  newChar.lastattack = json[ "lastattack" ].asInt();
+
+  for ( int i = 0; i < 25; ++i )
+  {
+    newChar.future1[ i ] = json[ "future1" ][ i ].asInt();
+  }
+
+  for ( int i = 0; i < 49; ++i )
+  {
+    newChar.future2[ i ] = json[ "future2" ][ i ].asInt();
+  }
+
+  for ( int i = 0; i < 62; ++i )
+  {
+    newChar.depot[ i ] = json[ "depot" ][ i ].asUInt();
+  }
+
+  for ( int i = 0; i < 12; ++i )
+  {
+    newChar.future3[ i ] = json[ "future3" ][ i ].asInt();
+  }
+
+  for ( int i = 0; i < 100; ++i )
+  {
+    newChar.data[ i ] = json[ "data" ][ i ].asInt();
+  }
+
+  for ( int i = 0; i < 10; ++i )
+  {
+    std::strncpy( newChar.text[ i ], json[ "text" ][ i ].asString().c_str(), sizeof( newChar.text[ i ] ) );
+  }
+
+  newChar.sprite_override = json[ "sprite_override" ].asInt();
+  newChar.depot_cost      = json[ "depot_cost" ].asInt();
+  newChar.luck            = json[ "luck" ].asInt();
+  newChar.unreach         = json[ "unreach" ].asInt();
+  newChar.unreachx        = json[ "unreach_x" ].asInt();
+  newChar.unreachy        = json[ "unreach_y" ].asInt();
+  newChar.monsterClass    = json[ "monsterClass" ].asInt();
+
+  return newChar;
 }
 
 Json::Value character::toJson() const
@@ -140,6 +306,7 @@ Json::Value character::toJson() const
   root[ "frx" ]          = frx;
   root[ "fry" ]          = fry;
   root[ "status" ]       = status;
+  root[ "status2" ]      = status2;
   root[ "dir" ]          = dir;
   root[ "gold" ]         = gold;
 
@@ -195,7 +362,7 @@ Json::Value character::toJson() const
   root[ "gethit_dam" ]    = gethit_dam;
   root[ "gethit_bonus" ]  = gethit_bonus;
   root[ "light_bonus" ]   = light_bonus;
-  root[ "password" ]      = passwd;
+  root[ "password" ]      = std::string( passwd );
   root[ "lastattack" ]    = lastattack;
 
   root[ "future1" ] = Json::arrayValue;
