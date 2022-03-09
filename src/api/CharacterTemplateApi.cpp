@@ -54,8 +54,7 @@ void characters::getCharacterTemplates( const drogon::HttpRequestPtr&           
 }
 
 void characters::getCharacterTemplatesByName( const drogon::HttpRequestPtr&                             req,
-                                              std::function< void( const drogon::HttpResponsePtr& ) >&& callback,
-                                              const std::string&                                        name )
+                                              std::function< void( const drogon::HttpResponsePtr& ) >&& callback, const std::string& name )
 {
   ( void ) req;
 
@@ -63,12 +62,18 @@ void characters::getCharacterTemplatesByName( const drogon::HttpRequestPtr&     
   {
     Json::Value jsonResponse = Json::arrayValue;
 
-    for ( auto&& c : characterMap_[ name ] )
+    for ( auto&& [ n, characterlist ] : characterMap_ )
     {
-      jsonResponse.append( c->toJson() );
+      if ( n.find( name ) != std::string::npos )
+      {
+        for ( auto&& c : characterlist )
+        {
+          jsonResponse.append( c->toJson() );
+        }
+      }
     }
 
-    auto        response     = drogon::HttpResponse::newHttpJsonResponse( jsonResponse );
+    auto response = drogon::HttpResponse::newHttpJsonResponse( jsonResponse );
     response->setStatusCode( drogon::HttpStatusCode::k200OK );
     callback( response );
   }
