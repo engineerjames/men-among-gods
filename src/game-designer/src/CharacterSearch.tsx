@@ -14,6 +14,7 @@ function CharacterSearch() {
     const handlePageChange = moduleHandlePageChange(setPage);
     const onClickHandler = moduleClickHandler(setLoaded, setMultiCharacterDetails, idToSearch, setCharacterDetails);
     const onNameClickHandler = moduleOnNameClickHandler(setLoaded, setCharacterDetails, nameToSearch, setMultiCharacterDetails);
+    const onSaveChangesHandler = moduleOnSaveChangesHandler(characterDetails, multiCharacterDetails);
 
     const onCopyTemplateHandler = async () => {
         // API should return the new template so that way we can load it on the screen
@@ -46,11 +47,24 @@ function CharacterSearch() {
     return (
         <>
             <Stack direction="row" spacing={2} margin={2}>
-                <TextField value={idToSearch} onChange={(event) => { setIdToSearch(event.target.value); setCharacterDetails(undefined); setMultiCharacterDetails(undefined); }} id="standard-basic" label="Enter Id" variant="standard" />
+                <TextField value={idToSearch}
+                    onChange={(event) => {
+                        setIdToSearch(event.target.value);
+                        setCharacterDetails(undefined);
+                        setMultiCharacterDetails(undefined);
+                    }}
+                    id="standard-basic" label="Enter Id" variant="standard" />
                 <Button onClick={onClickHandler} variant="contained">Search</Button>
-                <TextField value={nameToSearch} onChange={(event) => { setNameToSearch(event.target.value); setMultiCharacterDetails(undefined); setCharacterDetails(undefined); }} id="standard-basic" label="Enter Name" variant="standard" />
+                <TextField value={nameToSearch}
+                    onChange={(event) => {
+                        setNameToSearch(event.target.value);
+                        setMultiCharacterDetails(undefined);
+                        setCharacterDetails(undefined);
+                    }}
+                    id="standard-basic" label="Enter Name" variant="standard" />
                 <Button onClick={onNameClickHandler} variant="contained">Search By Name</Button>
                 <Button onClick={onCopyTemplateHandler} variant="contained">Copy Template</Button>
+                <Button onClick={onSaveChangesHandler} variant="contained">Save Changes</Button>
             </Stack>
             {characterDetails && <CharacterDetails details={characterDetails} loaded={loaded} />}
             {multiCharacterDetails &&
@@ -63,6 +77,14 @@ function CharacterSearch() {
 }
 
 export default CharacterSearch
+
+function moduleOnSaveChangesHandler(characterDetails: CharacterDetail | undefined, multiCharacterDetails: Array<CharacterDetail> | undefined) {
+    return async () => {
+        console.log("SAVE CHANGES");
+        console.log(characterDetails);
+        console.log(multiCharacterDetails);
+    }
+}
 
 function moduleHandlePageChange(setPage: React.Dispatch<React.SetStateAction<number>>) {
     return (event: React.ChangeEvent<unknown>, value: number) => {
@@ -80,7 +102,6 @@ function moduleOnNameClickHandler(setLoaded: React.Dispatch<React.SetStateAction
             const myJson = await response.json(); //extract JSON from the http response
 
             if (response.status == 200) {
-                console.log(myJson);
                 setMultiCharacterDetails(myJson);
                 setLoaded(true);
             }
@@ -97,12 +118,10 @@ function moduleClickHandler(setLoaded: React.Dispatch<React.SetStateAction<boole
             setLoaded(false);
             setMultiCharacterDetails(undefined);
 
-            console.log(idToSearch);
             const response = await fetch('http://localhost:5556/api/v1/characters/' + idToSearch);
             const myJson = await response.json(); //extract JSON from the http response
 
             if (response.status == 200) {
-                console.log(myJson);
                 setCharacterDetails(myJson);
                 setLoaded(true);
             }
