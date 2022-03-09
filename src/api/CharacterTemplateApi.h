@@ -18,14 +18,15 @@ public:
   METHOD_LIST_BEGIN
   METHOD_ADD( characters::getCharacterTemplates, "/{1}", drogon::Get );
   METHOD_ADD( characters::getCharacterTemplatesByName, "/name/{1}", drogon::Get );
+  METHOD_ADD( characters::copyExistingTemplateById, "/{1}/copy", drogon::Post );
   METHOD_LIST_END
 
-  // your declaration of processing function maybe like this:
   void getCharacterTemplates( const drogon::HttpRequestPtr& req, std::function< void( const drogon::HttpResponsePtr& ) >&& callback,
                               int id );
   void getCharacterTemplatesByName( const drogon::HttpRequestPtr& req, std::function< void( const drogon::HttpResponsePtr& ) >&& callback,
                                     const std::string& name );
-
+  void copyExistingTemplateById( const drogon::HttpRequestPtr& req, std::function< void( const drogon::HttpResponsePtr& ) >&& callback,
+                                 int id );
   characters();
 
 private:

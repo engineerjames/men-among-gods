@@ -1,11 +1,11 @@
-import { Button, Pagination, Stack, TextField, Typography } from '@mui/material'
+import { Button, Pagination, Stack, TextField } from '@mui/material'
 import React, { useState } from 'react'
 import CharacterDetails from './CharacterDetails';
 import { CharacterDetail } from './CharacterDetails';
 
 function CharacterSearch() {
-    let [idToSearch] = useState('');
-    let [nameToSearch] = useState('');
+    let [idToSearch, setIdToSearch] = useState('');
+    let [nameToSearch, setNameToSearch] = useState('');
     const [loaded, setLoaded] = useState(false);
     const [characterDetails, setCharacterDetails] = useState<CharacterDetail>();
     const [multiCharacterDetails, setMultiCharacterDetails] = useState<Array<CharacterDetail>>();
@@ -18,7 +18,9 @@ function CharacterSearch() {
     const onClickHandler = async () => {
         try {
             setLoaded(false);
+            setMultiCharacterDetails(undefined);
 
+            console.log(idToSearch);
             const response = await fetch('http://localhost:5556/api/v1/characters/' + idToSearch);
             const myJson = await response.json(); //extract JSON from the http response
 
@@ -51,34 +53,40 @@ function CharacterSearch() {
             console.log(err);
         }
     }
-    
+
     const onCopyTemplateHandler = async () => {
         // API should return the new template so that way we can load it on the screen
         // for editing
-        if (! multiCharacterDetails && ! characterDetails )
-        {
+        if (!multiCharacterDetails && !characterDetails) {
             console.log("No loaded template.");
             return;
         }
 
-        if (multiCharacterDetails)
-        {
-            console.log("COPY" + multiCharacterDetails[page]?.id)
+        let id: number | undefined = 0;
+        if (multiCharacterDetails) {
+            id = multiCharacterDetails[page]?.id;
         }
-        else
-        {
-            console.log("COPY" + characterDetails?.id)
+        else {
+            id = characterDetails?.id;
         }
 
-        console.log("Not implemented yet");
+        const response = await fetch('http://localhost:5556/api/v1/characters/' + id + '/copy', {
+            method: "POST"
+        });
+
+        const newestId = await response.json(); //extract JSON from the http response
+
+        if (response.status == 200) {
+            setIdToSearch(newestId.id);
+        }
     }
 
     return (
         <>
             <Stack direction="row" spacing={2} margin={2}>
-                <TextField onChange={(event) => { idToSearch = event.target.value; }} id="standard-basic" label="Enter Id" variant="standard" />
+                <TextField value={idToSearch} onChange={(event) => { setIdToSearch(event.target.value); setCharacterDetails(undefined); }} id="standard-basic" label="Enter Id" variant="standard" />
                 <Button onClick={onClickHandler} variant="contained">Search</Button>
-                <TextField onChange={(event) => { nameToSearch = event.target.value; }} id="standard-basic" label="Enter Name" variant="standard" />
+                <TextField value={nameToSearch} onChange={(event) => { setNameToSearch(event.target.value); setMultiCharacterDetails(undefined); }} id="standard-basic" label="Enter Name" variant="standard" />
                 <Button onClick={onNameClickHandler} variant="contained">Search By Name</Button>
                 <Button onClick={onCopyTemplateHandler} variant="contained">Copy Template</Button>
             </Stack>

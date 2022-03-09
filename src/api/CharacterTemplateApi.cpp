@@ -90,5 +90,39 @@ void characters::getCharacterTemplatesByName( const drogon::HttpRequestPtr&     
   }
 }
 
+void characters::copyExistingTemplateById( const drogon::HttpRequestPtr&                             req,
+                                           std::function< void( const drogon::HttpResponsePtr& ) >&& callback, int id )
+{
+  ( void ) req;
+
+  std::cerr << "Looking for space to copy id: " << id << " into." << std::endl;
+
+  int newId = 0;
+  for ( int i = 0; i < MAX_TCHARS; ++i )
+  {
+    if ( characterTemplates_[ id ] && characterTemplates_[ i ] && ! characterTemplates_[ i ]->used && i > id )
+    {
+      *characterTemplates_[ i ] = *characterTemplates_[ id ];
+      std::cerr << "Copied into id: " << i << std::endl;
+      newId = i;
+      break;
+    }
+  }
+
+  if ( newId == 0 )
+  {
+    auto resp = drogon::HttpResponse::newHttpJsonResponse( {} );
+    resp->setStatusCode( drogon::HttpStatusCode::k404NotFound );
+    callback( resp );
+    return;
+  }
+
+  Json::Value root {};
+  root[ "id" ] = newId;
+  auto resp    = drogon::HttpResponse::newHttpJsonResponse( root );
+  resp->setStatusCode( drogon::HttpStatusCode::k200OK );
+  callback( resp );
+}
+
 } // namespace v1
 } // namespace api
