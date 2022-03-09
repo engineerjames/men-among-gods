@@ -173,8 +173,8 @@ struct character
   std::int32_t data[ 100 ];
   char         text[ 10 ][ 160 ];
 
-  Json::Value toJson() const;
-  character   fromJson( const Json::Value& json );
+  Json::Value      toJson() const;
+  static character fromJson( const Json::Value& json );
 };
 #pragma pack( pop )
 static_assert( sizeof( character ) == 3605 );

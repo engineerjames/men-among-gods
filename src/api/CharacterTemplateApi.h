@@ -19,6 +19,7 @@ public:
   METHOD_ADD( characters::getCharacterTemplates, "/{1}", drogon::Get );
   METHOD_ADD( characters::getCharacterTemplatesByName, "/name/{1}", drogon::Get );
   METHOD_ADD( characters::copyExistingTemplateById, "/{1}/copy", drogon::Post );
+  METHOD_ADD( characters::updateExistingTemplateById, "/{1}/update", drogon::Put );
   METHOD_LIST_END
 
   void getCharacterTemplates( const drogon::HttpRequestPtr& req, std::function< void( const drogon::HttpResponsePtr& ) >&& callback,
@@ -27,6 +28,8 @@ public:
                                     const std::string& name );
   void copyExistingTemplateById( const drogon::HttpRequestPtr& req, std::function< void( const drogon::HttpResponsePtr& ) >&& callback,
                                  int id );
+  void updateExistingTemplateById( const drogon::HttpRequestPtr& req, std::function< void( const drogon::HttpResponsePtr& ) >&& callback,
+                                   int id );
   characters();
 
 private:

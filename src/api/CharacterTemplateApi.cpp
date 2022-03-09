@@ -124,5 +124,24 @@ void characters::copyExistingTemplateById( const drogon::HttpRequestPtr&        
   callback( resp );
 }
 
+void characters::updateExistingTemplateById( const drogon::HttpRequestPtr&                             req,
+                                             std::function< void( const drogon::HttpResponsePtr& ) >&& callback, int id )
+{
+  ( void ) id;
+  if ( ! req->getJsonError().empty() )
+  {
+    std::cerr << req->getJsonError() << std::endl;
+    return;
+  }
+
+  auto      jsonBody                 = req->getJsonObject();
+  character receivedCharacterDetails = character::fromJson( *jsonBody );
+  std::cerr << "Received " << receivedCharacterDetails.toJson().toStyledString() << std::endl;
+
+  auto resp = drogon::HttpResponse::newHttpJsonResponse( *jsonBody );
+  resp->setStatusCode( drogon::HttpStatusCode::k200OK );
+  callback( resp );
+}
+
 } // namespace v1
 } // namespace api

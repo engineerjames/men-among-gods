@@ -156,7 +156,7 @@ struct item
   std::uint32_t data[ 10 ]; // 634, driver data
 
   Json::Value toJson() const;
-  item        fromJson( const Json::Value& json );
+  static item fromJson( const Json::Value& json );
 };
 #pragma pack( pop )
 static_assert( sizeof( item ) == 634 );
