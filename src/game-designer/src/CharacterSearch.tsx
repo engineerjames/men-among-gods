@@ -51,6 +51,27 @@ function CharacterSearch() {
             console.log(err);
         }
     }
+    
+    const onCopyTemplateHandler = async () => {
+        // API should return the new template so that way we can load it on the screen
+        // for editing
+        if (! multiCharacterDetails && ! characterDetails )
+        {
+            console.log("No loaded template.");
+            return;
+        }
+
+        if (multiCharacterDetails)
+        {
+            console.log("COPY" + multiCharacterDetails[page]?.id)
+        }
+        else
+        {
+            console.log("COPY" + characterDetails?.id)
+        }
+
+        console.log("Not implemented yet");
+    }
 
     return (
         <>
@@ -59,6 +80,7 @@ function CharacterSearch() {
                 <Button onClick={onClickHandler} variant="contained">Search</Button>
                 <TextField onChange={(event) => { nameToSearch = event.target.value; }} id="standard-basic" label="Enter Name" variant="standard" />
                 <Button onClick={onNameClickHandler} variant="contained">Search By Name</Button>
+                <Button onClick={onCopyTemplateHandler} variant="contained">Copy Template</Button>
             </Stack>
             {characterDetails && <CharacterDetails details={characterDetails} loaded={loaded} />}
             {multiCharacterDetails &&
