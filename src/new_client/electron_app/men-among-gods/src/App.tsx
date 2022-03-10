@@ -21,6 +21,8 @@ function App() {
     setPass('');
   }
 
+  const loadHandler = () => {
+  }
 
   return (
     <div className="App">
@@ -43,7 +45,7 @@ function App() {
         <RaceSelection selectedRace={race} setRace={setRace} />
         <Divider orientation="vertical" flexItem />
         <Button sx={{ m: 2 }} onClick={() => { clearState(); }} size='large' variant="contained">New</Button>
-        <Button sx={{ m: 2 }} size='large' variant="contained">Load</Button>
+        <Button sx={{ m: 2 }} size='large' variant="contained" onClick={() => { loadHandler(); }}>Load</Button>
         <Button sx={{ m: 2 }} size='large' variant="contained">Save</Button>
         <Button sx={{ m: 6 }} size='large' variant="contained">Submit</Button>
       </Box>
