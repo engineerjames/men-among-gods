@@ -58,9 +58,6 @@ app.on('activate', () => {
 // code. You can also put them in separate files and import them here.
 app.whenReady().then(() => {
   ipcMain.handle('dialog', (event: Event, method: any, params: any) => {
-    dialog.showOpenDialogSync(BrowserWindow.getAllWindows()[0]);
-    console.log(event);
-    console.log(method);
-    console.log(params);
+    return dialog.showOpenDialog({ properties: ['openFile'] });
   });
 });

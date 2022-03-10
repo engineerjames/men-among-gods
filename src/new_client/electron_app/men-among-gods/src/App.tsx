@@ -5,7 +5,6 @@ import RaceSelection, { Race } from './RaceSelection';
 import CharacterInput from './CharacterInput';
 import { Box, Button, Divider } from '@mui/material';
 
-
 function App() {
 
   const [sex, setSex] = useState(Sex.None);
@@ -22,8 +21,18 @@ function App() {
     setPass('');
   }
 
-  const loadHandler = () => {
-    console.log('LOAD');
+  const onClickHandler = () => {
+    const dialogConfig = {
+      title: 'Select a file',
+      buttonLabel: 'This one will do',
+      properties: ['openFile']
+    };
+
+    // @ts-ignore: TS isn't aware of context 
+    window.electron.openDialog('showOpenDialog', dialogConfig)
+    // @ts-ignore: TS isn't aware of context 
+      .then((result) => { console.log('The result is: ' + result); console.log(result); });
+
   }
 
   return (
@@ -47,7 +56,7 @@ function App() {
         <RaceSelection selectedRace={race} setRace={setRace} />
         <Divider orientation="vertical" flexItem />
         <Button sx={{ m: 2 }} onClick={() => { clearState(); }} size='large' variant="contained">New</Button>
-        <Button sx={{ m: 2 }} size='large' variant="contained" onClick={() => { loadHandler(); }}>Load</Button>
+        <Button sx={{ m: 2 }} size='large' variant="contained" onClick={() => { onClickHandler(); }}>Load</Button>
         <Button sx={{ m: 2 }} size='large' variant="contained">Save</Button>
         <Button sx={{ m: 6 }} size='large' variant="contained">Submit</Button>
       </Box>
