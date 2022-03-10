@@ -4,18 +4,8 @@ import SexSelection, { Sex } from './SexSelection';
 import RaceSelection, { Race } from './RaceSelection';
 import CharacterInput from './CharacterInput';
 import { Box, Button, Divider } from '@mui/material';
-import { ipcRenderer } from 'electron';
 
 function App() {
-
-  ipcRenderer.send('openFile', () => { 
-     console.log("Event sent."); 
-  }); 
-  
-  ipcRenderer.on('fileData', (event : any, data : any) => { 
-    console.log(data);
-  });
-
 
   const [sex, setSex] = useState(Sex.None);
   const [race, setRace] = useState(Race.None);
