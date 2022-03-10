@@ -1,10 +1,10 @@
 import { Checkbox, Divider, FormControlLabel, Stack, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react'
-import CharacterAttributes, { CharacterAttribute } from './CharacterAttributes';
+import CharacterAttributes, { CharacterSkillOrAttribute } from './CharacterSkillsOrAttributes';
 import CharacterFlags from './CharacterFlags';
-import CharacterSkills, { CharacterSkill } from './CharacterSkills';
 import KindredDisplay from './KindredDisplay';
 import TextDisplay from './TextDisplay';
+import CharacterSkillsOrAttributes from './CharacterSkillsOrAttributes';
 
 export interface CharacterFlag {
     name: string;
@@ -22,8 +22,8 @@ export interface CharacterDetail {
     hp?: Array<number>;
     mana?: Array<number>;
     end?: Array<number>;
-    attributes?: Array<CharacterAttribute>;
-    skills?: Array<CharacterSkill>;
+    attributes?: Array<CharacterSkillOrAttribute>;
+    skills?: Array<CharacterSkillOrAttribute>;
     kindred?: number;
     text?: Array<string>;
     id?: number;
@@ -66,8 +66,8 @@ const CharacterDetails = ({ details, loaded }: CharacterDetailProps) => {
                     <TextField id="filled-basic" label='Hp/End/Mana' value={lifeString} variant="filled" InputProps={{ readOnly: true }} />
                 </Stack>
                 <CharacterFlags flags={details?.flags} />
-                <CharacterAttributes attributes={details?.attributes} />
-                <CharacterSkills skills={details?.skills} />
+                <CharacterSkillsOrAttributes attributes={details?.attributes} />
+                <CharacterSkillsOrAttributes attributes={details?.skills} />
                 <KindredDisplay kindred={details?.kindred} />
                 <TextDisplay text={details?.text} />
             </Stack>

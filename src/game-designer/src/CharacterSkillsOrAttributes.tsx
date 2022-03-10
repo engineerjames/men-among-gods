@@ -1,13 +1,13 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import React from 'react'
 
-export interface CharacterAttribute {
+export interface CharacterSkillOrAttribute {
     data: Array<number>;
     name: string;
 }
 
 export interface CharacterAttributesProps {
-    attributes?: Array<CharacterAttribute>;
+    attributes?: Array<CharacterSkillOrAttribute>;
 }
 
 const columns: GridColDef[] = [
@@ -80,19 +80,10 @@ const columns: GridColDef[] = [
     },
 ];
 
-// character stats
-// [0]=bare value, 0=unknown
-// [1]=preset modifier, is race/npc dependend
-// [2]=race specific maximum
-// [3]=race specific difficulty to raise (0=not raisable, 1=easy ... 10=hard)
-// [4]=dynamic modifier, depends on equipment and spells
-// [5]=total value
-
-function CharacterAttributes(props: CharacterAttributesProps) {
+function CharacterSkillsOrAttributes(props: CharacterAttributesProps) {
 
     const rows: any = [];
     props?.attributes?.map((attr) => {
-        console.log(attr);
         rows.push({
             id: attr.name,
             baseValue: attr.data[0],
@@ -109,7 +100,7 @@ function CharacterAttributes(props: CharacterAttributesProps) {
             <DataGrid
                 rows={rows}
                 columns={columns}
-                pageSize={5}
+                pageSize={50}
                 rowsPerPageOptions={[5]}
                 disableSelectionOnClick
             />
@@ -117,4 +108,4 @@ function CharacterAttributes(props: CharacterAttributesProps) {
     );
 }
 
-export default CharacterAttributes
+export default CharacterSkillsOrAttributes
