@@ -9,9 +9,9 @@ item item::fromJson( const Json::Value& json )
 
   newItem.used = json[ "used" ].asInt();
 
-  std::strncpy( newItem.name, json[ "name" ].asString().c_str(), sizeof( newItem.name ) );
-  std::strncpy( newItem.reference, json[ "reference" ].asString().c_str(), sizeof( newItem.reference ) );
-  std::strncpy( newItem.description, json[ "description" ].asString().c_str(), sizeof( newItem.description ) );
+  std::strncpy( newItem.name, json[ "name" ].asString().c_str(), sizeof( newItem.name ) - 1 );
+  std::strncpy( newItem.reference, json[ "reference" ].asString().c_str(), sizeof( newItem.reference ) - 1 );
+  std::strncpy( newItem.description, json[ "description" ].asString().c_str(), sizeof( newItem.description ) - 1 );
 
   newItem.value        = json[ "value" ].asUInt();
   newItem.placement    = json[ "placement" ].asUInt();

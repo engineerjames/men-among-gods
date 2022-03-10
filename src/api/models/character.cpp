@@ -10,9 +10,9 @@ character character::fromJson( const Json::Value& json )
 
   newChar.used = json[ "used" ].asInt();
 
-  std::strncpy( newChar.name, json[ "name" ].asString().c_str(), sizeof( newChar.name ) );
-  std::strncpy( newChar.reference, json[ "reference" ].asString().c_str(), sizeof( newChar.reference ) );
-  std::strncpy( newChar.description, json[ "description" ].asString().c_str(), sizeof( newChar.description ) );
+  std::strncpy( newChar.name, json[ "name" ].asString().c_str(), sizeof( newChar.name ) - 1 );
+  std::strncpy( newChar.reference, json[ "reference" ].asString().c_str(), sizeof( newChar.reference ) - 1 );
+  std::strncpy( newChar.description, json[ "description" ].asString().c_str(), sizeof( newChar.description ) - 1 );
 
   newChar.kindred = json[ "kindred" ].asInt();
   newChar.player  = json[ "player" ].asInt();
@@ -128,7 +128,7 @@ character character::fromJson( const Json::Value& json )
   newChar.gethit_bonus  = json[ "gethit_bonus" ].asInt();
   newChar.light_bonus   = json[ "light_bonus" ].asUInt();
 
-  std::strncpy( newChar.passwd, json[ "password" ].asString().c_str(), sizeof( newChar.passwd ) );
+  std::strncpy( newChar.passwd, json[ "password" ].asString().c_str(), sizeof( newChar.passwd ) - 1);
 
   newChar.lastattack = json[ "lastattack" ].asInt();
 
@@ -159,7 +159,7 @@ character character::fromJson( const Json::Value& json )
 
   for ( int i = 0; i < 10; ++i )
   {
-    std::strncpy( newChar.text[ i ], json[ "text" ][ i ].asString().c_str(), sizeof( newChar.text[ i ] ) );
+    std::strncpy( newChar.text[ i ], json[ "text" ][ i ].asString().c_str(), sizeof( newChar.text[ i ] ) - 1);
   }
 
   newChar.sprite_override = json[ "sprite_override" ].asInt();
