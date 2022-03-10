@@ -1,6 +1,6 @@
 import { Checkbox, Divider, FormControlLabel, Stack, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react'
-import CharacterAttributes, { CharacterSkillOrAttribute } from './CharacterSkillsOrAttributes';
+import { CharacterSkillOrAttribute } from './CharacterSkillsOrAttributes';
 import CharacterFlags from './CharacterFlags';
 import KindredDisplay from './KindredDisplay';
 import TextDisplay from './TextDisplay';
@@ -49,7 +49,7 @@ const CharacterDetails = ({ details, loaded }: CharacterDetailProps) => {
         if (details?.description) {
             details.description = description;
         }
-    }, [name, description])
+    }, [name, description, details])
 
 
     if (loaded) {
