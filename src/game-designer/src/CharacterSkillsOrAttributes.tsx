@@ -1,5 +1,5 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import React from 'react'
+import React, { useState } from 'react'
 
 export interface CharacterSkillOrAttribute {
     data: Array<number>;
@@ -18,7 +18,7 @@ const columns: GridColDef[] = [
         width: 100,
         align: 'left',
         sortable: false,
-        editable: false
+        editable: false,
     },
     {
         field: 'baseValue',
@@ -82,6 +82,30 @@ const columns: GridColDef[] = [
 
 function CharacterSkillsOrAttributes(props: CharacterAttributesProps) {
 
+    const [updatedProps, setUpdatedProps] = useState(props);
+
+    const handleOnCellChange = (event: any, params: any) => {
+        console.log(event);
+        console.log(params);
+        // event.id // skill name
+        // event.field // baseValue (data[0])
+
+        if (!props?.attributes?.length) {
+            return;
+        }
+
+        if (!props.attributes) { return; }
+
+        for (let i = 0; i < props.attributes.length; ++i) {
+            if (props.attributes[i].name == event.id) {
+                if (event.id == "baseValue") {
+                    props.attributes[i].data[0] = parseInt(params.target.value);
+                    setUpdatedProps({ ...props })
+                }
+            }
+        }
+    }
+
     const rows: any = [];
     props?.attributes?.map((attr) => {
         rows.push({
@@ -101,8 +125,9 @@ function CharacterSkillsOrAttributes(props: CharacterAttributesProps) {
                 rows={rows}
                 columns={columns}
                 pageSize={50}
-                rowsPerPageOptions={[5]}
+                rowsPerPageOptions={[50]}
                 disableSelectionOnClick
+                onCellEditStop={handleOnCellChange}
             />
         </div>
     );
