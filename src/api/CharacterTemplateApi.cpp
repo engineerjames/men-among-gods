@@ -127,7 +127,13 @@ void characters::copyExistingTemplateById( const drogon::HttpRequestPtr&        
 void characters::updateExistingTemplateById( const drogon::HttpRequestPtr&                             req,
                                              std::function< void( const drogon::HttpResponsePtr& ) >&& callback, int id )
 {
-  ( void ) id;
+  if ( id < 0 || id >= MAX_TCHARS || characterTemplates_[ id ] == nullptr )
+  {
+    auto resp = drogon::HttpResponse::newHttpJsonResponse( {} );
+    resp->setStatusCode( drogon::HttpStatusCode::k400BadRequest );
+    callback( resp );
+  }
+
   if ( ! req->getJsonError().empty() )
   {
     std::cerr << req->getJsonError() << std::endl;
@@ -136,7 +142,8 @@ void characters::updateExistingTemplateById( const drogon::HttpRequestPtr&      
 
   auto      jsonBody                 = req->getJsonObject();
   character receivedCharacterDetails = character::fromJson( *jsonBody );
-  std::cerr << "Received " << receivedCharacterDetails.toJson().toStyledString() << std::endl;
+
+  *characterTemplates_[ id ] = receivedCharacterDetails;
 
   auto resp = drogon::HttpResponse::newHttpJsonResponse( *jsonBody );
   resp->setStatusCode( drogon::HttpStatusCode::k200OK );

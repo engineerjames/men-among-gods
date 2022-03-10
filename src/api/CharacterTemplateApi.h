@@ -16,10 +16,10 @@ class characters : public drogon::HttpController< characters >
 {
 public:
   METHOD_LIST_BEGIN
-  METHOD_ADD( characters::getCharacterTemplates, "/{1}", drogon::Get );
-  METHOD_ADD( characters::getCharacterTemplatesByName, "/name/{1}", drogon::Get );
-  METHOD_ADD( characters::copyExistingTemplateById, "/{1}/copy", drogon::Post );
-  METHOD_ADD( characters::updateExistingTemplateById, "/{1}/update", drogon::Put );
+  METHOD_ADD( characters::getCharacterTemplates, "/{1}", drogon::Get, drogon::Options );
+  METHOD_ADD( characters::getCharacterTemplatesByName, "/name/{1}", drogon::Get, drogon::Options );
+  METHOD_ADD( characters::copyExistingTemplateById, "/{1}/copy", drogon::Post, drogon::Options );
+  METHOD_ADD( characters::updateExistingTemplateById, "/{1}/update", drogon::Put, drogon::Options );
   METHOD_LIST_END
 
   void getCharacterTemplates( const drogon::HttpRequestPtr& req, std::function< void( const drogon::HttpResponsePtr& ) >&& callback,

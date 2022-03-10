@@ -1,10 +1,10 @@
 import { Checkbox, Divider, FormControlLabel, Stack, TextField } from '@mui/material';
-import React from 'react'
-import CharacterAttributes, { CharacterAttribute } from './CharacterAttributes';
+import React, { useEffect, useState } from 'react'
+import { CharacterSkillOrAttribute } from './CharacterSkillsOrAttributes';
 import CharacterFlags from './CharacterFlags';
-import CharacterSkills, { CharacterSkill } from './CharacterSkills';
 import KindredDisplay from './KindredDisplay';
 import TextDisplay from './TextDisplay';
+import CharacterSkillsOrAttributes from './CharacterSkillsOrAttributes';
 
 export interface CharacterFlag {
     name: string;
@@ -22,8 +22,8 @@ export interface CharacterDetail {
     hp?: Array<number>;
     mana?: Array<number>;
     end?: Array<number>;
-    attributes?: Array<CharacterAttribute>;
-    skills?: Array<CharacterSkill>;
+    attributes?: Array<CharacterSkillOrAttribute>;
+    skills?: Array<CharacterSkillOrAttribute>;
     kindred?: number;
     text?: Array<string>;
     id?: number;
@@ -35,16 +35,29 @@ export interface CharacterDetailProps {
 }
 
 const CharacterDetails = ({ details, loaded }: CharacterDetailProps) => {
-
     const positionString = `( ${details?.x}, ${details?.y} )`;
     const lifeString = `${details?.hp?.at(0)} / ${details?.end?.at(0)} / ${details?.mana?.at(0)}`;
+
+    const [name, setName] = useState(details?.name);
+    const [description, setDescription] = useState(details?.description);
+
+    useEffect(() => {
+        if (details?.name) {
+            details.name = name;
+        }
+
+        if (details?.description) {
+            details.description = description;
+        }
+    }, [name, description, details])
+
 
     if (loaded) {
         return (<>
             <Stack spacing={2}>
                 <TextField id="filled-basic" label='Id' value={details?.id} variant="filled" InputProps={{ readOnly: true }} />
-                <TextField id="filled-basic" label='Name' value={details?.name} variant="filled" InputProps={{ readOnly: true }} />
-                <TextField id="filled-basic" label='Description' value={details?.description} variant="filled" InputProps={{ readOnly: true }} />
+                <TextField id="filled-basic" label='Name' onChange={(event) => { setName(event.target.value); }} value={name} variant="filled" />
+                <TextField id="filled-basic" label='Description' onChange={(event) => { setDescription(event.target.value); }} value={description} variant="filled" />
 
                 <Stack spacing={3} direction="row" divider={<Divider orientation="vertical" flexItem />}>
                     <FormControlLabel control={<Checkbox />} label='Is Used' checked={details?.used === 1} />
@@ -53,8 +66,8 @@ const CharacterDetails = ({ details, loaded }: CharacterDetailProps) => {
                     <TextField id="filled-basic" label='Hp/End/Mana' value={lifeString} variant="filled" InputProps={{ readOnly: true }} />
                 </Stack>
                 <CharacterFlags flags={details?.flags} />
-                <CharacterAttributes attributes={details?.attributes} />
-                <CharacterSkills skills={details?.skills} />
+                <CharacterSkillsOrAttributes attributes={details?.attributes} />
+                <CharacterSkillsOrAttributes attributes={details?.skills} />
                 <KindredDisplay kindred={details?.kindred} />
                 <TextDisplay text={details?.text} />
             </Stack>

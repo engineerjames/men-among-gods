@@ -14,7 +14,7 @@ function CharacterSearch() {
     const handlePageChange = moduleHandlePageChange(setPage);
     const onClickHandler = moduleClickHandler(setLoaded, setMultiCharacterDetails, idToSearch, setCharacterDetails);
     const onNameClickHandler = moduleOnNameClickHandler(setLoaded, setCharacterDetails, nameToSearch, setMultiCharacterDetails);
-    const onSaveChangesHandler = moduleOnSaveChangesHandler(characterDetails, multiCharacterDetails);
+    const onSaveChangesHandler = moduleOnSaveChangesHandler(characterDetails, multiCharacterDetails, page);
 
     const onCopyTemplateHandler = async () => {
         // API should return the new template so that way we can load it on the screen
@@ -78,12 +78,41 @@ function CharacterSearch() {
 
 export default CharacterSearch
 
-function moduleOnSaveChangesHandler(characterDetails: CharacterDetail | undefined, multiCharacterDetails: Array<CharacterDetail> | undefined) {
+function moduleOnSaveChangesHandler(characterDetails: CharacterDetail | undefined, multiCharacterDetails: Array<CharacterDetail> | undefined, page: number) {
     return async () => {
-        console.log("SAVE CHANGES");
-        console.log(characterDetails);
-        console.log(multiCharacterDetails);
-    }
+        try {
+            let detailsToSave: CharacterDetail = {};
+            if (characterDetails) {
+                detailsToSave = characterDetails;
+            }
+            else if (multiCharacterDetails) {
+                detailsToSave = multiCharacterDetails[page];
+            }
+            else {
+                console.log("No character details capable of saving.");
+            }
+
+            const response = await fetch('http://localhost:5556/api/v1/characters/' + detailsToSave.id + '/update',
+                {
+                    method: "PUT",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*',
+                    },
+                    body: JSON.stringify(detailsToSave)
+                });
+
+            const myJson = await response.json(); //extract JSON from the http response
+
+            if (response.status == 200) {
+                console.log('SUCCESS');
+                console.log(myJson);
+            }
+        }
+        catch (err) {
+            console.log(err);
+        }
+    };
 }
 
 function moduleHandlePageChange(setPage: React.Dispatch<React.SetStateAction<number>>) {
