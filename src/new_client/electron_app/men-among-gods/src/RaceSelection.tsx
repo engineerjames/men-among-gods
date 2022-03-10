@@ -10,20 +10,20 @@ export enum Race {
 
 export interface RaceSelectionProps {
     selectedRace: Race;
+    setRace: React.Dispatch<React.SetStateAction<Race>>;
 }
 
 function SexSelection(props: RaceSelectionProps) {
-    const [race, setRace] = useState(props.selectedRace);
 
     const onSelectRadioButtonHandler = (race: string) => {
         if (race === 'templar') {
-            setRace(Race.Templar);
+            props.setRace(Race.Templar);
         }
         else if (race === 'harakim') {
-            setRace(Race.Harakim);
+            props.setRace(Race.Harakim);
         }
         else if (race === 'mercenary') {
-            setRace(Race.Merecenary);
+            props.setRace(Race.Merecenary);
         }
         else {
             console.log("Indeterminate race: " + race);
@@ -31,7 +31,7 @@ function SexSelection(props: RaceSelectionProps) {
     }
 
     return (
-        <FormControl>
+        <FormControl sx={{m: 2}}>
             <FormLabel id="demo-radio-buttons-group-label">Race</FormLabel>
             <RadioGroup
                 aria-labelledby="demo-radio-buttons-group-label"
@@ -40,13 +40,13 @@ function SexSelection(props: RaceSelectionProps) {
                 row
             >
                 <FormControlLabel value="templar"
-                    control={<Radio checked={race === Race.Templar} onChange={(event) => { onSelectRadioButtonHandler(event.target.value); }} />}
+                    control={<Radio checked={props.selectedRace === Race.Templar} onChange={(event) => { onSelectRadioButtonHandler(event.target.value); }} />}
                     label="Templar" />
                 <FormControlLabel value="mercenary"
-                    control={<Radio checked={race === Race.Merecenary} onChange={(event) => { onSelectRadioButtonHandler(event.target.value); }} />}
+                    control={<Radio checked={props.selectedRace === Race.Merecenary} onChange={(event) => { onSelectRadioButtonHandler(event.target.value); }} />}
                     label="Mercenary" />
                 <FormControlLabel value="harakim"
-                    control={<Radio checked={race === Race.Harakim} onChange={(event) => { onSelectRadioButtonHandler(event.target.value); }} />}
+                    control={<Radio checked={props.selectedRace === Race.Harakim} onChange={(event) => { onSelectRadioButtonHandler(event.target.value); }} />}
                     label="Harakim" />
             </RadioGroup>
         </FormControl>)

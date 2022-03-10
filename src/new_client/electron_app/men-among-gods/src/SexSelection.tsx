@@ -9,17 +9,16 @@ export enum Sex {
 
 export interface SexSelectionProps {
     selectedSex: Sex;
+    setSex: React.Dispatch<React.SetStateAction<Sex>>;
 }
 
 function SexSelection(props: SexSelectionProps) {
-    const [sex, setSex] = useState(props.selectedSex);
-
     const onSelectRadioButtonHandler = (sex: string) => {
         if (sex === 'female') {
-            setSex(Sex.Female);
+            props.setSex(Sex.Female);
         }
         else if (sex === 'male') {
-            setSex(Sex.Male);
+            props.setSex(Sex.Male);
         }
         else {
             console.log("Indeterminate sex: " + sex);
@@ -27,7 +26,7 @@ function SexSelection(props: SexSelectionProps) {
     }
 
     return (
-        <FormControl>
+        <FormControl sx={{m: 2}}>
             <FormLabel id="demo-radio-buttons-group-label">Sex</FormLabel>
             <RadioGroup
                 aria-labelledby="demo-radio-buttons-group-label"
@@ -36,10 +35,10 @@ function SexSelection(props: SexSelectionProps) {
                 row
             >
                 <FormControlLabel value="female"
-                    control={<Radio checked={sex === Sex.Female} onChange={(event) => { onSelectRadioButtonHandler(event.target.value); }} />}
+                    control={<Radio checked={props.selectedSex === Sex.Female} onChange={(event) => { onSelectRadioButtonHandler(event.target.value); }} />}
                     label="Female" />
                 <FormControlLabel value="male"
-                    control={<Radio checked={sex === Sex.Male} onChange={(event) => { onSelectRadioButtonHandler(event.target.value); }} />}
+                    control={<Radio checked={props.selectedSex === Sex.Male} onChange={(event) => { onSelectRadioButtonHandler(event.target.value); }} />}
                     label="Male" />
             </RadioGroup>
         </FormControl>)
