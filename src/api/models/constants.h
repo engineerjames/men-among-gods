@@ -2,6 +2,7 @@
 #define MEN_AMONG_GODS_CONSTANTS_H
 
 #include <cstdint>
+#include <cstring>
 
 static const constexpr int AT_BRAVE = 0;
 static const constexpr int AT_WILL  = 1;
