@@ -27,7 +27,7 @@ const columns: GridColDef[] = [
         description: 'Base value of the attribute.',
         width: 100,
         align: 'center',
-        sortable: false,
+        sortable: true,
         editable: true,
     },
     {
