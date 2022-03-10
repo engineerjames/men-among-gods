@@ -1,5 +1,5 @@
-import { Box, TextField } from '@mui/material'
-import React, { useState } from 'react'
+import { TextField } from '@mui/material'
+import React from 'react'
 
 export interface CharacterInputProps {
     name: string;

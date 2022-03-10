@@ -1,5 +1,5 @@
 import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material';
-import React, { useState } from 'react'
+import React from 'react'
 
 export enum Race {
     None = 0,

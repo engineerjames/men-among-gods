@@ -22,6 +22,7 @@ function App() {
   }
 
   const loadHandler = () => {
+    console.log('LOAD');
   }
 
   return (
