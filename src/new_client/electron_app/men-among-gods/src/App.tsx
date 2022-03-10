@@ -5,6 +5,7 @@ import RaceSelection, { Race } from './RaceSelection';
 import CharacterInput from './CharacterInput';
 import { Box, Button, Divider } from '@mui/material';
 
+
 function App() {
 
   const [sex, setSex] = useState(Sex.None);
