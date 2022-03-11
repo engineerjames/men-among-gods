@@ -31,7 +31,14 @@ function App() {
     // @ts-ignore: TS isn't aware of context 
     window.electron.openDialog('showOpenDialog', dialogConfig)
     // @ts-ignore: TS isn't aware of context 
-      .then((result) => { console.log('The result is: ' + result); console.log(result); });
+      .then((result) => { 
+        console.log('The result is: ' + result); 
+        console.log(result);
+        
+        console.log('READING FILE - CLIENT')
+        // @ts-ignore: TS isn't aware of context 
+        window.electron.readFile(result.filePaths[0]); 
+      });
 
   }
 
