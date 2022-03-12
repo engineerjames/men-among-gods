@@ -83,6 +83,7 @@ function App() {
   const [desc, setDesc] = useState('');
   const [pass, setPass] = useState('');
   const [moaFile, setMoaFile] = useState<MOAFile>();
+  const [gameIsLoaded, setGameIsLoaded] = useState(false);
 
   const clearState = () => {
     setSex(Sex.None);
@@ -149,6 +150,8 @@ function App() {
       // @ts-ignore: TS isn't aware of context 
       window.electron.loadGame(pathToGame, ['newentry', JSON.stringify(UIDetails)]);
     }
+
+    setGameIsLoaded(true);
   }
 
   return (
@@ -174,7 +177,7 @@ function App() {
         <Button sx={{ m: 2 }} onClick={() => { clearState(); }} size='large' variant="contained">New</Button>
         <Button sx={{ m: 2 }} size='large' variant="contained" onClick={() => { onClickHandler(); }}>Load</Button>
         <Button sx={{ m: 2 }} size='large' variant="contained">Save</Button>
-        <Button sx={{ m: 6 }} size='large' variant="contained" onClick={() => { loadGame(); }}>Submit</Button>
+        <Button sx={{ m: 6 }} disabled={gameIsLoaded} size='large' variant="contained" onClick={() => { loadGame(); }}>Submit</Button>
       </Box>
     </div>
   );

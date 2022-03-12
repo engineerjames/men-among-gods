@@ -86,7 +86,8 @@ app.whenReady().then(() => {
       cwd: '/home/jarmes/git/men-among-gods/out/build/WSL-GCC9-Debug/'
     });
 
-    child.unref();
-    app.quit();
+    // TODO: Enable later?
+    // child.unref();
+    // app.quit();
   });
 });
