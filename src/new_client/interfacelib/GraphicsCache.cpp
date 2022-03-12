@@ -82,6 +82,7 @@ sf::Sprite GraphicsCache::loadSprite( std::size_t id )
 
   // Worst-case just return a default-constructed sprite which will render white on the screen
   // which will look obviously wrong...
+  std::cerr << "ERROR loading sprite: " << id << std::endl;
   return sf::Sprite {};
 }
 

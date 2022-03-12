@@ -62,7 +62,18 @@
         "complex": "cpp",
         "list": "cpp",
         "typeindex": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "*.ipp": "cpp",
+        "csignal": "cpp",
+        "any": "cpp",
+        "forward_list": "cpp",
+        "unordered_set": "cpp",
+        "regex": "cpp",
+        "rope": "cpp",
+        "future": "cpp",
+        "shared_mutex": "cpp",
+        "cfenv": "cpp",
+        "valarray": "cpp"
     },
     "cmake.generator": "Ninja",
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"

@@ -7,6 +7,7 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <json/json.h>
 
+#include "ClientTypes.h"
 #include "ConstantIdentifiers.h"
 #include "Logger.h"
 #include "ResourceLocations.h"
@@ -658,9 +659,47 @@ void PlayerData::clear()
   unique2_              = 0;
 }
 
+// This is only expected to be called with the electron-UI info
+void PlayerData::fromJson( Json::Value& json )
+{
+  const std::string playerName        = json[ "name" ].asString();
+  const std::string playerDescription = json[ "desc" ].asString();
+  const std::string playerPass        = json[ "pass" ].asString();
+  setName( playerName );
+
+  std::strncpy( const_cast< char* >( okey_.name ), playerName.c_str(), playerName.length() );
+  std::strncpy( const_cast< char* >( clientSidePlayerInfo_.name ), playerName.c_str(), playerName.length() );
+  std::strncpy( const_cast< char* >( playerInfo_.desc ), playerDescription.c_str(), 160 - 1 );
+  password_ = playerPass;
+
+  int sexInt  = json[ "sex" ].asInt();
+  int raceInt = json[ "race" ].asInt();
+
+  MenAmongGods::Sex  sex = sexInt == 1 ? MenAmongGods::Sex::Male : MenAmongGods::Sex::Female;
+  MenAmongGods::Race race {};
+
+  switch ( raceInt )
+  {
+  case 1:
+    race = MenAmongGods::Race::Templar;
+    break;
+  case 2:
+    race = MenAmongGods::Race::Harakim;
+    break;
+  case 3:
+    race = MenAmongGods::Race::Mercenary;
+    break;
+  default:
+    race = MenAmongGods::Race::Mercenary;
+    break;
+  }
+
+  okey_.race = getOkeyRaceValue( race, sex );
+}
+
 void PlayerData::loadFromJsonFile( const std::string& fileName )
 {
-  std::ifstream playerFile { MenAmongGods::getConfigPath() + fileName };
+  std::ifstream playerFile { fileName };
 
   //
   // Player data
@@ -696,7 +735,7 @@ void PlayerData::loadFromJsonFile( const std::string& fileName )
 // save_options and save_unique combined
 void PlayerData::saveToJsonFile( const std::string& fileName ) const
 {
-  std::string fullFilePath = MenAmongGods::getConfigPath() + fileName + ".moa"; 
+  std::string fullFilePath = MenAmongGods::getConfigPath() + fileName + ".moa";
 
   if ( fileName.empty() )
   {
