@@ -1,5 +1,7 @@
 import { spawn } from 'child_process';
 import { app, BrowserWindow, dialog, ipcMain } from 'electron';
+import { cwd } from 'process';
+var path = require('path');
 
 var fs = require('fs/promises');
 var fs2 = require('fs');
@@ -81,10 +83,11 @@ app.whenReady().then(() => {
     let out = fs2.openSync('./out.log', 'a');
     let err = fs2.openSync('./out.log', 'a');
 
-    const child = spawn(filepath, params, {
+    let fullyqualifiedpath = path.join(process.cwd(), filepath);
+    console.log('Loading MenAmongGods EXE from ' + fullyqualifiedpath);
+    const child = spawn(fullyqualifiedpath, params, {
       detached: true,
       stdio: ['ignore', out, err],
-      cwd: '/home/jarmes/git/men-among-gods/out/build/WSL-GCC9-Debug/'
     });
 
     // TODO: Enable later?
