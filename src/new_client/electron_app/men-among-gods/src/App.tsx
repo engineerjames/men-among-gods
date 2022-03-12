@@ -135,7 +135,7 @@ function App() {
 
     if (moaFile) {
       // @ts-ignore: TS isn't aware of context 
-      window.electron.loadGame(pathToGame, ['moafile', moaFile.filepath]);
+      window.electron.loadGame(pathToGame, ['moafile', moaFile.filepath, pass]);
     }
     else {
 
@@ -174,9 +174,9 @@ function App() {
         <Divider orientation="vertical" flexItem />
         <RaceSelection selectedRace={race} setRace={setRace} />
         <Divider orientation="vertical" flexItem />
-        <Button sx={{ m: 2 }} onClick={() => { clearState(); }} size='large' variant="contained">New</Button>
-        <Button sx={{ m: 2 }} size='large' variant="contained" onClick={() => { onClickHandler(); }}>Load</Button>
-        <Button sx={{ m: 2 }} size='large' variant="contained">Save</Button>
+        <Button sx={{ m: 2 }} disabled={gameIsLoaded} onClick={() => { clearState(); }} size='large' variant="contained">New</Button>
+        <Button sx={{ m: 2 }} disabled={gameIsLoaded} size='large' variant="contained" onClick={() => { onClickHandler(); }}>Load</Button>
+        <Button sx={{ m: 2 }} disabled={gameIsLoaded} size='large' variant="contained">Save</Button>
         <Button sx={{ m: 6 }} disabled={gameIsLoaded} size='large' variant="contained" onClick={() => { loadGame(); }}>Submit</Button>
       </Box>
     </div>

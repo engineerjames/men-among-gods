@@ -38,7 +38,7 @@ int main( int argc, char** args )
   auto map        = std::make_unique< MenAmongGods::Map >();
   auto playerData = std::make_unique< PlayerData >();
 
-  if ( argc == 3 )
+  if ( argc >= 3 )
   {
     if ( std::string( args[ 1 ] ) == "moafile" )
     {
@@ -46,6 +46,7 @@ int main( int argc, char** args )
       std::cerr << "PRE LOADING FROM MOA FILE" << std::endl;
       std::cerr << std::string( args[ 2 ] ) << std::endl;
       playerData->loadFromJsonFile( std::string( args[ 2 ] ) );
+      playerData->setPassword( std::string( args[ 3 ] ) );
     }
     else if ( std::string( args[ 1 ] ) == "newentry" )
     {

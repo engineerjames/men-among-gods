@@ -699,7 +699,7 @@ void PlayerData::fromJson( Json::Value& json )
 
 void PlayerData::loadFromJsonFile( const std::string& fileName )
 {
-  std::ifstream playerFile { MenAmongGods::getConfigPath() + fileName };
+  std::ifstream playerFile { fileName };
 
   //
   // Player data

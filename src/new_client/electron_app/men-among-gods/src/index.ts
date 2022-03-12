@@ -32,7 +32,7 @@ const createWindow = (): void => {
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 };
 
 // This method will be called when Electron has finished
@@ -73,9 +73,6 @@ app.whenReady().then(() => {
 
 app.whenReady().then(() => {
   ipcMain.handle('game', (event: Event, filepath: any, params: any) => {
-    console.log(filepath);
-    console.log(params);
-    console.log('IPC LOAD GAME');
 
     let out = fs2.openSync('./out.log', 'a');
     let err = fs2.openSync('./out.log', 'a');
