@@ -45,6 +45,8 @@ int main( int argc, char** args )
     {
       // Loading via moafile
       std::cerr << "PRE LOADING FROM MOA FILE" << std::endl;
+      std::cerr << std::string( args[ 2 ] ) << std::endl;
+      playerData->loadFromJsonFile( std::string( args[ 2 ] ) );
     }
     else if ( std::string( args[ 1 ] ) == "newentry" )
     {
