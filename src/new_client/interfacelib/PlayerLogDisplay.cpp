@@ -58,12 +58,12 @@ std::string PlayerLogDisplay::splitStringWithNewlines( std::string& input )
 
     if ( static_cast< int >( input.size() ) > ( i + 1 ) )
     {
-      if ( std::isalpha(input[i + 1]) )
+      if ( std::isalpha( input[ i + 1 ] ) )
       {
         int j = i;
-        while (j > 0)
+        while ( j > 0 )
         {
-          if (std::isspace(input[j]))
+          if ( std::isspace( input[ j ] ) )
           {
             break;
           }
@@ -121,7 +121,10 @@ void PlayerLogDisplay::recalculateMessagePositions()
 void PlayerLogDisplay::addMessage( sf::Text newMsg )
 {
   std::string msgText = newMsg.getString().toAnsiString();
-  msgText.erase( std::remove( std::begin( msgText ), std::end( msgText ), '\n' ) );
+  if ( msgText.find( '\n' ) != msgText.npos )
+  {
+    msgText.erase( std::remove( std::begin( msgText ), std::end( msgText ), '\n' ) );
+  }
 
   newMsg.setString( msgText );
 
