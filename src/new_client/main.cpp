@@ -9,7 +9,6 @@
 #include "GraphicsCache.h"
 #include "GraphicsIndex.h"
 #include "Logger.h"
-#include "LoginUi.h"
 #include "MainUi.h"
 #include "Map.h"
 #include "MapDisplay.h"
@@ -80,15 +79,11 @@ int main( int argc, char** args )
       std::make_shared< ClientNetworkActivity >( *tickBufferPtr, *playerData, MenAmongGods::ClientConfiguration::instance().hostIpAddress(),
                                                  MenAmongGods::ClientConfiguration::instance().hostPort() );
 
-  auto mainUiPtr  = std::make_shared< MenAmongGods::MainUi >( window, *map, *playerData, *gfxCache, *idxCache, *fontCache );
-  auto loginUiPtr = std::make_shared< MenAmongGods::LoginUi >( *playerData, window, *fontCache, LOGIN_FONT_SIZE );
+  auto mainUiPtr = std::make_shared< MenAmongGods::MainUi >( window, *map, *playerData, *gfxCache, *idxCache, *fontCache );
 
   // Populate components
-  std::vector< std::shared_ptr< MenAmongGods::Component > > components;
+  std::vector< std::shared_ptr< MenAmongGods::Component > > components {};
   components.push_back( mainUiPtr );
-
-  std::vector< std::shared_ptr< MenAmongGods::Component > > loginComponents;
-  loginComponents.push_back( loginUiPtr );
 
   // bool isLoggingIn                = true;
   bool hasKickStartedNetworkComms = false;
@@ -97,20 +92,12 @@ int main( int argc, char** args )
 
   while ( window.isOpen() )
   {
-    std::vector< std::shared_ptr< MenAmongGods::Component > >* currentComponents = &components;
-    if ( false )
+    if ( ! hasKickStartedNetworkComms )
     {
-      currentComponents = &loginComponents;
-    }
-    else
-    {
-      if ( ! hasKickStartedNetworkComms )
-      {
-        hasKickStartedNetworkComms = true;
-        client->run();
+      hasKickStartedNetworkComms = true;
+      client->run();
 
-        LOG_DEBUG( "Starting client communication!" );
-      }
+      LOG_DEBUG( "Starting client communication!" );
     }
 
     //
@@ -124,7 +111,7 @@ int main( int argc, char** args )
         window.close();
       }
 
-      for ( auto& c : *currentComponents )
+      for ( auto& c : components )
       {
         c->onUserInput( event );
       }
@@ -144,7 +131,7 @@ int main( int argc, char** args )
     //
     // Run per-frame update logic
     //
-    for ( auto& c : *currentComponents )
+    for ( auto& c : components )
     {
       c->update();
 
@@ -161,7 +148,7 @@ int main( int argc, char** args )
     //
     window.clear();
 
-    for ( auto& c : *currentComponents )
+    for ( auto& c : components )
     {
       window.draw( *c );
     }
@@ -171,7 +158,7 @@ int main( int argc, char** args )
     //
     // Run finalization logic for all registered components
     //
-    for ( auto& c : *currentComponents )
+    for ( auto& c : components )
     {
       c->finalize();
     }

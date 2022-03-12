@@ -9,7 +9,6 @@ set( sources
     GraphicsIndex.cpp
     JustifiableText.cpp
     LoadButtonDisplay.cpp
-    LoginUi.cpp
     MainUi.cpp
     MapDisplay.cpp
     NewButtonDisplay.cpp
@@ -40,7 +39,6 @@ set( headers
     GuiFormatters.h
     JustifiableText.h
     LoadButtonDisplay.h
-    LoginUi.h
     MainUi.h
     MapDisplay.h
     NewButtonDisplay.h
@@ -110,22 +108,6 @@ target_compile_definitions(${target} PUBLIC ${PROJECT_CXX_DEFINITIONS})
 # Test Application for text-related demos only
 set(target gfx-text-test)
 add_executable(${target} test_applications/gfx-text-test.cpp)
-target_link_libraries(${target} PRIVATE MenAmongGodsGraphics ${test_application_libs})
-target_compile_features(${target} PRIVATE cxx_std_17)
-target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
-target_compile_definitions(${target} PUBLIC ${PROJECT_CXX_DEFINITIONS})
-
-# Test Application for login-related ui demos only
-set(target gfx-login-ui)
-add_executable(${target} test_applications/gfx-login-ui.cpp)
-target_link_libraries(${target} PRIVATE MenAmongGodsGraphics ${test_application_libs})
-target_compile_features(${target} PRIVATE cxx_std_17)
-target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
-target_compile_definitions(${target} PUBLIC ${PROJECT_CXX_DEFINITIONS})
-
-# Test Application for login-related ui demos only
-set(target gfx-progress-bar)
-add_executable(${target} test_applications/gfx-progress-bar.cpp)
 target_link_libraries(${target} PRIVATE MenAmongGodsGraphics ${test_application_libs})
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
