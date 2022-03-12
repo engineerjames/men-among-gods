@@ -132,7 +132,7 @@ function App() {
   }
 
   let loadGame = () => {
-    let pathToGame: string = '/home/jarmes/git/men-among-gods/out/build/WSL-GCC9-Debug/src/new_client/MenAmongGods';
+    let pathToGame: string = './client/MenAmongGods.exe';
 
     if (moaFile) {
       // @ts-ignore: TS isn't aware of context 
