@@ -32,7 +32,6 @@
     "dev": "concurrently -k \"BROWSER=none npm start\" \"npm:electron\"",
     "electron": "wait-on tcp:3000 && electron .",
     "package": "electron-forge package",
-    "make": "electron-forge make",
     "lint": "eslint --ext .ts,.tsx ."
   },
   "eslintConfig": {
