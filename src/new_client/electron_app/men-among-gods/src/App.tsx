@@ -72,6 +72,7 @@ interface MOAFile {
     xbutton: Array<xbutton>;
   };
   key: key;
+  filepath: string;
 }
 
 function App() {
@@ -121,6 +122,7 @@ function App() {
         // @ts-ignore: TS isn't aware of context 
         window.electron.readFile(result.filePaths[0]).then((result2) => {
           let moaFileLoaded: MOAFile = JSON.parse(result2) as MOAFile;
+          moaFileLoaded.filepath = result.filePaths[0];
           setMoaFile(moaFileLoaded);
         })
       });
@@ -128,10 +130,25 @@ function App() {
   }
 
   let loadGame = () => {
-    let pathToGame : string = '/home/jarmes/git/men-among-gods/out/build/WSL-GCC9-Debug/src/new_client/MenAmongGods';
- 
-    // @ts-ignore: TS isn't aware of context 
-    window.electron.loadGame(pathToGame, ['parameter1', 'parameter2']);
+    let pathToGame: string = '/home/jarmes/git/men-among-gods/out/build/WSL-GCC9-Debug/src/new_client/MenAmongGods';
+
+    if (moaFile) {
+      // @ts-ignore: TS isn't aware of context 
+      window.electron.loadGame(pathToGame, ['moafile', moaFile.filepath]);
+    }
+    else {
+
+      const UIDetails = {
+        sex: sex,
+        race: race,
+        name: name,
+        desc: desc,
+        pass: pass,
+      };
+
+      // @ts-ignore: TS isn't aware of context 
+      window.electron.loadGame(pathToGame, ['newentry', JSON.stringify(UIDetails)]);
+    }
   }
 
   return (

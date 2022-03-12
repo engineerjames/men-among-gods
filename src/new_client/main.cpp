@@ -32,17 +32,26 @@ std::atomic< bool > shouldExit {};
 
 int main( int argc, char** args )
 {
-  for ( int i = 0; i < argc; i++ )
-  {
-    std::cerr << "args i, arg=" << i << ", " << args[ i ] << std::endl;
-  }
-
   shouldExit.store( false );
 
   LOG_SET_LEVEL( MenAmongGods::ClientConfiguration::instance().loggingEnabled() );
 
   auto map        = std::make_unique< MenAmongGods::Map >();
   auto playerData = std::make_unique< PlayerData >();
+
+  if ( std::strcmp( args[ 1 ], "moafile" ) == 0 )
+  {
+    // Loading via moafile
+  }
+  else if ( std::strcmp( args[ 1 ], "newentry" ) )
+  {
+    // Loading via json based ui
+    Json::Reader reader {};
+
+    Json::Value root {};
+    reader.parse( args[ 2 ], root );
+    playerData->fromJson( root );
+  }
 
   sf::RenderWindow window( sf::VideoMode( MODEX, MODEY ), "Men Among Gods - v1.1.4" );
   window.setFramerateLimit( MenAmongGods::ClientConfiguration::instance().frameLimit() );
