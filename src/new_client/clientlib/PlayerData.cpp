@@ -665,6 +665,7 @@ void PlayerData::fromJson( Json::Value& json )
   const std::string playerName        = json[ "name" ].asString();
   const std::string playerDescription = json[ "desc" ].asString();
   const std::string playerPass        = json[ "pass" ].asString();
+  setName( playerName );
 
   std::strncpy( const_cast< char* >( okey_.name ), playerName.c_str(), playerName.length() );
   std::strncpy( const_cast< char* >( clientSidePlayerInfo_.name ), playerName.c_str(), playerName.length() );

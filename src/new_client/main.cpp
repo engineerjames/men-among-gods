@@ -39,18 +39,22 @@ int main( int argc, char** args )
   auto map        = std::make_unique< MenAmongGods::Map >();
   auto playerData = std::make_unique< PlayerData >();
 
-  if ( std::strcmp( args[ 1 ], "moafile" ) == 0 )
+  if ( argc == 3 )
   {
-    // Loading via moafile
-  }
-  else if ( std::strcmp( args[ 1 ], "newentry" ) )
-  {
-    // Loading via json based ui
-    Json::Reader reader {};
+    if ( std::string( args[ 1 ] ) == "moafile" )
+    {
+      // Loading via moafile
+      std::cerr << "PRE LOADING FROM MOA FILE" << std::endl;
+    }
+    else if ( std::string( args[ 1 ] ) == "newentry" )
+    {
+      // Loading via json based ui
+      Json::Reader reader {};
 
-    Json::Value root {};
-    reader.parse( args[ 2 ], root );
-    playerData->fromJson( root );
+      Json::Value root {};
+      reader.parse( args[ 2 ], root );
+      playerData->fromJson( root );
+    }
   }
 
   sf::RenderWindow window( sf::VideoMode( MODEX, MODEY ), "Men Among Gods - v1.1.4" );
@@ -84,7 +88,7 @@ int main( int argc, char** args )
   std::vector< std::shared_ptr< MenAmongGods::Component > > loginComponents;
   loginComponents.push_back( loginUiPtr );
 
-  bool isLoggingIn                = true;
+  // bool isLoggingIn                = true;
   bool hasKickStartedNetworkComms = false;
 
   std::vector< std::shared_ptr< MenAmongGods::ClientCommand > > commandList {};
@@ -92,7 +96,7 @@ int main( int argc, char** args )
   while ( window.isOpen() )
   {
     std::vector< std::shared_ptr< MenAmongGods::Component > >* currentComponents = &components;
-    if ( isLoggingIn && ! loginUiPtr->hasSubmitted() )
+    if ( false )
     {
       currentComponents = &loginComponents;
     }
