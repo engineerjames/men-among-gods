@@ -87,5 +87,6 @@ app.whenReady().then(() => {
     });
 
     child.unref();
+    app.quit();
   });
 });
