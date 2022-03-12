@@ -4,6 +4,7 @@ import SexSelection, { Sex } from './SexSelection';
 import RaceSelection, { Race } from './RaceSelection';
 import CharacterInput from './CharacterInput';
 import { Box, Button, Divider } from '@mui/material';
+import { AddSharp, PublishSharp, UploadFileSharp } from '@mui/icons-material';
 
 // This is essentially duplicated logic from ClientTypes.h
 const intToRaceAndSex = (kindred: number): [Race, Sex] => {
@@ -131,7 +132,7 @@ function App() {
   }
 
   let loadGame = () => {
-    let pathToGame: string = '/home/jarmes/git/men-among-gods/out/build/WSL-GCC9-Debug/src/new_client/MenAmongGods';
+    let pathToGame: string = '.\\client\\MenAmongGods.exe';
 
     if (moaFile) {
       // @ts-ignore: TS isn't aware of context 
@@ -162,7 +163,7 @@ function App() {
       <Box component="form"
         alignContent='left'
         sx={{
-          '& .MuiTextField-root': { m: 2, width: '25ch' },
+          '& .MuiTextField-root': { m: 2, width: '50ch' },
         }}
         noValidate
         autoComplete="off">
@@ -174,10 +175,9 @@ function App() {
         <Divider orientation="vertical" flexItem />
         <RaceSelection selectedRace={race} setRace={setRace} />
         <Divider orientation="vertical" flexItem />
-        <Button sx={{ m: 2 }} disabled={gameIsLoaded} onClick={() => { clearState(); }} size='large' variant="contained">New</Button>
-        <Button sx={{ m: 2 }} disabled={gameIsLoaded} size='large' variant="contained" onClick={() => { onClickHandler(); }}>Load</Button>
-        <Button sx={{ m: 2 }} disabled={gameIsLoaded} size='large' variant="contained">Save</Button>
-        <Button sx={{ m: 6 }} disabled={gameIsLoaded} size='large' variant="contained" onClick={() => { loadGame(); }}>Submit</Button>
+        <Button sx={{ m: 2 }} startIcon={<AddSharp />} disabled={gameIsLoaded} onClick={() => { clearState(); }} size='large' variant="contained">New</Button>
+        <Button sx={{ m: 2 }} startIcon={<UploadFileSharp />} disabled={gameIsLoaded} size='large' variant="contained" onClick={() => { onClickHandler(); }}>Load</Button>
+        <Button sx={{ m: 2 }} startIcon={<PublishSharp />} disabled={gameIsLoaded} size='large' variant="contained" onClick={() => { loadGame(); }}>Submit</Button>
       </Box>
     </div>
   );
