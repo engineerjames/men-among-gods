@@ -30,8 +30,13 @@ static const constexpr int LOGIN_FONT_SIZE = 16;
 
 std::atomic< bool > shouldExit {};
 
-int main()
+int main( int argc, char** args )
 {
+  for ( int i = 0; i < argc; i++ )
+  {
+    std::cerr << "args i, arg=" << i << ", " << args[ i ] << std::endl;
+  }
+
   shouldExit.store( false );
 
   LOG_SET_LEVEL( MenAmongGods::ClientConfiguration::instance().loggingEnabled() );

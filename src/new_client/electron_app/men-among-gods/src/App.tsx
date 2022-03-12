@@ -7,46 +7,45 @@ import { Box, Button, Divider } from '@mui/material';
 
 // This is essentially duplicated logic from ClientTypes.h
 const intToRaceAndSex = (kindred: number): [Race, Sex] => {
-  switch ( kindred )
-  {
-  case 3:
-    return [Race.Templar, Sex.Male];
-  case 2:
-    return [Race.Mercenary, Sex.Male ];
-  case 4:
-    return [Race.Harakim, Sex.Male ];
-  case 13:
-    return [Race.Seyan, Sex.Male ];
-  case 543:
-    return [Race.God, Sex.Male ];
-  case 544:
-    return [Race.ArchTemplar, Sex.Male ];
-  case 545:
-    return [Race.ArchHarakim, Sex.Male ];
-  case 546:
-    return [Race.Sorceror, Sex.Male ];
-  case 547:
-    return [Race.Warrior, Sex.Male ];
-  case 77:
-    return [Race.Templar, Sex.Female ];
-  case 76:
-    return [Race.Mercenary, Sex.Female ];
-  case 78:
-    return [Race.Harakim, Sex.Female ];
-  case 79:
-    return [Race.Seyan, Sex.Female ];
-  case 548:
-    return [Race.God, Sex.Female];
-  case 549:
-    return [Race.ArchTemplar, Sex.Female ];
-  case 550:
-    return [Race.ArchHarakim, Sex.Female ];
-  case 551:
-    return [Race.Sorceror, Sex.Female ];
-  case 552:
-    return [Race.Warrior, Sex.Female ];
-  default:
-    return [Race.Templar, Sex.Male ];
+  switch (kindred) {
+    case 3:
+      return [Race.Templar, Sex.Male];
+    case 2:
+      return [Race.Mercenary, Sex.Male];
+    case 4:
+      return [Race.Harakim, Sex.Male];
+    case 13:
+      return [Race.Seyan, Sex.Male];
+    case 543:
+      return [Race.God, Sex.Male];
+    case 544:
+      return [Race.ArchTemplar, Sex.Male];
+    case 545:
+      return [Race.ArchHarakim, Sex.Male];
+    case 546:
+      return [Race.Sorceror, Sex.Male];
+    case 547:
+      return [Race.Warrior, Sex.Male];
+    case 77:
+      return [Race.Templar, Sex.Female];
+    case 76:
+      return [Race.Mercenary, Sex.Female];
+    case 78:
+      return [Race.Harakim, Sex.Female];
+    case 79:
+      return [Race.Seyan, Sex.Female];
+    case 548:
+      return [Race.God, Sex.Female];
+    case 549:
+      return [Race.ArchTemplar, Sex.Female];
+    case 550:
+      return [Race.ArchHarakim, Sex.Female];
+    case 551:
+      return [Race.Sorceror, Sex.Female];
+    case 552:
+      return [Race.Warrior, Sex.Female];
+    default:
+      return [Race.Templar, Sex.Male];
   }
 }
 
@@ -94,7 +93,6 @@ function App() {
 
   useEffect(() => {
     if (moaFile) {
-      console.log('Setting name to' + moaFile.pdata.name);
       setName(moaFile.key.name);
       setDesc(moaFile.pdata.desc);
 
@@ -123,11 +121,17 @@ function App() {
         // @ts-ignore: TS isn't aware of context 
         window.electron.readFile(result.filePaths[0]).then((result2) => {
           let moaFileLoaded: MOAFile = JSON.parse(result2) as MOAFile;
-          console.log(moaFileLoaded);
           setMoaFile(moaFileLoaded);
         })
       });
 
+  }
+
+  let loadGame = () => {
+    let pathToGame : string = '/home/jarmes/git/men-among-gods/out/build/WSL-GCC9-Debug/src/new_client/MenAmongGods';
+ 
+    // @ts-ignore: TS isn't aware of context 
+    window.electron.loadGame(pathToGame, ['parameter1', 'parameter2']);
   }
 
   return (
@@ -153,7 +157,7 @@ function App() {
         <Button sx={{ m: 2 }} onClick={() => { clearState(); }} size='large' variant="contained">New</Button>
         <Button sx={{ m: 2 }} size='large' variant="contained" onClick={() => { onClickHandler(); }}>Load</Button>
         <Button sx={{ m: 2 }} size='large' variant="contained">Save</Button>
-        <Button sx={{ m: 6 }} size='large' variant="contained">Submit</Button>
+        <Button sx={{ m: 6 }} size='large' variant="contained" onClick={() => { loadGame(); }}>Submit</Button>
       </Box>
     </div>
   );
