@@ -31,7 +31,6 @@ set( headers
     GraphicsIndex.h
     GuiFormatters.h
     JustifiableText.h
-    LoadButtonDisplay.h
     MainUi.h
     MapDisplay.h
     MiniMapDisplay.h
