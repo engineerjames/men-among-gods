@@ -132,8 +132,7 @@ function App() {
   }
 
   let loadGame = () => {
-    let pathToGame: string = '.\\client\\MenAmongGods.exe';
-
+    let pathToGame: string = ''; // Empty for now
     if (moaFile) {
       // @ts-ignore: TS isn't aware of context 
       window.electron.loadGame(pathToGame, ['moafile', moaFile.filepath, pass]);
