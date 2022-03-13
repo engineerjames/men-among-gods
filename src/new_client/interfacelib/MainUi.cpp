@@ -34,6 +34,7 @@ MainUi::MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, Gra
     , playerInventory_( window, pdata, gfxCache )
     , userOptionPanel_( window, pdata )
     , mapDisplay_( font_, map, pdata, gfxCache, gfxIndex, window )
+    , miniMapDisplay_( map, pdata, gfxCache, gfxIndex, window )
     , rankDisplay_( font_, pdata, gfxCache )
     , playerShopDisplay_( window, fontCache.getFont(), pdata, gfxCache, gfxIndex )
     , background_()
@@ -205,12 +206,11 @@ void MainUi::addMessage( LogType type, std::string text )
 
 void MainUi::draw( sf::RenderTarget& target, sf::RenderStates states ) const
 {
-  // Draw the background first
-  target.draw( background_, states );
-
   target.draw( mapDisplay_, states );
 
+  target.draw( background_, states );
 
+  target.draw( miniMapDisplay_, states );
 
   target.draw( playerSprite_, states );
 
@@ -246,6 +246,7 @@ void MainUi::onUserInput( const sf::Event& e )
 {
   rankDisplay_.onUserInput( e );
   mapDisplay_.onUserInput( e );
+  miniMapDisplay_.onUserInput( e );
   userInput_.onUserInput( e );
   skillsAndAttributes_.onUserInput( e );
   playerEquipment_.onUserInput( e );
@@ -260,6 +261,7 @@ void MainUi::update()
   playerData_.lock();
 
   mapDisplay_.update();
+  miniMapDisplay_.update();
   rankDisplay_.update();
 
   // Update UI from player data
@@ -316,6 +318,7 @@ void MainUi::populateCommands( std::vector< std::shared_ptr< ClientCommand > >& 
 {
   rankDisplay_.populateCommands( outCommands );
   mapDisplay_.populateCommands( outCommands );
+  miniMapDisplay_.populateCommands( outCommands );
   userInput_.populateCommands( outCommands );
   skillsAndAttributes_.populateCommands( outCommands );
   msgBox_.populateCommands( outCommands );
@@ -329,6 +332,7 @@ void MainUi::finalize()
 {
   rankDisplay_.finalize();
   mapDisplay_.finalize();
+  miniMapDisplay_.finalize();
   userInput_.finalize();
   msgBox_.finalize();
   playerEquipment_.finalize();

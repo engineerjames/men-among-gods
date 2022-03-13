@@ -10,6 +10,7 @@ set( sources
     JustifiableText.cpp
     MainUi.cpp
     MapDisplay.cpp
+    MiniMapDisplay.cpp
     PlayerEquipmentDisplay.cpp
     PlayerInventoryDisplay.cpp
     PlayerLogDisplay.cpp
@@ -33,6 +34,7 @@ set( headers
     LoadButtonDisplay.h
     MainUi.h
     MapDisplay.h
+    MiniMapDisplay.h
     PlayerEquipmentDisplay.h
     PlayerInventoryDisplay.h
     PlayerLogDisplay.h

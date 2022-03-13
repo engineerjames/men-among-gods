@@ -79,15 +79,7 @@ MapDisplay::MapDisplay( const sf::Font& font, MenAmongGods::Map& map, PlayerData
     , tileType_()
     , tileX_()
     , tileY_()
-    , mapX_()
-    , mapY_()
-    , miniMap_()
-    , miniMapPixelsToDraw_()
 {
-  for ( auto&& rect : miniMap_ )
-  {
-    rect.setFillColor( sf::Color { 0x000000FF } );
-  }
 }
 
 void MapDisplay::draw( sf::RenderTarget& target, sf::RenderStates states ) const
@@ -100,11 +92,6 @@ void MapDisplay::draw( sf::RenderTarget& target, sf::RenderStates states ) const
   for ( const auto& text : textToDraw_ )
   {
     target.draw( text, states );
-  }
-
-  for ( const auto& pixel : miniMapPixelsToDraw_ )
-  {
-    target.draw( pixel, states );
   }
 }
 
@@ -361,10 +348,6 @@ void MapDisplay::update()
   int yoff       = -map_.getObjectYOffset( ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX );       //-176;
   int plr_sprite = map_.getObject2( ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX );
 
-  // TODO: Investigate why placing this backwards makes the minimap work.  Originally the x and y positions were swapped.
-  mapY_ = map_.getX( ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX );
-  mapX_ = map_.getY( ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX );
-
   playerData_.setPlayerSprite( plr_sprite );
 
   for ( y = TILEY - 1; y >= 0; y-- )
@@ -403,18 +386,6 @@ void MapDisplay::update()
       // What is the difference between ba_sprite and back? Can I always use ba_sprite?
       // by using ba_sprite instead; we fixed the intermittent "blank" sprite issue
       copysprite( map_.getBackgroundSprite( m ), map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
-
-      if ( map_.getX( m ) < 1024 && map_.getY( m ) < 1024 && ! ( map_.getFlags( m ) & INVIS ) )
-      {
-        if ( miniMap_[ map_.getY( m ) + map_.getX( m ) * 1024 ].getFillColor().r != 255u &&
-             miniMap_[ map_.getY( m ) + map_.getX( m ) * 1024 ].getFillColor().g != 255u &&
-             miniMap_[ map_.getY( m ) + map_.getX( m ) * 1024 ].getFillColor().b != 255u )
-
-          if ( cache_.getAvgColor( map_.getBackgroundSprite( m ) ) != MenAmongGods::AverageBlack )
-          {
-            miniMap_[ map_.getY( m ) + map_.getX( m ) * 1024 ].setFillColor( cache_.getAvgColor( map_.getBackgroundSprite( m ) ) );
-          }
-      }
 
       if ( playerData_.getGotoPosition().x == map_.getX( m ) && playerData_.getGotoPosition().y == map_.getY( m ) )
       {
@@ -529,14 +500,6 @@ void MapDisplay::update()
       else
       {
         tmp = 0;
-      }
-
-      if ( map_.getObject1( m ) && map_.getX( m ) < 1024 && map_.getY( m ) < 1024 )
-      {
-        if ( cache_.getAvgColor( map_.getObject1( m ) ) != MenAmongGods::AverageBlack )
-        {
-          miniMap_[ map_.getY( m ) + map_.getX( m ) * 1024 ].setFillColor( cache_.getAvgColor( map_.getObject1( m ) ) );
-        }
       }
 
       if ( map_.getCharacterId( m ) == selected_char )
@@ -723,34 +686,6 @@ void MapDisplay::update()
         alpha |= 4;
         alphastr = std::max( ( unsigned ) alphastr, ( ( map_.getFlags( m ) & CMAGIC ) >> 28 ) );
       }
-    }
-  }
-
-  mapX_ -= 64;
-  if ( mapX_ < 0 )
-    mapX_ = 0;
-  if ( mapX_ > 1023 - 128 )
-    mapX_ = 1023 - 128;
-
-  mapY_ = mapY_ - 64;
-  if ( mapY_ < 0 )
-    mapY_ = 0;
-  if ( mapY_ > 1023 - 128 )
-    mapY_ = 1023 - 128;
-
-  for ( y = 0; y < 128; ++y )
-  {
-    int s = ( y + mapY_ ) * 1024 + mapX_;
-
-    for ( x = 0; x < 128; ++x )
-    {
-      sf::RectangleShape newRect = miniMap_[ s++ ];
-      float              xPos    = static_cast< float >( 3 + x );
-      float              yPos    = static_cast< float >( 471 + y );
-      newRect.setSize( sf::Vector2f { 1.0f, 1.0f } );
-      newRect.setPosition( sf::Vector2f { xPos, yPos } );
-
-      miniMapPixelsToDraw_[ y * 128 + x ] = newRect;
     }
   }
 

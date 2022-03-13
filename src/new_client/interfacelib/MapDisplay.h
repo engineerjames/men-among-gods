@@ -48,11 +48,6 @@ private:
   int                       tileType_;
   int                       tileX_;
   int                       tileY_;
-
-  int                                           mapX_;
-  int                                           mapY_;
-  std::array< sf::RectangleShape, 1024 * 1024 > miniMap_;
-  std::array< sf::RectangleShape, 128 * 128 >   miniMapPixelsToDraw_;
 };
 } // namespace MenAmongGods
 

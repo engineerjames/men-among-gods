@@ -7,6 +7,7 @@
 #include "Component.h"
 #include "JustifiableText.h"
 #include "MapDisplay.h"
+#include "MiniMapDisplay.h"
 #include "PlayerEquipmentDisplay.h"
 #include "PlayerInventoryDisplay.h"
 #include "PlayerLogDisplay.h"
@@ -75,6 +76,7 @@ private:
   PlayerInventoryDisplay     playerInventory_;
   UserOptionPanelDisplay     userOptionPanel_;
   MapDisplay                 mapDisplay_;
+  MiniMapDisplay             miniMapDisplay_;
   RankDisplay                rankDisplay_;
   PlayerShopDisplay          playerShopDisplay_;
 
