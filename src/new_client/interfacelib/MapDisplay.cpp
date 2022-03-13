@@ -554,7 +554,9 @@ void MapDisplay::update()
 
         auto& lastText = *( textToDraw_.end() - 1 );
 
+        // Look text that appears on the map
         lastText.setPosition( sf::Vector2f { static_cast< float >( textPosition.x ), static_cast< float >( textPosition.y ) } );
+        lastText.setCharacterSize( 8 );
         lastText.setOutlineColor( sf::Color::Black );
         lastText.setOutlineThickness( 1.0f );
         lastText.setFillColor( MenAmongGods::MsgYellow );
@@ -683,12 +685,6 @@ void MapDisplay::update()
       {
         alpha |= 4;
         alphastr = std::max( ( unsigned ) alphastr, ( ( map_.getFlags( m ) & CMAGIC ) >> 28 ) );
-      }
-
-      if ( alpha )
-      {
-        // dd_alphaeffect_magic( alpha, alphastr, x * 32, y * 32, xoff + map_.getObjectXOffset(m), yoff + map_.getObjectYOffset(m)
-        // );
       }
     }
   }

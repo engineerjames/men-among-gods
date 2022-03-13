@@ -8,24 +8,16 @@ set( sources
     GraphicsCache.cpp
     GraphicsIndex.cpp
     JustifiableText.cpp
-    LoadButtonDisplay.cpp
     MainUi.cpp
     MapDisplay.cpp
-    NewButtonDisplay.cpp
-    PasswordTextInputDisplay.cpp
     PlayerEquipmentDisplay.cpp
     PlayerInventoryDisplay.cpp
     PlayerLogDisplay.cpp
     PlayerShopDisplay.cpp
     PlayerTextInputDisplay.cpp
-    ProgressBarDisplay.cpp
-    RadioButtonDisplay.cpp
     RankDisplay.cpp
     SkillsAndAttributesDisplay.cpp
-    SaveButtonDisplay.cpp
     SoundCache.cpp
-    SubmitButtonDisplay.cpp
-    TextInputDisplay.cpp
     UserOptionPanelDisplay.cpp
 )
 
@@ -41,21 +33,14 @@ set( headers
     LoadButtonDisplay.h
     MainUi.h
     MapDisplay.h
-    NewButtonDisplay.h
-    PasswordTextInputDisplay.h
     PlayerEquipmentDisplay.h
     PlayerInventoryDisplay.h
     PlayerLogDisplay.h
     PlayerShopDisplay.h
     PlayerTextInputDisplay.h
-    ProgressBarDisplay.h
-    RadioButtonDisplay.h
     RankDisplay.h
-    SaveButtonDisplay.h
     SkillsAndAttributesDisplay.h
     SoundCache.h
-    SubmitButtonDisplay.h
-    TextInputDisplay.h
     UiPositions.h
     UserOptionPanelDisplay.h
     UtilityFunctions.h

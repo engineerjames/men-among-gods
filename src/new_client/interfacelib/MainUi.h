@@ -47,7 +47,7 @@ private:
 
   MenAmongGods::JustifiableText goldDisplay_;
   sf::Text                      goldLabel_;
-  sf::Text                      playerNameDisplay_;
+  MenAmongGods::JustifiableText playerNameDisplay_;
 
   sf::Text                      avLabel_;
   MenAmongGods::JustifiableText avValue_;
