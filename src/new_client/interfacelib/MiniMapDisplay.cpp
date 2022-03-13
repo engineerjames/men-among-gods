@@ -3,23 +3,15 @@
 #include "ColorPalette.h"
 #include "ConstantIdentifiers.h"
 #include "GraphicsCache.h"
-#include "GraphicsIndex.h"
 #include "Map.h"
-#include "PlayerData.h"
-#include "TickBuffer.h"
-#include "UtilityFunctions.h"
 
 namespace MenAmongGods
 {
 
-MiniMapDisplay::MiniMapDisplay( MenAmongGods::Map& map, PlayerData& playerData, GraphicsCache& cache, const GraphicsIndex& index,
-                                const sf::RenderWindow& window )
+MiniMapDisplay::MiniMapDisplay( MenAmongGods::Map& map, GraphicsCache& cache )
     : MenAmongGods::Component()
     , map_( map )
-    , playerData_( playerData )
     , cache_( cache )
-    , index_( index )
-    , window_( window )
     , miniMap_()
     , miniMapPixelsToDraw_()
 {
@@ -41,7 +33,7 @@ void MiniMapDisplay::finalize()
 {
 }
 
-void MiniMapDisplay::onUserInput( const sf::Event& e )
+void MiniMapDisplay::onUserInput( const sf::Event& )
 {
 }
 

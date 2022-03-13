@@ -89,7 +89,6 @@ void GraphicsCache::loadSprite( std::size_t id )
         unsigned int averagePixelColor_Red {};
         unsigned int averagePixelColor_Green {};
         unsigned int averagePixelColor_Blue {};
-        unsigned int averagePixelColor_Alpha {};
 
         int newImageSize = 0;
         for ( unsigned int i = 0; i < newImage.getSize().x; ++i )

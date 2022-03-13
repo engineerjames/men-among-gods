@@ -18,8 +18,7 @@ class Map;
 class MiniMapDisplay : public MenAmongGods::Component
 {
 public:
-  MiniMapDisplay( MenAmongGods::Map& map, PlayerData& playerData, GraphicsCache& cache, const GraphicsIndex& index,
-                  const sf::RenderWindow& window );
+  MiniMapDisplay( MenAmongGods::Map& map, GraphicsCache& cache );
   virtual ~MiniMapDisplay() = default;
 
   // Component interface
@@ -32,10 +31,7 @@ public:
 
 private:
   MenAmongGods::Map&                            map_;
-  PlayerData&                                   playerData_;
   GraphicsCache&                                cache_;
-  const GraphicsIndex&                          index_;
-  const sf::RenderWindow&                       window_;
   std::array< sf::RectangleShape, 1024 * 1024 > miniMap_;
   std::array< sf::RectangleShape, 128 * 128 >   miniMapPixelsToDraw_;
 };

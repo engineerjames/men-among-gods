@@ -34,7 +34,7 @@ MainUi::MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, Gra
     , playerInventory_( window, pdata, gfxCache )
     , userOptionPanel_( window, pdata )
     , mapDisplay_( font_, map, pdata, gfxCache, gfxIndex, window )
-    , miniMapDisplay_( map, pdata, gfxCache, gfxIndex, window )
+    , miniMapDisplay_( map, gfxCache )
     , rankDisplay_( font_, pdata, gfxCache )
     , playerShopDisplay_( window, fontCache.getFont(), pdata, gfxCache, gfxIndex )
     , background_()

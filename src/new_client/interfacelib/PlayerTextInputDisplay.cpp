@@ -89,7 +89,7 @@ void PlayerTextInputDisplay::onUserInput( const sf::Event& e )
   {
     std::stringstream displayStream {};
 
-    for ( int i = startingIndex; i < text_.length(); ++i )
+    for ( int i = startingIndex; i < static_cast< int >( text_.length() ); ++i )
     {
       displayStream << text_[ i ];
     }
