@@ -12,7 +12,8 @@ namespace MenAmongGods
 PlayerTextInputDisplay::PlayerTextInputDisplay( const sf::Font& font )
     : MenAmongGods::Component()
     , drawableText_()
-    , maxCharacters_( 45 )
+    , maxCharactersToInput_( 105 )
+    , maxCharactersToDisplay_( 45 )
     , font_( font )
     , text_()
     , history_()
@@ -63,7 +64,7 @@ void PlayerTextInputDisplay::onUserInput( const sf::Event& e )
   {
     text_ = text_.substr( 0, text_.size() - 1 );
   } // Don't add control characters
-  else if ( text_.size() < maxCharacters_ && e.text.unicode != 8 && e.text.unicode != 13 && e.text.unicode != 27 )
+  else if ( text_.size() < maxCharactersToInput_ && e.text.unicode != 8 && e.text.unicode != 13 && e.text.unicode != 27 )
   {
     text_ += e.text.unicode;
   }
@@ -77,7 +78,24 @@ void PlayerTextInputDisplay::onUserInput( const sf::Event& e )
     text_.clear();
   }
 
-  drawableText_.setString( text_ + "_" );
+  // Only want to display the 'tail' of 45 characters
+  const int startingIndex = static_cast< int >( text_.length() - maxCharactersToDisplay_ );
+
+  if ( startingIndex <= 0 )
+  {
+    drawableText_.setString( text_ + "_" );
+  }
+  else
+  {
+    std::stringstream displayStream {};
+
+    for ( int i = startingIndex; i < text_.length(); ++i )
+    {
+      displayStream << text_[ i ];
+    }
+
+    drawableText_.setString( displayStream.str() + "_" );
+  }
 }
 
 void PlayerTextInputDisplay::setPosition( const sf::Vector2f& newPosition )

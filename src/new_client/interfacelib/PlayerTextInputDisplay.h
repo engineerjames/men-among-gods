@@ -24,11 +24,12 @@ public:
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
 
 private:
-  sf::Text        drawableText_;
-  unsigned int    maxCharacters_;
-  const sf::Font& font_;
-  std::string     text_;
-  CommandHistory  history_;
+  sf::Text           drawableText_;
+  const unsigned int maxCharactersToInput_;
+  const unsigned int maxCharactersToDisplay_;
+  const sf::Font&    font_;
+  std::string        text_;
+  CommandHistory     history_;
 };
 } // namespace MenAmongGods
 #endif
