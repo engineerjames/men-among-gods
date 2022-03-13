@@ -52,7 +52,7 @@ private:
   int                                           mapX_;
   int                                           mapY_;
   std::array< sf::RectangleShape, 1024 * 1024 > miniMap_;
-  std::vector< sf::RectangleShape >             miniMapPixelsToDraw_;
+  std::array< sf::RectangleShape, 128 * 128 >   miniMapPixelsToDraw_;
 };
 } // namespace MenAmongGods
 

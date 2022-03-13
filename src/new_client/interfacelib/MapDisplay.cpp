@@ -102,8 +102,6 @@ void MapDisplay::draw( sf::RenderTarget& target, sf::RenderStates states ) const
     target.draw( text, states );
   }
 
-  std::cerr << "Drawing " << miniMapPixelsToDraw_.size() << std::endl;
-
   for ( const auto& pixel : miniMapPixelsToDraw_ )
   {
     target.draw( pixel, states );
@@ -412,7 +410,7 @@ void MapDisplay::update()
              miniMap_[ map_.getY( m ) + map_.getX( m ) * 1024 ].getFillColor().g != 255u &&
              miniMap_[ map_.getY( m ) + map_.getX( m ) * 1024 ].getFillColor().b != 255u )
 
-          if ( cache_.getAvgColor( map_.getBackgroundSprite( m ) ) != sf::Color::Black )
+          if ( cache_.getAvgColor( map_.getBackgroundSprite( m ) ) != MenAmongGods::AverageBlack )
           {
             miniMap_[ map_.getY( m ) + map_.getX( m ) * 1024 ].setFillColor( cache_.getAvgColor( map_.getBackgroundSprite( m ) ) );
           }
@@ -535,7 +533,7 @@ void MapDisplay::update()
 
       if ( map_.getObject1( m ) && map_.getX( m ) < 1024 && map_.getY( m ) < 1024 )
       {
-        if ( cache_.getAvgColor( map_.getObject1( m ) ) != sf::Color::Black )
+        if ( cache_.getAvgColor( map_.getObject1( m ) ) != MenAmongGods::AverageBlack )
         {
           miniMap_[ map_.getY( m ) + map_.getX( m ) * 1024 ].setFillColor( cache_.getAvgColor( map_.getObject1( m ) ) );
         }
@@ -728,8 +726,6 @@ void MapDisplay::update()
     }
   }
 
-  miniMapPixelsToDraw_.clear();
-
   mapX_ -= 64;
   if ( mapX_ < 0 )
     mapX_ = 0;
@@ -753,8 +749,8 @@ void MapDisplay::update()
       float              yPos    = static_cast< float >( 471 + y );
       newRect.setSize( sf::Vector2f { 1.0f, 1.0f } );
       newRect.setPosition( sf::Vector2f { xPos, yPos } );
-      
-      miniMapPixelsToDraw_.push_back( newRect );
+
+      miniMapPixelsToDraw_[ y * 128 + x ] = newRect;
     }
   }
 

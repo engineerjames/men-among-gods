@@ -12,6 +12,7 @@ static const sf::Color MsgRed { 218, 150, 149 };
 static const sf::Color HighlightRed { 251, 2, 0 };
 static const sf::Color ScrollBarGreen { 17, 87, 1, 128 };
 static const sf::Color SelectionOrange { 246, 4, 16 };
+static const sf::Color AverageBlack { 0, 1, 2 };
 } // namespace MenAmongGods
 
 #endif
