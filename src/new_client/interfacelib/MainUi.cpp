@@ -205,10 +205,12 @@ void MainUi::addMessage( LogType type, std::string text )
 
 void MainUi::draw( sf::RenderTarget& target, sf::RenderStates states ) const
 {
-  target.draw( mapDisplay_, states );
-
   // Draw the background first
   target.draw( background_, states );
+
+  target.draw( mapDisplay_, states );
+
+
 
   target.draw( playerSprite_, states );
 

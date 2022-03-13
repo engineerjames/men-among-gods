@@ -34,7 +34,7 @@ public:
   void saveToFile() const;
 
 private:
-  void         copysprite( int nr, int effect, int xpos, int ypos, int xoff, int yoff, unsigned char light, bool isCharacterSelected = false );
+  void copysprite( int nr, int effect, int xpos, int ypos, int xoff, int yoff, unsigned char light, bool isCharacterSelected = false );
   sf::Vector2i dd_gputtext( int xpos, int ypos, std::string text, int xoff, int yoff );
 
   const sf::Font&           font_;
@@ -48,6 +48,11 @@ private:
   int                       tileType_;
   int                       tileX_;
   int                       tileY_;
+
+  int                                           mapX_;
+  int                                           mapY_;
+  std::array< sf::RectangleShape, 1024 * 1024 > miniMap_;
+  std::vector< sf::RectangleShape >             miniMapPixelsToDraw_;
 };
 } // namespace MenAmongGods
 

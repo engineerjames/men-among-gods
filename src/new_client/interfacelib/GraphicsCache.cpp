@@ -22,7 +22,18 @@ GraphicsCache::GraphicsCache()
 {
 }
 
-sf::Sprite GraphicsCache::loadSprite( std::size_t id )
+sf::Color GraphicsCache::getAvgColor( std::size_t id )
+{
+  // Load the sprite if not already in the cache
+  if ( spriteCache_.count( id ) == 0 )
+  {
+    loadSprite( id );
+  }
+
+  return spriteCache_[ id ].avgColor;
+}
+
+void GraphicsCache::loadSprite( std::size_t id )
 {
   static std::vector< sf::Image > images { MAX_ID + 1 };
 
@@ -65,7 +76,7 @@ sf::Sprite GraphicsCache::loadSprite( std::size_t id )
                                                     sf::Color { 0xFC00FCFF }, sf::Color { 0xFB00FBFF }, sf::Color { 0xFA00FAFF },
                                                     sf::Color { 0xF900F9FF }, sf::Color { 0xF800F8FF }, sf::Color { 0xF700F7FF } };
 
-        for (auto&& mask : masks)
+        for ( auto&& mask : masks )
         {
           newImage.createMaskFromColor( mask );
         }
@@ -75,7 +86,41 @@ sf::Sprite GraphicsCache::loadSprite( std::size_t id )
 
         newSprite.setTexture( newTexture );
 
-        return newSprite;
+        unsigned int averagePixelColor_Red {};
+        unsigned int averagePixelColor_Green {};
+        unsigned int averagePixelColor_Blue {};
+        unsigned int averagePixelColor_Alpha {};
+
+        int newImageSize = 0;
+        for ( unsigned int i = 0; i < newImage.getSize().x; ++i )
+        {
+          for ( unsigned int j = 0; j < newImage.getSize().y; ++j )
+          {
+            if ( newImage.getPixel( i, j ).a == 0 )
+            {
+              continue;
+            }
+
+            newImageSize++;
+
+            averagePixelColor_Red += newImage.getPixel( i, j ).r;
+            averagePixelColor_Green += newImage.getPixel( i, j ).g;
+            averagePixelColor_Blue += newImage.getPixel( i, j ).b;
+          }
+        }
+
+        if ( newImageSize != 0 )
+        {
+          averagePixelColor_Red /= newImageSize;
+          averagePixelColor_Green /= newImageSize;
+          averagePixelColor_Blue /= newImageSize;
+        }
+
+        spriteCache_[ id ].sprite = newSprite;
+        spriteCache_[ id ].avgColor =
+            sf::Color { static_cast< std::uint8_t >( averagePixelColor_Red ), static_cast< std::uint8_t >( averagePixelColor_Green ),
+                        static_cast< std::uint8_t >( averagePixelColor_Blue ), static_cast< std::uint8_t >( 255u ) };
+        return;
       }
     }
   }
@@ -83,15 +128,14 @@ sf::Sprite GraphicsCache::loadSprite( std::size_t id )
   // Worst-case just return a default-constructed sprite which will render white on the screen
   // which will look obviously wrong...
   std::cerr << "ERROR loading sprite: " << id << std::endl;
-  return sf::Sprite {};
 }
 
 sf::Sprite GraphicsCache::getSprite( std::size_t id )
 {
   if ( spriteCache_.count( id ) == 0 )
   {
-    spriteCache_[ id ] = loadSprite( id );
+    loadSprite( id );
   }
 
-  return spriteCache_[ id ];
+  return spriteCache_[ id ].sprite;
 }
