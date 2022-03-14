@@ -219,7 +219,17 @@ SkillsAndAttributesDisplay::SkillsAndAttributesDisplay( const sf::RenderWindow& 
     , expToSpendValue_()
     , raiseMap_()
     , totalPointsToSpend_()
+    , lockdInXButton_()
+    , xButtonText_()
 {
+
+  for ( int i = 0; i < xButtonText_.size(); ++i )
+  {
+    xButtonText_[ i ].setFont( font_ );
+    xButtonText_[ i ].setCharacterSize( FONT_SIZE );
+    xButtonText_[ i ].setFillColor( MenAmongGods::MsgYellow );
+    xButtonText_[ i ].setOutlineColor( sf::Color::Black );
+  }
 
   expToSpendLabel_.setPosition( MenAmongGods::expToSpendLabelPosition );
   expToSpendValue_.setPosition( MenAmongGods::expToSpendValuePosition );
@@ -376,6 +386,12 @@ void SkillsAndAttributesDisplay::draw( sf::RenderTarget& target, sf::RenderState
   for ( const auto& s : spellsToDraw )
   {
     target.draw( s, states );
+  }
+
+  // Draw xbutton area
+  for ( const auto& x : xButtonText_ )
+  {
+    target.draw( x, states );
   }
 }
 
@@ -637,6 +653,24 @@ void SkillsAndAttributesDisplay::update()
   {
     lifeDisplay_[ 2 ].minus_.setString( "" );
   }
+
+  // Update xButton positions and text
+  for ( int i = 0; i < 4; ++i )
+  {
+    for ( int j = 0; j < 3; ++j )
+    {
+      sf::Vector2f xButtonPosition =
+          MenAmongGods::xButtonOrigin + sf::Vector2f { MenAmongGods::CLIENT_SELECTION_SPACING_X * static_cast< float >( i ),
+                                                       MenAmongGods::CLIENT_SELECTION_SPACING_Y * static_cast< float >( j ) };
+
+      const int index = i + j * 4;
+      if ( playerData_.getXButton( index ).name[ 0 ] != 0 )
+      {
+        xButtonText_[ index ].setString( std::string( playerData_.getXButton( index ).name ) );
+        xButtonText_[ index ].setPosition( xButtonPosition );
+      }
+    }
+  }
 }
 
 void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
@@ -645,9 +679,9 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
   {
     sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
 
-    if ( scrollUpBox_.contains( mousePosition ) && scrollPosition_ > 0)
+    if ( scrollUpBox_.contains( mousePosition ) && scrollPosition_ > 0 )
     {
-        scrollPosition_ -= 5;
+      scrollPosition_ -= 5;
     }
 
     if ( scrollDownBox_.contains( mousePosition ) && scrollPosition_ < 20 )
@@ -890,6 +924,31 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
       }
     }
 
+     for ( int i = 0; i < 4; ++i )
+    {
+      for ( int j = 0; j < 3; ++j )
+      {
+        sf::Vector2f xButtonPosition =
+            MenAmongGods::xButtonOrigin + sf::Vector2f { MenAmongGods::CLIENT_SELECTION_SPACING_X * static_cast< float >( i ),
+                                                         MenAmongGods::CLIENT_SELECTION_SPACING_Y * static_cast< float >( j ) };
+
+        sf::FloatRect boxPosition { xButtonPosition,
+                                    sf::Vector2f { MenAmongGods::CLIENT_SELECTION_SPACING_X, MenAmongGods::CLIENT_SELECTION_SPACING_Y } };
+
+        if ( boxPosition.contains( mousePosition ) )
+        {
+          const int index = i + j * 4;
+          std::cerr << "Using ability from xbutton index: " << index << std::endl;
+          const int skillNr = playerData_.getXButton( index ).skill_nr;
+          int       baseAttributeModifier = getBaseAttributeModifier( std::string( playerData_.getXButton( index ).name ) );
+          auto skillCommand = std::make_shared< SkillCommand >( static_cast< unsigned int >( skillNr ), playerData_.getSelectedCharacter(),
+                                                                static_cast< unsigned int >( baseAttributeModifier ) );
+
+          commands_.push_back( skillCommand );
+        }
+      }
+    }
+
     return;
   }
 
@@ -921,6 +980,33 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
 
           std::string infoMessage = std::string( static_skilltab[ skillNr ].name ) + ": " + std::string( static_skilltab[ skillNr ].desc );
           mainUI_.addMessage( LogType::INFO, infoMessage );
+
+          // User may be wanting to map to an xbutton--lock in the details here
+          std::strncpy( lockdInXButton_.name, static_skilltab[ skillNr ].name, 8 - 1 );
+          lockdInXButton_.skill_nr = skillNr;
+
+          std::cerr << "Locked in skill: " << skillNr << " - " << lockdInXButton_.name << std::endl;
+        }
+      }
+    }
+
+    // TODO: Reduce code duplication here and the left-click handler
+    for ( int i = 0; i < 4; ++i )
+    {
+      for ( int j = 0; j < 3; ++j )
+      {
+        sf::Vector2f xButtonPosition =
+            MenAmongGods::xButtonOrigin + sf::Vector2f { MenAmongGods::CLIENT_SELECTION_SPACING_X * static_cast< float >( i ),
+                                                         MenAmongGods::CLIENT_SELECTION_SPACING_Y * static_cast< float >( j ) };
+
+        sf::FloatRect boxPosition { xButtonPosition,
+                                    sf::Vector2f { MenAmongGods::CLIENT_SELECTION_SPACING_X, MenAmongGods::CLIENT_SELECTION_SPACING_Y } };
+
+        if ( boxPosition.contains( mousePosition ) )
+        {
+          const int index = i + j * 4;
+          std::cerr << "Setting index: " << index << std::endl;
+          playerData_.setXButton( lockdInXButton_, i + j * 4 );
         }
       }
     }

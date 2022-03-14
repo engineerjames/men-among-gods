@@ -61,6 +61,9 @@ public:
   void resetLookTimer();
   void incrementLookTimer();
 
+  void           setXButton( xbutton button, int index );
+  const xbutton& getXButton( int index );
+
   bool               getShouldShowShop() const;
   void               setShouldShowShop( bool shouldShowShop );
   void               setShopOnCurrentLook();

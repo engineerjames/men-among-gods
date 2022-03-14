@@ -555,8 +555,8 @@ void PlayerData::resetLookTimer()
 void PlayerData::incrementLookTimer()
 {
   lookTimer_ += ( 1.0f / static_cast< float >( MenAmongGods::ClientConfiguration::instance().frameLimit() ) );
-  
-  if (lookTimer_ >= LOOK_TIME_IN_SECONDS)
+
+  if ( lookTimer_ >= LOOK_TIME_IN_SECONDS )
   {
     lookTimer_ = 0.0f;
     setShowLook( false );
@@ -667,6 +667,16 @@ unsigned int PlayerData::getOkeyUserNumber() const
   return okey_.usnr;
 }
 
+void PlayerData::setXButton( xbutton button, int index )
+{
+  playerInfo_.xbutton[ index ] = button;
+}
+
+const xbutton& PlayerData::getXButton( int index )
+{
+  return playerInfo_.xbutton[ index ];
+}
+
 void PlayerData::clear()
 {
   playerInfo_           = pdata();
@@ -731,7 +741,12 @@ void PlayerData::loadFromJsonFile( const std::string& fileName )
   playerInfo_.show_names = root[ "pdata" ][ "show_names" ].asInt();
   playerInfo_.show_proz  = root[ "pdata" ][ "show_percent_health" ].asInt();
 
-  // TODO: Load XButtons
+  // X-buttons
+  for ( int i = 0; i < 12; ++i )
+  {
+    std::strncpy( playerInfo_.xbutton[ i ].name, root[ "pdata" ][ "xbutton" ][ i ][ "name" ].asCString(), 8 - 1 );
+    playerInfo_.xbutton[ i ].skill_nr = root[ "pdata" ][ "xbutton" ][ i ][ "skill_id" ].asInt();
+  }
 
   //
   // key data

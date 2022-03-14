@@ -88,6 +88,8 @@ static const constexpr int CLIENT_SELECTION_SPACING_X = 48;
 static const constexpr int CLIENT_SELECTION_SPACING_Y = 15;
 static const sf::Vector2f  CLIENT_SELECTION_BOX_SIZE { 45, 12 };
 
+static const sf::Vector2f xButtonOrigin { 608.0f, 505.0f };
+
 } // namespace MenAmongGods
 
 #endif
