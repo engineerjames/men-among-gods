@@ -436,6 +436,11 @@ cmap Map::getMap( int index ) const
 {
   std::lock_guard< std::recursive_mutex > lock( mapMutex_ );
 
+  if (index < 0 || index >= map_.size() )
+  {
+    return cmap{};
+  }
+
   return map_[ index ];
 }
 

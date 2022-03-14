@@ -138,6 +138,8 @@ void PlayerEquipmentDisplay::onUserInput( const sf::Event& e )
         commands_.push_back( std::make_shared< MenAmongGods::InventoryCommand >( 1u, 6u, 0u ) );
       }
     }
+
+    return;
   }
 
   if ( e.type == sf::Event::MouseButtonReleased && e.mouseButton.button == sf::Mouse::Button::Right )
