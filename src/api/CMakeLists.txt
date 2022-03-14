@@ -1,6 +1,8 @@
 find_package(Drogon REQUIRED)
 find_package(jsoncpp CONFIG REQUIRED)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/server)
+
 set(target model)
 set(sources 
   models/character.cpp

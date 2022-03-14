@@ -85,29 +85,29 @@ function CharacterSkillsOrAttributes(props: CharacterAttributesProps) {
     const [updatedProps, setUpdatedProps] = useState(props);
 
     const handleOnCellChange = (event: any, params: any) => {
-        console.log(event);
-        console.log(params);
-        // event.id // skill name
-        // event.field // baseValue (data[0])
-
-        if (!props?.attributes?.length) {
+        if (!updatedProps?.attributes?.length) {
             return;
         }
 
-        if (!props.attributes) { return; }
+        if (!updatedProps.attributes) { return; }
 
-        for (let i = 0; i < props.attributes.length; ++i) {
-            if (props.attributes[i].name == event.id) {
-                if (event.id == "baseValue") {
-                    props.attributes[i].data[0] = parseInt(params.target.value);
-                    setUpdatedProps({ ...props })
+        console.log(event);
+        console.log(params);
+
+        for (let i = 0; i < updatedProps.attributes.length; ++i) {
+            if (updatedProps.attributes[i].name == event.id) {
+                if (event.field == "baseValue") {
+                    updatedProps.attributes[i].data[0] = parseInt(params.target.value);
+                    console.log('Updated: ');
+                    console.log(updatedProps);
+                    setUpdatedProps({ ...updatedProps })
                 }
             }
         }
     }
 
     const rows: any = [];
-    props?.attributes?.map((attr) => {
+    updatedProps?.attributes?.map((attr) => {
         rows.push({
             id: attr.name,
             baseValue: attr.data[0],

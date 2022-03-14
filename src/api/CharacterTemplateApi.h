@@ -33,8 +33,11 @@ public:
   characters();
 
 private:
-  std::vector< std::unique_ptr< character > >                                     characterTemplates_;
-  std::unordered_map< std::string, std::vector< std::tuple< int, character* > > > characterMap_;
+  typedef std::vector< std::unique_ptr< character > >                                     CharacterTemplates;
+  typedef std::unordered_map< std::string, std::vector< std::tuple< int, character* > > > CharacterMap;
+
+  void loadTemplateFile( CharacterTemplates& templates, CharacterMap& map ) const;
+  void saveTemplateFile( const CharacterTemplates& templates ) const;
 };
 } // namespace v1
 } // namespace api

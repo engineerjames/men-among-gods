@@ -1,5 +1,6 @@
 #include "CharacterTemplateApi.h"
 
+#include <chrono>
 #include <fstream>
 #include <iostream>
 #include <ostream>
@@ -12,11 +13,11 @@ namespace v1
 const constexpr int MAX_TCHARS = 4548;
 
 characters::characters()
-    : characterTemplates_()
-    , characterMap_()
 {
-  std::cerr << "Attempting to load character templates..." << std::endl;
+}
 
+void characters::loadTemplateFile( CharacterTemplates& templates, CharacterMap& map ) const
+{
   std::ifstream datFile { "./tchar.dat", std::ios::binary | std::ios::in };
 
   for ( int i = 0; i < MAX_TCHARS; ++i )
@@ -25,12 +26,24 @@ characters::characters()
 
     datFile.read( reinterpret_cast< char* >( newCharacter.get() ), sizeof( character ) );
 
-    characterMap_[ newCharacter->name ].emplace_back( i, newCharacter.get() );
+    map[ newCharacter->name ].emplace_back( i, newCharacter.get() );
 
-    characterTemplates_.push_back( std::move( newCharacter ) );
+    templates.push_back( std::move( newCharacter ) );
   }
 
-  std::cerr << "Done." << std::endl;
+  datFile.close();
+}
+
+void characters::saveTemplateFile( const CharacterTemplates& templates ) const
+{
+  std::ofstream datFile { "./tchar.dat", std::ios::binary | std::ios::out };
+
+  for ( int i = 0; i < MAX_TCHARS; ++i )
+  {
+    datFile.write( reinterpret_cast< const char* >( templates[ i ].get() ), sizeof( character ) );
+  }
+
+  datFile.close();
 }
 
 void characters::getCharacterTemplates( const drogon::HttpRequestPtr&                             req,
@@ -38,9 +51,14 @@ void characters::getCharacterTemplates( const drogon::HttpRequestPtr&           
 {
   ( void ) req;
 
-  if ( id >= 0 && id < MAX_TCHARS && characterTemplates_[ id ] != nullptr )
+  CharacterTemplates templates {};
+  CharacterMap       map {};
+
+  loadTemplateFile( templates, map );
+
+  if ( id >= 0 && id < MAX_TCHARS && templates[ id ] != nullptr )
   {
-    Json::Value jsonResponse = characterTemplates_[ id ]->toJson();
+    Json::Value jsonResponse = templates[ id ]->toJson();
     jsonResponse[ "id" ]     = id;
 
     auto response = drogon::HttpResponse::newHttpJsonResponse( jsonResponse );
@@ -53,6 +71,8 @@ void characters::getCharacterTemplates( const drogon::HttpRequestPtr&           
     response->setStatusCode( drogon::HttpStatusCode::k404NotFound );
     callback( response );
   }
+
+  // No modification so therefore, no need to save!
 }
 
 void characters::getCharacterTemplatesByName( const drogon::HttpRequestPtr&                             req,
@@ -60,11 +80,16 @@ void characters::getCharacterTemplatesByName( const drogon::HttpRequestPtr&     
 {
   ( void ) req;
 
-  if ( ! name.empty() && characterMap_.count( name ) != 0 )
+  CharacterTemplates templates {};
+  CharacterMap       map {};
+
+  loadTemplateFile( templates, map );
+
+  if ( ! name.empty() && map.count( name ) != 0 )
   {
     Json::Value jsonResponse = Json::arrayValue;
 
-    for ( auto&& [ n, characterlist ] : characterMap_ )
+    for ( auto&& [ n, characterlist ] : map )
     {
       if ( n.find( name ) != std::string::npos )
       {
@@ -88,6 +113,8 @@ void characters::getCharacterTemplatesByName( const drogon::HttpRequestPtr&     
     response->setStatusCode( drogon::HttpStatusCode::k404NotFound );
     callback( response );
   }
+
+  // No modification so therefore, no need to save!
 }
 
 void characters::copyExistingTemplateById( const drogon::HttpRequestPtr&                             req,
@@ -95,14 +122,19 @@ void characters::copyExistingTemplateById( const drogon::HttpRequestPtr&        
 {
   ( void ) req;
 
+  CharacterTemplates templates {};
+  CharacterMap       map {};
+
+  loadTemplateFile( templates, map );
+
   std::cerr << "Looking for space to copy id: " << id << " into." << std::endl;
 
   int newId = 0;
   for ( int i = 0; i < MAX_TCHARS; ++i )
   {
-    if ( characterTemplates_[ id ] && characterTemplates_[ i ] && ! characterTemplates_[ i ]->used && i > id )
+    if ( templates[ id ] && templates[ i ] && ! templates[ i ]->used && i > id )
     {
-      *characterTemplates_[ i ] = *characterTemplates_[ id ];
+      *templates[ i ] = *templates[ id ];
       std::cerr << "Copied into id: " << i << std::endl;
       newId = i;
       break;
@@ -122,12 +154,20 @@ void characters::copyExistingTemplateById( const drogon::HttpRequestPtr&        
   auto resp    = drogon::HttpResponse::newHttpJsonResponse( root );
   resp->setStatusCode( drogon::HttpStatusCode::k200OK );
   callback( resp );
+
+  saveTemplateFile( templates );
 }
 
 void characters::updateExistingTemplateById( const drogon::HttpRequestPtr&                             req,
                                              std::function< void( const drogon::HttpResponsePtr& ) >&& callback, int id )
 {
-  if ( id < 0 || id >= MAX_TCHARS || characterTemplates_[ id ] == nullptr )
+
+  CharacterTemplates templates {};
+  CharacterMap       map {};
+
+  loadTemplateFile( templates, map );
+
+  if ( id < 0 || id >= MAX_TCHARS || templates[ id ] == nullptr )
   {
     auto resp = drogon::HttpResponse::newHttpJsonResponse( {} );
     resp->setStatusCode( drogon::HttpStatusCode::k400BadRequest );
@@ -140,14 +180,18 @@ void characters::updateExistingTemplateById( const drogon::HttpRequestPtr&      
     return;
   }
 
+  std::cerr << "Received: " << ( req->getJsonObject() )->toStyledString();
+
   auto      jsonBody                 = req->getJsonObject();
   character receivedCharacterDetails = character::fromJson( *jsonBody );
 
-  *characterTemplates_[ id ] = receivedCharacterDetails;
+  *templates[ id ] = receivedCharacterDetails;
 
   auto resp = drogon::HttpResponse::newHttpJsonResponse( *jsonBody );
   resp->setStatusCode( drogon::HttpStatusCode::k200OK );
   callback( resp );
+
+  saveTemplateFile( templates );
 }
 
 } // namespace v1
