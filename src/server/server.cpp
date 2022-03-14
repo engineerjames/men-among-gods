@@ -451,7 +451,7 @@ void game_loop( int sock )
   struct timeval     tv;
   long long          ttime;
   static long long   ltime = 0;
-  int                tdiff, panic = 0;
+  int                tdiff;
   unsigned long long prof;
 
   if ( ltime == 0 )
@@ -482,71 +482,62 @@ void game_loop( int sock )
 
   if ( globs->ticker % 8 == 0 )
   {
-    while ( panic < 500 )
+    prof = prof_start();
+
+    FD_ZERO( &in_fd );
+    FD_ZERO( &out_fd );
+
+    FD_SET( sock, &in_fd );
+    if ( sock > fmax )
+      fmax = sock;
+
+    for ( n = 1; n < MAXPLAYER; n++ )
     {
-
-      prof = prof_start();
-
-      panic++;
-
-      FD_ZERO( &in_fd );
-      FD_ZERO( &out_fd );
-
-      FD_SET( sock, &in_fd );
-      if ( sock > fmax )
-        fmax = sock;
-
-      for ( n = 1; n < MAXPLAYER; n++ )
+      if ( player[ n ].sock )
       {
-        if ( player[ n ].sock )
+        if ( player[ n ].in_len < 256 )
         {
-          if ( player[ n ].in_len < 256 )
-          {
-            FD_SET( player[ n ].sock, &in_fd );
-            if ( player[ n ].sock > fmax )
-              fmax = player[ n ].sock;
-          }
-          if ( player[ n ].iptr != player[ n ].optr )
-          {
-            FD_SET( player[ n ].sock, &out_fd );
-            if ( player[ n ].sock > fmax )
-              fmax = player[ n ].sock;
-          }
+          FD_SET( player[ n ].sock, &in_fd );
+          if ( player[ n ].sock > fmax )
+            fmax = player[ n ].sock;
+        }
+        if ( player[ n ].iptr != player[ n ].optr )
+        {
+          FD_SET( player[ n ].sock, &out_fd );
+          if ( player[ n ].sock > fmax )
+            fmax = player[ n ].sock;
         }
       }
-
-      tv.tv_sec  = 0;
-      tv.tv_usec = 0;
-
-      prof_stop( 42, prof );
-
-      prof = prof_start();
-      tmp  = select( fmax + 1, &in_fd, &out_fd, NULL, &tv );
-      prof_stop( 43, prof );
-
-      if ( tmp < 1 )
-        break;
-
-      prof = prof_start();
-
-      if ( FD_ISSET( sock, &in_fd ) )
-        new_player( sock );
-
-      for ( n = 1; n < MAXPLAYER; n++ )
-      {
-        if ( ! player[ n ].sock )
-          continue;
-
-        // After the 'select' statement above, we check the players socket to see if it is
-        // a part of the file descriptors ready for output, or ready for input -- then execute
-        // the corresponding action.
-        if ( FD_ISSET( player[ n ].sock, &in_fd ) )
-          rec_player( n );
-        if ( FD_ISSET( player[ n ].sock, &out_fd ) )
-          send_player( n );
-      }
-      prof_stop( 42, prof );
     }
+
+    tv.tv_sec  = 0;
+    tv.tv_usec = 0;
+
+    prof_stop( 42, prof );
+
+    prof = prof_start();
+    tmp  = select( fmax + 1, &in_fd, &out_fd, NULL, &tv );
+    prof_stop( 43, prof );
+
+    prof = prof_start();
+
+    if ( FD_ISSET( sock, &in_fd ) )
+      new_player( sock );
+
+    for ( n = 1; n < MAXPLAYER; n++ )
+    {
+      if ( ! player[ n ].sock )
+        continue;
+
+      // After the 'select' statement above, we check the players socket to see if it is
+      // a part of the file descriptors ready for output, or ready for input -- then execute
+      // the corresponding action.
+      if ( FD_ISSET( player[ n ].sock, &in_fd ) )
+        rec_player( n );
+      if ( FD_ISSET( player[ n ].sock, &out_fd ) )
+        send_player( n );
+    }
+    prof_stop( 42, prof );
   }
 
   ttime = timel();

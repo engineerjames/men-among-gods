@@ -21,6 +21,7 @@ Json::Value ClientConfiguration::toJson() const
   root[ "networkThreadDelay" ] = networkThreadDelay_;
   root[ "frameLimit" ]         = frameLimit_;
   root[ "loggingEnabled" ]     = loggingEnabled_;
+  root[ "enableHpBars" ]       = enableHpBars_;
 
   return root;
 }
@@ -28,6 +29,11 @@ Json::Value ClientConfiguration::toJson() const
 int ClientConfiguration::frameLimit() const
 {
   return frameLimit_;
+}
+
+bool ClientConfiguration::enableHpBars() const
+{
+  return enableHpBars_;
 }
 
 std::string ClientConfiguration::hostIpAddress() const
@@ -69,6 +75,7 @@ ClientConfiguration::ClientConfiguration()
   loggingEnabled_     = root.get( "loggingEnabled", loggingEnabled_ ).asBool();
   hostIpAddress_      = root.get( "hostIpAddress", hostIpAddress_ ).asString();
   hostPort_           = root.get( "hostPort", hostPort_ ).asInt();
+  enableHpBars_       = root.get( "enableHpBars", false ).asBool();
 
   LOG_DEBUG_OBJ( *this, "Client configuration parameters" );
 }

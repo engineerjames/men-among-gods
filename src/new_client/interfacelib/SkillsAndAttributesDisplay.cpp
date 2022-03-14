@@ -219,7 +219,17 @@ SkillsAndAttributesDisplay::SkillsAndAttributesDisplay( const sf::RenderWindow& 
     , expToSpendValue_()
     , raiseMap_()
     , totalPointsToSpend_()
+    , lockdInXButton_()
+    , xButtonText_()
 {
+
+  for ( int i = 0; i < static_cast< int >( xButtonText_.size() ); ++i )
+  {
+    xButtonText_[ i ].setFont( font_ );
+    xButtonText_[ i ].setCharacterSize( FONT_SIZE );
+    xButtonText_[ i ].setFillColor( MenAmongGods::MsgYellow );
+    xButtonText_[ i ].setOutlineColor( sf::Color::Black );
+  }
 
   expToSpendLabel_.setPosition( MenAmongGods::expToSpendLabelPosition );
   expToSpendValue_.setPosition( MenAmongGods::expToSpendValuePosition );
@@ -377,6 +387,12 @@ void SkillsAndAttributesDisplay::draw( sf::RenderTarget& target, sf::RenderState
   {
     target.draw( s, states );
   }
+
+  // Draw xbutton area
+  for ( const auto& x : xButtonText_ )
+  {
+    target.draw( x, states );
+  }
 }
 
 void SkillsAndAttributesDisplay::update()
@@ -449,6 +465,7 @@ void SkillsAndAttributesDisplay::update()
   unsigned int j = 0;
   for ( unsigned int i = scrollPosition_; i < MAX_SKILLS; ++i )
   {
+
     // Player does not have the inspected skill
     if ( player.skill[ i ][ 0 ] == 0 )
     {
@@ -636,6 +653,24 @@ void SkillsAndAttributesDisplay::update()
   {
     lifeDisplay_[ 2 ].minus_.setString( "" );
   }
+
+  // Update xButton positions and text
+  for ( int i = 0; i < 4; ++i )
+  {
+    for ( int k = 0; k < 3; ++k )
+    {
+      sf::Vector2f xButtonPosition =
+          MenAmongGods::xButtonOrigin + sf::Vector2f { MenAmongGods::CLIENT_SELECTION_SPACING_X * static_cast< float >( i ),
+                                                       MenAmongGods::CLIENT_SELECTION_SPACING_Y * static_cast< float >( k ) };
+
+      const int index = i + k * 4;
+      if ( playerData_.getXButton( index ).name[ 0 ] != 0 )
+      {
+        xButtonText_[ index ].setString( std::string( playerData_.getXButton( index ).name ) );
+        xButtonText_[ index ].setPosition( xButtonPosition );
+      }
+    }
+  }
 }
 
 void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
@@ -644,17 +679,14 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
   {
     sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
 
-    if ( scrollUpBox_.contains( mousePosition ) )
+    if ( scrollUpBox_.contains( mousePosition ) && scrollPosition_ > 0 )
     {
-      if ( scrollPosition_ > 0 )
-      {
-        scrollPosition_--;
-      }
+      scrollPosition_ -= 5;
     }
 
-    if ( scrollDownBox_.contains( mousePosition ) )
+    if ( scrollDownBox_.contains( mousePosition ) && scrollPosition_ < 20 )
     {
-      scrollPosition_++;
+      scrollPosition_ += 5;
     }
 
     // 10 skills displayable at most
@@ -689,124 +721,148 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
       row             = std::max( 0, row ); // 0 - 4 attributes, 5-7 hp/end/mana, the rest are skills
       cplayer& player = playerData_.getClientSidePlayerInfo();
 
-      if ( row >= 0 && row <= 4 ) // Attributes
+      bool attemptToRaiseByFive = false;
+      if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Key::LShift ) )
       {
-        int nTimesRaised   = static_cast< int >( raiseMap_[ attributes_[ row ].name_.getString() ].size() );
-        int pointsRequired = attrib_needed( row, player.attrib[ row ][ 0 ] + nTimesRaised, player );
-        if ( totalPointsToSpend_ >= pointsRequired )
-        {
-          std::string attributeName = attributes_.at( row ).name_.getString();
-
-          raiseMap_[ attributeName ].push( pointsRequired );
-        }
+        attemptToRaiseByFive = true;
       }
-      else if ( row >= 5 && row <= 7 ) // HP/END/MANA
+
+      int raiseAttempts = attemptToRaiseByFive ? 5 : 1;
+
+      for ( int i = 0; i < raiseAttempts; ++i )
       {
-        if ( row == 5 ) // hp
+        if ( row >= 0 && row <= 4 ) // Attributes
         {
-          int nTimesRaised   = static_cast< int >( raiseMap_[ lifeDisplay_[ 0 ].name_.getString() ].size() );
-          int pointsRequired = hp_needed( player.hp[ 0 ] + nTimesRaised, player );
+
+          int nTimesRaised   = static_cast< int >( raiseMap_[ attributes_[ row ].name_.getString() ].size() );
+          int pointsRequired = attrib_needed( row, player.attrib[ row ][ 0 ] + nTimesRaised, player );
           if ( totalPointsToSpend_ >= pointsRequired )
           {
-            std::string hpManaEndName = lifeDisplay_.at( 0 ).name_.getString();
+            std::string attributeName = attributes_.at( row ).name_.getString();
 
-            raiseMap_[ hpManaEndName ].push( pointsRequired );
+            raiseMap_[ attributeName ].push( pointsRequired );
           }
         }
-        else if ( row == 6 ) // end
+        else if ( row >= 5 && row <= 7 ) // HP/END/MANA
         {
-          int nTimesRaised   = static_cast< int >( raiseMap_[ lifeDisplay_[ 1 ].name_.getString() ].size() );
-          int pointsRequired = end_needed( player.end[ 0 ] + nTimesRaised, player );
+          if ( row == 5 ) // hp
+          {
+            int nTimesRaised   = static_cast< int >( raiseMap_[ lifeDisplay_[ 0 ].name_.getString() ].size() );
+            int pointsRequired = hp_needed( player.hp[ 0 ] + nTimesRaised, player );
+            if ( totalPointsToSpend_ >= pointsRequired )
+            {
+              std::string hpManaEndName = lifeDisplay_.at( 0 ).name_.getString();
+
+              raiseMap_[ hpManaEndName ].push( pointsRequired );
+            }
+          }
+          else if ( row == 6 ) // end
+          {
+            int nTimesRaised   = static_cast< int >( raiseMap_[ lifeDisplay_[ 1 ].name_.getString() ].size() );
+            int pointsRequired = end_needed( player.end[ 0 ] + nTimesRaised, player );
+            if ( totalPointsToSpend_ >= pointsRequired )
+            {
+              std::string hpManaEndName = lifeDisplay_.at( 1 ).name_.getString();
+
+              raiseMap_[ hpManaEndName ].push( pointsRequired );
+            }
+          }
+          else if ( row == 7 ) // mana
+          {
+            int nTimesRaised   = static_cast< int >( raiseMap_[ lifeDisplay_[ 2 ].name_.getString() ].size() );
+            int pointsRequired = mana_needed( player.mana[ 0 ] + nTimesRaised, player );
+            if ( totalPointsToSpend_ >= pointsRequired )
+            {
+              std::string hpManaEndName = lifeDisplay_.at( 2 ).name_.getString();
+
+              raiseMap_[ hpManaEndName ].push( pointsRequired );
+            }
+          }
+        }
+        else // Skills
+        {
+          if ( skillsToDisplay_[ row - 8 ] == nullptr )
+          {
+            return;
+          }
+
+          int m            = skillsToDisplay_[ row - 8 ]->skillsIndex_;
+          int nTimesRaised = static_cast< int >( raiseMap_[ skillsToDisplay_[ row - 8 ]->name_.getString() ].size() );
+
+          int pointsRequired = skill_needed( m, player.skill[ m ][ 0 ] + nTimesRaised, player );
           if ( totalPointsToSpend_ >= pointsRequired )
           {
-            std::string hpManaEndName = lifeDisplay_.at( 1 ).name_.getString();
+            std::string skillName = skillsToDisplay_[ row - 8 ]->name_.getString();
 
-            raiseMap_[ hpManaEndName ].push( pointsRequired );
+            raiseMap_[ skillName ].push( pointsRequired );
           }
-        }
-        else if ( row == 7 ) // mana
-        {
-          int nTimesRaised   = static_cast< int >( raiseMap_[ lifeDisplay_[ 2 ].name_.getString() ].size() );
-          int pointsRequired = mana_needed( player.mana[ 0 ] + nTimesRaised, player );
-          if ( totalPointsToSpend_ >= pointsRequired )
-          {
-            std::string hpManaEndName = lifeDisplay_.at( 2 ).name_.getString();
-
-            raiseMap_[ hpManaEndName ].push( pointsRequired );
-          }
-        }
-      }
-      else // Skills
-      {
-        if ( skillsToDisplay_[ row - 8 ] == nullptr )
-        {
-          return;
-        }
-
-        int m            = skillsToDisplay_[ row - 8 ]->skillsIndex_;
-        int nTimesRaised = static_cast< int >( raiseMap_[ skillsToDisplay_[ row - 8 ]->name_.getString() ].size() );
-
-        int pointsRequired = skill_needed( m, player.skill[ m ][ 0 ] + nTimesRaised, player );
-        if ( totalPointsToSpend_ >= pointsRequired )
-        {
-          std::string skillName = skillsToDisplay_[ row - 8 ]->name_.getString();
-
-          raiseMap_[ skillName ].push( pointsRequired );
         }
       }
     }
     else if ( MenAmongGods::minusAreaRectangle.contains( mousePosition ) )
     {
-      // Find out which row was clicked -- each row
-      int row = static_cast< int >( mousePosition.y / 14.0f );
-      row     = std::max( 0, row );
 
-      if ( row >= 0 && row <= 4 ) // Attributes
+      bool attemptToLowerByFive = false;
+      if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Key::LShift ) )
       {
-        std::string attributeName = attributes_.at( row ).name_.getString();
-        if ( raiseMap_.count( attributeName ) != 0 && raiseMap_[ attributeName ].size() > 0 )
-        {
-          raiseMap_[ attributeName ].pop();
-        }
+        attemptToLowerByFive = true;
       }
-      else if ( row >= 5 && row <= 7 ) // HP/END/MANA
-      {
-        if ( row == 5 ) // hp
-        {
-          std::string lifeName = lifeDisplay_.at( 0 ).name_.getString();
-          if ( raiseMap_.count( lifeName ) != 0 && raiseMap_[ lifeName ].size() > 0 )
-          {
-            raiseMap_[ lifeName ].pop();
-          }
-        }
-        else if ( row == 6 ) // mana
-        {
-          std::string lifeName = lifeDisplay_.at( 1 ).name_.getString();
-          if ( raiseMap_.count( lifeName ) != 0 && raiseMap_[ lifeName ].size() > 0 )
-          {
-            raiseMap_[ lifeName ].pop();
-          }
-        }
-        else if ( row == 7 ) // end
-        {
-          std::string lifeName = lifeDisplay_.at( 2 ).name_.getString();
-          if ( raiseMap_.count( lifeName ) != 0 && raiseMap_[ lifeName ].size() > 0 )
-          {
-            raiseMap_[ lifeName ].pop();
-          }
-        }
-      }
-      else // Skills
-      {
-        if ( skillsToDisplay_[ row - 8 ] == nullptr )
-        {
-          return;
-        }
 
-        std::string skillName = skillsToDisplay_[ row - 8 ]->name_.getString();
-        if ( raiseMap_.count( skillName ) != 0 && raiseMap_[ skillName ].size() > 0 )
+      int lowerAttempts = attemptToLowerByFive ? 5 : 1;
+
+      for ( int i = 0; i < lowerAttempts; ++i )
+      {
+        // Find out which row was clicked -- each row
+        int row = static_cast< int >( mousePosition.y / 14.0f );
+        row     = std::max( 0, row );
+
+        if ( row >= 0 && row <= 4 ) // Attributes
         {
-          raiseMap_[ skillName ].pop();
+          std::string attributeName = attributes_.at( row ).name_.getString();
+          if ( raiseMap_.count( attributeName ) != 0 && raiseMap_[ attributeName ].size() > 0 )
+          {
+            raiseMap_[ attributeName ].pop();
+          }
+        }
+        else if ( row >= 5 && row <= 7 ) // HP/END/MANA
+        {
+          if ( row == 5 ) // hp
+          {
+            std::string lifeName = lifeDisplay_.at( 0 ).name_.getString();
+            if ( raiseMap_.count( lifeName ) != 0 && raiseMap_[ lifeName ].size() > 0 )
+            {
+              raiseMap_[ lifeName ].pop();
+            }
+          }
+          else if ( row == 6 ) // mana
+          {
+            std::string lifeName = lifeDisplay_.at( 1 ).name_.getString();
+            if ( raiseMap_.count( lifeName ) != 0 && raiseMap_[ lifeName ].size() > 0 )
+            {
+              raiseMap_[ lifeName ].pop();
+            }
+          }
+          else if ( row == 7 ) // end
+          {
+            std::string lifeName = lifeDisplay_.at( 2 ).name_.getString();
+            if ( raiseMap_.count( lifeName ) != 0 && raiseMap_[ lifeName ].size() > 0 )
+            {
+              raiseMap_[ lifeName ].pop();
+            }
+          }
+        }
+        else // Skills
+        {
+          if ( skillsToDisplay_[ row - 8 ] == nullptr )
+          {
+            return;
+          }
+
+          std::string skillName = skillsToDisplay_[ row - 8 ]->name_.getString();
+          if ( raiseMap_.count( skillName ) != 0 && raiseMap_[ skillName ].size() > 0 )
+          {
+            raiseMap_[ skillName ].pop();
+          }
         }
       }
     }
@@ -868,6 +924,31 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
       }
     }
 
+    for ( int i = 0; i < 4; ++i )
+    {
+      for ( int j = 0; j < 3; ++j )
+      {
+        sf::Vector2f xButtonPosition =
+            MenAmongGods::xButtonOrigin + sf::Vector2f { MenAmongGods::CLIENT_SELECTION_SPACING_X * static_cast< float >( i ),
+                                                         MenAmongGods::CLIENT_SELECTION_SPACING_Y * static_cast< float >( j ) };
+
+        sf::FloatRect boxPosition { xButtonPosition,
+                                    sf::Vector2f { MenAmongGods::CLIENT_SELECTION_SPACING_X, MenAmongGods::CLIENT_SELECTION_SPACING_Y } };
+
+        if ( boxPosition.contains( mousePosition ) )
+        {
+          const int index = i + j * 4;
+          std::cerr << "Using ability from xbutton index: " << index << std::endl;
+          const int skillNr               = playerData_.getXButton( index ).skill_nr;
+          int       baseAttributeModifier = getBaseAttributeModifier( std::string( playerData_.getXButton( index ).name ) );
+          auto skillCommand = std::make_shared< SkillCommand >( static_cast< unsigned int >( skillNr ), playerData_.getSelectedCharacter(),
+                                                                static_cast< unsigned int >( baseAttributeModifier ) );
+
+          commands_.push_back( skillCommand );
+        }
+      }
+    }
+
     return;
   }
 
@@ -899,6 +980,33 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
 
           std::string infoMessage = std::string( static_skilltab[ skillNr ].name ) + ": " + std::string( static_skilltab[ skillNr ].desc );
           mainUI_.addMessage( LogType::INFO, infoMessage );
+
+          // User may be wanting to map to an xbutton--lock in the details here
+          std::strncpy( lockdInXButton_.name, static_skilltab[ skillNr ].name, 8 - 1 );
+          lockdInXButton_.skill_nr = skillNr;
+
+          std::cerr << "Locked in skill: " << skillNr << " - " << lockdInXButton_.name << std::endl;
+        }
+      }
+    }
+
+    // TODO: Reduce code duplication here and the left-click handler
+    for ( int i = 0; i < 4; ++i )
+    {
+      for ( int j = 0; j < 3; ++j )
+      {
+        sf::Vector2f xButtonPosition =
+            MenAmongGods::xButtonOrigin + sf::Vector2f { MenAmongGods::CLIENT_SELECTION_SPACING_X * static_cast< float >( i ),
+                                                         MenAmongGods::CLIENT_SELECTION_SPACING_Y * static_cast< float >( j ) };
+
+        sf::FloatRect boxPosition { xButtonPosition,
+                                    sf::Vector2f { MenAmongGods::CLIENT_SELECTION_SPACING_X, MenAmongGods::CLIENT_SELECTION_SPACING_Y } };
+
+        if ( boxPosition.contains( mousePosition ) )
+        {
+          const int index = i + j * 4;
+          std::cerr << "Setting index: " << index << std::endl;
+          playerData_.setXButton( lockdInXButton_, i + j * 4 );
         }
       }
     }

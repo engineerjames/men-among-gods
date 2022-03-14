@@ -82,6 +82,8 @@ private:
 
   sf::Sprite background_;
   sf::Sprite playerSprite_;
+
+  float lookTimer;
 };
 } // namespace MenAmongGods
 #endif

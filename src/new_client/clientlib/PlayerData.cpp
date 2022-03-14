@@ -11,6 +11,7 @@
 #include "ConstantIdentifiers.h"
 #include "Logger.h"
 #include "ResourceLocations.h"
+#include <ClientConfiguration.h>
 
 namespace
 {
@@ -314,6 +315,18 @@ std::vector< int > PlayerData::getUnknownCharacterIds() const
   return unknownIds;
 }
 
+char PlayerData::get_proz(int nr, unsigned short id) const
+{
+  if ( id && lookMap_[nr].id != 0 )
+  {
+    return lookMap_[ nr ].proz;  
+  }
+  else
+  {
+    return 127;
+  }
+}
+
 std::string PlayerData::lookup( int nr, unsigned short id ) const
 {
   static std::array< char, 40 > buf {};
@@ -546,6 +559,22 @@ look& PlayerData::getLook()
   return look_;
 }
 
+void PlayerData::resetLookTimer()
+{
+  lookTimer_ = 0.0f;
+}
+
+void PlayerData::incrementLookTimer()
+{
+  lookTimer_ += ( 1.0f / static_cast< float >( MenAmongGods::ClientConfiguration::instance().frameLimit() ) );
+
+  if ( lookTimer_ >= LOOK_TIME_IN_SECONDS )
+  {
+    lookTimer_ = 0.0f;
+    setShowLook( false );
+  }
+}
+
 void PlayerData::setName( std::string newName )
 {
   std::strncpy( playerInfo_.cname, newName.c_str(), newName.length() );
@@ -650,6 +679,16 @@ unsigned int PlayerData::getOkeyUserNumber() const
   return okey_.usnr;
 }
 
+void PlayerData::setXButton( xbutton button, int index )
+{
+  playerInfo_.xbutton[ index ] = button;
+}
+
+const xbutton& PlayerData::getXButton( int index )
+{
+  return playerInfo_.xbutton[ index ];
+}
+
 void PlayerData::clear()
 {
   playerInfo_           = pdata();
@@ -714,7 +753,12 @@ void PlayerData::loadFromJsonFile( const std::string& fileName )
   playerInfo_.show_names = root[ "pdata" ][ "show_names" ].asInt();
   playerInfo_.show_proz  = root[ "pdata" ][ "show_percent_health" ].asInt();
 
-  // TODO: Load XButtons
+  // X-buttons
+  for ( int i = 0; i < 12; ++i )
+  {
+    std::strncpy( playerInfo_.xbutton[ i ].name, root[ "pdata" ][ "xbutton" ][ i ][ "name" ].asCString(), 8 - 1 );
+    playerInfo_.xbutton[ i ].skill_nr = root[ "pdata" ][ "xbutton" ][ i ][ "skill_id" ].asInt();
+  }
 
   //
   // key data

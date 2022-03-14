@@ -7,6 +7,88 @@
 #include "PlayerData.h"
 #include "UiPositions.h"
 
+// TODO: Reduce this duplication
+namespace
+{
+int points2rank( int v )
+{
+  if ( v < 50 )
+    return 0;
+  if ( v < 850 )
+    return 1;
+  if ( v < 4900 )
+    return 2;
+  if ( v < 17700 )
+    return 3;
+  if ( v < 48950 )
+    return 4;
+  if ( v < 113750 )
+    return 5;
+  if ( v < 233800 )
+    return 6;
+  if ( v < 438600 )
+    return 7;
+  if ( v < 766650 )
+    return 8;
+  if ( v < 1266650 )
+    return 9;
+  if ( v < 1998700 )
+    return 10;
+  if ( v < 3035500 )
+    return 11;
+  if ( v < 4463550 )
+    return 12;
+  if ( v < 6384350 )
+    return 13;
+  if ( v < 8915600 )
+    return 14;
+  if ( v < 12192400 )
+    return 15;
+  if ( v < 16368450 )
+    return 16;
+  if ( v < 21617250 )
+    return 17;
+  if ( v < 28133300 )
+    return 18;
+  if ( v < 36133300 )
+    return 19;
+  if ( v < 49014500 )
+    return 20;
+  if ( v < 63000600 )
+    return 21;
+  if ( v < 80977100 )
+    return 22;
+
+  return 23;
+}
+
+static const std::array< const char*, 24 > rankToString = { "Private",
+                                                            "Private First Class",
+                                                            "Lance Corporal",
+                                                            "Corporal",
+                                                            "Sergeant",
+                                                            "Staff Sergeant",
+                                                            "Master Sergeant",
+                                                            "First Sergeant",
+                                                            "Sergeant Major",
+                                                            "Second Lieutenant",
+                                                            "First Lieutenant",
+                                                            "Captain",
+                                                            "Major",
+                                                            "Lieutenant Colonel",
+                                                            "Colonel",
+                                                            "Brigadier General",
+                                                            "Major General",
+                                                            "Lieutenant General",
+                                                            "General",
+                                                            "Field Marshal",
+                                                            "Knight",
+                                                            "Baron",
+                                                            "Earl",
+                                                            "Warlord" };
+
+}
+
 namespace MenAmongGods
 {
 RankDisplay::RankDisplay( const sf::Font& font, PlayerData& playerData, GraphicsCache& gfxCache )
@@ -31,11 +113,18 @@ void RankDisplay::draw( sf::RenderTarget& target, sf::RenderStates states ) cons
 
 void RankDisplay::update()
 {
-  textualRank_.setString( playerData_.getRankString() );
+  if ( playerData_.getShowLook() )
+  {
+    textualRank_.setString( rankToString[ points2rank( playerData_.getLook().points ) ] );
+    rankSprite_ = gfxCache_.getSprite( 10 + std::min( 20, points2rank( playerData_.getLook().points ) ) );
+  }
+  else
+  {
+    textualRank_.setString( playerData_.getRankString() );
+    rankSprite_ = gfxCache_.getSprite( 10 + std::min( 20, playerData_.getRank() ) );
+  }
 
-  rankSprite_ = gfxCache_.getSprite( 10 + std::min( 20, playerData_.getRank() ) );
   rankSprite_.setPosition( sf::Vector2f { 463, ( 54 - 16 ) } );
-
   textualRank_.update();
 }
 

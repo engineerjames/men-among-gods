@@ -22,6 +22,11 @@ std::string CommandHistory::getNextCommand()
   }
   else
   {
+    if ( cmdIter_ >= cmdHistory_.end() )
+    {
+      return "";
+    }
+
     cmdIter_++;
 
     return *cmdIter_;

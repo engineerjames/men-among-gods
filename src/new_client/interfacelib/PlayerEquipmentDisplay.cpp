@@ -21,7 +21,7 @@ static int wntab[ 20 ] = { WN_HEAD, WN_CLOAK, WN_BODY, WN_ARMS, WN_NECK, WN_BELT
 namespace MenAmongGods
 {
 
-PlayerEquipmentDisplay::PlayerEquipmentDisplay( const sf::RenderWindow& window, const PlayerData& playerData, GraphicsCache& gfxCache )
+PlayerEquipmentDisplay::PlayerEquipmentDisplay( const sf::RenderWindow& window, PlayerData& playerData, GraphicsCache& gfxCache )
     : window_( window )
     , playerData_( playerData )
     , gfxCache_( gfxCache )
@@ -41,15 +41,32 @@ void PlayerEquipmentDisplay::update()
 {
   inventorySprites_.clear();
 
-  for ( unsigned int n = 0; n < 12; n++ )
-  {
-    const int& itemReference = playerData_.getClientSidePlayerInfo().worn[ wntab[ n ] ];
-
-    if ( itemReference != 0 )
+  if ( playerData_.getShowLook() )
+  { // TODO: Simplify this logic
+    for ( unsigned int n = 0; n < 12; n++ )
     {
-      sf::Sprite newSprite = gfxCache_.getSprite( itemReference );
-      newSprite.setPosition( sf::Vector2f { static_cast< float >( 303 + ( n % 2 ) * 35 ), static_cast< float >( 2 + ( n / 2 ) * 35 ) } );
-      inventorySprites_.push_back( newSprite );
+      const int& itemReference = playerData_.getLook().worn[ wntab[ n ] ];
+
+      if ( itemReference != 0 )
+      {
+        sf::Sprite newSprite = gfxCache_.getSprite( itemReference );
+        newSprite.setPosition( sf::Vector2f { static_cast< float >( 303 + ( n % 2 ) * 35 ), static_cast< float >( 2 + ( n / 2 ) * 35 ) } );
+        inventorySprites_.push_back( newSprite );
+      }
+    }
+  }
+  else
+  {
+    for ( unsigned int n = 0; n < 12; n++ )
+    {
+      const int& itemReference = playerData_.getClientSidePlayerInfo().worn[ wntab[ n ] ];
+
+      if ( itemReference != 0 )
+      {
+        sf::Sprite newSprite = gfxCache_.getSprite( itemReference );
+        newSprite.setPosition( sf::Vector2f { static_cast< float >( 303 + ( n % 2 ) * 35 ), static_cast< float >( 2 + ( n / 2 ) * 35 ) } );
+        inventorySprites_.push_back( newSprite );
+      }
     }
   }
 }

@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 
+#include "ClientTypes.h"
 #include "ColorPalette.h"
 #include "Component.h"
 #include "ConstantIdentifiers.h"
@@ -68,6 +69,9 @@ private:
   MenAmongGods::JustifiableText              expToSpendValue_;
   std::map< std::string, std::stack< int > > raiseMap_; // TODO: This should be in the player data class
   int                                        totalPointsToSpend_;
+
+  xbutton                    lockdInXButton_;
+  std::array< sf::Text, 12 > xButtonText_;
 };
 } // namespace MenAmongGods
 

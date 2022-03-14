@@ -19,7 +19,7 @@ static const sf::Vector2f playerSpritePosition { 402.0f, 32.0f };
 static const sf::Vector2f initialAttributePosition { 3.0f, 1.0f };
 static const sf::Vector2f initialSkillPosition { 3.0f, 113.0f };
 
-static const sf::Vector2f scrollBarMovementPerClick { 0.0f, 5.0f };
+static const sf::Vector2f scrollBarMovementPerClick { 0.0f, 3.0f };
 
 static const sf::Vector2f  plusAreaRectanglePosition { 134.0f, 2.0f };
 static const sf::Vector2f  plusAreaRectangleSize { 10.0f, 248.0f };
@@ -41,9 +41,9 @@ static const sf::Vector2f playerNamePosition { 417.0f, 27.0f };
 
 // Inventory positions (size is the same as for the skills)
 static const sf::Vector2f inventoryScrollUpBoxPosition { 291.0f, 3.0f };
-static const sf::Vector2f inventoryScrollDownBoxPosition { 291.0f, 142.0f };
-static const sf::Vector2f inventoryScrollBarPosition { 291.0f, 37.0f };
-static const sf::Vector2f inventoryScrollBarSize { 9.0f, 9.0f };
+static const sf::Vector2f inventoryScrollDownBoxPosition { 291.0f, 139.0f };
+static const sf::Vector2f inventoryScrollBarPosition { 290.0f, 36.0f };
+static const sf::Vector2f inventoryScrollBarSize { 11.0f, 15.0f };
 
 static const sf::Vector2f  inventoryBoundingBoxPosition { 220.0f, 3.0f };
 static const sf::Vector2f  inventoryBoundingBoxSize { 66.0f, 172.0f };
@@ -87,6 +87,8 @@ static const sf::Vector2f  clientOptionsOrigin { 608.0f, 555.0f };
 static const constexpr int CLIENT_SELECTION_SPACING_X = 48;
 static const constexpr int CLIENT_SELECTION_SPACING_Y = 15;
 static const sf::Vector2f  CLIENT_SELECTION_BOX_SIZE { 45, 12 };
+
+static const sf::Vector2f xButtonOrigin { 608.0f, 505.0f };
 
 } // namespace MenAmongGods
 
