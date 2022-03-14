@@ -859,7 +859,7 @@ void TickBuffer::sv_look5( const unsigned char* buf )
     if ( ! playerData_.getLook().autoflag )
     {
       playerData_.setShowLook( true );
-      // look_timer = 10 * TICKS;
+      playerData_.resetLookTimer();
     }
     playerData_.add_look( playerData_.getLook().nr, playerData_.getLook().name, playerData_.getLook().id );
   }

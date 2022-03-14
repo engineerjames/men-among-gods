@@ -4,10 +4,10 @@
 #include <cstddef>
 #include <string>
 
+static const float LOOK_TIME_IN_SECONDS = 10.0f;
+
 // Based heavily off of common.h
 static const std::string   MNAME      = "Men Among Gods";
-static const std::string   MHELP      = "http://mercaston.dnsalias.net/help.html";
-static const std::string   MNEWS      = "http://mercaston.dnsalias.net/news.html";
 
 static const constexpr int AT_BRAVE = 0;
 static const constexpr int AT_WILL  = 1;
@@ -39,15 +39,6 @@ static const constexpr int XPOS = 0;
 // Should this be a float?
 static const constexpr int          TICK     = ( 1000 / TICKS );
 static const constexpr unsigned int HIGH_VAL = 1 << 30;
-
-enum struct MOUSE_STATES
-{
-  MS_MOVE    = 0,
-  MS_LB_DOWN = 1,
-  MS_RB_DOWN = 2,
-  MS_LB_UP   = 3,
-  MS_RB_UP   = 4
-};
 
 static const constexpr int QSIZE = 8;
 

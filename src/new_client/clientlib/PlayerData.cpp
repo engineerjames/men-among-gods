@@ -11,6 +11,7 @@
 #include "ConstantIdentifiers.h"
 #include "Logger.h"
 #include "ResourceLocations.h"
+#include <ClientConfiguration.h>
 
 namespace
 {
@@ -544,6 +545,22 @@ const cplayer& PlayerData::getClientSidePlayerInfo() const
 look& PlayerData::getLook()
 {
   return look_;
+}
+
+void PlayerData::resetLookTimer()
+{
+  lookTimer_ = 0.0f;
+}
+
+void PlayerData::incrementLookTimer()
+{
+  lookTimer_ += ( 1.0f / static_cast< float >( MenAmongGods::ClientConfiguration::instance().frameLimit() ) );
+  
+  if (lookTimer_ >= LOOK_TIME_IN_SECONDS)
+  {
+    lookTimer_ = 0.0f;
+    setShowLook( false );
+  }
 }
 
 void PlayerData::setName( std::string newName )

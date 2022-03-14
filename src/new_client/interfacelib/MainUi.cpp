@@ -8,6 +8,7 @@
 #include "PlayerData.h"
 #include "UiPositions.h"
 
+#include <ClientConfiguration.h>
 #include <iostream>
 
 namespace MenAmongGods
@@ -39,6 +40,7 @@ MainUi::MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, Gra
     , playerShopDisplay_( window, fontCache.getFont(), pdata, gfxCache, gfxIndex )
     , background_()
     , playerSprite_()
+    , lookTimer()
 {
 
   goldDisplay_.setPosition( MenAmongGods::goldDisplayPosition );
@@ -279,10 +281,7 @@ void MainUi::update()
   manaMaxValue_.setString( std::to_string( player.mana[ 5 ] ) );
 
   goldDisplay_.setString( MenAmongGods::goldToString( player.gold ) );
-  playerNameDisplay_.setString( player.name );
-
   goldDisplay_.update();
-  playerNameDisplay_.update();
 
   expValue_.setString( std::to_string( player.points_tot ) );
 
@@ -306,7 +305,19 @@ void MainUi::update()
     addMessage( m.type, m.msg );
   }
 
-  playerSprite_ = gfxCache_.getSprite( playerData_.getPlayerSprite() );
+  if ( playerData_.getShowLook() )
+  {
+    playerSprite_ = gfxCache_.getSprite( playerData_.getLook().sprite );
+    playerData_.incrementLookTimer();
+    playerNameDisplay_.setString( playerData_.getLook().name );
+  }
+  else
+  {
+    playerSprite_ = gfxCache_.getSprite( playerData_.getPlayerSprite() );
+    playerNameDisplay_.setString( player.name );
+  }
+
+  playerNameDisplay_.update();
   playerSprite_.setPosition( MenAmongGods::playerSpritePosition );
 
   playerShopDisplay_.update();

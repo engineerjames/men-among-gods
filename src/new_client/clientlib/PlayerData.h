@@ -58,6 +58,8 @@ public:
 
   bool getShowLook() const;
   void setShowLook( bool shouldShowLook );
+  void resetLookTimer();
+  void incrementLookTimer();
 
   bool               getShouldShowShop() const;
   void               setShouldShowShop( bool shouldShowShop );
@@ -136,6 +138,8 @@ private:
 
   int unique1_;
   int unique2_;
+
+  float lookTimer_;
 };
 
 #endif

@@ -1,6 +1,6 @@
 {
   "frameLimit": 10,
-  "hostIpAddress": "ec2-3-90-219-226.compute-1.amazonaws.com",
+  "hostIpAddress": "172.22.204.58",
   "hostPort": 5555,
   "loggingEnabled": false,
   "networkThreadDelay": 50
