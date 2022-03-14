@@ -24,12 +24,11 @@ All rights reserved.
 
 int ctick = 0;
 
-static char intro_msg1[] = { "Welcome to Astonia 2, my friend!\n" };
+static char intro_msg1[] = { "Welcome to Men Among Gods, my friend!\n" };
 static char intro_msg2[] = { "May your visit here be... interesting.\n" };
 
 static char intro_msg3[] = { "\n" };
 static char intro_msg4[] = { "Use #help (or /help) to get a listing of the text commands.\n" };
-// static char intro_msg4[]={"WARNING: Lag scrolls will only work if used not later than four minutes after lagging out!\n"};
 
 static inline unsigned int _mcmp( unsigned char* a, unsigned char* b, unsigned int len )
 {
