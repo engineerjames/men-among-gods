@@ -223,7 +223,7 @@ SkillsAndAttributesDisplay::SkillsAndAttributesDisplay( const sf::RenderWindow& 
     , xButtonText_()
 {
 
-  for ( int i = 0; i < xButtonText_.size(); ++i )
+  for ( int i = 0; i < static_cast< int >( xButtonText_.size() ); ++i )
   {
     xButtonText_[ i ].setFont( font_ );
     xButtonText_[ i ].setCharacterSize( FONT_SIZE );
@@ -657,13 +657,13 @@ void SkillsAndAttributesDisplay::update()
   // Update xButton positions and text
   for ( int i = 0; i < 4; ++i )
   {
-    for ( int j = 0; j < 3; ++j )
+    for ( int k = 0; k < 3; ++k )
     {
       sf::Vector2f xButtonPosition =
           MenAmongGods::xButtonOrigin + sf::Vector2f { MenAmongGods::CLIENT_SELECTION_SPACING_X * static_cast< float >( i ),
-                                                       MenAmongGods::CLIENT_SELECTION_SPACING_Y * static_cast< float >( j ) };
+                                                       MenAmongGods::CLIENT_SELECTION_SPACING_Y * static_cast< float >( k ) };
 
-      const int index = i + j * 4;
+      const int index = i + k * 4;
       if ( playerData_.getXButton( index ).name[ 0 ] != 0 )
       {
         xButtonText_[ index ].setString( std::string( playerData_.getXButton( index ).name ) );
@@ -924,7 +924,7 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
       }
     }
 
-     for ( int i = 0; i < 4; ++i )
+    for ( int i = 0; i < 4; ++i )
     {
       for ( int j = 0; j < 3; ++j )
       {
@@ -939,7 +939,7 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
         {
           const int index = i + j * 4;
           std::cerr << "Using ability from xbutton index: " << index << std::endl;
-          const int skillNr = playerData_.getXButton( index ).skill_nr;
+          const int skillNr               = playerData_.getXButton( index ).skill_nr;
           int       baseAttributeModifier = getBaseAttributeModifier( std::string( playerData_.getXButton( index ).name ) );
           auto skillCommand = std::make_shared< SkillCommand >( static_cast< unsigned int >( skillNr ), playerData_.getSelectedCharacter(),
                                                                 static_cast< unsigned int >( baseAttributeModifier ) );
