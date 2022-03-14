@@ -17,6 +17,7 @@ public:
   bool        loggingEnabled() const;
   std::string hostIpAddress() const;
   int         hostPort() const;
+  bool        enableHpBars() const;
 
   Json::Value toJson() const;
 
@@ -28,6 +29,7 @@ private:
   bool        loggingEnabled_;
   std::string hostIpAddress_;
   int         hostPort_;
+  bool        enableHpBars_;
 };
 } // namespace MenAmongGods
 

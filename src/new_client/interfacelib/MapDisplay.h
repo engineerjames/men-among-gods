@@ -37,17 +37,18 @@ private:
   void copysprite( int nr, int effect, int xpos, int ypos, int xoff, int yoff, unsigned char light, bool isCharacterSelected = false );
   sf::Vector2i dd_gputtext( int xpos, int ypos, std::string text, int xoff, int yoff );
 
-  const sf::Font&           font_;
-  MenAmongGods::Map&        map_;
-  PlayerData&               playerData_;
-  GraphicsCache&            cache_;
-  const GraphicsIndex&      index_;
-  const sf::RenderWindow&   window_;
-  std::vector< sf::Sprite > spritesToDraw_;
-  std::vector< sf::Text >   textToDraw_;
-  int                       tileType_;
-  int                       tileX_;
-  int                       tileY_;
+  const sf::Font&                   font_;
+  MenAmongGods::Map&                map_;
+  PlayerData&                       playerData_;
+  GraphicsCache&                    cache_;
+  const GraphicsIndex&              index_;
+  const sf::RenderWindow&           window_;
+  std::vector< sf::Sprite >         spritesToDraw_;
+  std::vector< sf::Text >           textToDraw_;
+  std::vector< sf::RectangleShape > healthBarsToDraw_;
+  int                               tileType_;
+  int                               tileX_;
+  int                               tileY_;
 };
 } // namespace MenAmongGods
 

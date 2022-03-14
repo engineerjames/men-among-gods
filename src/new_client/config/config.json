@@ -3,5 +3,6 @@
   "hostIpAddress": "172.22.192.145",
   "hostPort": 5555,
   "loggingEnabled": false,
-  "networkThreadDelay": 50
+  "networkThreadDelay": 50,
+  "enableHpBars":  false
 }

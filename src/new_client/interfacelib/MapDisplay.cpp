@@ -5,6 +5,7 @@
 #include <iostream>
 #include <set>
 
+#include "ClientConfiguration.h"
 #include "ColorPalette.h"
 #include "ConstantIdentifiers.h"
 #include "GraphicsCache.h"
@@ -76,6 +77,8 @@ MapDisplay::MapDisplay( const sf::Font& font, MenAmongGods::Map& map, PlayerData
     , index_( index )
     , window_( window )
     , spritesToDraw_()
+    , textToDraw_()
+    , healthBarsToDraw_()
     , tileType_()
     , tileX_()
     , tileY_()
@@ -92,6 +95,11 @@ void MapDisplay::draw( sf::RenderTarget& target, sf::RenderStates states ) const
   for ( const auto& text : textToDraw_ )
   {
     target.draw( text, states );
+  }
+
+  for ( const auto& hb : healthBarsToDraw_ )
+  {
+    target.draw( hb, states );
   }
 }
 
@@ -334,6 +342,7 @@ void MapDisplay::update()
 {
   spritesToDraw_.clear();
   textToDraw_.clear();
+  healthBarsToDraw_.clear();
 
   int x {};
   int y {};
@@ -546,6 +555,7 @@ void MapDisplay::update()
       {
         playerData_.set_look_proz( map_.getCharacterId( m ), map_.getCharacterCrc( m ), map_.getCharacterPercentHealth( m ) );
 
+        // Draw player names and health percentages
         std::string stringToDraw = playerData_.lookup( map_.getCharacterId( m ), map_.getCharacterCrc( m ) );
         textToDraw_.emplace_back( stringToDraw, font_, FONT_SIZE );
 
@@ -560,6 +570,27 @@ void MapDisplay::update()
         lastText.setOutlineColor( sf::Color::Black );
         lastText.setOutlineThickness( 1.0f );
         lastText.setFillColor( MenAmongGods::MsgYellow );
+
+        if ( MenAmongGods::ClientConfiguration::instance().enableHpBars() )
+        {
+          sf::RectangleShape healthBar {};
+          healthBar.setPosition( sf::Vector2f { static_cast< float >( textPosition.x ), static_cast< float >( textPosition.y ) } +
+                                 sf::Vector2f { 0.0, 10.0f } );
+
+          // Calculate size based on health
+          char proz = playerData_.get_proz( map_.getCharacterId( m ), map_.getCharacterCrc( m ) );
+
+          if ( proz != 200 )
+          {
+            float healthScale = 30.0f * ( proz / 100.0f );
+            healthBar.setSize( sf::Vector2f { healthScale, 1.0f } );
+            healthBar.setFillColor( sf::Color::Red );
+            healthBar.setOutlineColor( sf::Color::Black );
+            healthBar.setOutlineThickness( 1.0f );
+
+            healthBarsToDraw_.push_back( healthBar );
+          }
+        }
       }
 
       if ( playerData_.getPlayerAction() == DR_DROP && playerData_.getFirstTarget() == map_.getX( m ) &&

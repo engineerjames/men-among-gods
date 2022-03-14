@@ -315,6 +315,18 @@ std::vector< int > PlayerData::getUnknownCharacterIds() const
   return unknownIds;
 }
 
+char PlayerData::get_proz(int nr, unsigned short id) const
+{
+  if ( id && lookMap_[nr].id != 0 )
+  {
+    return lookMap_[ nr ].proz;  
+  }
+  else
+  {
+    return 200u;
+  }
+}
+
 std::string PlayerData::lookup( int nr, unsigned short id ) const
 {
   static std::array< char, 40 > buf {};

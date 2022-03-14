@@ -117,6 +117,7 @@ public:
   void        set_look_proz( unsigned short nr, unsigned short id, int proz ) const;
   std::string lookup( int nr, unsigned short id ) const;
   void        add_look( unsigned short nr, char* name, unsigned short id );
+  char        get_proz( int nr, unsigned short id ) const;
 
   void clear();
 
