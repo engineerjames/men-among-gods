@@ -580,7 +580,7 @@ void MapDisplay::update()
           // Calculate size based on health
           char proz = playerData_.get_proz( map_.getCharacterId( m ), map_.getCharacterCrc( m ) );
 
-          if ( proz != 200 )
+          if ( proz != 127 )
           {
             float healthScale = 30.0f * ( proz / 100.0f );
             healthBar.setSize( sf::Vector2f { healthScale, 1.0f } );

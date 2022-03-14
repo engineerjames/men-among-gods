@@ -323,7 +323,7 @@ char PlayerData::get_proz(int nr, unsigned short id) const
   }
   else
   {
-    return 200u;
+    return 127;
   }
 }
 
