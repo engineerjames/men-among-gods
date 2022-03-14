@@ -4741,7 +4741,7 @@ void do_regenerate( int cn )
     }
   }
 
-  if ( uwater && ( ch[ cn ].flags & ( CF_PLAYER ) ) )
+  if ( uwater && ( ch[ cn ].flags & ( CF_PLAYER ) ) && ! ( ch[ cn ].flags & CF_IMMORTAL ) )
   {
     ch[ cn ].a_hp -= 250 + gothp;
     if ( ch[ cn ].a_hp < 500 )
