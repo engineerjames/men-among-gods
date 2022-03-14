@@ -1,6 +1,6 @@
 {
   "frameLimit": 10,
-  "hostIpAddress": "172.22.204.58",
+  "hostIpAddress": "172.22.192.145",
   "hostPort": 5555,
   "loggingEnabled": false,
   "networkThreadDelay": 50
