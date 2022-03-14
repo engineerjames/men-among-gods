@@ -19,7 +19,7 @@ static const sf::Vector2f playerSpritePosition { 402.0f, 32.0f };
 static const sf::Vector2f initialAttributePosition { 3.0f, 1.0f };
 static const sf::Vector2f initialSkillPosition { 3.0f, 113.0f };
 
-static const sf::Vector2f scrollBarMovementPerClick { 0.0f, 6.0f };
+static const sf::Vector2f scrollBarMovementPerClick { 0.0f, 3.0f };
 
 static const sf::Vector2f  plusAreaRectanglePosition { 134.0f, 2.0f };
 static const sf::Vector2f  plusAreaRectangleSize { 10.0f, 248.0f };

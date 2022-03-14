@@ -449,6 +449,7 @@ void SkillsAndAttributesDisplay::update()
   unsigned int j = 0;
   for ( unsigned int i = scrollPosition_; i < MAX_SKILLS; ++i )
   {
+
     // Player does not have the inspected skill
     if ( player.skill[ i ][ 0 ] == 0 )
     {
@@ -644,17 +645,14 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
   {
     sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
 
-    if ( scrollUpBox_.contains( mousePosition ) )
+    if ( scrollUpBox_.contains( mousePosition ) && scrollPosition_ > 0)
     {
-      if ( scrollPosition_ > 0 )
-      {
-        scrollPosition_--;
-      }
+        scrollPosition_ -= 5;
     }
 
-    if ( scrollDownBox_.contains( mousePosition ) )
+    if ( scrollDownBox_.contains( mousePosition ) && scrollPosition_ < 20 )
     {
-      scrollPosition_++;
+      scrollPosition_ += 5;
     }
 
     // 10 skills displayable at most
