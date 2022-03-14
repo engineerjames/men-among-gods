@@ -16,7 +16,7 @@ items::items()
 {
   std::cerr << "Attempting to load item templates..." << std::endl;
 
-  std::ifstream datFile { "./titem.dat", std::ios::binary | std::ios::in };
+  std::ifstream datFile { "./.dat/titem.dat", std::ios::binary | std::ios::in };
 
   for ( int i = 0; i < MAX_TITEMS; ++i )
   {

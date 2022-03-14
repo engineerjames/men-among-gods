@@ -18,7 +18,7 @@ characters::characters()
 
 void characters::loadTemplateFile( CharacterTemplates& templates, CharacterMap& map ) const
 {
-  std::ifstream datFile { "./tchar.dat", std::ios::binary | std::ios::in };
+  std::ifstream datFile { "./.dat/tchar.dat", std::ios::binary | std::ios::in };
 
   for ( int i = 0; i < MAX_TCHARS; ++i )
   {
@@ -36,7 +36,7 @@ void characters::loadTemplateFile( CharacterTemplates& templates, CharacterMap& 
 
 void characters::saveTemplateFile( const CharacterTemplates& templates ) const
 {
-  std::ofstream datFile { "./tchar.dat", std::ios::binary | std::ios::out };
+  std::ofstream datFile { "./.dat/tchar.dat", std::ios::binary | std::ios::out };
 
   for ( int i = 0; i < MAX_TCHARS; ++i )
   {
