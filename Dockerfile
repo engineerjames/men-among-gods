@@ -16,6 +16,6 @@ RUN apt-get install -y  \
 
 ADD . /mag
 WORKDIR /mag/src/server
-RUN cmake .
-RUN make
-RUN ./server
+RUN cmake -G"Unix Makefiles" -S ./ -B ./build
+RUN cmake --build ./build --parallel
+RUN ./build/server/server
