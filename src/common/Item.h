@@ -1,9 +1,9 @@
 #ifndef MEN_AMONG_GODS_ITEM_H
 #define MEN_AMONG_GODS_ITEM_H
 
-#include <json/json.h>
-
 #include <cstdint>
+
+#include <json/json.h>
 
 #pragma pack( push, 1 )
 struct item

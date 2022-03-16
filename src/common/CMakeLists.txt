@@ -4,12 +4,14 @@ set(target common)
 
 set(sources 
   Character.cpp
+  Item.cpp
   RankNames.cpp
   SkillTab.cpp
 )
 
 set(headers
   Character.h
+  Item.h
   RankNames.h
   SkillTab.h
   Constants.h
