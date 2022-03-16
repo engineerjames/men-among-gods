@@ -8,6 +8,7 @@
 
 #include "ClientTypes.h"
 #include "ConstantIdentifiers.h"
+#include "Player.h"
 #include "SkillTab.h"
 
 #include <SFML/Graphics.hpp>

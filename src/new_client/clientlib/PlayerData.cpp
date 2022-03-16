@@ -4,7 +4,6 @@
 #include <fstream>
 #include <iostream>
 
-#include <boost/archive/text_iarchive.hpp>
 #include <json/json.h>
 
 #include "ClientConfiguration.h"
@@ -570,18 +569,6 @@ void PlayerData::setUserNumber( long unsigned int usnr )
   okey_.usnr = usnr;
 }
 
-void PlayerData::saveToFile() const
-{
-  std::ofstream                 playerFile( "player.archive" );
-  boost::archive::text_oarchive playeroa { playerFile };
-
-  if ( playerFile.is_open() )
-  {
-    playeroa << clientSidePlayerInfo_;
-  }
-  playerFile.close();
-}
-
 unsigned int PlayerData::getOkeyUserNumber() const
 {
   return okey_.usnr;
@@ -748,14 +735,4 @@ void PlayerData::saveToJsonFile( const std::string& fileName ) const
   playerFile << root.toStyledString();
 
   std::cerr << "Saved player file to: ./" << fullFilePath << std::endl;
-}
-
-void PlayerData::loadFromFile( const std::string& filePath )
-{
-  std::ifstream                 playerFile( filePath );
-  boost::archive::text_iarchive ia { playerFile };
-
-  ia >> clientSidePlayerInfo_;
-
-  playerFile.close();
 }

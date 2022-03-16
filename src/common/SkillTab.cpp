@@ -1,5 +1,9 @@
 #include "SkillTab.h"
 
+#include <numeric>
+
+#include "Player.h"
+
 // clang-format off
 // NOLINTNEXTLINE
 const skilltab static_skilltab[SKILLTAB_SIZE]={
@@ -65,3 +69,87 @@ const skilltab static_skilltab[SKILLTAB_SIZE]={
 	{48,   'Z',   "", "", {0,0,0,}},
 	{49,   'Z',   "", "", {0,0,0,}}};
 // clang-format on
+
+int hp_needed( int v, cplayer& pl )
+{
+  if ( v >= pl.hp[ 2 ] )
+  {
+    return std::numeric_limits< int >::max();
+  }
+
+  return v * pl.hp[ 3 ];
+}
+
+int end_needed( int v, cplayer& pl )
+{
+  if ( v >= pl.end[ 2 ] )
+  {
+    return std::numeric_limits< int >::max();
+  }
+
+  return v * pl.end[ 3 ] / 2;
+}
+
+int mana_needed( int v, cplayer& pl )
+{
+  if ( v >= pl.mana[ 2 ] )
+  {
+    return std::numeric_limits< int >::max();
+  }
+
+  return v * pl.mana[ 3 ];
+}
+
+int attrib_needed( int n, int v, cplayer& pl )
+{
+  if ( v >= pl.attrib[ n ][ 2 ] )
+  {
+    return std::numeric_limits< int >::max();
+  }
+
+  return v * v * v * pl.attrib[ n ][ 3 ] / 20;
+}
+
+int skill_needed( int n, int v, cplayer& pl )
+{
+  if ( v >= pl.skill[ n ][ 2 ] )
+  {
+    return std::numeric_limits< int >::max();
+  }
+
+  return std::max( v, v * v * v * pl.skill[ n ][ 3 ] / 40 );
+}
+
+int getSkillNumber( std::string skillName )
+{
+  const skilltab* foundSkill = nullptr;
+
+  for ( int i = 0; i < SKILLTAB_SIZE; ++i )
+  {
+    if ( static_skilltab[ i ].name == skillName )
+    {
+      foundSkill = &static_skilltab[ i ];
+      break;
+    }
+  }
+
+  if ( foundSkill )
+  {
+    return foundSkill->nr;
+  }
+
+  return -1; // TODO: Find something better than a negative return sentinel value
+}
+
+int getBaseAttributeModifier( const std::string& skillName )
+{
+  for ( unsigned int i = 0; i < SKILLTAB_SIZE; ++i )
+  {
+    if ( static_skilltab[ i ].name == skillName )
+    {
+      return static_skilltab[ i ].attrib[ 0 ];
+    }
+  }
+
+  return -1;
+}
