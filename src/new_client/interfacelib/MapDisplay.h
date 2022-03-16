@@ -33,8 +33,21 @@ public:
   void loadFromFile( std::string filePath );
   void saveToFile() const;
 
+  struct MapSprite
+  {
+    sf::Sprite sprite;
+    int        index;
+
+    MapSprite( sf::Sprite sprite, int index )
+        : sprite( sprite )
+        , index( index )
+    {
+    }
+  };
+
 private:
-  void copysprite( int nr, int effect, int xpos, int ypos, int xoff, int yoff, unsigned char light, bool isCharacterSelected = false );
+  void copysprite( int index, int nr, int effect, int xpos, int ypos, int xoff, int yoff, unsigned char light, bool isCharacterSelected = false );
+  void copyEffectSprite( int index, int nr, int xpos, int ypos, int xoff, int yoff, sf::Color effectColor );
   sf::Vector2i dd_gputtext( int xpos, int ypos, std::string text, int xoff, int yoff );
 
   const sf::Font&                   font_;
@@ -43,7 +56,7 @@ private:
   GraphicsCache&                    cache_;
   const GraphicsIndex&              index_;
   const sf::RenderWindow&           window_;
-  std::vector< sf::Sprite >         spritesToDraw_;
+  std::vector< MapSprite >          spritesToDraw_;
   std::vector< sf::Text >           textToDraw_;
   std::vector< sf::RectangleShape > healthBarsToDraw_;
   int                               tileType_;
