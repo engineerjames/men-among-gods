@@ -4,14 +4,6 @@
 #include <cstdint>
 #include <cstring>
 
-static const constexpr int AT_BRAVE = 0;
-static const constexpr int AT_WILL  = 1;
-static const constexpr int AT_INT   = 2;
-static const constexpr int AT_AGIL  = 3;
-static const constexpr int AT_STREN = 4;
-
-static constexpr const std::size_t SKILLTAB_SIZE = 50;
-
 static const constexpr unsigned int KIN_MERCENARY   = ( 1u << 0 );
 static const constexpr unsigned int KIN_SEYAN_DU    = ( 1u << 1 );
 static const constexpr unsigned int KIN_PURPLE      = ( 1u << 2 );

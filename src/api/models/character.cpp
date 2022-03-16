@@ -2,7 +2,7 @@
 
 #include <array>
 
-#include "skilltab.h"
+#include "SkillTab.h"
 
 character character::fromJson( const Json::Value& json )
 {

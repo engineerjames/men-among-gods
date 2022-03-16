@@ -6,6 +6,7 @@ All rights reserved.
 
 **************************************************************************/
 
+#include <algorithm>
 #include <ctype.h>
 #include <fcntl.h>
 #include <malloc.h>
@@ -232,8 +233,8 @@ void reset_go( int xc, int yc )
 {
   int x, y, cn;
 
-  for ( y = max( 0, yc - 18 ); y < min( MAPY - 1, yc + 18 ); y++ )
-    for ( x = max( 0, xc - 18 ); x < min( MAPX - 1, xc + 18 ); x++ )
+  for ( y = std::max( 0, yc - 18 ); y < std::min( MAPY - 1, yc + 18 ); y++ )
+    for ( x = std::max( 0, xc - 18 ); x < std::min( MAPX - 1, xc + 18 ); x++ )
       if ( ( cn = map[ x + y * MAPX ].ch ) != 0 )
         see[ cn ].x = see[ cn ].y = 0;
 
@@ -330,10 +331,10 @@ void compute_dlight( int xc, int yc )
 
   prof = prof_start();
 
-  xs = max( 0, xc - LIGHTDIST );
-  ys = max( 0, yc - LIGHTDIST );
-  xe = min( MAPX - 1, xc + 1 + LIGHTDIST );
-  ye = min( MAPY - 1, yc + 1 + LIGHTDIST );
+  xs = std::max( 0, xc - LIGHTDIST );
+  ys = std::max( 0, yc - LIGHTDIST );
+  xe = std::min( MAPX - 1, xc + 1 + LIGHTDIST );
+  ye = std::min( MAPY - 1, yc + 1 + LIGHTDIST );
 
   for ( y = ys; y < ye; y++ )
   {
@@ -366,10 +367,10 @@ void remove_lights( int x, int y )
 
   prof = prof_start();
 
-  xs = max( 1, x - LIGHTDIST );
-  ys = max( 1, y - LIGHTDIST );
-  xe = min( MAPX - 2, x + 1 + LIGHTDIST );
-  ye = min( MAPY - 2, y + 1 + LIGHTDIST );
+  xs = std::max( 1, x - LIGHTDIST );
+  ys = std::max( 1, y - LIGHTDIST );
+  xe = std::min( MAPX - 2, x + 1 + LIGHTDIST );
+  ye = std::min( MAPY - 2, y + 1 + LIGHTDIST );
 
   for ( y = ys; y < ye; y++ )
   {
@@ -407,10 +408,10 @@ void add_lights( int x, int y )
 
   prof = prof_start();
 
-  xs = max( 1, x - LIGHTDIST );
-  ys = max( 1, y - LIGHTDIST );
-  xe = min( MAPX - 2, x + 1 + LIGHTDIST );
-  ye = min( MAPY - 2, y + 1 + LIGHTDIST );
+  xs = std::max( 1, x - LIGHTDIST );
+  ys = std::max( 1, y - LIGHTDIST );
+  xe = std::min( MAPX - 2, x + 1 + LIGHTDIST );
+  ye = std::min( MAPY - 2, y + 1 + LIGHTDIST );
 
   for ( y = ys; y < ye; y++ )
   {
@@ -593,35 +594,6 @@ int scale_exps( int cn, int co, int exp )
 {
   return scale_exps2( cn, points2rank( ch[ co ].points_tot ), exp );
 }
-
-/* CS, 991128: Ranks rearranged for clarity */
-char* rank_name[ RANKS ] = {
-    "Private",
-    "Private First Class",
-    "Lance Corporal", // 0 1 2
-    "Corporal",
-    "Sergeant",
-    "Staff Sergeant", // 3 4 5
-    "Master Sergeant",
-    "First Sergeant",
-    "Sergeant Major", // 6 7 8
-    "Second Lieutenant",
-    "First Lieutenant",
-    "Captain", // 9 10 11
-
-    "Major",
-    "Lieutenant Colonel",
-    "Colonel", // 12 13 14
-    "Brigadier General",
-    "Major General",
-    "Lieutenant General", // 15 16 17
-    "General",
-    "Field Marshal",
-    "Knight of Astonia", // 18 19 20
-    "Baron of Astonia",
-    "Earl of Astonia",
-    "Warlord of Astonia" // 21 22 23
-};
 
 char* who_rank_name[ RANKS ] = {
     " Pvt ", " PFC ", " LCp ", " Cpl ", " Sgt ", " SSg ", " MSg ", " 1Sg ", " SgM ", "2Lieu", "1Lieu", "Captn",
@@ -1488,7 +1460,7 @@ void soultrans_equipment( int cn, int in, int in2 )
   it[ in2 ].temp = 0;
   it[ in2 ].flags |= IF_UPDATE | IF_IDENTIFIED | IF_NOREPAIR | IF_SOULSTONE;
 
-  it[ in2 ].min_rank = max( it[ in ].data[ 0 ], it[ in2 ].min_rank );
+  it[ in2 ].min_rank = std::max( static_cast< int >( it[ in ].data[ 0 ] ), static_cast< int >( it[ in2 ].min_rank ) );
 
   if ( ! it[ in2 ].max_damage )
     it[ in2 ].max_damage = 60000;
@@ -1670,7 +1642,7 @@ void test_filesend(int nr,int size)
 
         if (trans<5) return;
 
-        trans=min(1024,trans);
+        trans=std::min(1024,trans);
 
         plog(nr,"trans=%d, allow=%d, sent=%d",trans,(SIZE*player[nr].rtick),sent);
 

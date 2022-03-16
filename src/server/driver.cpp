@@ -6,6 +6,7 @@ All rights reserved.
 
 **************************************************************************/
 
+#include <algorithm>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -63,7 +64,7 @@ DATA usage by all NPC drivers
 70:     last time we called our god for help
 71:     talkativity (CHD_TALKATIVE)
 72:     area of knowledge
-73:     random walk: max distance to origin
+73:     random walk: min distance to origin
 74:     last time we created a ghost
 75:     last time we stunned someone
 76:     last known position of an enemy
@@ -137,7 +138,7 @@ int get_frust_y_off( int f )
 
 int npc_dist( int cn, int co )
 {
-  return max( abs( ch[ cn ].x - ch[ co ].x ), abs( ch[ cn ].y - ch[ co ].y ) );
+  return std::max( abs( ch[ cn ].x - ch[ co ].x ), abs( ch[ cn ].y - ch[ co ].y ) );
 }
 
 int npc_add_enemy( int cn, int co, int always )
@@ -882,7 +883,7 @@ int npc_see( int cn, int co )
     {
       if ( ch[ cn ].data[ 95 ] == 2 && ch[ cn ].data[ 93 ] )
       { // attack distance
-        dist = max( abs( ( ch[ cn ].data[ 29 ] % MAPX ) - ch[ co ].x ), abs( ( ch[ cn ].data[ 29 ] / MAPX ) - ch[ co ].y ) );
+        dist = std::max( abs( ( ch[ cn ].data[ 29 ] % MAPX ) - ch[ co ].x ), abs( ( ch[ cn ].data[ 29 ] / MAPX ) - ch[ co ].y ) );
         if ( dist > ch[ cn ].data[ 93 ] )
         {
           co = 0;
@@ -1173,13 +1174,14 @@ int npc_try_spell( int cn, int co, int spell )
     return 0;
 
   // dont curse if chances of success are bad
-  if ( spell == SK_CURSE && 10 * ch[ cn ].skill[ SK_CURSE ][ 5 ] / max( 1, ch[ co ].skill[ SK_RESIST ][ 5 ] ) < 7 )
+  if ( spell == SK_CURSE &&
+       10 * ch[ cn ].skill[ SK_CURSE ][ 5 ] / std::max( 1, static_cast< int >( ch[ co ].skill[ SK_RESIST ][ 5 ] ) ) < 7 )
   {
     return 0;
   }
 
   // dont stun if chances of success are bad
-  if ( spell == SK_STUN && 10 * ch[ cn ].skill[ SK_STUN ][ 5 ] / max( 1, ch[ co ].skill[ SK_RESIST ][ 5 ] ) < 5 )
+  if ( spell == SK_STUN && 10 * ch[ cn ].skill[ SK_STUN ][ 5 ] / std::max( 1, static_cast< int >( ch[ co ].skill[ SK_RESIST ][ 5 ] ) ) < 5 )
   {
     return 0;
   }
@@ -1554,9 +1556,9 @@ int npc_driver_high( int cn )
   else
     indoor1 = 0;
 
-  for ( y = max( ch[ cn ].y - 8, 1 ); y < min( ch[ cn ].y + 8, MAPY - 1 ); y++ )
+  for ( y = std::max( ch[ cn ].y - 8, 1 ); y < std::min( ch[ cn ].y + 8, MAPY - 1 ); y++ )
   {
-    for ( x = max( ch[ cn ].x - 8, 1 ); x < min( ch[ cn ].x + 8, MAPX - 1 ); x++ )
+    for ( x = std::max( ch[ cn ].x - 8, 1 ); x < std::min( ch[ cn ].x + 8, MAPX - 1 ); x++ )
     {
       if ( ( in = map[ x + y * MAPX ].it ) != 0 )
       {
@@ -1915,9 +1917,9 @@ int npc_grave_logic( int cn )
 {
   int x, y, in;
 
-  for ( y = max( ch[ cn ].y - 8, 1 ); y < min( ch[ cn ].y + 8, MAPY - 1 ); y++ )
+  for ( y = std::max( ch[ cn ].y - 8, 1 ); y < std::min( ch[ cn ].y + 8, MAPY - 1 ); y++ )
   {
-    for ( x = max( ch[ cn ].x - 8, 1 ); x < min( ch[ cn ].x + 8, MAPX - 1 ); x++ )
+    for ( x = std::max( ch[ cn ].x - 8, 1 ); x < std::min( ch[ cn ].x + 8, MAPX - 1 ); x++ )
     {
       if ( ( in = map[ x + y * MAPX ].it ) != 0 )
       {

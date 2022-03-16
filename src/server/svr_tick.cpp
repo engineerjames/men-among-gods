@@ -6,6 +6,7 @@ All rights reserved.
 
 **************************************************************************/
 
+#include <algorithm>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -1803,7 +1804,7 @@ int cl_light_26( int n, int dosend, struct cmap* cmap, struct cmap* smap )
     *( unsigned short* ) ( buf + 1 ) = ( unsigned short ) ( n | ( ( unsigned short ) ( smap[ n ].light ) << 12 ) );
     cmap[ n ].light                  = smap[ n ].light;
 
-    for ( m = n + 2, p = 3; m < min( n + 26 + 2, TILEX * TILEY ); m += 2, p++ )
+    for ( m = n + 2, p = 3; m < std::min( n + 26 + 2, TILEX * TILEY ); m += 2, p++ )
     {
       *( unsigned char* ) ( buf + p ) = smap[ m ].light | ( smap[ m - 1 ].light << 4 );
       cmap[ m ].light                 = smap[ m ].light;
@@ -1852,7 +1853,7 @@ int cl_light_three( int n, int dosend, struct cmap* cmap, struct cmap* smap )
     *( unsigned short* ) ( buf + 1 ) = ( unsigned short ) ( n | ( ( unsigned short ) ( smap[ n ].light ) << 12 ) );
     cmap[ n ].light                  = smap[ n ].light;
 
-    for ( m = n + 2, p = 3; m < min( n + 2 + 2, TILEX * TILEY ); m += 2, p++ )
+    for ( m = n + 2, p = 3; m < std::min( n + 2 + 2, TILEX * TILEY ); m += 2, p++ )
     {
       *( unsigned char* ) ( buf + p ) = smap[ m ].light | ( smap[ m - 1 ].light << 4 );
       cmap[ m ].light                 = smap[ m ].light;
@@ -1884,7 +1885,7 @@ int cl_light_seven( int n, int dosend, struct cmap* cmap, struct cmap* smap )
     *( unsigned short* ) ( buf + 1 ) = ( unsigned short ) ( n | ( ( unsigned short ) ( smap[ n ].light ) << 12 ) );
     cmap[ n ].light                  = smap[ n ].light;
 
-    for ( m = n + 2, p = 3; m < min( n + 6 + 2, TILEX * TILEY ); m += 2, p++ )
+    for ( m = n + 2, p = 3; m < std::min( n + 6 + 2, TILEX * TILEY ); m += 2, p++ )
     {
       *( unsigned char* ) ( buf + p ) = smap[ m ].light | ( smap[ m - 1 ].light << 4 );
       cmap[ m ].light                 = smap[ m ].light;
@@ -2061,17 +2062,17 @@ void plr_change( int nr )
 
     for ( n = 0; n < 20; n++ )
     {
-      if ( cpl->spell[ n ] != ( in = ch[ cn ].spell[ n ] ) || ( cpl->active[ n ] != it[ in ].active * 16 / max( 1, it[ in ].duration ) ) ||
-           ( it[ in ].flags & IF_UPDATE ) )
+      if ( cpl->spell[ n ] != ( in = ch[ cn ].spell[ n ] ) ||
+           ( cpl->active[ n ] != it[ in ].active * 16 / std::max( 1u, it[ in ].duration ) ) || ( it[ in ].flags & IF_UPDATE ) )
       {
         buf[ 0 ]                        = SV_SETCHAR_SPELL;
         *( unsigned long* ) ( buf + 1 ) = n;
         if ( in )
         {
           *( short int* ) ( buf + 5 ) = it[ in ].sprite[ 1 ];
-          *( short int* ) ( buf + 7 ) = it[ in ].active * 16 / max( 1, it[ in ].duration );
+          *( short int* ) ( buf + 7 ) = it[ in ].active * 16 / std::max( 1u, it[ in ].duration );
           cpl->spell[ n ]             = in;
-          cpl->active[ n ]            = ( it[ in ].active * 16 / max( 1, it[ in ].duration ) );
+          cpl->active[ n ]            = ( it[ in ].active * 16 / std::max( 1u, it[ in ].duration ) );
           it[ in ].flags &= ~IF_UPDATE;
         }
         else
@@ -2442,7 +2443,7 @@ int do_char_calc_light( int cn, int light )
   if ( light == 0 && ch[ cn ].skill[ SK_PERCEPT ][ 5 ] > 150 )
     light = 1;
 
-  val = light * min( ch[ cn ].skill[ SK_PERCEPT ][ 5 ], 10 ) / 10;
+  val = light * std::min( static_cast< int >( ch[ cn ].skill[ SK_PERCEPT ][ 5 ] ), 10 ) / 10;
 
   if ( val > 255 )
     val = 255;
@@ -2652,7 +2653,7 @@ void plr_getmap_complete( int nr )
       // calculate light
       tmp = check_dlightm( m );
 
-      light = max( map[ m ].light, tmp );
+      light = std::max( static_cast< int >( map[ m ].light ), tmp );
       light = do_char_calc_light( cn, light );
       if ( light <= 5 && ( ch[ cn ].flags & CF_INFRARED ) )
         infra = 1;
@@ -2891,7 +2892,7 @@ void plr_getmap_fast( int nr )
       // calculate light
       tmp = check_dlightm( m );
 
-      light = max( map[ m ].light, tmp );
+      light = std::max( static_cast< int >( map[ m ].light ), tmp );
       light = do_char_calc_light( cn, light );
       if ( light <= 5 && ( ch[ cn ].flags & CF_INFRARED ) )
         infra = 1;

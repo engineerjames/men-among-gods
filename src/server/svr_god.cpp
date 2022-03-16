@@ -6,6 +6,7 @@ All rights reserved.
 
 **************************************************************************/
 
+#include <algorithm>
 #include <ctype.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -16,6 +17,8 @@ All rights reserved.
 
 #include "driver.h"
 #include "server.h"
+
+#include "RankNames.h"
 
 static char* mkp( void )
 {
@@ -1168,7 +1171,7 @@ void god_summon( int cn, char* spec1, char* spec2, char* spec3 )
     titlecase_str( spec1 );
     if ( *spec3 )
     { // 3 args
-      which = max( atoi( spec3 ), 1 );
+      which = std::max( atoi( spec3 ), 1 );
     }
     while ( count < which )
     {
@@ -1202,11 +1205,11 @@ void god_summon( int cn, char* spec1, char* spec2, char* spec3 )
       {
         if ( count == 0 )
         {
-          do_char_log( cn, 0, "Couldn't find a %s %s.\n", spec1, rank_name[ atoi( spec2 ) ] );
+          do_char_log( cn, 0, "Couldn't find a %s %s.\n", spec1, MenAmongGods::rankToString[ atoi( spec2 ) ] );
         }
         else
         {
-          do_char_log( cn, 0, "Only found %d %s %s.\n", count, spec1, rank_name[ atoi( spec2 ) ] );
+          do_char_log( cn, 0, "Only found %d %s %s.\n", count, spec1, MenAmongGods::rankToString[ atoi( spec2 ) ] );
         }
       }
       return;
@@ -1409,7 +1412,7 @@ int god_thrall( int cn, char* spec1, char* spec2 )
       }
       else
       {
-        do_char_log( cn, 0, "Couldn't find a %s %s.\n", spec1, rank_name[ atoi( spec2 ) ] );
+        do_char_log( cn, 0, "Couldn't find a %s %s.\n", spec1, MenAmongGods::rankToString[ atoi( spec2 ) ] );
       }
       return 0;
     }
@@ -2850,7 +2853,7 @@ void god_gargoyle( int cn )
   }
 }
 
-void god_minor_racechange( int cn, int t ) // note: cannot deal with values which are already higher than the new max!
+void god_minor_racechange( int cn, int t ) // note: cannot deal with values which are already higher than the new std::max!
 {
   int n;
 

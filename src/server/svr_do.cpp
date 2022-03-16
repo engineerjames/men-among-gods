@@ -18,6 +18,8 @@ All rights reserved.
 
 #include "server.h"
 
+#include "RankNames.h"
+
 #define KILLERONLY
 
 #define AREASIZE 12
@@ -67,10 +69,10 @@ void do_area_log( int cn, int co, int xs, int ys, int font, char* format, ... ) 
   vsprintf( buf, format, args );
   va_end( args );
 
-  for ( y = max( 0, ys - 12 ); y < min( MAPY, ys + 13 ); y++ )
+  for ( y = std::max( 0, ys - 12 ); y < std::min( MAPY, ys + 13 ); y++ )
   {
     m = y * MAPX;
-    for ( x = max( 0, xs - 12 ); x < min( MAPX, xs + 13 ); x++ )
+    for ( x = std::max( 0, xs - 12 ); x < std::min( MAPX, xs + 13 ); x++ )
     {
       if ( ( cc = map[ x + m ].ch ) != 0 )
       {
@@ -150,10 +152,10 @@ void do_area_sound( int cn, int co, int xs, int ys, int nr )
   unsigned long long prof;
 
   prof = prof_start();
-  for ( y = max( 0, ys - 8 ); y < min( MAPY, ys + 9 ); y++ )
+  for ( y = std::max( 0, ys - 8 ); y < std::min( MAPY, ys + 9 ); y++ )
   {
     m = y * MAPX;
-    for ( x = max( 0, xs - 8 ); x < min( MAPX, xs + 9 ); x++ )
+    for ( x = std::max( 0, xs - 8 ); x < std::min( MAPX, xs + 9 ); x++ )
     {
       if ( ( cc = map[ x + m ].ch ) != 0 )
       {
@@ -194,10 +196,10 @@ void do_area_notify( int cn, int co, int xs, int ys, int type, int dat1, int dat
 
   prof = prof_start();
 
-  for ( y = max( 0, ys - AREASIZE ); y < min( MAPY, ys + AREASIZE + 1 ); y++ )
+  for ( y = std::max( 0, ys - AREASIZE ); y < std::min( MAPY, ys + AREASIZE + 1 ); y++ )
   {
     m = y * MAPX;
-    for ( x = max( 0, xs - AREASIZE ); x < min( MAPX, xs + AREASIZE + 1 ); x++ )
+    for ( x = std::max( 0, xs - AREASIZE ); x < std::min( MAPX, xs + AREASIZE + 1 ); x++ )
     {
       if ( ( cc = map[ x + m ].ch ) != 0 )
       {
@@ -1050,7 +1052,7 @@ void do_group( int cn, char* name )
       }
     }
 
-    switch ( max( points2rank( ch[ cn ].points_tot ), points2rank( ch[ co ].points_tot ) ) )
+    switch ( std::max( points2rank( ch[ cn ].points_tot ), points2rank( ch[ co ].points_tot ) ) )
     {
     case 21:
       allow = 4;
@@ -1551,7 +1553,7 @@ void do_view_exp_to_rank( int cn )
 
   int expNeededToRank = expToNextRank - ch[ cn ].points_tot;
 
-  do_char_log( cn, 1, "You need %i exp for %s.\n", expNeededToRank, rank_name[ currentRank + 1 ] );
+  do_char_log( cn, 1, "You need %i exp for %s.\n", expNeededToRank, MenAmongGods::rankToString[ currentRank + 1 ] );
 }
 
 extern int penta_needed;
@@ -3012,7 +3014,7 @@ void do_char_killed( int cn, int co )
   if ( ch[ co ].flags & ( CF_PLAYER ) )
   {
     if ( ch[ co ].luck < 0 )
-      ch[ co ].luck = min( 0, ch[ co ].luck + 10 );
+      ch[ co ].luck = std::min( 0, ch[ co ].luck + 10 );
 
     // set killed by message (buggy!)
     ch[ co ].data[ 14 ]++;
@@ -3388,7 +3390,7 @@ int get_fight_skill( int cn )
 
   in = ch[ cn ].worn[ WN_RHAND ];
   if ( ! in )
-    return max( ch[ cn ].skill[ SK_KARATE ][ 5 ], ch[ cn ].skill[ SK_HAND ][ 5 ] );
+    return std::max( ch[ cn ].skill[ SK_KARATE ][ 5 ], ch[ cn ].skill[ SK_HAND ][ 5 ] );
 
   if ( it[ in ].flags & IF_WP_SWORD )
     return ch[ cn ].skill[ SK_SWORD ][ 5 ];
@@ -3401,7 +3403,7 @@ int get_fight_skill( int cn )
   if ( it[ in ].flags & IF_WP_TWOHAND )
     return ch[ cn ].skill[ SK_TWOHAND ][ 5 ];
 
-  return max( ch[ cn ].skill[ SK_KARATE ][ 5 ], ch[ cn ].skill[ SK_HAND ][ 5 ] );
+  return std::max( ch[ cn ].skill[ SK_KARATE ][ 5 ], ch[ cn ].skill[ SK_HAND ][ 5 ] );
 }
 
 void do_give_exp( int cn, int p, int gflag, int rank )
@@ -4039,7 +4041,7 @@ int do_char_can_see( int cn, int co )
   // modify by light:
   if ( ! ( ch[ cn ].flags & CF_INFRARED ) )
   {
-    light = max( map[ ch[ co ].x + ch[ co ].y * MAPX ].light, check_dlight( ch[ co ].x, ch[ co ].y ) );
+    light = std::max( static_cast< int >( map[ ch[ co ].x + ch[ co ].y * MAPX ].light ), check_dlight( ch[ co ].x, ch[ co ].y ) );
     light = do_char_calc_light( cn, light );
 
     if ( light == 0 )
@@ -4100,7 +4102,7 @@ int do_char_can_see_item( int cn, int in )
   // modify by light:
   if ( ! ( ch[ cn ].flags & CF_INFRARED ) )
   {
-    light = max( map[ it[ in ].x + it[ in ].y * MAPX ].light, check_dlight( it[ in ].x, it[ in ].y ) );
+    light = std::max( static_cast< int >( map[ it[ in ].x + it[ in ].y * MAPX ].light ), check_dlight( it[ in ].x, it[ in ].y ) );
     light = do_char_calc_light( cn, light );
 
     if ( light == 0 )
@@ -4777,7 +4779,7 @@ int mana_needed( int v, int diff )
 
 int skill_needed( int v, int diff )
 {
-  return max( v, v * v * v * diff / 40 );
+  return std::max( v, v * v * v * diff / 40 );
 }
 
 int do_raise_attrib( int cn, int nr )
@@ -5025,7 +5027,7 @@ void do_look_item( int cn, int in )
     {
       int percent;
 
-      percent = min( 100, 100 * ( ch[ cn ].points_tot / 10 ) / ( it[ in ].data[ 4 ] + 1 ) );
+      percent = std::min( 100, static_cast< int >( 100 * ( ch[ cn ].points_tot / 10 ) / ( it[ in ].data[ 4 ] + 1 ) ) );
 
       if ( percent < 50 )
         do_char_log( cn, 2, "You sense that it's too early in your career to touch this pole.\n" );
@@ -5591,7 +5593,7 @@ void do_look_char( int cn, int co, int godflag, int autoflag, int lootflag )
     {
       buf[ 0 ] = SV_LOOK6;
       buf[ 1 ] = n;
-      for ( m = n; m < min( 40, n + 2 ); m++ )
+      for ( m = n; m < std::min( 40, n + 2 ); m++ )
       {
         if ( ( in = ch[ co ].item[ m ] ) != 0 )
         {
@@ -5617,7 +5619,7 @@ void do_look_char( int cn, int co, int godflag, int autoflag, int lootflag )
     {
       buf[ 0 ] = SV_LOOK6;
       buf[ 1 ] = n + 40;
-      for ( m = n; m < min( 20, n + 2 ); m++ )
+      for ( m = n; m < std::min( 20, n + 2 ); m++ )
       {
         if ( ( in = ch[ co ].worn[ m ] ) != 0 && ( ch[ co ].flags & CF_BODY ) )
         {
@@ -5763,7 +5765,7 @@ void do_look_depot( int cn, int co )
   {
     buf[ 0 ] = SV_LOOK6;
     buf[ 1 ] = n;
-    for ( m = n; m < min( 62, n + 2 ); m++ )
+    for ( m = n; m < std::min( 62, n + 2 ); m++ )
     {
       if ( ( in = ch[ co ].depot[ m ] ) != 0 )
       {
@@ -5972,10 +5974,10 @@ void do_add_light( int xc, int yc, int stren )
   else
     flag = 0;
 
-  xs = max( 0, xc - LIGHTDIST );
-  ys = max( 0, yc - LIGHTDIST );
-  xe = min( MAPX - 1, xc + 1 + LIGHTDIST );
-  ye = min( MAPY - 1, yc + 1 + LIGHTDIST );
+  xs = std::max( 0, xc - LIGHTDIST );
+  ys = std::max( 0, yc - LIGHTDIST );
+  xe = std::min( MAPX - 1, xc + 1 + LIGHTDIST );
+  ye = std::min( MAPY - 1, yc + 1 + LIGHTDIST );
 
   for ( y = ys; y < ye; y++ )
   {
@@ -6377,7 +6379,7 @@ void do_check_new_level( int cn )
     if ( n < MAXCHARS )
     {
       char message[ 100 ];
-      sprintf( message, "Hear ye, hear ye! %s has attained the rank of %s!", ch[ cn ].name, rank_name[ rank ] );
+      sprintf( message, "Hear ye, hear ye! %s has attained the rank of %s!", ch[ cn ].name, MenAmongGods::rankToString[ rank ] );
       do_shout( n, message );
     }
 
@@ -6437,7 +6439,7 @@ void do_seen( int cn, char* cco )
     time_t    last, now;
     struct tm tlast, tnow, *tmp;
 
-    last = max( ch[ co ].login_date, ch[ co ].logout_date );
+    last = std::max( ch[ co ].login_date, ch[ co ].logout_date );
     now  = time( NULL );
 
     tmp   = localtime( &last );
@@ -6454,7 +6456,7 @@ void do_seen( int cn, char* cco )
   }
   else
   {
-    last_date    = max( ch[ co ].login_date, ch[ co ].logout_date ) / ( 24 * 3600 );
+    last_date    = std::max( ch[ co ].login_date, ch[ co ].logout_date ) / ( 24 * 3600 );
     current_date = time( NULL ) / ( 24 * 3600 );
     days         = current_date - last_date;
     switch ( days )

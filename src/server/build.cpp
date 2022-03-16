@@ -6,6 +6,7 @@ All rights reserved.
 
 **************************************************************************/
 
+#include <algorithm>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -41,7 +42,7 @@ int build_item( int nr, int x, int y )
         if ( it[ n ].used == USE_EMPTY )
           continue;
         if ( it[ n ].driver == 33 )
-          m = max( it[ n ].data[ 0 ], m );
+          m = std::max( static_cast< int >( it[ n ].data[ 0 ] ), m );
       }
 
       m++;

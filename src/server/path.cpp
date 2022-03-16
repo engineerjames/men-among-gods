@@ -6,6 +6,7 @@ All rights reserved.
 
 **************************************************************************/
 
+#include <algorithm>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
@@ -72,7 +73,7 @@ static int cost( int fx, int fy, int cdir )
     ndir     = drv_dcoor2dir( tx2 - fx, ty2 - fy );
     dirdiff2 = drv_turncount( cdir, ndir );
 
-    return min( xcost( fx, fy, tx1, ty1 ) + 12 + dirdiff1, xcost( fx, fy, tx2, ty2 ) + dirdiff2 );
+    return std::min( xcost( fx, fy, tx1, ty1 ) + 12 + dirdiff1, xcost( fx, fy, tx2, ty2 ) + dirdiff2 );
   }
 }
 
@@ -343,9 +344,9 @@ int pathfinder( int cn, int x1, int y1, int flag, int x2, int y2 )
     return -1;
 
   if ( ch[ cn ].attack_cn || ( ! ( ch[ cn ].flags & ( CF_PLAYER | CF_USURP ) ) && ch[ cn ].data[ 78 ] ) )
-    maxstep = max( abs( ch[ cn ].x - x1 ), abs( ch[ cn ].y - y1 ) ) * 4 + 50;
+    maxstep = std::max( abs( ch[ cn ].x - x1 ), abs( ch[ cn ].y - y1 ) ) * 4 + 50;
   else
-    maxstep = max( abs( ch[ cn ].x - x1 ), abs( ch[ cn ].y - y1 ) ) * 8 + 100;
+    maxstep = std::max( abs( ch[ cn ].x - x1 ), abs( ch[ cn ].y - y1 ) ) * 8 + 100;
 
   if ( ch[ cn ].temp == 498 )
     maxstep += 4000; // hack for grolmy (stunrun.c)

@@ -63,6 +63,7 @@ else()
 endif()
 
 add_subdirectory(src/new_client)
+add_subdirectory(src/common)
 
 # Currently the unit tests won't link with MinGW for some reason
 if (NOT MINGW)

@@ -1,8 +1,8 @@
-#include "skilltab.h"
+#include "SkillTab.h"
 
 // clang-format off
 // NOLINTNEXTLINE
-skilltab static_skilltab[SKILLTAB_SIZE]={
+const skilltab static_skilltab[SKILLTAB_SIZE]={
 	{0,     'C',    "Hand to Hand", "Fighting without weapons.",                    {AT_BRAVE,AT_AGIL,AT_STREN}},
 	{1,     'C',    "Karate",       "Fighting without weapons and doing damage.",   {AT_BRAVE,AT_AGIL,AT_STREN}},
 	{2,     'C',    "Dagger",       "Fighting with daggers or similiar weapons.",   {AT_BRAVE,AT_AGIL,AT_INT}},

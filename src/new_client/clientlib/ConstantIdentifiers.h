@@ -9,12 +9,6 @@ static const float LOOK_TIME_IN_SECONDS = 10.0f;
 // Based heavily off of common.h
 static const std::string   MNAME      = "Men Among Gods";
 
-static const constexpr int AT_BRAVE = 0;
-static const constexpr int AT_WILL  = 1;
-static const constexpr int AT_INT   = 2;
-static const constexpr int AT_AGIL  = 3;
-static const constexpr int AT_STREN = 4;
-
 static const constexpr int   FONT_SIZE      = 10;
 static const constexpr float LETTER_SPACING = 1.0f;
 

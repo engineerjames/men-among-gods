@@ -8,8 +8,11 @@
 
 #include "ClientTypes.h"
 #include "ConstantIdentifiers.h"
+#include "SkillTab.h"
 
 #include <SFML/Graphics.hpp>
+
+struct skilltab;
 
 class PlayerData
 {
@@ -127,7 +130,7 @@ private:
   bool                                     playerDataHasChanged_;
   cplayer                                  clientSidePlayerInfo_; // This is more the truth of what your character is...
   key                                      okey_;
-  skilltab*                                skillsList_;
+  std::array< skilltab, SKILLTAB_SIZE >    skillsList_;
   look                                     look_;
   mutable std::mutex                       ioMutex_;
   std::string                              password_; // TODO: This is super insecure to store it like this long-term

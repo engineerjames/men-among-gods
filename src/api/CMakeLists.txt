@@ -7,17 +7,15 @@ set(target model)
 set(sources 
   models/character.cpp
   models/item.cpp
-  models/skilltab.cpp
 )
 
 set(headers 
   models/character.h
   models/item.h
-  models/skilltab.h
 )
 
 add_library(${target} ${sources} ${headers})
-target_link_libraries(${target} PRIVATE JsonCpp::JsonCpp)
+target_link_libraries(${target} PRIVATE JsonCpp::JsonCpp common)
 target_include_directories(${target} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/models)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS})
 target_compile_definitions(${target} PRIVATE ${PROJECT_CXX_DEFINITIONS})

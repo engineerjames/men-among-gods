@@ -6,6 +6,7 @@ All rights reserved.
 
 **************************************************************************/
 
+#include <algorithm>
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
@@ -61,7 +62,7 @@ int chance_base( int cn, int skill, int d20, int power )
 {
   int chance;
 
-  chance = d20 * skill / max( 1, power );
+  chance = d20 * skill / std::max( 1, power );
 
   if ( ch[ cn ].flags & ( CF_PLAYER ) )
     if ( ch[ cn ].luck < 0 )
@@ -302,7 +303,7 @@ int spell_light( int cn, int co, int power )
   power = spell_race_mod( power, ch[ cn ].kindred );
   strcpy( it[ in ].name, "Light" );
   it[ in ].flags |= IF_SPELL;
-  it[ in ].light[ 1 ]  = min( 250, power * 4 );
+  it[ in ].light[ 1 ]  = std::min( 250, power * 4 );
   it[ in ].sprite[ 1 ] = 85;
   it[ in ].duration = it[ in ].active = 18 * 60 * 30;
   it[ in ].temp                       = SK_LIGHT;
@@ -1138,10 +1139,10 @@ void skill_warcry( int cn )
 
   power = ch[ cn ].skill[ SK_WARCRY ][ 5 ];
 
-  xf = max( 1, ch[ cn ].x - 10 );
-  yf = max( 1, ch[ cn ].y - 10 );
-  xt = min( MAPX - 1, ch[ cn ].x + 10 );
-  yt = min( MAPY - 1, ch[ cn ].y + 10 );
+  xf = std::max( 1, ch[ cn ].x - 10 );
+  yf = std::max( 1, ch[ cn ].y - 10 );
+  xt = std::min( MAPX - 1, ch[ cn ].x + 10 );
+  yt = std::min( MAPY - 1, ch[ cn ].y + 10 );
 
   for ( x = xf; x < xt; x++ )
   {
@@ -1539,7 +1540,7 @@ void skill_recall( int cn )
   strcpy( it[ in ].name, "Recall" );
   it[ in ].flags |= IF_SPELL;
   it[ in ].sprite[ 1 ] = 90;
-  it[ in ].duration = it[ in ].active = max( TICKS / 2, 60 - ( ch[ cn ].skill[ SK_RECALL ][ 5 ] / 4 ) );
+  it[ in ].duration = it[ in ].active = std::max( TICKS / 2, 60 - ( ch[ cn ].skill[ SK_RECALL ][ 5 ] / 4 ) );
   it[ in ].temp                       = SK_RECALL;
   it[ in ].power                      = ch[ cn ].skill[ SK_RECALL ][ 5 ];
   it[ in ].data[ 0 ]                  = ch[ cn ].temple_x;
@@ -1953,20 +1954,20 @@ void skill_ghost( int cn )
   for ( n = 0; n < 5; n++ )
   {
     tmp                       = base;
-    tmp                       = tmp * 3 / max( 1, ch[ cc ].attrib[ n ][ 3 ] );
-    ch[ cc ].attrib[ n ][ 0 ] = max( 10, min( ch[ cc ].attrib[ n ][ 2 ], tmp ) );
+    tmp                       = tmp * 3 / std::max( 1, static_cast< int >( ch[ cc ].attrib[ n ][ 3 ] ) );
+    ch[ cc ].attrib[ n ][ 0 ] = std::max( 10, std::min( static_cast< int >( ch[ cc ].attrib[ n ][ 2 ] ), tmp ) );
   }
 
   for ( n = 0; n < 50; n++ )
   {
     tmp = base;
-    tmp = tmp * 3 / max( 1, ch[ cc ].skill[ n ][ 3 ] );
+    tmp = tmp * 3 / std::max( 1, static_cast< int >( ch[ cc ].skill[ n ][ 3 ] ) );
     if ( ch[ cc ].skill[ n ][ 2 ] )
-      ch[ cc ].skill[ n ][ 0 ] = min( ch[ cc ].skill[ n ][ 2 ], tmp );
+      ch[ cc ].skill[ n ][ 0 ] = std::min( static_cast< int >( ch[ cc ].skill[ n ][ 2 ] ), tmp );
   }
 
-  ch[ cc ].hp[ 0 ]   = max( 50, min( ch[ cc ].hp[ 2 ], base * 5 ) );
-  ch[ cc ].end[ 0 ]  = max( 50, min( ch[ cc ].end[ 2 ], base * 5 ) );
+  ch[ cc ].hp[ 0 ]   = std::max( 50, std::min( static_cast< int >( ch[ cc ].hp[ 2 ] ), base * 5 ) );
+  ch[ cc ].end[ 0 ]  = std::max( 50, std::min( static_cast< int >( ch[ cc ].end[ 2 ] ), base * 5 ) );
   ch[ cc ].mana[ 0 ] = 0;
 
   // calculate experience

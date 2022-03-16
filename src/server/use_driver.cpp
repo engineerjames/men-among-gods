@@ -6,10 +6,12 @@ All rights reserved.
 
 **************************************************************************/
 
+#include <algorithm>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include "RankNames.h"
 #include "funcs.h"
 #include "server.h"
 
@@ -1420,21 +1422,24 @@ int use_crystal_sub( int cn, int in )
   for ( n = 0; n < 5; n++ )
   {
     tmp                       = base + RANDOM( 15 );
-    tmp                       = tmp * 3 / max( 1, ch[ cc ].attrib[ n ][ 3 ] );
-    ch[ cc ].attrib[ n ][ 0 ] = max( 10, min( ch[ cc ].attrib[ n ][ 2 ], tmp ) );
+    tmp                       = tmp * 3 / std::max( 1, static_cast< int >( ch[ cc ].attrib[ n ][ 3 ] ) );
+    ch[ cc ].attrib[ n ][ 0 ] = std::max( 10, std::min( static_cast< int >( ch[ cc ].attrib[ n ][ 2 ] ), tmp ) );
   }
 
   for ( n = 0; n < 50; n++ )
   {
     tmp = base + RANDOM( 15 );
-    tmp = tmp * 3 / max( 1, ch[ cc ].skill[ n ][ 3 ] );
+    tmp = tmp * 3 / std::max( 1, static_cast< int >( ch[ cc ].skill[ n ][ 3 ] ) );
     if ( ch[ cc ].skill[ n ][ 2 ] )
-      ch[ cc ].skill[ n ][ 0 ] = min( ch[ cc ].skill[ n ][ 2 ], tmp );
+      ch[ cc ].skill[ n ][ 0 ] = std::min( static_cast< int >( ch[ cc ].skill[ n ][ 2 ] ), tmp );
   }
 
-  ch[ cc ].hp[ 0 ]   = max( 50, min( ch[ cc ].hp[ 2 ], base * 5 + RANDOM( 50 ) ) );
-  ch[ cc ].end[ 0 ]  = max( 50, min( ch[ cc ].end[ 2 ], base * 5 + RANDOM( 50 ) ) );
-  ch[ cc ].mana[ 0 ] = max( 50, min( ch[ cc ].mana[ 2 ], base * 5 + RANDOM( 50 ) ) );
+  ch[ cc ].hp[ 0 ] =
+      std::max( static_cast< long int >( 50 ), std::min( static_cast< long int >( ch[ cc ].hp[ 2 ] ), base * 5 + RANDOM( 50 ) ) );
+  ch[ cc ].end[ 0 ] =
+      std::max( static_cast< long int >( 50 ), std::min( static_cast< long int >( ch[ cc ].end[ 2 ] ), base * 5 + RANDOM( 50 ) ) );
+  ch[ cc ].mana[ 0 ] =
+      std::max( static_cast< long int >( 50 ), std::min( static_cast< long int >( ch[ cc ].mana[ 2 ] ), base * 5 + RANDOM( 50 ) ) );
 
   // calculate experience
   for ( z = 0; z < 5; z++ )
@@ -2551,7 +2556,8 @@ int use_pentagram( int cn, int in )
 
   if ( r1 > r2 )
   {
-    do_char_log( cn, 0, "You cannot use this pentagram. It is reserved for rank %s and below.\n", rank_name[ min( 23, max( 0, r2 ) ) ] );
+    do_char_log( cn, 0, "You cannot use this pentagram. It is reserved for rank %s and below.\n",
+                 MenAmongGods::rankToString[ std::min( 23, std::max( 0, r2 ) ) ] );
     return 0;
   }
 
@@ -3534,7 +3540,7 @@ int explorer_point( int cn, int in )
     ch[ cn ].luck += 10;
 
     exp = it[ in ].data[ 4 ] / 2 + RANDOM( it[ in ].data[ 4 ] ); // some randomness
-    exp = min( ch[ cn ].points_tot / 10, exp );                  // not more than 10% of total experience
+    exp = std::min( ch[ cn ].points_tot / 10, exp );             // not more than 10% of total experience
     exp += RANDOM( exp / 10 + 1 );                               // some more randomness (needs +1 to avoid division by zero)
 
     xlog( "exp point giving %d (%d) exp, char has %d exp", exp, it[ in ].data[ 4 ], ch[ cn ].points_tot );
@@ -3936,7 +3942,7 @@ int item_age( int in )
     if ( it[ in ].damage_state > 1 )
     {
 
-      st = max( 0, 4 - it[ in ].damage_state );
+      st = std::max( 0, 4 - it[ in ].damage_state );
 
       if ( it[ in ].armor[ 0 ] > st )
         it[ in ].armor[ 0 ]--;
@@ -4523,7 +4529,7 @@ void item_tick_gc( void )
   static int off = 0, cnt = 0;
   int        n, m, cn, z, in2;
 
-  m = min( off + 256, MAXITEM );
+  m = std::min( off + 256, MAXITEM );
 
   for ( n = off; n < m; n++ )
   {

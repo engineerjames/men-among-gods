@@ -41,17 +41,6 @@ struct looks
   unsigned short id;
 };
 
-struct skilltab
-{
-  int  nr;
-  char sortkey;
-  char name[ 40 ];
-  char desc[ 200 ];
-
-  int attrib[ 3 ];
-};
-static_assert( sizeof( skilltab ) == 260 );
-
 struct xbutton
 {
   char name[ 8 ];
