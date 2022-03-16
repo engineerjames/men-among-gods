@@ -13,6 +13,7 @@ All rights reserved.
 
 #include "server.h"
 
+#include "Character.h"
 #include "SkillTab.h"
 
 int friend_is_enemy( int cn, int cc )
