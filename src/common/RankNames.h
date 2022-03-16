@@ -5,8 +5,9 @@
 
 namespace MenAmongGods
 {
-extern const std::array< const char*, 24 > rankToString;
-extern const std::array< const char*, 24 > rankToStringShort;
+static const constexpr int                              NUMBER_OF_RANKS = 24;
+extern const std::array< const char*, NUMBER_OF_RANKS > rankToString;
+extern const std::array< const char*, NUMBER_OF_RANKS > rankToStringShort;
 } // namespace MenAmongGods
 
 #endif
