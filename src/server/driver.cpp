@@ -6,11 +6,13 @@ All rights reserved.
 
 **************************************************************************/
 
+#include <algorithm>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
+#include "SkillTab.h"
 #include "driver.h"
 #include "npc.h"
 #include "server.h"
@@ -63,7 +65,7 @@ DATA usage by all NPC drivers
 70:     last time we called our god for help
 71:     talkativity (CHD_TALKATIVE)
 72:     area of knowledge
-73:     random walk: max distance to origin
+73:     random walk: min distance to origin
 74:     last time we created a ghost
 75:     last time we stunned someone
 76:     last known position of an enemy
@@ -137,7 +139,7 @@ int get_frust_y_off( int f )
 
 int npc_dist( int cn, int co )
 {
-  return max( abs( ch[ cn ].x - ch[ co ].x ), abs( ch[ cn ].y - ch[ co ].y ) );
+  return std::max( abs( ch[ cn ].x - ch[ co ].x ), abs( ch[ cn ].y - ch[ co ].y ) );
 }
 
 int npc_add_enemy( int cn, int co, int always )
@@ -637,10 +639,10 @@ int npc_give( int cn, int co, int in, int money )
         do_sayx( cn, "Bring me the item again to learn Surround Hit, %s!", ch[ co ].name );
       }
       // end hack
-      do_sayx( cn, "Now I'll teach you %s.", skilltab[ nr ].name );
+      do_sayx( cn, "Now I'll teach you %s.", static_skilltab[ nr ].name );
       if ( ch[ co ].skill[ nr ][ 0 ] )
       {
-        do_sayx( cn, "But you already know %s, %s!", skilltab[ nr ].name, ch[ co ].name );
+        do_sayx( cn, "But you already know %s, %s!", static_skilltab[ nr ].name, ch[ co ].name );
         god_take_from_char( in, cn );
         god_give_char( in, co );
         do_char_log( co, 1, "%s did not accept the %s.\n", ch[ cn ].reference, it[ in ].name );
@@ -648,7 +650,7 @@ int npc_give( int cn, int co, int in, int money )
       else
       {
         ch[ co ].skill[ nr ][ 0 ] = 1;
-        do_char_log( co, 0, "You learned %s!\n", skilltab[ nr ].name );
+        do_char_log( co, 0, "You learned %s!\n", static_skilltab[ nr ].name );
         do_update_char( co );
         if ( ( nr = ch[ cn ].data[ 51 ] ) != 0 )
         {
@@ -882,7 +884,7 @@ int npc_see( int cn, int co )
     {
       if ( ch[ cn ].data[ 95 ] == 2 && ch[ cn ].data[ 93 ] )
       { // attack distance
-        dist = max( abs( ( ch[ cn ].data[ 29 ] % MAPX ) - ch[ co ].x ), abs( ( ch[ cn ].data[ 29 ] / MAPX ) - ch[ co ].y ) );
+        dist = std::max( abs( ( ch[ cn ].data[ 29 ] % MAPX ) - ch[ co ].x ), abs( ( ch[ cn ].data[ 29 ] / MAPX ) - ch[ co ].y ) );
         if ( dist > ch[ cn ].data[ 93 ] )
         {
           co = 0;
@@ -1173,13 +1175,14 @@ int npc_try_spell( int cn, int co, int spell )
     return 0;
 
   // dont curse if chances of success are bad
-  if ( spell == SK_CURSE && 10 * ch[ cn ].skill[ SK_CURSE ][ 5 ] / max( 1, ch[ co ].skill[ SK_RESIST ][ 5 ] ) < 7 )
+  if ( spell == SK_CURSE &&
+       10 * ch[ cn ].skill[ SK_CURSE ][ 5 ] / std::max( 1, static_cast< int >( ch[ co ].skill[ SK_RESIST ][ 5 ] ) ) < 7 )
   {
     return 0;
   }
 
   // dont stun if chances of success are bad
-  if ( spell == SK_STUN && 10 * ch[ cn ].skill[ SK_STUN ][ 5 ] / max( 1, ch[ co ].skill[ SK_RESIST ][ 5 ] ) < 5 )
+  if ( spell == SK_STUN && 10 * ch[ cn ].skill[ SK_STUN ][ 5 ] / std::max( 1, static_cast< int >( ch[ co ].skill[ SK_RESIST ][ 5 ] ) ) < 5 )
   {
     return 0;
   }
@@ -1554,9 +1557,9 @@ int npc_driver_high( int cn )
   else
     indoor1 = 0;
 
-  for ( y = max( ch[ cn ].y - 8, 1 ); y < min( ch[ cn ].y + 8, MAPY - 1 ); y++ )
+  for ( y = std::max( ch[ cn ].y - 8, 1 ); y < std::min( ch[ cn ].y + 8, MAPY - 1 ); y++ )
   {
-    for ( x = max( ch[ cn ].x - 8, 1 ); x < min( ch[ cn ].x + 8, MAPX - 1 ); x++ )
+    for ( x = std::max( ch[ cn ].x - 8, 1 ); x < std::min( ch[ cn ].x + 8, MAPX - 1 ); x++ )
     {
       if ( ( in = map[ x + y * MAPX ].it ) != 0 )
       {
@@ -1915,9 +1918,9 @@ int npc_grave_logic( int cn )
 {
   int x, y, in;
 
-  for ( y = max( ch[ cn ].y - 8, 1 ); y < min( ch[ cn ].y + 8, MAPY - 1 ); y++ )
+  for ( y = std::max( ch[ cn ].y - 8, 1 ); y < std::min( ch[ cn ].y + 8, MAPY - 1 ); y++ )
   {
-    for ( x = max( ch[ cn ].x - 8, 1 ); x < min( ch[ cn ].x + 8, MAPX - 1 ); x++ )
+    for ( x = std::max( ch[ cn ].x - 8, 1 ); x < std::min( ch[ cn ].x + 8, MAPX - 1 ); x++ )
     {
       if ( ( in = map[ x + y * MAPX ].it ) != 0 )
       {

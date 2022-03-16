@@ -25,7 +25,7 @@ enable_testing()
 
 set(Boost_USE_STATIC_LIBS OFF)
 set(BUILD_SHARED_LIBS OFF)
-find_package(Boost COMPONENTS unit_test_framework serialization REQUIRED)
+find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -63,6 +63,7 @@ else()
 endif()
 
 add_subdirectory(src/new_client)
+add_subdirectory(src/common)
 
 # Currently the unit tests won't link with MinGW for some reason
 if (NOT MINGW)

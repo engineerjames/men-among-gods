@@ -6,6 +6,8 @@ All rights reserved.
 
 **************************************************************************/
 
+#include "Constants.h"
+
 #define ARRAYSIZE(a)    (sizeof(a)/sizeof(a[0]))
 
 // Sanity checks on map locations x and y

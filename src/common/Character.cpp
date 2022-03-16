@@ -1,8 +1,9 @@
-#include "character.h"
+#include "Character.h"
 
 #include <array>
 
-#include "skilltab.h"
+#include "Constants.h"
+#include "SkillTab.h"
 
 character character::fromJson( const Json::Value& json )
 {

@@ -6,8 +6,6 @@ All rights reserved.
 
 **************************************************************************/
 
-#define max(a,b) ((a)>(b) ? (a) : (b))
-#define min(a,b) ((a)<(b) ? (a) : (b))
 #define RANDOM(a)       (random()%(a))
 #define DATDIR          ".dat"
 

@@ -277,7 +277,6 @@ int check_dlight(int x,int y);
 void compute_dlight(int x,int y);
 int char_id(int cn);
 void char_item_expire(int cn);
-extern char *rank_name[];
 extern char *who_rank_name[];
 int rankdiff(int cn,int co);
 int absrankdiff(int cn,int co);

@@ -1,6 +1,5 @@
 #include "MapDisplay.h"
 
-#include <boost/archive/text_iarchive.hpp>
 #include <fstream>
 #include <iostream>
 #include <set>
@@ -755,27 +754,6 @@ void MapDisplay::update()
   }
 }
 
-void MapDisplay::loadFromFile( std::string filePath )
-{
-  std::ifstream                 mapFile( filePath );
-  boost::archive::text_iarchive ia( mapFile );
-
-  cmap tmpMap {};
-  if ( mapFile.is_open() )
-  {
-    for ( unsigned int x = 0; x < MAPX; ++x )
-    {
-      for ( unsigned int y = 0; y < MAPY; ++y )
-      {
-        ia >> tmpMap;
-        map_.setMap( x + y * MAPX, tmpMap );
-      }
-    }
-  }
-
-  mapFile.close();
-}
-
 void MapDisplay::copyEffectSprite( int index, int nr, int xpos, int ypos, int xoff, int yoff, sf::Color effectColor )
 {
   if ( nr == 0 )
@@ -911,23 +889,6 @@ void MapDisplay::copysprite( int index, int nr, int effect, int xpos, int ypos, 
       }
     }
   }
-}
-
-void MapDisplay::saveToFile() const
-{
-  std::ofstream                 mapFile( "mapfile.archive" );
-  boost::archive::text_oarchive oa { mapFile };
-  if ( mapFile.is_open() )
-  {
-    for ( unsigned int x = 0; x < MAPX; ++x )
-    {
-      for ( unsigned int y = 0; y < MAPY; ++y )
-      {
-        oa << map_.getMap( x + y * MAPX );
-      }
-    }
-  }
-  mapFile.close();
 }
 
 } // namespace MenAmongGods

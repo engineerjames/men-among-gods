@@ -1,25 +1,12 @@
-#ifndef MEN_AMONG_GODS_ITEM_H
-#define MEN_AMONG_GODS_ITEM_H
+#include "SkillTab.h"
 
-#include <json/json.h>
+#include <numeric>
 
-#include <cstdint>
-
-#include "constants.h"
-
-struct skilltab
-{
-  int  nr;
-  char sortkey;
-  char name[ 40 ];
-  char desc[ 200 ];
-
-  int attrib[ 3 ];
-};
+#include "Player.h"
 
 // clang-format off
 // NOLINTNEXTLINE
-inline skilltab static_skilltab[SKILLTAB_SIZE]={
+const skilltab static_skilltab[SKILLTAB_SIZE]={
 	{0,     'C',    "Hand to Hand", "Fighting without weapons.",                    {AT_BRAVE,AT_AGIL,AT_STREN}},
 	{1,     'C',    "Karate",       "Fighting without weapons and doing damage.",   {AT_BRAVE,AT_AGIL,AT_STREN}},
 	{2,     'C',    "Dagger",       "Fighting with daggers or similiar weapons.",   {AT_BRAVE,AT_AGIL,AT_INT}},
@@ -83,82 +70,86 @@ inline skilltab static_skilltab[SKILLTAB_SIZE]={
 	{49,   'Z',   "", "", {0,0,0,}}};
 // clang-format on
 
-#pragma pack( push, 1 )
-struct item
+int hp_needed( int v, cplayer& pl )
 {
-  std::uint8_t used;               // 1
-  char         name[ 40 ];         // 41
-  char         reference[ 40 ];    // 81, a pair of boots
-  char         description[ 200 ]; // 281, A pair of studded leather boots.
+  if ( v >= pl.hp[ 2 ] )
+  {
+    return std::numeric_limits< int >::max();
+  }
 
-  unsigned long long flags; // 289, s.a.
+  return v * pl.hp[ 3 ];
+}
 
-  std::uint32_t value;     // 293, value to a merchant
-  std::uint16_t placement; // 295, see constants above
+int end_needed( int v, cplayer& pl )
+{
+  if ( v >= pl.end[ 2 ] )
+  {
+    return std::numeric_limits< int >::max();
+  }
 
-  std::uint16_t temp; // 297, created from template temp
+  return v * pl.end[ 3 ] / 2;
+}
 
-  unsigned char damage_state; // 298, has reached damage level X of 5, 0=OK, 4=almost destroyed, 5=destroyed
+int mana_needed( int v, cplayer& pl )
+{
+  if ( v >= pl.mana[ 2 ] )
+  {
+    return std::numeric_limits< int >::max();
+  }
 
-  // states for non-active [0] and active[1]
-  std::uint32_t max_age[ 2 ];     // 306, maximum age per state
-  std::uint32_t current_age[ 2 ]; // 314, current age in current state
+  return v * pl.mana[ 3 ];
+}
 
-  std::uint32_t max_damage;     // 318, maximum damage per state
-  std::uint32_t current_damage; // 322, current damage in current state
+int attrib_needed( int n, int v, cplayer& pl )
+{
+  if ( v >= pl.attrib[ n ][ 2 ] )
+  {
+    return std::numeric_limits< int >::max();
+  }
 
-  // modifiers - modifiers apply only when the item is being
-  // worn (wearable objects) or when spell is cast. After duration expires,
-  // the effects are removed.
+  return v * v * v * pl.attrib[ n ][ 3 ] / 20;
+}
 
-  // modifiers - modifier [0] applies when the item is being
-  // worn (wearable objects) or is added to the powers (spells) for permanent spells
-  // modifier [1] applies when it is active
-  // modifier [2] is not a modifier but the minimum value that attibute/skill must have to wear or use
-  // the item
+int skill_needed( int n, int v, cplayer& pl )
+{
+  if ( v >= pl.skill[ n ][ 2 ] )
+  {
+    return std::numeric_limits< int >::max();
+  }
 
-  char attrib[ 5 ][ 3 ]; // 337
+  return std::max( v, v * v * v * pl.skill[ n ][ 3 ] / 40 );
+}
 
-  std::int16_t hp[ 3 ];   // 343
-  std::int16_t end[ 3 ];  // 349
-  std::int16_t mana[ 3 ]; // 355
+int getSkillNumber( std::string skillName )
+{
+  const skilltab* foundSkill = nullptr;
 
-  char skill[ 50 ][ 3 ]; // 505
+  for ( int i = 0; i < SKILLTAB_SIZE; ++i )
+  {
+    if ( static_skilltab[ i ].name == skillName )
+    {
+      foundSkill = &static_skilltab[ i ];
+      break;
+    }
+  }
 
-  char armor[ 2 ];  // 506
-  char weapon[ 2 ]; // 507
+  if ( foundSkill )
+  {
+    return foundSkill->nr;
+  }
 
-  std::int16_t light[ 2 ]; // 511
+  return -1; // TODO: Find something better than a negative return sentinel value
+}
 
-  std::uint32_t duration; // 515
-  std::uint32_t cost;     // 519
-  std::uint32_t power;    // 523
-  std::uint32_t active;   // 527
+int getBaseAttributeModifier( const std::string& skillName )
+{
+  for ( unsigned int i = 0; i < SKILLTAB_SIZE; ++i )
+  {
+    if ( static_skilltab[ i ].name == skillName )
+    {
+      return static_skilltab[ i ].attrib[ 0 ];
+    }
+  }
 
-  // map stuff
-  std::uint16_t x, y;            // 531, current position        NOTE: x=0, y=0 = void
-  std::uint16_t carried;         // 533, carried by character carried
-  std::uint16_t sprite_override; // 535, used for potions/spells which change the character sprite
-
-  std::int16_t  sprite[ 2 ]; // 543
-  unsigned char status[ 2 ]; // 545
-
-  char gethit_dam[ 2 ]; // 547, damage for hitting this item
-
-  char min_rank; // minimum rank to wear the item
-  char future[ 3 ];
-  int  future3[ 9 ]; // 587
-
-  int t_bought; // 591
-  int t_sold;   // 595
-
-  unsigned char driver;     // 596, special routines for LOOKSPECIAL and USESPECIAL
-  std::uint32_t data[ 10 ]; // 634, driver data
-
-  Json::Value toJson() const;
-  static item fromJson( const Json::Value& json );
-};
-#pragma pack( pop )
-static_assert( sizeof( item ) == 634 );
-
-#endif
+  return -1;
+}

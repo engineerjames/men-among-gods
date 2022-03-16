@@ -6,6 +6,8 @@ All rights reserved.
 
 **************************************************************************/
 
+#include "Character.h"
+
 // For all .used:
 #define USE_EMPTY               ((unsigned char)0)
 #define USE_ACTIVE              ((unsigned char)1)
@@ -171,72 +173,6 @@ extern unsigned int mapmarker;
 /* Characters */
 /**************/
 
-#define KIN_MERCENARY   (1u<<0)
-#define KIN_SEYAN_DU    (1u<<1)
-#define KIN_PURPLE      (1u<<2)
-#define KIN_MONSTER     (1u<<3)
-#define KIN_TEMPLAR     (1u<<4)
-#define KIN_ARCHTEMPLAR (1u<<5)
-#define KIN_HARAKIM     (1u<<6)
-#define KIN_MALE        (1u<<7)
-#define KIN_FEMALE      (1u<<8)
-#define KIN_ARCHHARAKIM (1u<<9)
-#define KIN_WARRIOR     (1u<<10)        // arch-merc, warrior
-#define KIN_SORCERER    (1u<<11)        // arch-merc, sorcerer
-
-#define CF_IMMORTAL     (1ull<<0)       // will not suffer any damage
-#define CF_GOD          (1ull<<1)       // may issue #god commands
-#define CF_CREATOR      (1ull<<2)       // may use #build
-#define CF_BUILDMODE    (1ull<<3)       // does use #build
-#define CF_RESPAWN      (1ull<<4)       // will respawn after death - not for players
-#define CF_PLAYER       (1ull<<5)       // is a player
-#define CF_NEWUSER      (1ull<<6)       // new account created. player may change name
-#define CF_NOTELL       (1ull<<8)       // tell will only work on him if used by a god
-#define CF_NOSHOUT      (1ull<<9)       // shout will only work in him if used by a god
-#define CF_MERCHANT     (1ull<<10)      // will sell his inventory if looked at
-#define CF_STAFF        (1ull<<11)      // member of the staff
-#define CF_NOHPREG      (1ull<<12)      // no hp regeneration
-#define CF_NOENDREG     (1ull<<13)
-#define CF_NOMANAREG    (1ull<<14)
-#define CF_INVISIBLE    (1ull<<15)      // character is completely invisible
-#define CF_INFRARED     (1ull<<16)      // sees in the dark
-#define CF_BODY         (1ull<<17)      // dead body
-#define CF_NOSLEEP      (1ull<<18)      // stay awake all the time
-#define CF_UNDEAD       (1ull<<19)      // is undead, can be killed with holy water
-#define CF_NOMAGIC      (1ull<<20)      // no magic zone
-#define CF_STONED       (1ull<<21)      // turned to stone due to lag
-#define CF_USURP        (1ull<<22)      // NPC is being played by player
-#define CF_IMP          (1ull<<23)      // may impersonate monsters
-#define CF_SHUTUP       (1ull<<24)      // player is unable to talk till next day
-#define CF_NODESC       (1ull<<25)      // player cannot change his description
-#define CF_PROF         (1ull<<26)      // profiler listing
-#define CF_SIMPLE       (1ull<<27)      // uses simple animation system (move, turn, 1 attack)
-#define CF_KICKED       (1ull<<28)      // player got kicked, may not login again for a certain time
-#define CF_NOLIST       (1ull<<29)      // dont list character in top ten
-#define CF_NOWHO        (1ull<<30)      // don't list character in #WHO
-#define CF_SPELLIGNORE  (1ull<<31)      // ignore spells cast on me
-#define CF_CCP          (1ull<<32)      // Computer Controlled Player, does NOT log out and may have some extra logic
-#define CF_SAFE         (1ull<<33)      // safety measures for gods
-#define CF_NOSTAFF      (1ull<<34)       // #stell will only work if flag off
-#define CF_POH          (1ull<<35)      // clan purples of honor
-#define CF_POH_LEADER   (1ull<<36)      // clan purples of honor
-#define CF_THRALL       (1ull<<37)      // is enthralled NPC
-#define CF_LABKEEPER    (1ull<<38)      // is labkeeper
-#define CF_ISLOOTING	(1ull<<39)	// is currently looting a grave
-#define CF_GOLDEN	(1ull<<40)	// is on "golden list" aka good player
-#define CF_BLACK	(1ull<<41)	// is on "black list" aka bad player
-#define CF_PASSWD	(1ull<<42)	// has passwd set
-#define CF_UPDATE	(1ull<<43)	// client side update needed
-#define CF_SAVEME	(1ull<<44)	// save this player to disk
-#define CF_GREATERGOD	(1ull<<45)	// greater god
-#define CF_GREATERINV	(1ull<<46)	// no one sees me, ever
-
-#define AT_BRAVE        0
-#define AT_WILL         1
-#define AT_INT          2
-#define AT_AGIL         3
-#define AT_STREN        4
-
 #define SK_HAND         0
 #define SK_KARATE       1
 #define SK_SWORD        3
@@ -304,168 +240,6 @@ extern unsigned int mapmarker;
 /* CS, 991113: SIZEs in one header */
 #define CHARSIZE (sizeof(struct character)*MAXCHARS)
 #define TCHARSIZE (sizeof(struct character)*MAXTCHARS)
-
-struct character
-{
-        unsigned char used;             // 1
-        // general
-
-        char name[40];                  // 41
-        char reference[40];             // 81
-        char description[LENDESC];      // 281
-
-        int kindred;                    // 285
-
-        int player;                     // 289
-        unsigned int pass1,pass2;       // 297
-
-        unsigned short sprite;          // 299, sprite base value, 1024 dist
-        unsigned short sound;           // 301, sound base value, 64 dist
-
-        unsigned long long flags;       // 309
-
-        short int alignment;            // 311
-
-        unsigned short temple_x;        // 313, position of temple for recall and dying
-        unsigned short temple_y;        // 315
-
-        unsigned short tavern_x;        // 317, position of last temple for re-login
-        unsigned short tavern_y;        // 319
-
-        unsigned short temp;            // 321, created from template n
-
-        // character stats
-        // [0]=bare value, 0=unknown
-        // [1]=preset modifier, is race/npc dependend
-        // [2]=race specific maximum
-        // [3]=race specific difficulty to raise (0=not raisable, 1=easy ... 10=hard)
-        // [4]=dynamic modifier, depends on equipment and spells (this one is currently not used)
-        // [5]=total value
-
-        unsigned char attrib[5][6];     // 351
-
-        unsigned short hp[6];           // 363
-        unsigned short end[6];          // 375
-        unsigned short mana[6];         // 387
-
-        unsigned char skill[50][6];     // 687
-
-        unsigned char weapon_bonus;
-        unsigned char armor_bonus;
-
-        // temporary attributes
-        int a_hp;
-        int a_end;
-        int a_mana;
-
-        unsigned char light;    // strength of lightsource
-        unsigned char mode;     // 0 = slow, 1 = medium, 2 = fast
-        short int speed;
-
-        int points;
-        int points_tot;
-
-        // summary of weapons + armor
-        short int armor;
-        short int weapon;
-
-        // map stuff
-        short int x,y;          // current position x,y NOTE: x=-1, y=-1 = void
-        short int tox,toy;      // target coordinated, where the char will be next turn
-        short int frx,fry;      // where the char was last turn
-        short int status;       // what the character is doing, animation-wise
-        short int status2;      // for plr_misc(): what is misc?
-        unsigned char dir;      // direction character is facing
-
-        // posessions
-        int gold;
-
-        // items carried
-        unsigned int item[40];
-
-        // items worn
-        unsigned int worn[20];
-
-        // spells active on character
-        unsigned int spell[20];
-
-        // item currently in hand (mouse cursor)
-        unsigned int citem;
-
-        time_t creation_date;
-        time_t login_date;
-
-        unsigned int addr;
-
-        // misc
-        unsigned int current_online_time;
-        unsigned int total_online_time;
-        unsigned int comp_volume;
-        unsigned int raw_volume;
-        unsigned int idle;
-
-        // generic driver data
-        unsigned short attack_cn;       // target for attacks, will attack if set (prio 4)
-        unsigned short skill_nr;        // skill to use/spell to cast, will cast if set (prio 2)
-        unsigned short skill_target1;   // target for skills/spells
-        unsigned short skill_target2;   // target for skills/spells
-        unsigned short goto_x;          // will goto x,y if set (prio 3)
-        unsigned short goto_y;
-        unsigned short use_nr;          // will use worn item nr if set (prio 1)
-
-        unsigned short misc_action;     // drop, pickup, use, whatever (prio 5)
-        unsigned short misc_target1;    // item for misc_action
-        unsigned short misc_target2;    // location for misc_action
-
-        unsigned short cerrno;          // error/success indicator for last action (svr_act level)
-
-        unsigned short escape_timer;    // can try again to escape in X ticks
-        unsigned short enemy[4];        // currently being fought against by these
-        unsigned short current_enemy;   // currently fighting against X
-
-        unsigned short retry;           // retry current action X times
-
-        unsigned short stunned;         // is stunned for X ticks
-
-        // misc stuff added later:
-        char speed_mod;                 // race dependand speed modification
-        char last_action;               // last action was success/failure (driver_generic level)
-        char unused;
-        char depot_sold;                // items from depot where sold to pay for the rent
-
-        char gethit_dam;                // damage for attacker when hitting this char
-        char gethit_bonus;              // race specific bonus for above
-
-        unsigned char light_bonus;      // char emits light all the time
-
-	char passwd[16];
-
-	char lastattack;		// neater display: remembers the last attack animation
-        char future1[25];               // space for future expansion
-
-        short int sprite_override;
-
-        short future2[49];
-
-        unsigned int depot[62];
-
-        int depot_cost;
-
-        int luck;
-
-        int unreach,unreachx,unreachy;
-
-        int monsterClass;                      // monster class
-
-        int future3[12];
-
-        time_t logout_date;
-
-        // driver data
-        int data[100];
-        char text[10][160];
-
-} __attribute__ ((packed));
 
 /*********/
 /* Items */
@@ -615,23 +389,12 @@ struct effect
         unsigned int data[10];          // some data
 } __attribute__ ((packed));
 
-struct s_skilltab
-{
-        int nr;
-        char sortkey;
-        char name[40];
-        char desc[200];
-
-        int attrib[3];
-};
-
 struct see_map
 {
         int x,y;
         char vis[40*40];
 };
 
-extern struct s_skilltab skilltab[MAXSKILL];
 extern struct global *globs;
 extern struct map *map;
 extern struct character *ch;

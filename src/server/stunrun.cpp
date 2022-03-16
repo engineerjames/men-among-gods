@@ -6,6 +6,7 @@ All rights reserved.
 
 **************************************************************************/
 
+#include <algorithm>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -231,7 +232,7 @@ int npc_stunrun_high( int cn )
         seen[ maxseen ].isFriend = 1;
         seen[ maxseen ].stun     = 0;
         seen[ maxseen ].help     = ( ch[ co ].a_hp < ch[ co ].hp[ 5 ] * 400 );
-        help                     = max( seen[ maxseen ].help, help );
+        help                     = std::max( seen[ maxseen ].help, help );
         maxseen++;
       }
       else
@@ -243,7 +244,7 @@ int npc_stunrun_high( int cn )
           seen[ maxseen ].stun = ( ch[ cn ].skill[ SK_STUN ][ 5 ] * 12 > ch[ co ].skill[ SK_RESIST ][ 5 ] * 10 );
         else
           seen[ maxseen ].stun = 0;
-        stun                 = max( seen[ maxseen ].stun, stun );
+        stun                 = std::max( seen[ maxseen ].stun, stun );
         seen[ maxseen ].help = 0;
         if ( seen[ maxseen ].dist < 6 )
           flee++; // we dont like infights, try to stay away from enemies
@@ -255,7 +256,7 @@ int npc_stunrun_high( int cn )
           if ( seen[ maxseen ].stun )
           {
             seen[ maxseen ].stun += 5;
-            stun = max( seen[ maxseen ].stun, stun );
+            stun = std::max( seen[ maxseen ].stun, stun );
           }
         }
         maxseen++;
@@ -274,13 +275,13 @@ int npc_stunrun_high( int cn )
           if ( ch[ co ].data[ 42 ] == ch[ cn ].data[ 42 ] )
           {
             seen[ m ].help++;
-            help = max( seen[ m ].help, help );
+            help = std::max( seen[ m ].help, help );
           }
           else
           {
             if ( seen[ m ].stun )
               seen[ m ].stun += 2;
-            stun = max( seen[ m ].stun, stun );
+            stun = std::max( seen[ m ].stun, stun );
           }
           break;
         }
@@ -299,7 +300,7 @@ int npc_stunrun_high( int cn )
           seen[ m ].stun += 5;
         else
           flee += 2;
-        stun = max( seen[ m ].stun, stun );
+        stun = std::max( seen[ m ].stun, stun );
         break;
       }
     }
@@ -313,7 +314,7 @@ int npc_stunrun_high( int cn )
         seen[ maxseen ].stun += 5;
       else
         flee += 2;
-      stun                 = max( seen[ m ].stun, stun );
+      stun                 = std::max( seen[ m ].stun, stun );
       seen[ maxseen ].help = 0;
       maxseen++;
     }

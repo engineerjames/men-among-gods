@@ -16,6 +16,8 @@ All rights reserved.
 #include "driver.h"
 #include "server.h"
 
+#include "SkillTab.h"
+
 void init_lights( void )
 {
   int x, y, in, m, cnt1 = 0, cnt2 = 0;
@@ -986,12 +988,12 @@ void pop_skill( void )
       if ( ch[ cn ].skill[ n ][ 0 ] == 0 && ch_temp[ t ].skill[ n ][ 0 ] )
       {
         ch[ cn ].skill[ n ][ 0 ] = ch_temp[ t ].skill[ n ][ 0 ];
-        xlog( "added %s to %s", skilltab[ n ].name, ch[ cn ].name );
+        xlog( "added %s to %s", static_skilltab[ n ].name, ch[ cn ].name );
       }
       if ( ch_temp[ t ].skill[ n ][ 2 ] < ch[ cn ].skill[ n ][ 0 ] )
       {
         p = skillcost( ch[ cn ].skill[ n ][ 0 ], ch[ cn ].skill[ n ][ 3 ], ch_temp[ t ].skill[ n ][ 2 ] );
-        xlog( "reduced %s on %s from %d to %d, added %d exp", skilltab[ n ].name, ch[ cn ].name, ch[ cn ].skill[ n ][ 0 ],
+        xlog( "reduced %s on %s from %d to %d, added %d exp", static_skilltab[ n ].name, ch[ cn ].name, ch[ cn ].skill[ n ][ 0 ],
               ch_temp[ t ].skill[ n ][ 2 ], p );
         ch[ cn ].skill[ n ][ 0 ] = ch_temp[ t ].skill[ n ][ 2 ];
         ch[ cn ].points += p;

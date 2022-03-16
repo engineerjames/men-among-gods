@@ -6,6 +6,7 @@
 #include "GraphicsCache.h"
 #include "PlayerData.h"
 #include "UiPositions.h"
+#include "RankNames.h"
 
 // TODO: Reduce this duplication
 namespace
@@ -61,32 +62,6 @@ int points2rank( int v )
 
   return 23;
 }
-
-static const std::array< const char*, 24 > rankToString = { "Private",
-                                                            "Private First Class",
-                                                            "Lance Corporal",
-                                                            "Corporal",
-                                                            "Sergeant",
-                                                            "Staff Sergeant",
-                                                            "Master Sergeant",
-                                                            "First Sergeant",
-                                                            "Sergeant Major",
-                                                            "Second Lieutenant",
-                                                            "First Lieutenant",
-                                                            "Captain",
-                                                            "Major",
-                                                            "Lieutenant Colonel",
-                                                            "Colonel",
-                                                            "Brigadier General",
-                                                            "Major General",
-                                                            "Lieutenant General",
-                                                            "General",
-                                                            "Field Marshal",
-                                                            "Knight",
-                                                            "Baron",
-                                                            "Earl",
-                                                            "Warlord" };
-
 }
 
 namespace MenAmongGods
@@ -115,7 +90,7 @@ void RankDisplay::update()
 {
   if ( playerData_.getShowLook() )
   {
-    textualRank_.setString( rankToString[ points2rank( playerData_.getLook().points ) ] );
+    textualRank_.setString( MenAmongGods::rankToString[ points2rank( playerData_.getLook().points ) ] );
     rankSprite_ = gfxCache_.getSprite( 10 + std::min( 20, points2rank( playerData_.getLook().points ) ) );
   }
   else

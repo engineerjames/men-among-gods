@@ -1,7 +1,6 @@
-#include "item.h"
-#include <json/json.h>
+#include "Item.h"
 
-#include <cstdint>
+#include <json/json.h>
 
 item item::fromJson( const Json::Value& json )
 {

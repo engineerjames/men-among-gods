@@ -9,6 +9,8 @@ All rights reserved.
 #include "driver.h"
 #include "server.h"
 
+#include "Constants.h"
+
 int follow_driver( int cn, int co )
 {
   int m, dir, x, y;

@@ -38,9 +38,9 @@ public:
     sf::Sprite sprite;
     int        index;
 
-    MapSprite( sf::Sprite sprite, int index )
-        : sprite( sprite )
-        , index( index )
+    MapSprite( sf::Sprite sprite_, int index_ )
+        : sprite( sprite_ )
+        , index( index_ )
     {
     }
   };

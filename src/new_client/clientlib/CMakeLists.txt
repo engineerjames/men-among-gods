@@ -27,8 +27,8 @@ set( headers
 )
 add_library(${target} ${sources} ${headers})
 target_link_libraries(${target} PRIVATE ${PROJECT_CXX_LIBS})
-target_link_libraries(${target} PRIVATE sfml-graphics sfml-network logging ZLIB::ZLIB
-                                        Boost::serialization MenAmongGodsGraphics commands)
+target_link_libraries(${target} PRIVATE sfml-graphics sfml-network logging ZLIB::ZLIB common
+                                        MenAmongGodsGraphics commands)
 
 if (NOT MSVC)
 target_link_libraries(${target} PRIVATE pthread GL)
