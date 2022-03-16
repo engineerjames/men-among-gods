@@ -11,7 +11,9 @@ All rights reserved.
 #include <stdlib.h>
 #include <string.h>
 
+#include "Constants.h"
 #include "RankNames.h"
+#include "SkillTab.h"
 #include "funcs.h"
 #include "server.h"
 
@@ -1198,17 +1200,17 @@ int use_scroll( int cn, int in )
   {
     if ( it[ in ].data[ 1 ] )
     {
-      do_char_log( cn, 0, "You already know %s.\n", skilltab[ nr ].name );
+      do_char_log( cn, 0, "You already know %s.\n", static_skilltab[ nr ].name );
       return 0;
     }
     v = ch[ cn ].skill[ nr ][ 0 ];
     if ( v >= ch[ cn ].skill[ nr ][ 2 ] )
     {
-      do_char_log( cn, 0, "You cannot raise %s any higher.\n", skilltab[ nr ].name );
+      do_char_log( cn, 0, "You cannot raise %s any higher.\n", static_skilltab[ nr ].name );
       return 0;
     }
-    do_char_log( cn, 1, "Raised %s by one.\n", skilltab[ nr ].name );
-    chlog( cn, "Used scroll to raise %s by one", skilltab[ nr ].name );
+    do_char_log( cn, 1, "Raised %s by one.\n", static_skilltab[ nr ].name );
+    chlog( cn, "Used scroll to raise %s by one", static_skilltab[ nr ].name );
     pts = skill_needed( v, ch[ cn ].skill[ nr ][ 3 ] );
     ch[ cn ].points_tot += pts;
     ch[ cn ].skill[ nr ][ 0 ]++;
@@ -1217,14 +1219,14 @@ int use_scroll( int cn, int in )
   }
   else if ( ! ch[ cn ].skill[ nr ][ 2 ] )
   {
-    do_char_log( cn, 0, "This scroll teaches %s, which you cannot learn.\n", skilltab[ nr ].name );
+    do_char_log( cn, 0, "This scroll teaches %s, which you cannot learn.\n", static_skilltab[ nr ].name );
     return 0;
   }
   else
   {
     ch[ cn ].skill[ nr ][ 0 ] = 1;
-    do_char_log( cn, 1, "You learned %s!\n", skilltab[ nr ].name );
-    chlog( cn, "Used scroll to learn %s", skilltab[ nr ].name );
+    do_char_log( cn, 1, "You learned %s!\n", static_skilltab[ nr ].name );
+    chlog( cn, "Used scroll to learn %s", static_skilltab[ nr ].name );
   }
 
   it[ in ].used = USE_EMPTY;

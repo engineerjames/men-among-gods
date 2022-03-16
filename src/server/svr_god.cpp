@@ -19,6 +19,7 @@ All rights reserved.
 #include "server.h"
 
 #include "RankNames.h"
+#include "SkillTab.h"
 
 static char* mkp( void )
 {
@@ -2119,8 +2120,8 @@ void god_skill( int cn, int co, int n, int val )
   ch[ co ].skill[ n ][ 0 ] = val;
   do_update_char( co );
 
-  do_char_log( cn, 1, "Set %s of %s to %d.\n", skilltab[ n ].name, ch[ co ].name, val );
-  chlog( cn, "IMP: Set %s of %s to %d.", skilltab[ n ].name, ch[ co ].name, val );
+  do_char_log( cn, 1, "Set %s of %s to %d.\n", static_skilltab[ n ].name, ch[ co ].name, val );
+  chlog( cn, "IMP: Set %s of %s to %d.", static_skilltab[ n ].name, ch[ co ].name, val );
 }
 
 void god_donate_item( int in, int place )
@@ -2900,7 +2901,7 @@ void god_minor_racechange( int cn, int t ) // note: cannot deal with values whic
     if ( ch[ cn ].skill[ n ][ 0 ] == 0 && ch_temp[ t ].skill[ n ][ 0 ] )
     {
       ch[ cn ].skill[ n ][ 0 ] = ch_temp[ t ].skill[ n ][ 0 ];
-      xlog( "added %s to %s", skilltab[ n ].name, ch[ cn ].name );
+      xlog( "added %s to %s", static_skilltab[ n ].name, ch[ cn ].name );
     }
     ch[ cn ].skill[ n ][ 1 ] = ch_temp[ t ].skill[ n ][ 1 ];
     ch[ cn ].skill[ n ][ 2 ] = ch_temp[ t ].skill[ n ][ 2 ];

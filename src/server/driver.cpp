@@ -12,6 +12,7 @@ All rights reserved.
 #include <string.h>
 #include <time.h>
 
+#include "SkillTab.h"
 #include "driver.h"
 #include "npc.h"
 #include "server.h"
@@ -638,10 +639,10 @@ int npc_give( int cn, int co, int in, int money )
         do_sayx( cn, "Bring me the item again to learn Surround Hit, %s!", ch[ co ].name );
       }
       // end hack
-      do_sayx( cn, "Now I'll teach you %s.", skilltab[ nr ].name );
+      do_sayx( cn, "Now I'll teach you %s.", static_skilltab[ nr ].name );
       if ( ch[ co ].skill[ nr ][ 0 ] )
       {
-        do_sayx( cn, "But you already know %s, %s!", skilltab[ nr ].name, ch[ co ].name );
+        do_sayx( cn, "But you already know %s, %s!", static_skilltab[ nr ].name, ch[ co ].name );
         god_take_from_char( in, cn );
         god_give_char( in, co );
         do_char_log( co, 1, "%s did not accept the %s.\n", ch[ cn ].reference, it[ in ].name );
@@ -649,7 +650,7 @@ int npc_give( int cn, int co, int in, int money )
       else
       {
         ch[ co ].skill[ nr ][ 0 ] = 1;
-        do_char_log( co, 0, "You learned %s!\n", skilltab[ nr ].name );
+        do_char_log( co, 0, "You learned %s!\n", static_skilltab[ nr ].name );
         do_update_char( co );
         if ( ( nr = ch[ cn ].data[ 51 ] ) != 0 )
         {

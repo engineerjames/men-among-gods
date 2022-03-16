@@ -19,6 +19,7 @@ All rights reserved.
 #include "server.h"
 
 #include "RankNames.h"
+#include "SkillTab.h"
 
 #define KILLERONLY
 
@@ -4380,8 +4381,8 @@ void really_update_char( int cn )
   {
     skill[ z ] = ( int ) ch[ cn ].skill[ z ][ 0 ] + ( int ) ch[ cn ].skill[ z ][ 1 ] + skill[ z ];
 
-    skill[ z ] += ( ( int ) ch[ cn ].attrib[ skilltab[ z ].attrib[ 0 ] ][ 5 ] + ( int ) ch[ cn ].attrib[ skilltab[ z ].attrib[ 1 ] ][ 5 ] +
-                    ( int ) ch[ cn ].attrib[ skilltab[ z ].attrib[ 2 ] ][ 5 ] ) /
+    skill[ z ] += ( ( int ) ch[ cn ].attrib[ static_skilltab[ z ].attrib[ 0 ] ][ 5 ] + ( int ) ch[ cn ].attrib[ static_skilltab[ z ].attrib[ 1 ] ][ 5 ] +
+                    ( int ) ch[ cn ].attrib[ static_skilltab[ z ].attrib[ 2 ] ][ 5 ] ) /
                   5;
 
     if ( skill[ z ] < 1 )

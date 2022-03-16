@@ -17,7 +17,6 @@ set( sources
     path.cpp
     populate.cpp
     server.cpp
-    skill.cpp
     skill_driver.cpp
     stunrun.cpp
     svr_act.cpp

@@ -13,6 +13,8 @@ All rights reserved.
 
 #include "server.h"
 
+#include "SkillTab.h"
+
 int friend_is_enemy( int cn, int cc )
 {
   int co;
@@ -1199,7 +1201,7 @@ void item_info( int cn, int in, int look )
   {
     if ( ! it[ in ].skill[ n ][ 0 ] && ! it[ in ].skill[ n ][ 1 ] && ! it[ in ].skill[ n ][ 2 ] )
       continue;
-    do_char_log( cn, 1, "%-12.12s %+4d %+4d %3d\n", skilltab[ n ].name, it[ in ].skill[ n ][ 0 ], it[ in ].skill[ n ][ 1 ],
+    do_char_log( cn, 1, "%-12.12s %+4d %+4d %3d\n", static_skilltab[ n ].name, it[ in ].skill[ n ][ 0 ], it[ in ].skill[ n ][ 1 ],
                  it[ in ].skill[ n ][ 2 ] );
   }
 
@@ -1245,15 +1247,15 @@ void char_info( int cn, int co )
 
     if ( n1 != -1 && n2 != -1 )
     {
-      do_char_log( cn, 1, "%-12.12s %3d/%3d  !  %-12.12s %3d/%3d\n", skilltab[ n1 ].name, ch[ co ].skill[ n1 ][ 0 ],
-                   ch[ co ].skill[ n1 ][ 5 ], skilltab[ n2 ].name, ch[ co ].skill[ n2 ][ 0 ], ch[ co ].skill[ n2 ][ 5 ] );
+      do_char_log( cn, 1, "%-12.12s %3d/%3d  !  %-12.12s %3d/%3d\n", static_skilltab[ n1 ].name, ch[ co ].skill[ n1 ][ 0 ],
+                   ch[ co ].skill[ n1 ][ 5 ], static_skilltab[ n2 ].name, ch[ co ].skill[ n2 ][ 0 ], ch[ co ].skill[ n2 ][ 5 ] );
       n1 = -1;
       n2 = -1;
     }
   }
 
   if ( n1 != -1 )
-    do_char_log( cn, 1, "%-12.12s %3d/%3d\n", skilltab[ n1 ].name, ch[ co ].skill[ n1 ][ 0 ], ch[ co ].skill[ n1 ][ 5 ] );
+    do_char_log( cn, 1, "%-12.12s %3d/%3d\n", static_skilltab[ n1 ].name, ch[ co ].skill[ n1 ][ 0 ], ch[ co ].skill[ n1 ][ 5 ] );
 
   do_char_log( cn, 1, "%-12.12s %3d/%3d  !  %-12.12s %3d/%3d\n", at_name[ 0 ], ch[ co ].attrib[ 0 ][ 0 ], ch[ co ].attrib[ 0 ][ 5 ],
                at_name[ 1 ], ch[ co ].attrib[ 1 ][ 0 ], ch[ co ].attrib[ 1 ][ 5 ] );
@@ -2180,7 +2182,7 @@ int skill_lookup( char* name )
               // try alpha
   for ( j = 0; j < MAXSKILL; j++ )
   {
-    for ( p = name, q = skilltab[ j ].name; 1; p++, q++ )
+    for ( p = name, q = const_cast< char* >( static_skilltab[ j ].name ); 1; p++, q++ )
     {
       if ( *p == '\0' || *q == '\0' || *q == ' ' )
         return j;

@@ -1,7 +1,7 @@
 #ifndef MEN_AMONG_GODS_CHARACTER_H
 #define MEN_AMONG_GODS_CHARACTER_H
 
-#include "constants.h"
+#include "Constants.h"
 
 #include <cstdint>
 #include <json/json.h>

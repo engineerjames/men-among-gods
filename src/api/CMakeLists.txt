@@ -34,7 +34,7 @@ set(headers
 )
 
 add_executable(${target} ${sources} ${headers})
-target_link_libraries(${target} PRIVATE Drogon::Drogon JsonCpp::JsonCpp model)
+target_link_libraries(${target} PRIVATE Drogon::Drogon JsonCpp::JsonCpp common model)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS})
 target_compile_definitions(${target} PRIVATE ${PROJECT_CXX_DEFINITIONS})
 

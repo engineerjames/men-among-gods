@@ -22,6 +22,8 @@ All rights reserved.
 
 #include "server.h"
 
+#include "SkillTab.h"
+
 // static int ox=0,oy=0;
 // static char visi[40*40];
 
