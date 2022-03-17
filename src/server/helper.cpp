@@ -6,6 +6,7 @@ All rights reserved.
 
 **************************************************************************/
 
+#include <algorithm>
 #include <ctype.h>
 #include <fcntl.h>
 #include <malloc.h>
@@ -20,6 +21,8 @@ All rights reserved.
 #include <unistd.h>
 
 #include "server.h"
+
+#include "SkillTab.h"
 
 // static int ox=0,oy=0;
 // static char visi[40*40];
@@ -39,10 +42,10 @@ static inline int check_map_see( int x, int y )
 {
   int m;
 
-  if ( x <= 0 || x >= MAPX || y <= 0 || y >= MAPY )
+  if ( x <= 0 || x >= SERVER_MAPX || y <= 0 || y >= SERVER_MAPY )
     return 0;
 
-  m = x + y * MAPX;
+  m = x + y * SERVER_MAPX;
 
   if ( ismonster )
   {
@@ -64,10 +67,10 @@ static inline int check_map_go( int x, int y )
 {
   int m;
 
-  if ( x <= 0 || x >= MAPX || y <= 0 || y >= MAPY )
+  if ( x <= 0 || x >= SERVER_MAPX || y <= 0 || y >= SERVER_MAPY )
     return 0;
 
-  m = x + y * MAPX;
+  m = x + y * SERVER_MAPX;
 
   if ( map[ m ].flags & MF_MOVEBLOCK )
     return 0;
@@ -232,9 +235,9 @@ void reset_go( int xc, int yc )
 {
   int x, y, cn;
 
-  for ( y = max( 0, yc - 18 ); y < min( MAPY - 1, yc + 18 ); y++ )
-    for ( x = max( 0, xc - 18 ); x < min( MAPX - 1, xc + 18 ); x++ )
-      if ( ( cn = map[ x + y * MAPX ].ch ) != 0 )
+  for ( y = std::max( 0, yc - 18 ); y < std::min( SERVER_MAPY - 1, yc + 18 ); y++ )
+    for ( x = std::max( 0, xc - 18 ); x < std::min( SERVER_MAPX - 1, xc + 18 ); x++ )
+      if ( ( cn = map[ x + y * SERVER_MAPX ].ch ) != 0 )
         see[ cn ].x = see[ cn ].y = 0;
 
   ox = oy = 0;
@@ -316,7 +319,7 @@ int check_dlight(int x,int y)
 {
         int m;
 
-        m=x+y*MAPX;
+        m=x+y*SERVER_MAPX;
 
         if (!(map[m].flags&MF_INDOORS)) return globs->dlight;
 
@@ -330,14 +333,14 @@ void compute_dlight( int xc, int yc )
 
   prof = prof_start();
 
-  xs = max( 0, xc - LIGHTDIST );
-  ys = max( 0, yc - LIGHTDIST );
-  xe = min( MAPX - 1, xc + 1 + LIGHTDIST );
-  ye = min( MAPY - 1, yc + 1 + LIGHTDIST );
+  xs = std::max( 0, xc - LIGHTDIST );
+  ys = std::max( 0, yc - LIGHTDIST );
+  xe = std::min( SERVER_MAPX - 1, xc + 1 + LIGHTDIST );
+  ye = std::min( SERVER_MAPY - 1, yc + 1 + LIGHTDIST );
 
   for ( y = ys; y < ye; y++ )
   {
-    m = y * MAPX + xs;
+    m = y * SERVER_MAPX + xs;
     for ( x = xs; x < xe; x++, m++ )
     {
       if ( ( xc - x ) * ( xc - x ) + ( yc - y ) * ( yc - y ) > ( LIGHTDIST * LIGHTDIST + 1 ) )
@@ -354,7 +357,7 @@ void compute_dlight( int xc, int yc )
   }
   if ( best > 256 )
     best = 256;
-  map[ xc + yc * MAPX ].dlight = best;
+  map[ xc + yc * SERVER_MAPX ].dlight = best;
 
   prof_stop( 18, prof );
 }
@@ -366,14 +369,14 @@ void remove_lights( int x, int y )
 
   prof = prof_start();
 
-  xs = max( 1, x - LIGHTDIST );
-  ys = max( 1, y - LIGHTDIST );
-  xe = min( MAPX - 2, x + 1 + LIGHTDIST );
-  ye = min( MAPY - 2, y + 1 + LIGHTDIST );
+  xs = std::max( 1, x - LIGHTDIST );
+  ys = std::max( 1, y - LIGHTDIST );
+  xe = std::min( SERVER_MAPX - 2, x + 1 + LIGHTDIST );
+  ye = std::min( SERVER_MAPY - 2, y + 1 + LIGHTDIST );
 
   for ( y = ys; y < ye; y++ )
   {
-    m = y * MAPX + xs;
+    m = y * SERVER_MAPX + xs;
     for ( x = xs; x < xe; x++, m++ )
     {
       if ( ( in = map[ m ].it ) != 0 )
@@ -407,14 +410,14 @@ void add_lights( int x, int y )
 
   prof = prof_start();
 
-  xs = max( 1, x - LIGHTDIST );
-  ys = max( 1, y - LIGHTDIST );
-  xe = min( MAPX - 2, x + 1 + LIGHTDIST );
-  ye = min( MAPY - 2, y + 1 + LIGHTDIST );
+  xs = std::max( 1, x - LIGHTDIST );
+  ys = std::max( 1, y - LIGHTDIST );
+  xe = std::min( SERVER_MAPX - 2, x + 1 + LIGHTDIST );
+  ye = std::min( SERVER_MAPY - 2, y + 1 + LIGHTDIST );
 
   for ( y = ys; y < ye; y++ )
   {
-    m = y * MAPX + xs;
+    m = y * SERVER_MAPX + xs;
     for ( x = xs; x < xe; x++, m++ )
     {
       if ( ( in = map[ m ].it ) != 0 )
@@ -593,35 +596,6 @@ int scale_exps( int cn, int co, int exp )
 {
   return scale_exps2( cn, points2rank( ch[ co ].points_tot ), exp );
 }
-
-/* CS, 991128: Ranks rearranged for clarity */
-char* rank_name[ RANKS ] = {
-    "Private",
-    "Private First Class",
-    "Lance Corporal", // 0 1 2
-    "Corporal",
-    "Sergeant",
-    "Staff Sergeant", // 3 4 5
-    "Master Sergeant",
-    "First Sergeant",
-    "Sergeant Major", // 6 7 8
-    "Second Lieutenant",
-    "First Lieutenant",
-    "Captain", // 9 10 11
-
-    "Major",
-    "Lieutenant Colonel",
-    "Colonel", // 12 13 14
-    "Brigadier General",
-    "Major General",
-    "Lieutenant General", // 15 16 17
-    "General",
-    "Field Marshal",
-    "Knight of Astonia", // 18 19 20
-    "Baron of Astonia",
-    "Earl of Astonia",
-    "Warlord of Astonia" // 21 22 23
-};
 
 char* who_rank_name[ RANKS ] = {
     " Pvt ", " PFC ", " LCp ", " Cpl ", " Sgt ", " SSg ", " MSg ", " 1Sg ", " SgM ", "2Lieu", "1Lieu", "Captn",
@@ -958,7 +932,7 @@ int use_labtransfer( int cn, int nr, int exp )
   {
     for ( x = 164; x <= 184; x++ )
     {
-      if ( ( co = map[ x + y * MAPX ].ch ) && ( ch[ co ].flags & ( CF_PLAYER | CF_LABKEEPER ) ) )
+      if ( ( co = map[ x + y * SERVER_MAPX ].ch ) && ( ch[ co ].flags & ( CF_PLAYER | CF_LABKEEPER ) ) )
       {
         do_char_log( cn, 0, "Sorry, the area is still busy. %s is there.\n", ch[ co ].name );
         chlog( cn, "Sorry, the area is still busy. %s is there", ch[ co ].name );
@@ -1488,7 +1462,7 @@ void soultrans_equipment( int cn, int in, int in2 )
   it[ in2 ].temp = 0;
   it[ in2 ].flags |= IF_UPDATE | IF_IDENTIFIED | IF_NOREPAIR | IF_SOULSTONE;
 
-  it[ in2 ].min_rank = max( it[ in ].data[ 0 ], it[ in2 ].min_rank );
+  it[ in2 ].min_rank = std::max( static_cast< int >( it[ in ].data[ 0 ] ), static_cast< int >( it[ in2 ].min_rank ) );
 
   if ( ! it[ in2 ].max_damage )
     it[ in2 ].max_damage = 60000;
@@ -1670,7 +1644,7 @@ void test_filesend(int nr,int size)
 
         if (trans<5) return;
 
-        trans=min(1024,trans);
+        trans=std::min(1024,trans);
 
         plog(nr,"trans=%d, allow=%d, sent=%d",trans,(SIZE*player[nr].rtick),sent);
 

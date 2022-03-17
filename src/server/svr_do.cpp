@@ -18,6 +18,10 @@ All rights reserved.
 
 #include "server.h"
 
+#include "DriverConstants.h"
+#include "RankNames.h"
+#include "SkillTab.h"
+
 #define KILLERONLY
 
 #define AREASIZE 12
@@ -42,15 +46,15 @@ void initspiral()
   areaspiral[ point ] = 0;
   for ( dist = 1; dist <= AREASIZE; dist++ )
   {
-    areaspiral[ ++point ] = -MAPX; // N
+    areaspiral[ ++point ] = -SERVER_MAPX; // N
     for ( j = 2 * dist - 1; j; j-- )
       areaspiral[ ++point ] = -1; // W
     for ( j = 2 * dist; j; j-- )
-      areaspiral[ ++point ] = MAPX; // S
+      areaspiral[ ++point ] = SERVER_MAPX; // S
     for ( j = 2 * dist; j; j-- )
       areaspiral[ ++point ] = 1; // E
     for ( j = 2 * dist; j; j-- )
-      areaspiral[ ++point ] = -MAPX; // N
+      areaspiral[ ++point ] = -SERVER_MAPX; // N
   }
 }
 
@@ -67,10 +71,10 @@ void do_area_log( int cn, int co, int xs, int ys, int font, char* format, ... ) 
   vsprintf( buf, format, args );
   va_end( args );
 
-  for ( y = max( 0, ys - 12 ); y < min( MAPY, ys + 13 ); y++ )
+  for ( y = std::max( 0, ys - 12 ); y < std::min( SERVER_MAPY, ys + 13 ); y++ )
   {
-    m = y * MAPX;
-    for ( x = max( 0, xs - 12 ); x < min( MAPX, xs + 13 ); x++ )
+    m = y * SERVER_MAPX;
+    for ( x = std::max( 0, xs - 12 ); x < std::min( SERVER_MAPX, xs + 13 ); x++ )
     {
       if ( ( cc = map[ x + m ].ch ) != 0 )
       {
@@ -109,7 +113,7 @@ void do_area_say1( int cn, int xs, int ys, char* msg )
   for ( j = 0; j < SPIRALSIZE; j++ )
   {
     m += areaspiral[ j ];
-    if ( m < 0 || m >= ( MAPX * MAPY ) )
+    if ( m < 0 || m >= ( SERVER_MAPX * SERVER_MAPY ) )
       continue;
     cc = map[ m ].ch;
     if ( ! IS_SANECHAR( cc ) )
@@ -150,10 +154,10 @@ void do_area_sound( int cn, int co, int xs, int ys, int nr )
   unsigned long long prof;
 
   prof = prof_start();
-  for ( y = max( 0, ys - 8 ); y < min( MAPY, ys + 9 ); y++ )
+  for ( y = std::max( 0, ys - 8 ); y < std::min( SERVER_MAPY, ys + 9 ); y++ )
   {
-    m = y * MAPX;
-    for ( x = max( 0, xs - 8 ); x < min( MAPX, xs + 9 ); x++ )
+    m = y * SERVER_MAPX;
+    for ( x = std::max( 0, xs - 8 ); x < std::min( SERVER_MAPX, xs + 9 ); x++ )
     {
       if ( ( cc = map[ x + m ].ch ) != 0 )
       {
@@ -194,10 +198,10 @@ void do_area_notify( int cn, int co, int xs, int ys, int type, int dat1, int dat
 
   prof = prof_start();
 
-  for ( y = max( 0, ys - AREASIZE ); y < min( MAPY, ys + AREASIZE + 1 ); y++ )
+  for ( y = std::max( 0, ys - AREASIZE ); y < std::min( SERVER_MAPY, ys + AREASIZE + 1 ); y++ )
   {
-    m = y * MAPX;
-    for ( x = max( 0, xs - AREASIZE ); x < min( MAPX, xs + AREASIZE + 1 ); x++ )
+    m = y * SERVER_MAPX;
+    for ( x = std::max( 0, xs - AREASIZE ); x < std::min( SERVER_MAPX, xs + AREASIZE + 1 ); x++ )
     {
       if ( ( cc = map[ x + m ].ch ) != 0 )
       {
@@ -1050,7 +1054,7 @@ void do_group( int cn, char* name )
       }
     }
 
-    switch ( max( points2rank( ch[ cn ].points_tot ), points2rank( ch[ co ].points_tot ) ) )
+    switch ( std::max( points2rank( ch[ cn ].points_tot ), points2rank( ch[ co ].points_tot ) ) )
     {
     case 21:
       allow = 4;
@@ -1209,7 +1213,7 @@ void do_deposit( int cn, int g, int s )
 {
   int m, v;
 
-  m = ch[ cn ].x + ch[ cn ].y * MAPX;
+  m = ch[ cn ].x + ch[ cn ].y * SERVER_MAPX;
   if ( ! ( map[ m ].flags & MF_BANK ) )
   {
     do_char_log( cn, 0, "Sorry, deposit works only in banks.\n" );
@@ -1240,7 +1244,7 @@ void do_withdraw( int cn, int g, int s )
 {
   int m, v;
 
-  m = ch[ cn ].x + ch[ cn ].y * MAPX;
+  m = ch[ cn ].x + ch[ cn ].y * SERVER_MAPX;
   if ( ! ( map[ m ].flags & MF_BANK ) )
   {
     do_char_log( cn, 0, "Sorry, withdraw works only in banks.\n" );
@@ -1282,7 +1286,7 @@ void do_balance( int cn )
 {
   int m, tmp;
 
-  m = ch[ cn ].x + ch[ cn ].y * MAPX;
+  m = ch[ cn ].x + ch[ cn ].y * SERVER_MAPX;
   if ( ! ( map[ m ].flags & MF_BANK ) )
   {
     do_char_log( cn, 0, "Sorry, balance works only in banks.\n" );
@@ -1551,7 +1555,7 @@ void do_view_exp_to_rank( int cn )
 
   int expNeededToRank = expToNextRank - ch[ cn ].points_tot;
 
-  do_char_log( cn, 1, "You need %i exp for %s.\n", expNeededToRank, rank_name[ currentRank + 1 ] );
+  do_char_log( cn, 1, "You need %i exp for %s.\n", expNeededToRank, MenAmongGods::rankToString[ currentRank + 1 ] );
 }
 
 extern int penta_needed;
@@ -2722,7 +2726,7 @@ void do_say( int cn, char* text )
     return;
   }
 
-  m = ch[ cn ].x + ch[ cn ].y * MAPX;
+  m = ch[ cn ].x + ch[ cn ].y * SERVER_MAPX;
   if ( map[ m ].flags & MF_UWATER )
   {
     for ( n = 0; n < 20; n++ )
@@ -2886,9 +2890,9 @@ void do_char_killed( int cn, int co )
   else
     chlog( co, "Died" );
 
-  mf = map[ ch[ co ].x + ch[ co ].y * MAPX ].flags;
+  mf = map[ ch[ co ].x + ch[ co ].y * SERVER_MAPX ].flags;
   if ( cn )
-    mf &= map[ ch[ cn ].x + ch[ cn ].y * MAPX ].flags;
+    mf &= map[ ch[ cn ].x + ch[ cn ].y * SERVER_MAPX ].flags;
 
   // hack for grolms:
   if ( ch[ co ].temp >= 364 && ch[ co ].temp <= 374 )
@@ -3012,7 +3016,7 @@ void do_char_killed( int cn, int co )
   if ( ch[ co ].flags & ( CF_PLAYER ) )
   {
     if ( ch[ co ].luck < 0 )
-      ch[ co ].luck = min( 0, ch[ co ].luck + 10 );
+      ch[ co ].luck = std::min( 0, ch[ co ].luck + 10 );
 
     // set killed by message (buggy!)
     ch[ co ].data[ 14 ]++;
@@ -3026,7 +3030,7 @@ void do_char_killed( int cn, int co )
     else
       ch[ co ].data[ 15 ] = 0;
     ch[ co ].data[ 16 ] = globs->mdday + globs->mdyear * 300;
-    ch[ co ].data[ 17 ] = ch[ co ].x + ch[ co ].y * MAPX;
+    ch[ co ].data[ 17 ] = ch[ co ].x + ch[ co ].y * SERVER_MAPX;
   }
 
   remove_enemy( co );
@@ -3388,7 +3392,7 @@ int get_fight_skill( int cn )
 
   in = ch[ cn ].worn[ WN_RHAND ];
   if ( ! in )
-    return max( ch[ cn ].skill[ SK_KARATE ][ 5 ], ch[ cn ].skill[ SK_HAND ][ 5 ] );
+    return std::max( ch[ cn ].skill[ SK_KARATE ][ 5 ], ch[ cn ].skill[ SK_HAND ][ 5 ] );
 
   if ( it[ in ].flags & IF_WP_SWORD )
     return ch[ cn ].skill[ SK_SWORD ][ 5 ];
@@ -3401,7 +3405,7 @@ int get_fight_skill( int cn )
   if ( it[ in ].flags & IF_WP_TWOHAND )
     return ch[ cn ].skill[ SK_TWOHAND ][ 5 ];
 
-  return max( ch[ cn ].skill[ SK_KARATE ][ 5 ], ch[ cn ].skill[ SK_HAND ][ 5 ] );
+  return std::max( ch[ cn ].skill[ SK_KARATE ][ 5 ], ch[ cn ].skill[ SK_HAND ][ 5 ] );
 }
 
 void do_give_exp( int cn, int p, int gflag, int rank )
@@ -3473,9 +3477,9 @@ int do_hurt( int cn, int co, int dam, int type )
   int                tmp = 0, n, in, rank = 0, noexp = 0;
   unsigned long long mf;
 
-  mf = map[ ch[ co ].x + ch[ co ].y * MAPX ].flags;
+  mf = map[ ch[ co ].x + ch[ co ].y * SERVER_MAPX ].flags;
   if ( cn )
-    mf |= map[ ch[ cn ].x + ch[ cn ].y * MAPX ].flags;
+    mf |= map[ ch[ cn ].x + ch[ cn ].y * SERVER_MAPX ].flags;
 
   if ( ch[ co ].flags & CF_BODY )
     return 0;
@@ -3580,22 +3584,22 @@ int do_hurt( int cn, int co, int dam, int type )
   {
     if ( dam < 10000 )
     {
-      map[ ch[ co ].x + ch[ co ].y * MAPX ].flags |= MF_GFX_INJURED;
+      map[ ch[ co ].x + ch[ co ].y * SERVER_MAPX ].flags |= MF_GFX_INJURED;
       fx_add_effect( FX_INJURED, 8, ch[ co ].x, ch[ co ].y, 0 );
     }
     else if ( dam < 30000 )
     {
-      map[ ch[ co ].x + ch[ co ].y * MAPX ].flags |= MF_GFX_INJURED | MF_GFX_INJURED1;
+      map[ ch[ co ].x + ch[ co ].y * SERVER_MAPX ].flags |= MF_GFX_INJURED | MF_GFX_INJURED1;
       fx_add_effect( FX_INJURED, 8, ch[ co ].x, ch[ co ].y, 0 );
     }
     else if ( dam < 50000 )
     {
-      map[ ch[ co ].x + ch[ co ].y * MAPX ].flags |= MF_GFX_INJURED | MF_GFX_INJURED2;
+      map[ ch[ co ].x + ch[ co ].y * SERVER_MAPX ].flags |= MF_GFX_INJURED | MF_GFX_INJURED2;
       fx_add_effect( FX_INJURED, 8, ch[ co ].x, ch[ co ].y, 0 );
     }
     else
     {
-      map[ ch[ co ].x + ch[ co ].y * MAPX ].flags |= MF_GFX_INJURED | MF_GFX_INJURED1 | MF_GFX_INJURED2;
+      map[ ch[ co ].x + ch[ co ].y * SERVER_MAPX ].flags |= MF_GFX_INJURED | MF_GFX_INJURED1 | MF_GFX_INJURED2;
       fx_add_effect( FX_INJURED, 8, ch[ co ].x, ch[ co ].y, 0 );
     }
   }
@@ -3851,7 +3855,7 @@ void do_attack( int cn, int co, int surround )
     }
     if ( surround && ch[ cn ].skill[ SK_SURROUND ][ 0 ] )
     {
-      m = ch[ cn ].x + ch[ cn ].y * MAPX;
+      m = ch[ cn ].x + ch[ cn ].y * SERVER_MAPX;
       if ( ( co = map[ m + 1 ].ch ) != 0 && ch[ co ].attack_cn == cn )
       {
         if ( ch[ cn ].skill[ SK_SURROUND ][ 5 ] + RANDOM( 20 ) > get_fight_skill( co ) )
@@ -3862,12 +3866,12 @@ void do_attack( int cn, int co, int surround )
         if ( ch[ cn ].skill[ SK_SURROUND ][ 5 ] + RANDOM( 20 ) > get_fight_skill( co ) )
           do_hurt( cn, co, odam - odam / 4, 0 );
       }
-      if ( ( co = map[ m + MAPX ].ch ) != 0 && ch[ co ].attack_cn == cn )
+      if ( ( co = map[ m + SERVER_MAPX ].ch ) != 0 && ch[ co ].attack_cn == cn )
       {
         if ( ch[ cn ].skill[ SK_SURROUND ][ 5 ] + RANDOM( 20 ) > get_fight_skill( co ) )
           do_hurt( cn, co, odam - odam / 4, 0 );
       }
-      if ( ( co = map[ m - MAPX ].ch ) != 0 && ch[ co ].attack_cn == cn )
+      if ( ( co = map[ m - SERVER_MAPX ].ch ) != 0 && ch[ co ].attack_cn == cn )
       {
         if ( ch[ cn ].skill[ SK_SURROUND ][ 5 ] + RANDOM( 20 ) > get_fight_skill( co ) )
           do_hurt( cn, co, odam - odam / 4, 0 );
@@ -4039,7 +4043,7 @@ int do_char_can_see( int cn, int co )
   // modify by light:
   if ( ! ( ch[ cn ].flags & CF_INFRARED ) )
   {
-    light = max( map[ ch[ co ].x + ch[ co ].y * MAPX ].light, check_dlight( ch[ co ].x, ch[ co ].y ) );
+    light = std::max( static_cast< int >( map[ ch[ co ].x + ch[ co ].y * SERVER_MAPX ].light ), check_dlight( ch[ co ].x, ch[ co ].y ) );
     light = do_char_calc_light( cn, light );
 
     if ( light == 0 )
@@ -4100,7 +4104,7 @@ int do_char_can_see_item( int cn, int in )
   // modify by light:
   if ( ! ( ch[ cn ].flags & CF_INFRARED ) )
   {
-    light = max( map[ it[ in ].x + it[ in ].y * MAPX ].light, check_dlight( it[ in ].x, it[ in ].y ) );
+    light = std::max( static_cast< int >( map[ it[ in ].x + it[ in ].y * SERVER_MAPX ].light ), check_dlight( it[ in ].x, it[ in ].y ) );
     light = do_char_calc_light( cn, light );
 
     if ( light == 0 )
@@ -4158,7 +4162,7 @@ void really_update_char( int cn )
   ch[ cn ].flags &= ~( CF_NOHPREG | CF_NOENDREG | CF_NOMANAREG );
   ch[ cn ].sprite_override = 0;
 
-  m = ch[ cn ].x + ch[ cn ].y * MAPX;
+  m = ch[ cn ].x + ch[ cn ].y * SERVER_MAPX;
 
   if ( ( map[ m ].flags & MF_NOMAGIC ) && ! char_wears_item( cn, 466 ) && ! char_wears_item( cn, 481 ) )
   {
@@ -4378,8 +4382,9 @@ void really_update_char( int cn )
   {
     skill[ z ] = ( int ) ch[ cn ].skill[ z ][ 0 ] + ( int ) ch[ cn ].skill[ z ][ 1 ] + skill[ z ];
 
-    skill[ z ] += ( ( int ) ch[ cn ].attrib[ skilltab[ z ].attrib[ 0 ] ][ 5 ] + ( int ) ch[ cn ].attrib[ skilltab[ z ].attrib[ 1 ] ][ 5 ] +
-                    ( int ) ch[ cn ].attrib[ skilltab[ z ].attrib[ 2 ] ][ 5 ] ) /
+    skill[ z ] += ( ( int ) ch[ cn ].attrib[ static_skilltab[ z ].attrib[ 0 ] ][ 5 ] +
+                    ( int ) ch[ cn ].attrib[ static_skilltab[ z ].attrib[ 1 ] ][ 5 ] +
+                    ( int ) ch[ cn ].attrib[ static_skilltab[ z ].attrib[ 2 ] ][ 5 ] ) /
                   5;
 
     if ( skill[ z ] < 1 )
@@ -4442,8 +4447,8 @@ void really_update_char( int cn )
   if ( ch[ cn ].a_mana > ch[ cn ].mana[ 5 ] * 1000 )
     ch[ cn ].a_mana = ch[ cn ].mana[ 5 ] * 1000;
 
-  if ( oldlight != ch[ cn ].light && ch[ cn ].used == USE_ACTIVE && ch[ cn ].x > 0 && ch[ cn ].x < MAPX && ch[ cn ].y > 0 &&
-       ch[ cn ].y < MAPY && map[ ch[ cn ].x + ch[ cn ].y * MAPX ].ch == cn )
+  if ( oldlight != ch[ cn ].light && ch[ cn ].used == USE_ACTIVE && ch[ cn ].x > 0 && ch[ cn ].x < SERVER_MAPX && ch[ cn ].y > 0 &&
+       ch[ cn ].y < SERVER_MAPY && map[ ch[ cn ].x + ch[ cn ].y * SERVER_MAPX ].ch == cn )
     do_add_light( ch[ cn ].x, ch[ cn ].y, ch[ cn ].light - oldlight );
 
   prof_stop( 7, prof );
@@ -4476,7 +4481,7 @@ void do_regenerate( int cn )
   if ( ch[ cn ].flags & CF_NOMANAREG )
     nomana = 1;
 
-  if ( map[ ch[ cn ].x + ch[ cn ].y * MAPX ].flags & MF_UWATER )
+  if ( map[ ch[ cn ].x + ch[ cn ].y * SERVER_MAPX ].flags & MF_UWATER )
     uwater = 1;
 
   if ( ! ch[ cn ].stunned )
@@ -4777,7 +4782,7 @@ int mana_needed( int v, int diff )
 
 int skill_needed( int v, int diff )
 {
-  return max( v, v * v * v * diff / 40 );
+  return std::max( v, v * v * v * diff / 40 );
 }
 
 int do_raise_attrib( int cn, int nr )
@@ -5025,7 +5030,7 @@ void do_look_item( int cn, int in )
     {
       int percent;
 
-      percent = min( 100, 100 * ( ch[ cn ].points_tot / 10 ) / ( it[ in ].data[ 4 ] + 1 ) );
+      percent = std::min( 100, static_cast< int >( 100 * ( ch[ cn ].points_tot / 10 ) / ( it[ in ].data[ 4 ] + 1 ) ) );
 
       if ( percent < 50 )
         do_char_log( cn, 2, "You sense that it's too early in your career to touch this pole.\n" );
@@ -5324,7 +5329,7 @@ void do_depot_char( int cn, int co, int nr )
   if ( cn != co )
     return;
 
-  if ( ! ( map[ ch[ cn ].x + ch[ cn ].y * MAPX ].flags & MF_BANK ) && ! ( ch[ cn ].flags & CF_GOD ) )
+  if ( ! ( map[ ch[ cn ].x + ch[ cn ].y * SERVER_MAPX ].flags & MF_BANK ) && ! ( ch[ cn ].flags & CF_GOD ) )
   {
     do_char_log( cn, 0, "You cannot access your depot outside a bank.\n" );
     return;
@@ -5452,7 +5457,7 @@ void do_look_char( int cn, int co, int godflag, int autoflag, int lootflag )
 
       do_char_log( cn, 1, "%s died %d times, the last time on the day %d of the year %d, killed by %s %s.\n", ch[ co ].reference,
                    ch[ co ].data[ 14 ], ch[ co ].data[ 16 ] % 300, ch[ co ].data[ 16 ] / 300, killer,
-                   get_area_m( ch[ co ].data[ 17 ] % MAPX, ch[ co ].data[ 17 ] / MAPX, 1 ) );
+                   get_area_m( ch[ co ].data[ 17 ] % SERVER_MAPX, ch[ co ].data[ 17 ] / SERVER_MAPX, 1 ) );
     }
 
     if ( ( ch[ co ].flags & ( CF_PLAYER ) ) && ch[ co ].data[ 44 ] && ! ( ch[ co ].flags & CF_GOD ) )
@@ -5591,7 +5596,7 @@ void do_look_char( int cn, int co, int godflag, int autoflag, int lootflag )
     {
       buf[ 0 ] = SV_LOOK6;
       buf[ 1 ] = n;
-      for ( m = n; m < min( 40, n + 2 ); m++ )
+      for ( m = n; m < std::min( 40, n + 2 ); m++ )
       {
         if ( ( in = ch[ co ].item[ m ] ) != 0 )
         {
@@ -5617,7 +5622,7 @@ void do_look_char( int cn, int co, int godflag, int autoflag, int lootflag )
     {
       buf[ 0 ] = SV_LOOK6;
       buf[ 1 ] = n + 40;
-      for ( m = n; m < min( 20, n + 2 ); m++ )
+      for ( m = n; m < std::min( 20, n + 2 ); m++ )
       {
         if ( ( in = ch[ co ].worn[ m ] ) != 0 && ( ch[ co ].flags & CF_BODY ) )
         {
@@ -5696,7 +5701,7 @@ void do_look_depot( int cn, int co )
   if ( cn != co )
     return;
 
-  if ( ! ( map[ ch[ cn ].x + ch[ cn ].y * MAPX ].flags & MF_BANK ) && ! ( ch[ cn ].flags & CF_GOD ) )
+  if ( ! ( map[ ch[ cn ].x + ch[ cn ].y * SERVER_MAPX ].flags & MF_BANK ) && ! ( ch[ cn ].flags & CF_GOD ) )
   {
     do_char_log( cn, 0, "You cannot access your depot outside a bank.\n" );
     return;
@@ -5763,7 +5768,7 @@ void do_look_depot( int cn, int co )
   {
     buf[ 0 ] = SV_LOOK6;
     buf[ 1 ] = n;
-    for ( m = n; m < min( 62, n + 2 ); m++ )
+    for ( m = n; m < std::min( 62, n + 2 ); m++ )
     {
       if ( ( in = ch[ co ].depot[ m ] ) != 0 )
       {
@@ -5942,9 +5947,9 @@ void do_steal_player( int cn, char* cv, char* ci )
 static inline void map_add_light( int x, int y, int v )
 {
   register unsigned int m;
-  // if (x<0 || x>=MAPX || y<0 || y>=MAPY || v==0) return;
+  // if (x<0 || x>=SERVER_MAPX || y<0 || y>=SERVER_MAPY || v==0) return;
 
-  m = x + y * MAPX;
+  m = x + y * SERVER_MAPX;
 
   map[ m ].light += v;
 
@@ -5972,10 +5977,10 @@ void do_add_light( int xc, int yc, int stren )
   else
     flag = 0;
 
-  xs = max( 0, xc - LIGHTDIST );
-  ys = max( 0, yc - LIGHTDIST );
-  xe = min( MAPX - 1, xc + 1 + LIGHTDIST );
-  ye = min( MAPY - 1, yc + 1 + LIGHTDIST );
+  xs = std::max( 0, xc - LIGHTDIST );
+  ys = std::max( 0, yc - LIGHTDIST );
+  xe = std::min( SERVER_MAPX - 1, xc + 1 + LIGHTDIST );
+  ye = std::min( SERVER_MAPY - 1, yc + 1 + LIGHTDIST );
 
   for ( y = ys; y < ye; y++ )
   {
@@ -6190,8 +6195,8 @@ int do_mayattack(int cn,int co)
         if (!(ch[cn].flags&CF_PLAYER)) return 1;
         if (!(ch[co].flags&CF_PLAYER)) return 1;
 
-        m1=ch[cn].x+ch[cn].y*MAPX;
-        m2=ch[co].x+ch[co].y*MAPX;
+        m1=ch[cn].x+ch[cn].y*SERVER_MAPX;
+        m2=ch[co].x+ch[co].y*SERVER_MAPX;
         f=map[m1].flags&map[m2].flags;  // make sure we take only flags present on both player's location
 
         if (f&MF_ARENA) return 1;
@@ -6377,7 +6382,7 @@ void do_check_new_level( int cn )
     if ( n < MAXCHARS )
     {
       char message[ 100 ];
-      sprintf( message, "Hear ye, hear ye! %s has attained the rank of %s!", ch[ cn ].name, rank_name[ rank ] );
+      sprintf( message, "Hear ye, hear ye! %s has attained the rank of %s!", ch[ cn ].name, MenAmongGods::rankToString[ rank ] );
       do_shout( n, message );
     }
 
@@ -6437,7 +6442,7 @@ void do_seen( int cn, char* cco )
     time_t    last, now;
     struct tm tlast, tnow, *tmp;
 
-    last = max( ch[ co ].login_date, ch[ co ].logout_date );
+    last = std::max( ch[ co ].login_date, ch[ co ].logout_date );
     now  = time( NULL );
 
     tmp   = localtime( &last );
@@ -6454,7 +6459,7 @@ void do_seen( int cn, char* cco )
   }
   else
   {
-    last_date    = max( ch[ co ].login_date, ch[ co ].logout_date ) / ( 24 * 3600 );
+    last_date    = std::max( ch[ co ].login_date, ch[ co ].logout_date ) / ( 24 * 3600 );
     current_date = time( NULL ) / ( 24 * 3600 );
     days         = current_date - last_date;
     switch ( days )

@@ -4,14 +4,6 @@
 #include <cstdint>
 #include <cstring>
 
-static const constexpr int AT_BRAVE = 0;
-static const constexpr int AT_WILL  = 1;
-static const constexpr int AT_INT   = 2;
-static const constexpr int AT_AGIL  = 3;
-static const constexpr int AT_STREN = 4;
-
-static constexpr const std::size_t SKILLTAB_SIZE = 50;
-
 static const constexpr unsigned int KIN_MERCENARY   = ( 1u << 0 );
 static const constexpr unsigned int KIN_SEYAN_DU    = ( 1u << 1 );
 static const constexpr unsigned int KIN_PURPLE      = ( 1u << 2 );
@@ -72,5 +64,7 @@ static const constexpr unsigned long long CF_UPDATE     = ( 1ull << 43 ); // cli
 static const constexpr unsigned long long CF_SAVEME     = ( 1ull << 44 ); // save this player to disk
 static const constexpr unsigned long long CF_GREATERGOD = ( 1ull << 45 ); // greater god
 static const constexpr unsigned long long CF_GREATERINV = ( 1ull << 46 ); // no one sees me, ever
+
+static const constexpr unsigned int SPR_EMPTY = 999;
 
 #endif

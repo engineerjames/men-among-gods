@@ -11,8 +11,9 @@
 #include "ClientTypes.h"
 #include "ColorPalette.h"
 #include "Component.h"
-#include "ConstantIdentifiers.h"
+#include "Constants.h"
 #include "JustifiableText.h"
+#include "SkillTab.h"
 
 class PlayerData;
 class GraphicsCache;

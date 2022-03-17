@@ -88,7 +88,7 @@ int char_moveto( int cn, int x, int y, int flag, int x2, int y2 )
       act_turn_right( cn );
       return 0;
     }
-    if ( ( in = map[ ( ch[ cn ].x + 1 ) + ( ch[ cn ].y ) * MAPX ].it ) != 0 && ! it[ in ].active && it[ in ].driver == 2 )
+    if ( ( in = map[ ( ch[ cn ].x + 1 ) + ( ch[ cn ].y ) * SERVER_MAPX ].it ) != 0 && ! it[ in ].active && it[ in ].driver == 2 )
     {
       act_use( cn );
       return 0;
@@ -101,7 +101,7 @@ int char_moveto( int cn, int x, int y, int flag, int x2, int y2 )
       act_turn_left( cn );
       return 0;
     }
-    if ( ( in = map[ ( ch[ cn ].x - 1 ) + ( ch[ cn ].y ) * MAPX ].it ) != 0 && ! it[ in ].active && it[ in ].driver == 2 )
+    if ( ( in = map[ ( ch[ cn ].x - 1 ) + ( ch[ cn ].y ) * SERVER_MAPX ].it ) != 0 && ! it[ in ].active && it[ in ].driver == 2 )
     {
       act_use( cn );
       return 0;
@@ -114,7 +114,7 @@ int char_moveto( int cn, int x, int y, int flag, int x2, int y2 )
       act_turn_down( cn );
       return 0;
     }
-    if ( ( in = map[ ( ch[ cn ].x ) + ( ch[ cn ].y + 1 ) * MAPX ].it ) != 0 && ! it[ in ].active && it[ in ].driver == 2 )
+    if ( ( in = map[ ( ch[ cn ].x ) + ( ch[ cn ].y + 1 ) * SERVER_MAPX ].it ) != 0 && ! it[ in ].active && it[ in ].driver == 2 )
     {
       act_use( cn );
       return 0;
@@ -127,7 +127,7 @@ int char_moveto( int cn, int x, int y, int flag, int x2, int y2 )
       act_turn_up( cn );
       return 0;
     }
-    if ( ( in = map[ ( ch[ cn ].x ) + ( ch[ cn ].y - 1 ) * MAPX ].it ) != 0 && ! it[ in ].active && it[ in ].driver == 2 )
+    if ( ( in = map[ ( ch[ cn ].x ) + ( ch[ cn ].y - 1 ) * SERVER_MAPX ].it ) != 0 && ! it[ in ].active && it[ in ].driver == 2 )
     {
       act_use( cn );
       return 0;
@@ -152,7 +152,7 @@ int char_dropto( int cn, int x, int y )
   if ( ! ch[ cn ].citem )
     return -1;
 
-  m = x + y * MAPX;
+  m = x + y * SERVER_MAPX;
 
   // drop if possible
   if ( ch[ cn ].x == x - 1 && ch[ cn ].y == y )

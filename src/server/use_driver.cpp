@@ -6,10 +6,15 @@ All rights reserved.
 
 **************************************************************************/
 
+#include <algorithm>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include "Constants.h"
+#include "DriverConstants.h"
+#include "RankNames.h"
+#include "SkillTab.h"
 #include "funcs.h"
 #include "server.h"
 
@@ -53,7 +58,7 @@ int use_door( int cn, int in )
 {
   int in2, lock = 0, n, skill, power, temp, flags;
 
-  if ( map[ it[ in ].x + it[ in ].y * MAPX ].ch )
+  if ( map[ it[ in ].x + it[ in ].y * SERVER_MAPX ].ch )
     return 0;
 
   if ( it[ in ].data[ 0 ] )
@@ -1196,17 +1201,17 @@ int use_scroll( int cn, int in )
   {
     if ( it[ in ].data[ 1 ] )
     {
-      do_char_log( cn, 0, "You already know %s.\n", skilltab[ nr ].name );
+      do_char_log( cn, 0, "You already know %s.\n", static_skilltab[ nr ].name );
       return 0;
     }
     v = ch[ cn ].skill[ nr ][ 0 ];
     if ( v >= ch[ cn ].skill[ nr ][ 2 ] )
     {
-      do_char_log( cn, 0, "You cannot raise %s any higher.\n", skilltab[ nr ].name );
+      do_char_log( cn, 0, "You cannot raise %s any higher.\n", static_skilltab[ nr ].name );
       return 0;
     }
-    do_char_log( cn, 1, "Raised %s by one.\n", skilltab[ nr ].name );
-    chlog( cn, "Used scroll to raise %s by one", skilltab[ nr ].name );
+    do_char_log( cn, 1, "Raised %s by one.\n", static_skilltab[ nr ].name );
+    chlog( cn, "Used scroll to raise %s by one", static_skilltab[ nr ].name );
     pts = skill_needed( v, ch[ cn ].skill[ nr ][ 3 ] );
     ch[ cn ].points_tot += pts;
     ch[ cn ].skill[ nr ][ 0 ]++;
@@ -1215,14 +1220,14 @@ int use_scroll( int cn, int in )
   }
   else if ( ! ch[ cn ].skill[ nr ][ 2 ] )
   {
-    do_char_log( cn, 0, "This scroll teaches %s, which you cannot learn.\n", skilltab[ nr ].name );
+    do_char_log( cn, 0, "This scroll teaches %s, which you cannot learn.\n", static_skilltab[ nr ].name );
     return 0;
   }
   else
   {
     ch[ cn ].skill[ nr ][ 0 ] = 1;
-    do_char_log( cn, 1, "You learned %s!\n", skilltab[ nr ].name );
-    chlog( cn, "Used scroll to learn %s", skilltab[ nr ].name );
+    do_char_log( cn, 1, "You learned %s!\n", static_skilltab[ nr ].name );
+    chlog( cn, "Used scroll to learn %s", static_skilltab[ nr ].name );
   }
 
   it[ in ].used = USE_EMPTY;
@@ -1401,11 +1406,11 @@ int use_crystal_sub( int cn, int in )
 
   do
   {
-    m = RANDOM( 64 ) + 128 + ( RANDOM( 64 ) + 64 ) * MAPX;
+    m = RANDOM( 64 ) + 128 + ( RANDOM( 64 ) + 64 ) * SERVER_MAPX;
   } while ( ! plr_check_target( m ) );
 
-  ch[ cc ].goto_x     = m % MAPX;
-  ch[ cc ].goto_y     = m / MAPX;
+  ch[ cc ].goto_x     = m % SERVER_MAPX;
+  ch[ cc ].goto_y     = m / SERVER_MAPX;
   ch[ cc ].data[ 60 ] = 18 * 20;
   ch[ cc ].data[ 62 ] = 1;
 
@@ -1420,21 +1425,24 @@ int use_crystal_sub( int cn, int in )
   for ( n = 0; n < 5; n++ )
   {
     tmp                       = base + RANDOM( 15 );
-    tmp                       = tmp * 3 / max( 1, ch[ cc ].attrib[ n ][ 3 ] );
-    ch[ cc ].attrib[ n ][ 0 ] = max( 10, min( ch[ cc ].attrib[ n ][ 2 ], tmp ) );
+    tmp                       = tmp * 3 / std::max( 1, static_cast< int >( ch[ cc ].attrib[ n ][ 3 ] ) );
+    ch[ cc ].attrib[ n ][ 0 ] = std::max( 10, std::min( static_cast< int >( ch[ cc ].attrib[ n ][ 2 ] ), tmp ) );
   }
 
   for ( n = 0; n < 50; n++ )
   {
     tmp = base + RANDOM( 15 );
-    tmp = tmp * 3 / max( 1, ch[ cc ].skill[ n ][ 3 ] );
+    tmp = tmp * 3 / std::max( 1, static_cast< int >( ch[ cc ].skill[ n ][ 3 ] ) );
     if ( ch[ cc ].skill[ n ][ 2 ] )
-      ch[ cc ].skill[ n ][ 0 ] = min( ch[ cc ].skill[ n ][ 2 ], tmp );
+      ch[ cc ].skill[ n ][ 0 ] = std::min( static_cast< int >( ch[ cc ].skill[ n ][ 2 ] ), tmp );
   }
 
-  ch[ cc ].hp[ 0 ]   = max( 50, min( ch[ cc ].hp[ 2 ], base * 5 + RANDOM( 50 ) ) );
-  ch[ cc ].end[ 0 ]  = max( 50, min( ch[ cc ].end[ 2 ], base * 5 + RANDOM( 50 ) ) );
-  ch[ cc ].mana[ 0 ] = max( 50, min( ch[ cc ].mana[ 2 ], base * 5 + RANDOM( 50 ) ) );
+  ch[ cc ].hp[ 0 ] =
+      std::max( static_cast< long int >( 50 ), std::min( static_cast< long int >( ch[ cc ].hp[ 2 ] ), base * 5 + RANDOM( 50 ) ) );
+  ch[ cc ].end[ 0 ] =
+      std::max( static_cast< long int >( 50 ), std::min( static_cast< long int >( ch[ cc ].end[ 2 ] ), base * 5 + RANDOM( 50 ) ) );
+  ch[ cc ].mana[ 0 ] =
+      std::max( static_cast< long int >( 50 ), std::min( static_cast< long int >( ch[ cc ].mana[ 2 ] ), base * 5 + RANDOM( 50 ) ) );
 
   // calculate experience
   for ( z = 0; z < 5; z++ )
@@ -1911,7 +1919,7 @@ int use_pile( int cn, int in )
   it[ in ].used = USE_EMPTY;
   x             = it[ in ].x;
   y             = it[ in ].y;
-  m             = x + y * MAPX;
+  m             = x + y * SERVER_MAPX;
   level         = it[ in ].data[ 0 ];
   map[ m ].it   = 0;
 
@@ -1989,7 +1997,7 @@ int mine_wall( int in, int x, int y )
   int temp, carried;
 
   if ( ! in )
-    in = map[ x + y * MAPX ].it;
+    in = map[ x + y * SERVER_MAPX ].it;
   if ( ! in )
     return 0;
 
@@ -2016,7 +2024,7 @@ int mine_state( int x, int y )
 {
   int in;
 
-  in = map[ x + y * MAPX ].it;
+  in = map[ x + y * SERVER_MAPX ].it;
   if ( ! in )
     return 0;
   if ( it[ in ].driver != 25 )
@@ -2098,8 +2106,8 @@ int use_mine_fast( int cn, int in )
   reset_go( it[ in ].x, it[ in ].y );
   remove_lights( it[ in ].x, it[ in ].y );
 
-  map[ it[ in ].x + it[ in ].y * MAPX ].it = 0;
-  it[ in ].used                            = USE_EMPTY;
+  map[ it[ in ].x + it[ in ].y * SERVER_MAPX ].it = 0;
+  it[ in ].used                                   = USE_EMPTY;
 
   reset_go( it[ in ].x, it[ in ].y );
   add_lights( it[ in ].x, it[ in ].y );
@@ -2434,7 +2442,7 @@ int spawn_penta_enemy( int in )
     return 0;
   ch[ cn ].flags &= ~CF_RESPAWN;
   ch[ cn ].data[ 0 ]  = in;
-  ch[ cn ].data[ 29 ] = it[ in ].x + it[ in ].y * MAPX;
+  ch[ cn ].data[ 29 ] = it[ in ].x + it[ in ].y * SERVER_MAPX;
   ch[ cn ].data[ 60 ] = TICKS * 60 * 2;
   ch[ cn ].data[ 73 ] = 8;
   ch[ cn ].dir        = 1;
@@ -2551,7 +2559,8 @@ int use_pentagram( int cn, int in )
 
   if ( r1 > r2 )
   {
-    do_char_log( cn, 0, "You cannot use this pentagram. It is reserved for rank %s and below.\n", rank_name[ min( 23, max( 0, r2 ) ) ] );
+    do_char_log( cn, 0, "You cannot use this pentagram. It is reserved for rank %s and below.\n",
+                 MenAmongGods::rankToString[ std::min( 23, std::max( 0, r2 ) ) ] );
     return 0;
   }
 
@@ -2872,13 +2881,13 @@ int use_kill_undead( int cn, int in )
 
   for ( y = ch[ cn ].y - 8; y < ch[ cn ].y + 8; y++ )
   {
-    if ( y < 1 || y >= MAPY )
+    if ( y < 1 || y >= SERVER_MAPY )
       continue;
     for ( x = ch[ cn ].x - 8; x < ch[ cn ].x + 8; x++ )
     {
-      if ( x < 1 || x >= MAPX )
+      if ( x < 1 || x >= SERVER_MAPX )
         continue;
-      if ( ( co = map[ x + y * MAPX ].ch ) != 0 )
+      if ( ( co = map[ x + y * SERVER_MAPX ].ch ) != 0 )
       {
         if ( ch[ co ].flags & CF_UNDEAD )
         {
@@ -3534,7 +3543,7 @@ int explorer_point( int cn, int in )
     ch[ cn ].luck += 10;
 
     exp = it[ in ].data[ 4 ] / 2 + RANDOM( it[ in ].data[ 4 ] ); // some randomness
-    exp = min( ch[ cn ].points_tot / 10, exp );                  // not more than 10% of total experience
+    exp = std::min( ch[ cn ].points_tot / 10, exp );             // not more than 10% of total experience
     exp += RANDOM( exp / 10 + 1 );                               // some more randomness (needs +1 to avoid division by zero)
 
     xlog( "exp point giving %d (%d) exp, char has %d exp", exp, it[ in ].data[ 4 ], ch[ cn ].points_tot );
@@ -3599,7 +3608,7 @@ void use_driver( int cn, int in, int carried )
 
     if ( ! carried )
     {
-      m = it[ in ].x + it[ in ].y * MAPX;
+      m = it[ in ].x + it[ in ].y * SERVER_MAPX;
       if ( map[ m ].ch || map[ m ].to_ch )
         return;
     }
@@ -3936,7 +3945,7 @@ int item_age( int in )
     if ( it[ in ].damage_state > 1 )
     {
 
-      st = max( 0, 4 - it[ in ].damage_state );
+      st = std::max( 0, 4 - it[ in ].damage_state );
 
       if ( it[ in ].armor[ 0 ] > st )
         it[ in ].armor[ 0 ]--;
@@ -4055,11 +4064,11 @@ void lightage( int in, int multi )
   int m, cn, light, act;
 
   if ( ( cn = it[ in ].carried ) != 0 )
-    m = ch[ cn ].x + ch[ cn ].y * MAPX;
+    m = ch[ cn ].x + ch[ cn ].y * SERVER_MAPX;
   else
-    m = it[ in ].x + it[ in ].y * MAPX;
+    m = it[ in ].x + it[ in ].y * SERVER_MAPX;
 
-  if ( m < 1 || m >= MAPX * MAPY )
+  if ( m < 1 || m >= SERVER_MAPX * SERVER_MAPY )
     return;
 
   light = map[ m ].light;
@@ -4299,7 +4308,7 @@ void spiderweb( int in )
         continue;
       ch[ cn ].flags &= ~CF_RESPAWN;
       ch[ cn ].data[ 0 ]  = in;
-      ch[ cn ].data[ 29 ] = it[ in ].x + it[ in ].y * MAPX;
+      ch[ cn ].data[ 29 ] = it[ in ].x + it[ in ].y * SERVER_MAPX;
       ch[ cn ].data[ 60 ] = TICKS * 60 * 2;
       ch[ cn ].data[ 73 ] = 8;
       ch[ cn ].dir        = 1;
@@ -4333,7 +4342,7 @@ void greenlingball( int in )
         continue;
       ch[ cn ].flags &= ~CF_RESPAWN;
       ch[ cn ].data[ 0 ]  = in;
-      ch[ cn ].data[ 29 ] = it[ in ].x + it[ in ].y * MAPX;
+      ch[ cn ].data[ 29 ] = it[ in ].x + it[ in ].y * SERVER_MAPX;
       ch[ cn ].data[ 60 ] = TICKS * 60 * 2;
       ch[ cn ].data[ 73 ] = 8;
       ch[ cn ].dir        = 1;
@@ -4373,14 +4382,14 @@ void expire_driver( int in )
   }
 }
 
-#define EXP_TIME ( MAPY / 4 )
+#define EXP_TIME ( SERVER_MAPY / 4 )
 
 void item_tick_expire( void )
 {
   static int y = 0;
   int        x, in, m, act, cn;
 
-  for ( x = 0, m = y * MAPX; x < MAPX; x++, m++ )
+  for ( x = 0, m = y * SERVER_MAPX; x < SERVER_MAPX; x++, m++ )
   {
     if ( ( in = map[ m ].it ) != 0 )
     {
@@ -4436,8 +4445,8 @@ void item_tick_expire( void )
       else
         act = 0;
 
-      it[ in ].current_age[ act ] += EXP_TIME; // each place is only checked every MAPY ticks
-                                               // so we add MAPY instead of one
+      it[ in ].current_age[ act ] += EXP_TIME; // each place is only checked every SERVER_MAPY ticks
+                                               // so we add SERVER_MAPY instead of one
 
       if ( it[ in ].flags & IF_LIGHTAGE )
         lightage( in, EXP_TIME );
@@ -4510,7 +4519,7 @@ void item_tick_expire( void )
   }
 
   y++;
-  if ( y >= MAPY )
+  if ( y >= SERVER_MAPY )
   {
     globs->expire_run++;
     globs->lost_run++;
@@ -4523,7 +4532,7 @@ void item_tick_gc( void )
   static int off = 0, cnt = 0;
   int        n, m, cn, z, in2;
 
-  m = min( off + 256, MAXITEM );
+  m = std::min( off + 256, MAXITEM );
 
   for ( n = off; n < m; n++ )
   {
@@ -4584,7 +4593,7 @@ void item_tick_gc( void )
     }
     else
     {
-      in2 = map[ it[ n ].x + it[ n ].y * MAPX ].it;
+      in2 = map[ it[ n ].x + it[ n ].y * SERVER_MAPX ].it;
       if ( in2 == n )
         continue;
     }
@@ -4774,9 +4783,9 @@ int step_portal2_lab13( int cn, int in )
   {
     for ( y = 594; y <= 608 && ! flag; y++ )
     {
-      if ( ( co = map[ x + y * MAPX ].ch ) != 0 && co != cn && ( ch[ co ].flags & ( CF_PLAYER ) ) )
+      if ( ( co = map[ x + y * SERVER_MAPX ].ch ) != 0 && co != cn && ( ch[ co ].flags & ( CF_PLAYER ) ) )
         flag = 1;
-      if ( ( in2 = map[ x + y * MAPX ].it ) != 0 && ( it[ in2 ].temp == 664 || it[ in2 ].temp == 170 ) )
+      if ( ( in2 = map[ x + y * SERVER_MAPX ].it ) != 0 && ( it[ in2 ].temp == 664 || it[ in2 ].temp == 170 ) )
         flag = 2;
     }
   }
@@ -4785,9 +4794,9 @@ int step_portal2_lab13( int cn, int in )
   {
     for ( y = 593; y <= 602 && ! flag; y++ )
     {
-      if ( ( co = map[ x + y * MAPX ].ch ) != 0 && co != cn && ( ch[ co ].flags & ( CF_PLAYER ) ) )
+      if ( ( co = map[ x + y * SERVER_MAPX ].ch ) != 0 && co != cn && ( ch[ co ].flags & ( CF_PLAYER ) ) )
         flag = 1;
-      if ( ( in2 = map[ x + y * MAPX ].it ) != 0 && ( it[ in2 ].temp == 664 || it[ in2 ].temp == 170 ) )
+      if ( ( in2 = map[ x + y * SERVER_MAPX ].it ) != 0 && ( it[ in2 ].temp == 664 || it[ in2 ].temp == 170 ) )
         flag = 2;
     }
   }
@@ -4891,10 +4900,10 @@ int step_portal_arena( int cn, int in )
     return -1;
   }
 
-  xs = it[ in ].data[ 1 ] % MAPX;
-  ys = it[ in ].data[ 1 ] / MAPX;
-  xe = it[ in ].data[ 2 ] % MAPX;
-  ye = it[ in ].data[ 2 ] / MAPX;
+  xs = it[ in ].data[ 1 ] % SERVER_MAPX;
+  ys = it[ in ].data[ 1 ] / SERVER_MAPX;
+  xe = it[ in ].data[ 2 ] % SERVER_MAPX;
+  ye = it[ in ].data[ 2 ] / SERVER_MAPX;
 
   if ( ch[ cn ].frx >= xs && ch[ cn ].frx <= xe && ch[ cn ].fry >= ys && ch[ cn ].fry <= ye )
   {
@@ -4906,7 +4915,7 @@ int step_portal_arena( int cn, int in )
   {
     for ( y = ys; y <= ye; y++ )
     {
-      if ( map[ x + y * MAPX ].ch )
+      if ( map[ x + y * SERVER_MAPX ].ch )
       {
         do_char_log( cn, 1, "The arena is busy. Please come back later.\n" );
         return -1;
@@ -4915,7 +4924,7 @@ int step_portal_arena( int cn, int in )
   }
 
   co = pop_create_char( nr, 0 );
-  if ( ! god_drop_char_fuzzy( co, it[ in ].data[ 0 ] % MAPX, it[ in ].data[ 0 ] / MAPX ) )
+  if ( ! god_drop_char_fuzzy( co, it[ in ].data[ 0 ] % SERVER_MAPX, it[ in ].data[ 0 ] / SERVER_MAPX ) )
   {
     do_char_log( cn, 1, "Please tell the gods that the arena isn't working.\n" );
     return -1;
@@ -4935,7 +4944,7 @@ int step_portal_arena( int cn, int in )
 int step_teleport( int cn, int in )
 {
   int        m, x, y, j, m2, m3;
-  static int loc_off[] = { 0, -MAPX, MAPX, 1, -1 };
+  static int loc_off[] = { 0, -SERVER_MAPX, SERVER_MAPX, 1, -1 };
 
   if ( cn <= 0 )
   {
@@ -4985,8 +4994,8 @@ int step_teleport( int cn, int in )
   // instead of plr_map_set(cn);
   map[ m3 ].ch    = cn;
   map[ m3 ].to_ch = 0;
-  ch[ cn ].x      = m3 % MAPX;
-  ch[ cn ].y      = m3 / MAPX;
+  ch[ cn ].x      = m3 % SERVER_MAPX;
+  ch[ cn ].y      = m3 / SERVER_MAPX;
   do_area_notify( cn, 0, ch[ cn ].x, ch[ cn ].y, NT_SEE, cn, 0, 0, 0 );
 
   fx_add_effect( 6, 0, ch[ cn ].x, ch[ cn ].y, 0 );

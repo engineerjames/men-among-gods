@@ -23,7 +23,7 @@ struct ccp_mem
 
   int level;
 
-  int sector[ MAPX / 10 ][ MAPY / 10 ];
+  int sector[ SERVER_MAPX / 10 ][ SERVER_MAPY / 10 ];
 };
 
 static struct ccp_mem* ccp_mem[ MAXCHARS ];
@@ -244,7 +244,7 @@ void ccp_goto_sector( int cn )
     bx   = x - 1;
     by   = y;
   }
-  if ( x < MAPX / 10 - 1 && mem->sector[ x + 1 ][ y ] > best )
+  if ( x < SERVER_MAPX / 10 - 1 && mem->sector[ x + 1 ][ y ] > best )
   {
     best = mem->sector[ x + 1 ][ y ];
     bx   = x + 1;
@@ -256,7 +256,7 @@ void ccp_goto_sector( int cn )
     bx   = x;
     by   = y - 1;
   }
-  if ( y < MAPY / 10 - 1 && mem->sector[ x ][ y + 1 ] > best )
+  if ( y < SERVER_MAPY / 10 - 1 && mem->sector[ x ][ y + 1 ] > best )
   {
     best = mem->sector[ x ][ y + 1 ];
     bx   = x;

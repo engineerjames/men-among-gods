@@ -13,6 +13,9 @@ All rights reserved.
 
 #include "server.h"
 
+#include "Character.h"
+#include "MapConstants.h"
+
 struct area
 {
   int   x1, y1;

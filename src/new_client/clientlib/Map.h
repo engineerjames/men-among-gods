@@ -5,7 +5,7 @@
 #include <mutex>
 
 #include "ClientTypes.h"
-#include "ConstantIdentifiers.h"
+#include "MapConstants.h"
 
 namespace MenAmongGods
 {

@@ -1,21 +1,40 @@
 #include "PlayerEquipmentDisplay.h"
 
-#include "ConstantIdentifiers.h"
 #include "GraphicsCache.h"
 #include "PlayerData.h"
-#include "UiPositions.h"
+#include "UiConstants.h"
 #include "UtilityFunctions.h"
 
 #include <cmath>
 #include <iostream>
+
+#include "EquipmentConstants.h"
 
 // Commands
 #include "InventoryCommand.h"
 
 namespace
 {
-static int wntab[ 20 ] = { WN_HEAD, WN_CLOAK, WN_BODY, WN_ARMS, WN_NECK, WN_BELT, WN_RHAND, WN_LHAND, WN_RRING, WN_LRING,
-                           WN_LEGS, WN_FEET,  0,       0,       0,       0,       0,        0,        0,        0 };
+static int wntab[ 20 ] = { static_cast< int >( WEAR_POSITIONS::WN_HEAD ),
+                           static_cast< int >( WEAR_POSITIONS::WN_CLOAK ),
+                           static_cast< int >( WEAR_POSITIONS::WN_BODY ),
+                           static_cast< int >( WEAR_POSITIONS::WN_ARMS ),
+                           static_cast< int >( WEAR_POSITIONS::WN_NECK ),
+                           static_cast< int >( WEAR_POSITIONS::WN_BELT ),
+                           static_cast< int >( WEAR_POSITIONS::WN_RHAND ),
+                           static_cast< int >( WEAR_POSITIONS::WN_LHAND ),
+                           static_cast< int >( WEAR_POSITIONS::WN_RRING ),
+                           static_cast< int >( WEAR_POSITIONS::WN_LRING ),
+                           static_cast< int >( WEAR_POSITIONS::WN_LEGS ),
+                           static_cast< int >( WEAR_POSITIONS::WN_FEET ),
+                           0,
+                           0,
+                           0,
+                           0,
+                           0,
+                           0,
+                           0,
+                           0 };
 }
 
 namespace MenAmongGods

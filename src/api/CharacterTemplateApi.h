@@ -6,7 +6,7 @@
 #include <tuple>
 #include <vector>
 
-#include "character.h"
+#include "Character.h"
 
 namespace api
 {

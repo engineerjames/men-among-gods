@@ -17,10 +17,10 @@ void plr_map_remove( int cn ) // remove character from map
 {
   int m, in;
 
-  m = ch[ cn ].x + ch[ cn ].y * MAPX;
+  m = ch[ cn ].x + ch[ cn ].y * SERVER_MAPX;
 
   map[ m ].ch                                     = 0;
-  map[ ch[ cn ].tox + ch[ cn ].toy * MAPX ].to_ch = 0;
+  map[ ch[ cn ].tox + ch[ cn ].toy * SERVER_MAPX ].to_ch = 0;
 
   if ( ch[ cn ].light )
   {
@@ -51,7 +51,7 @@ void plr_map_set( int cn ) // set character to map and remove target character
 {
   int m, in, ret, x, y;
 
-  m = ch[ cn ].x + ch[ cn ].y * MAPX;
+  m = ch[ cn ].x + ch[ cn ].y * SERVER_MAPX;
 
   if ( ! ( ch[ cn ].flags & CF_BODY ) )
   {
@@ -66,12 +66,12 @@ void plr_map_set( int cn ) // set character to map and remove target character
         x = ch[ cn ].x + ( ch[ cn ].x - ch[ cn ].frx );
         y = ch[ cn ].y + ( ch[ cn ].y - ch[ cn ].fry );
 
-        if ( ! map[ x + y * MAPX ].ch )
+        if ( ! map[ x + y * SERVER_MAPX ].ch )
         {
           ch[ cn ].x = x;
           ch[ cn ].y = y;
 
-          map[ ch[ cn ].x + ch[ cn ].y * MAPX ].ch = cn;
+          map[ ch[ cn ].x + ch[ cn ].y * SERVER_MAPX ].ch = cn;
 
           ch[ cn ].use_nr      = 0;
           ch[ cn ].skill_nr    = 0;
@@ -95,7 +95,7 @@ void plr_map_set( int cn ) // set character to map and remove target character
 
         ch[ cn ].x                               = ch[ cn ].frx;
         ch[ cn ].y                               = ch[ cn ].fry;
-        map[ ch[ cn ].x + ch[ cn ].y * MAPX ].ch = cn;
+        map[ ch[ cn ].x + ch[ cn ].y * SERVER_MAPX ].ch = cn;
 
         ch[ cn ].use_nr      = 0;
         ch[ cn ].skill_nr    = 0;
@@ -361,9 +361,9 @@ void plr_attack( int cn, int surround )
     return;
   }
 
-  co = map[ x + y * MAPX ].ch;
+  co = map[ x + y * SERVER_MAPX ].ch;
   if ( ! co )
-    co = map[ x + y * MAPX ].to_ch;
+    co = map[ x + y * SERVER_MAPX ].to_ch;
   if ( ! co )
   {
     co = ch[ cn ].attack_cn;
@@ -409,9 +409,9 @@ void plr_give( int cn )
     return;
   }
 
-  co = map[ x + y * MAPX ].ch;
+  co = map[ x + y * SERVER_MAPX ].ch;
   if ( ! co )
-    co = map[ x + y * MAPX ].to_ch;
+    co = map[ x + y * SERVER_MAPX ].to_ch;
   if ( ! co )
   {
     do_char_log( cn, 2, "Your target moved away!\n" );
@@ -435,25 +435,25 @@ void plr_pickup( int cn )
 
   if ( ch[ cn ].dir == DX_UP && ch[ cn ].y > 0 )
   {
-    m = ch[ cn ].x + ch[ cn ].y * MAPX - MAPX;
+    m = ch[ cn ].x + ch[ cn ].y * SERVER_MAPX - SERVER_MAPX;
     x = ch[ cn ].x;
     y = ch[ cn ].y - 1;
   }
-  else if ( ch[ cn ].dir == DX_DOWN && ch[ cn ].y < MAPY - 1 )
+  else if ( ch[ cn ].dir == DX_DOWN && ch[ cn ].y < SERVER_MAPY - 1 )
   {
-    m = ch[ cn ].x + ch[ cn ].y * MAPX + MAPX;
+    m = ch[ cn ].x + ch[ cn ].y * SERVER_MAPX + SERVER_MAPX;
     x = ch[ cn ].x;
     y = ch[ cn ].y + 1;
   }
   else if ( ch[ cn ].dir == DX_LEFT && ch[ cn ].x > 0 )
   {
-    m = ch[ cn ].x + ch[ cn ].y * MAPX - 1;
+    m = ch[ cn ].x + ch[ cn ].y * SERVER_MAPX - 1;
     x = ch[ cn ].x - 1;
     y = ch[ cn ].y;
   }
-  else if ( ch[ cn ].dir == DX_RIGHT && ch[ cn ].x < MAPX - 1 )
+  else if ( ch[ cn ].dir == DX_RIGHT && ch[ cn ].x < SERVER_MAPX - 1 )
   {
-    m = ch[ cn ].x + ch[ cn ].y * MAPX + 1;
+    m = ch[ cn ].x + ch[ cn ].y * SERVER_MAPX + 1;
     x = ch[ cn ].x + 1;
     y = ch[ cn ].y;
   }
@@ -567,25 +567,25 @@ void plr_use( int cn )
 
   if ( ch[ cn ].dir == DX_UP && ch[ cn ].y > 0 )
   {
-    m = ch[ cn ].x + ch[ cn ].y * MAPX - MAPX;
+    m = ch[ cn ].x + ch[ cn ].y * SERVER_MAPX - SERVER_MAPX;
     x = ch[ cn ].x;
     y = ch[ cn ].y - 1;
   }
-  else if ( ch[ cn ].dir == DX_DOWN && ch[ cn ].y < MAPY - 1 )
+  else if ( ch[ cn ].dir == DX_DOWN && ch[ cn ].y < SERVER_MAPY - 1 )
   {
-    m = ch[ cn ].x + ch[ cn ].y * MAPX + MAPX;
+    m = ch[ cn ].x + ch[ cn ].y * SERVER_MAPX + SERVER_MAPX;
     x = ch[ cn ].x;
     y = ch[ cn ].y + 1;
   }
   else if ( ch[ cn ].dir == DX_LEFT && ch[ cn ].x > 0 )
   {
-    m = ch[ cn ].x + ch[ cn ].y * MAPX - 1;
+    m = ch[ cn ].x + ch[ cn ].y * SERVER_MAPX - 1;
     x = ch[ cn ].x - 1;
     y = ch[ cn ].y;
   }
-  else if ( ch[ cn ].dir == DX_RIGHT && ch[ cn ].x < MAPX - 1 )
+  else if ( ch[ cn ].dir == DX_RIGHT && ch[ cn ].x < SERVER_MAPX - 1 )
   {
-    m = ch[ cn ].x + ch[ cn ].y * MAPX + 1;
+    m = ch[ cn ].x + ch[ cn ].y * SERVER_MAPX + 1;
     x = ch[ cn ].x + 1;
     y = ch[ cn ].y;
   }
@@ -629,25 +629,25 @@ void plr_drop( int cn )
 
   if ( ch[ cn ].dir == DX_UP && ch[ cn ].y > 0 )
   {
-    m = ch[ cn ].x + ch[ cn ].y * MAPX - MAPX;
+    m = ch[ cn ].x + ch[ cn ].y * SERVER_MAPX - SERVER_MAPX;
     x = ch[ cn ].x;
     y = ch[ cn ].y - 1;
   }
-  else if ( ch[ cn ].dir == DX_DOWN && ch[ cn ].y < MAPY - 1 )
+  else if ( ch[ cn ].dir == DX_DOWN && ch[ cn ].y < SERVER_MAPY - 1 )
   {
-    m = ch[ cn ].x + ch[ cn ].y * MAPX + MAPX;
+    m = ch[ cn ].x + ch[ cn ].y * SERVER_MAPX + SERVER_MAPX;
     x = ch[ cn ].x;
     y = ch[ cn ].y + 1;
   }
   else if ( ch[ cn ].dir == DX_LEFT && ch[ cn ].x > 0 )
   {
-    m = ch[ cn ].x + ch[ cn ].y * MAPX - 1;
+    m = ch[ cn ].x + ch[ cn ].y * SERVER_MAPX - 1;
     x = ch[ cn ].x - 1;
     y = ch[ cn ].y;
   }
-  else if ( ch[ cn ].dir == DX_RIGHT && ch[ cn ].x < MAPX - 1 )
+  else if ( ch[ cn ].dir == DX_RIGHT && ch[ cn ].x < SERVER_MAPX - 1 )
   {
-    m = ch[ cn ].x + ch[ cn ].y * MAPX + 1;
+    m = ch[ cn ].x + ch[ cn ].y * SERVER_MAPX + 1;
     x = ch[ cn ].x + 1;
     y = ch[ cn ].y;
   }
@@ -858,7 +858,7 @@ void act_move_up( int cn )
     return;
   }
 
-  if ( ! plr_set_target( ch[ cn ].x + ch[ cn ].y * MAPX - MAPX, cn ) )
+  if ( ! plr_set_target( ch[ cn ].x + ch[ cn ].y * SERVER_MAPX - SERVER_MAPX, cn ) )
   {
     ch[ cn ].cerrno = ERR_FAILED;
     return;
@@ -874,7 +874,7 @@ void act_move_down( int cn )
 {
   ch[ cn ].cerrno = ERR_NONE;
 
-  if ( ch[ cn ].y >= MAPY - 2 )
+  if ( ch[ cn ].y >= SERVER_MAPY - 2 )
   {
     ch[ cn ].cerrno = ERR_FAILED;
     return;
@@ -891,7 +891,7 @@ void act_move_down( int cn )
     return;
   }
 
-  if ( ! plr_set_target( ch[ cn ].x + ch[ cn ].y * MAPX + MAPX, cn ) )
+  if ( ! plr_set_target( ch[ cn ].x + ch[ cn ].y * SERVER_MAPX + SERVER_MAPX, cn ) )
   {
     ch[ cn ].cerrno = ERR_FAILED;
     return;
@@ -924,7 +924,7 @@ void act_move_left( int cn )
     return;
   }
 
-  if ( ! plr_set_target( ch[ cn ].x + ch[ cn ].y * MAPX - 1, cn ) )
+  if ( ! plr_set_target( ch[ cn ].x + ch[ cn ].y * SERVER_MAPX - 1, cn ) )
   {
     ch[ cn ].cerrno = ERR_FAILED;
     return;
@@ -940,7 +940,7 @@ void act_move_right( int cn )
 {
   ch[ cn ].cerrno = ERR_NONE;
 
-  if ( ch[ cn ].x >= MAPX - 2 )
+  if ( ch[ cn ].x >= SERVER_MAPX - 2 )
   {
     ch[ cn ].cerrno = ERR_FAILED;
     return;
@@ -957,7 +957,7 @@ void act_move_right( int cn )
     return;
   }
 
-  if ( ! plr_set_target( ch[ cn ].x + ch[ cn ].y * MAPX + 1, cn ) )
+  if ( ! plr_set_target( ch[ cn ].x + ch[ cn ].y * SERVER_MAPX + 1, cn ) )
   {
     ch[ cn ].cerrno = ERR_FAILED;
     return;
@@ -995,17 +995,17 @@ void act_move_leftup( int cn )
     return;
   }
 
-  if ( ! plr_check_target( ch[ cn ].x + ch[ cn ].y * MAPX - MAPX ) )
+  if ( ! plr_check_target( ch[ cn ].x + ch[ cn ].y * SERVER_MAPX - SERVER_MAPX ) )
   {
     ch[ cn ].cerrno = ERR_FAILED;
     return;
   }
-  if ( ! plr_check_target( ch[ cn ].x + ch[ cn ].y * MAPX - 1 ) )
+  if ( ! plr_check_target( ch[ cn ].x + ch[ cn ].y * SERVER_MAPX - 1 ) )
   {
     ch[ cn ].cerrno = ERR_FAILED;
     return;
   }
-  if ( ! plr_set_target( ch[ cn ].x + ch[ cn ].y * MAPX - MAPX - 1, cn ) )
+  if ( ! plr_set_target( ch[ cn ].x + ch[ cn ].y * SERVER_MAPX - SERVER_MAPX - 1, cn ) )
   {
     ch[ cn ].cerrno = ERR_FAILED;
     return;
@@ -1026,7 +1026,7 @@ void act_move_leftdown( int cn )
     ch[ cn ].cerrno = ERR_FAILED;
     return;
   }
-  if ( ch[ cn ].y >= MAPY - 2 )
+  if ( ch[ cn ].y >= SERVER_MAPY - 2 )
   {
     ch[ cn ].cerrno = ERR_FAILED;
     return;
@@ -1043,17 +1043,17 @@ void act_move_leftdown( int cn )
     return;
   }
 
-  if ( ! plr_check_target( ch[ cn ].x + ch[ cn ].y * MAPX + MAPX ) )
+  if ( ! plr_check_target( ch[ cn ].x + ch[ cn ].y * SERVER_MAPX + SERVER_MAPX ) )
   {
     ch[ cn ].cerrno = ERR_FAILED;
     return;
   }
-  if ( ! plr_check_target( ch[ cn ].x + ch[ cn ].y * MAPX - 1 ) )
+  if ( ! plr_check_target( ch[ cn ].x + ch[ cn ].y * SERVER_MAPX - 1 ) )
   {
     ch[ cn ].cerrno = ERR_FAILED;
     return;
   }
-  if ( ! plr_set_target( ch[ cn ].x + ch[ cn ].y * MAPX + MAPX - 1, cn ) )
+  if ( ! plr_set_target( ch[ cn ].x + ch[ cn ].y * SERVER_MAPX + SERVER_MAPX - 1, cn ) )
   {
     ch[ cn ].cerrno = ERR_FAILED;
     return;
@@ -1069,7 +1069,7 @@ void act_move_rightup( int cn )
 {
   ch[ cn ].cerrno = ERR_NONE;
 
-  if ( ch[ cn ].x >= MAPX - 2 )
+  if ( ch[ cn ].x >= SERVER_MAPX - 2 )
   {
     ch[ cn ].cerrno = ERR_FAILED;
     return;
@@ -1091,17 +1091,17 @@ void act_move_rightup( int cn )
     return;
   }
 
-  if ( ! plr_check_target( ch[ cn ].x + ch[ cn ].y * MAPX - MAPX ) )
+  if ( ! plr_check_target( ch[ cn ].x + ch[ cn ].y * SERVER_MAPX - SERVER_MAPX ) )
   {
     ch[ cn ].cerrno = ERR_FAILED;
     return;
   }
-  if ( ! plr_check_target( ch[ cn ].x + ch[ cn ].y * MAPX + 1 ) )
+  if ( ! plr_check_target( ch[ cn ].x + ch[ cn ].y * SERVER_MAPX + 1 ) )
   {
     ch[ cn ].cerrno = ERR_FAILED;
     return;
   }
-  if ( ! plr_set_target( ch[ cn ].x + ch[ cn ].y * MAPX - MAPX + 1, cn ) )
+  if ( ! plr_set_target( ch[ cn ].x + ch[ cn ].y * SERVER_MAPX - SERVER_MAPX + 1, cn ) )
   {
     ch[ cn ].cerrno = ERR_FAILED;
     return;
@@ -1117,12 +1117,12 @@ void act_move_rightdown( int cn )
 {
   ch[ cn ].cerrno = ERR_NONE;
 
-  if ( ch[ cn ].x >= MAPX - 2 )
+  if ( ch[ cn ].x >= SERVER_MAPX - 2 )
   {
     ch[ cn ].cerrno = ERR_FAILED;
     return;
   }
-  if ( ch[ cn ].y >= MAPY - 2 )
+  if ( ch[ cn ].y >= SERVER_MAPY - 2 )
   {
     ch[ cn ].cerrno = ERR_FAILED;
     return;
@@ -1139,17 +1139,17 @@ void act_move_rightdown( int cn )
     return;
   }
 
-  if ( ! plr_check_target( ch[ cn ].x + ch[ cn ].y * MAPX + MAPX ) )
+  if ( ! plr_check_target( ch[ cn ].x + ch[ cn ].y * SERVER_MAPX + SERVER_MAPX ) )
   {
     ch[ cn ].cerrno = ERR_FAILED;
     return;
   }
-  if ( ! plr_check_target( ch[ cn ].x + ch[ cn ].y * MAPX + 1 ) )
+  if ( ! plr_check_target( ch[ cn ].x + ch[ cn ].y * SERVER_MAPX + 1 ) )
   {
     ch[ cn ].cerrno = ERR_FAILED;
     return;
   }
-  if ( ! plr_set_target( ch[ cn ].x + ch[ cn ].y * MAPX + MAPX + 1, cn ) )
+  if ( ! plr_set_target( ch[ cn ].x + ch[ cn ].y * SERVER_MAPX + SERVER_MAPX + 1, cn ) )
   {
     ch[ cn ].cerrno = ERR_FAILED;
     return;
@@ -1395,7 +1395,7 @@ void act_attack( int cn ) // attack character in front of the character
       ch[ cn ].cerrno = ERR_FAILED;
     break;
   case DX_DOWN:
-    if ( ch[ cn ].y < MAPY - 1 )
+    if ( ch[ cn ].y < SERVER_MAPY - 1 )
     {
       ch[ cn ].status  = 168;
       ch[ cn ].status2 = v;
@@ -1413,7 +1413,7 @@ void act_attack( int cn ) // attack character in front of the character
       ch[ cn ].cerrno = ERR_FAILED;
     break;
   case DX_RIGHT:
-    if ( ch[ cn ].y < MAPX - 1 )
+    if ( ch[ cn ].y < SERVER_MAPX - 1 )
     {
       ch[ cn ].status  = 184;
       ch[ cn ].status2 = v;
@@ -1449,7 +1449,7 @@ void act_give( int cn ) // give current object to character in front of the char
       ch[ cn ].cerrno = ERR_FAILED;
     break;
   case DX_DOWN:
-    if ( ch[ cn ].y < MAPY - 1 )
+    if ( ch[ cn ].y < SERVER_MAPY - 1 )
     {
       ch[ cn ].status  = 168;
       ch[ cn ].status2 = 3;
@@ -1467,7 +1467,7 @@ void act_give( int cn ) // give current object to character in front of the char
       ch[ cn ].cerrno = ERR_FAILED;
     break;
   case DX_RIGHT:
-    if ( ch[ cn ].y < MAPX - 1 )
+    if ( ch[ cn ].y < SERVER_MAPX - 1 )
     {
       ch[ cn ].status  = 184;
       ch[ cn ].status2 = 3;
@@ -1503,7 +1503,7 @@ void act_bow( int cn )
       ch[ cn ].cerrno = ERR_FAILED;
     break;
   case DX_DOWN:
-    if ( ch[ cn ].y < MAPY - 1 )
+    if ( ch[ cn ].y < SERVER_MAPY - 1 )
     {
       ch[ cn ].status  = 168;
       ch[ cn ].status2 = 7;
@@ -1521,7 +1521,7 @@ void act_bow( int cn )
       ch[ cn ].cerrno = ERR_FAILED;
     break;
   case DX_RIGHT:
-    if ( ch[ cn ].y < MAPX - 1 )
+    if ( ch[ cn ].y < SERVER_MAPX - 1 )
     {
       ch[ cn ].status  = 184;
       ch[ cn ].status2 = 7;
@@ -1557,7 +1557,7 @@ void act_wave( int cn )
       ch[ cn ].cerrno = ERR_FAILED;
     break;
   case DX_DOWN:
-    if ( ch[ cn ].y < MAPY - 1 )
+    if ( ch[ cn ].y < SERVER_MAPY - 1 )
     {
       ch[ cn ].status  = 168;
       ch[ cn ].status2 = 8;
@@ -1575,7 +1575,7 @@ void act_wave( int cn )
       ch[ cn ].cerrno = ERR_FAILED;
     break;
   case DX_RIGHT:
-    if ( ch[ cn ].y < MAPX - 1 )
+    if ( ch[ cn ].y < SERVER_MAPX - 1 )
     {
       ch[ cn ].status  = 184;
       ch[ cn ].status2 = 8;
@@ -1649,7 +1649,7 @@ void act_pickup( int cn ) // get the object in front of the character
       ch[ cn ].cerrno = ERR_FAILED;
     break;
   case DX_DOWN:
-    if ( ch[ cn ].y < MAPY - 1 )
+    if ( ch[ cn ].y < SERVER_MAPY - 1 )
     {
       ch[ cn ].status  = 168;
       ch[ cn ].status2 = 1;
@@ -1667,7 +1667,7 @@ void act_pickup( int cn ) // get the object in front of the character
       ch[ cn ].cerrno = ERR_FAILED;
     break;
   case DX_RIGHT:
-    if ( ch[ cn ].y < MAPX - 1 )
+    if ( ch[ cn ].y < SERVER_MAPX - 1 )
     {
       ch[ cn ].status  = 184;
       ch[ cn ].status2 = 1;
@@ -1703,7 +1703,7 @@ void act_use( int cn ) // get the object in front of the character
       ch[ cn ].cerrno = ERR_FAILED;
     break;
   case DX_DOWN:
-    if ( ch[ cn ].y < MAPY - 1 )
+    if ( ch[ cn ].y < SERVER_MAPY - 1 )
     {
       ch[ cn ].status  = 168;
       ch[ cn ].status2 = 4;
@@ -1721,7 +1721,7 @@ void act_use( int cn ) // get the object in front of the character
       ch[ cn ].cerrno = ERR_FAILED;
     break;
   case DX_RIGHT:
-    if ( ch[ cn ].y < MAPX - 1 )
+    if ( ch[ cn ].y < SERVER_MAPX - 1 )
     {
       ch[ cn ].status  = 184;
       ch[ cn ].status2 = 4;
@@ -1757,7 +1757,7 @@ void act_drop( int cn ) // drops the current object in front of the character
       ch[ cn ].cerrno = ERR_FAILED;
     break;
   case DX_DOWN:
-    if ( ch[ cn ].y < MAPY - 1 )
+    if ( ch[ cn ].y < SERVER_MAPY - 1 )
     {
       ch[ cn ].status  = 168;
       ch[ cn ].status2 = 2;
@@ -1775,7 +1775,7 @@ void act_drop( int cn ) // drops the current object in front of the character
       ch[ cn ].cerrno = ERR_FAILED;
     break;
   case DX_RIGHT:
-    if ( ch[ cn ].y < MAPX - 1 )
+    if ( ch[ cn ].y < SERVER_MAPX - 1 )
     {
       ch[ cn ].status  = 184;
       ch[ cn ].status2 = 2;

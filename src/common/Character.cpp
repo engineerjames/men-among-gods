@@ -1,8 +1,10 @@
-#include "character.h"
+#include "Character.h"
 
 #include <array>
+#include <iostream>
 
-#include "skilltab.h"
+#include "Constants.h"
+#include "SkillTab.h"
 
 character character::fromJson( const Json::Value& json )
 {
@@ -21,8 +23,54 @@ character character::fromJson( const Json::Value& json )
   newChar.sprite  = json[ "sprite" ].asUInt();
   newChar.sound   = json[ "sound" ].asUInt();
 
-  // TODO: Figure out how to do the flags
-  // newChar.flags   = json[ "flags" ].asUInt64();
+  // clang-format off
+  if (json[ "flags" ][ "immortal" ]               .asBool()) { newChar.flags |= CF_IMMORTAL;}
+  if (json[ "flags" ][ "god" ]                    .asBool()) { newChar.flags |= CF_GOD;}
+  if (json[ "flags" ][ "creator" ]                .asBool()) { newChar.flags |= CF_CREATOR;}
+  if (json[ "flags" ][ "build_mode" ]             .asBool()) { newChar.flags |= CF_BUILDMODE;}
+  if (json[ "flags" ][ "respawn" ]                .asBool()) { newChar.flags |= CF_RESPAWN;}
+  if (json[ "flags" ][ "player" ]                 .asBool()) { newChar.flags |= CF_PLAYER;}
+  if (json[ "flags" ][ "new_user" ]               .asBool()) { newChar.flags |= CF_NEWUSER;}
+  if (json[ "flags" ][ "no_tell" ]                .asBool()) { newChar.flags |= CF_NOTELL;}
+  if (json[ "flags" ][ "no_shout" ]               .asBool()) { newChar.flags |= CF_NOSHOUT;}
+  if (json[ "flags" ][ "merchant" ]               .asBool()) { newChar.flags |= CF_MERCHANT;}
+  if (json[ "flags" ][ "staff" ]                  .asBool()) { newChar.flags |= CF_STAFF;}
+  if (json[ "flags" ][ "no_hp_regen" ]            .asBool()) { newChar.flags |= CF_NOHPREG;}
+  if (json[ "flags" ][ "no_end_regen" ]           .asBool()) { newChar.flags |= CF_NOENDREG;}
+  if (json[ "flags" ][ "no_mana_regen" ]          .asBool()) { newChar.flags |= CF_NOMANAREG;}
+  if (json[ "flags" ][ "invisible" ]              .asBool()) { newChar.flags |= CF_INVISIBLE;}
+  if (json[ "flags" ][ "infrared" ]               .asBool()) { newChar.flags |= CF_INFRARED;}
+  if (json[ "flags" ][ "body" ]                   .asBool()) { newChar.flags |= CF_BODY;}
+  if (json[ "flags" ][ "no_sleep" ]               .asBool()) { newChar.flags |= CF_NOSLEEP;}
+  if (json[ "flags" ][ "undead" ]                 .asBool()) { newChar.flags |= CF_UNDEAD;}
+  if (json[ "flags" ][ "no_magic" ]               .asBool()) { newChar.flags |= CF_NOMAGIC;}
+  if (json[ "flags" ][ "stoned" ]                 .asBool()) { newChar.flags |= CF_STONED;}
+  if (json[ "flags" ][ "usurp" ]                  .asBool()) { newChar.flags |= CF_USURP;}
+  if (json[ "flags" ][ "imp" ]                    .asBool()) { newChar.flags |= CF_IMP;}
+  if (json[ "flags" ][ "shutup" ]                 .asBool()) { newChar.flags |= CF_SHUTUP;}
+  if (json[ "flags" ][ "no_description" ]         .asBool()) { newChar.flags |= CF_NODESC;}
+  if (json[ "flags" ][ "profiler" ]               .asBool()) { newChar.flags |= CF_PROF;}
+  if (json[ "flags" ][ "simple_anim" ]            .asBool()) { newChar.flags |= CF_SIMPLE;}
+  if (json[ "flags" ][ "kicked" ]                 .asBool()) { newChar.flags |= CF_KICKED;}
+  if (json[ "flags" ][ "no_list" ]                .asBool()) { newChar.flags |= CF_NOLIST;}
+  if (json[ "flags" ][ "no_who" ]                 .asBool()) { newChar.flags |= CF_NOWHO;}
+  if (json[ "flags" ][ "spell_ignore" ]           .asBool()) { newChar.flags |= CF_SPELLIGNORE;}
+  if (json[ "flags" ][ "computer_controlled" ]    .asBool()) { newChar.flags |= CF_CCP;}
+  if (json[ "flags" ][ "safe" ]                   .asBool()) { newChar.flags |= CF_SAFE;}
+  if (json[ "flags" ][ "no_staff" ]               .asBool()) { newChar.flags |= CF_NOSTAFF;}
+  if (json[ "flags" ][ "purple_of_honor" ]        .asBool()) { newChar.flags |= CF_POH;}
+  if (json[ "flags" ][ "purple_of_honor_leader" ] .asBool()) { newChar.flags |= CF_POH_LEADER;}
+  if (json[ "flags" ][ "thrall" ]                 .asBool()) { newChar.flags |= CF_THRALL;}
+  if (json[ "flags" ][ "lab_keeper" ]             .asBool()) { newChar.flags |= CF_LABKEEPER;}
+  if (json[ "flags" ][ "is_looting" ]             .asBool()) { newChar.flags |= CF_ISLOOTING;}
+  if (json[ "flags" ][ "golden" ]                 .asBool()) { newChar.flags |= CF_GOLDEN;}
+  if (json[ "flags" ][ "black" ]                  .asBool()) { newChar.flags |= CF_BLACK;}
+  if (json[ "flags" ][ "password" ]               .asBool()) { newChar.flags |= CF_PASSWD;}
+  if (json[ "flags" ][ "update" ]                 .asBool()) { newChar.flags |= CF_UPDATE;}
+  if (json[ "flags" ][ "save_me" ]                .asBool()) { newChar.flags |= CF_SAVEME;}
+  if (json[ "flags" ][ "greater_god" ]            .asBool()) { newChar.flags |= CF_GREATERGOD;}
+  if (json[ "flags" ][ "greater_invisibility" ]   .asBool()) { newChar.flags |= CF_GREATERINV;}
+  // clang-format on
 
   newChar.alignment = json[ "alignment" ].asInt();
   newChar.temple_x  = json[ "temple_x" ].asUInt();
@@ -128,7 +176,7 @@ character character::fromJson( const Json::Value& json )
   newChar.gethit_bonus  = json[ "gethit_bonus" ].asInt();
   newChar.light_bonus   = json[ "light_bonus" ].asUInt();
 
-  std::strncpy( newChar.passwd, json[ "password" ].asString().c_str(), sizeof( newChar.passwd ) - 1);
+  std::strncpy( newChar.passwd, json[ "password" ].asString().c_str(), sizeof( newChar.passwd ) - 1 );
 
   newChar.lastattack = json[ "lastattack" ].asInt();
 
@@ -159,7 +207,7 @@ character character::fromJson( const Json::Value& json )
 
   for ( int i = 0; i < 10; ++i )
   {
-    std::strncpy( newChar.text[ i ], json[ "text" ][ i ].asString().c_str(), sizeof( newChar.text[ i ] ) - 1);
+    std::strncpy( newChar.text[ i ], json[ "text" ][ i ].asString().c_str(), sizeof( newChar.text[ i ] ) - 1 );
   }
 
   newChar.sprite_override = json[ "sprite_override" ].asInt();
@@ -411,4 +459,45 @@ Json::Value character::toJson() const
   root[ "monsterClass" ]    = monsterClass;
 
   return root;
+}
+
+void character::setTotalExperienceFromSkillsAndAttributes()
+{
+  std::int32_t expTotal {};
+
+  if ( points_tot != 0 )
+  {
+    std::cerr << "Re-setting experience when points_total is NOT 0!" << std::endl;
+  }
+
+  for ( int z = 0; z < 5; z++ )
+  { // 10 is the starting value at this point
+    for ( int m = 10; m < this->attrib[ z ][ 0 ]; m++ )
+    {
+      expTotal += attrib_needed( m, attrib[ z ][ 2 ], attrib[ z ][ 3 ] );
+    }
+  }
+
+  for ( int m = 50; m < hp[ 0 ]; m++ )
+  {
+    expTotal += hp_needed( m, hp[ 2 ], hp[ 3 ] );
+  }
+
+  for ( int m = 50; m < end[ 0 ]; m++ )
+  {
+    expTotal += end_needed( m, end[ 2 ], end[ 3 ] );
+  }
+
+  for ( int m = 50; m < mana[ 0 ]; m++ )
+  {
+    expTotal += mana_needed( m, mana[ 2 ], mana[ 3 ] );
+  }
+
+  for ( int z = 0; z < 50; z++ )
+  {
+    for ( int m = 1; m < skill[ z ][ 0 ]; m++ )
+    {
+      expTotal += skill_needed( m, skill[ z ][ 2 ], skill[ z ][ 3 ] );
+    }
+  }
 }

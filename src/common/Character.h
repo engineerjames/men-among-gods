@@ -1,9 +1,8 @@
 #ifndef MEN_AMONG_GODS_CHARACTER_H
 #define MEN_AMONG_GODS_CHARACTER_H
 
-#include "constants.h"
-
 #include <cstdint>
+
 #include <json/json.h>
 
 #pragma pack( push, 1 )
@@ -175,6 +174,8 @@ struct character
 
   Json::Value      toJson() const;
   static character fromJson( const Json::Value& json );
+
+  void setTotalExperienceFromSkillsAndAttributes();
 };
 #pragma pack( pop )
 static_assert( sizeof( character ) == 3605 );

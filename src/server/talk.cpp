@@ -6,6 +6,7 @@ All rights reserved.
 
 **************************************************************************/
 
+#include <algorithm>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -1161,7 +1162,7 @@ void answer_wait( int cn, int co )
     ch[ cn ].goto_x = ch[ cn ].goto_y = 0;
     ch[ cn ].misc_action              = 0;
 
-    ch[ cn ].data[ 29 ] = ch[ cn ].x + ch[ cn ].y * MAPX;
+    ch[ cn ].data[ 29 ] = ch[ cn ].x + ch[ cn ].y * SERVER_MAPX;
     ch[ cn ].data[ 30 ] = ch[ cn ].dir;
 
     ch[ cn ].data[ 69 ] = 0;
@@ -1344,7 +1345,7 @@ int stronghold_points( int cn )
 
 int stronghold_exp_per_pt( int cn )
 {
-  return min( 125, max( 1, ( ch[ cn ].points_tot / 45123 ) ) );
+  return std::min( 125,std::max( 1, ( ch[ cn ].points_tot / 45123 ) ) );
 }
 
 void answer_points( int cn, int co, int nr )
@@ -1362,7 +1363,7 @@ void answer_buygold( int cn, int co )
   int pts;
 
   pts = stronghold_points( co );
-  pts = min( 100, pts );
+  pts = std::min( 100, pts );
 
   if ( pts < 1 )
   {

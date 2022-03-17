@@ -4,8 +4,8 @@
 #include <SFML/Graphics.hpp>
 #include <array>
 
-#include "ConstantIdentifiers.h"
-#include "UiPositions.h"
+#include "MapConstants.h"
+#include "UiConstants.h"
 
 namespace MenAmongGods
 {

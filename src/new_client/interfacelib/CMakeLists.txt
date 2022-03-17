@@ -42,7 +42,7 @@ set( headers
     RankDisplay.h
     SkillsAndAttributesDisplay.h
     SoundCache.h
-    UiPositions.h
+    UiConstants.h
     UserOptionPanelDisplay.h
     UtilityFunctions.h
 )
@@ -51,28 +51,20 @@ set( test_application_libs
     ${PROJECT_CXX_LIBS}
     sfml-graphics 
     sfml-audio
-    Boost::serialization 
     ZLIB::ZLIB
     libzip::zip
     client 
     commands 
+    common
     logging
 )
 
 add_library(${target} ${sources} ${headers})
 target_include_directories(${target} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(${target} PRIVATE ${PROJECT_CXX_LIBS} Boost::serialization sfml-graphics 
-                                sfml-system sfml-audio clientInterface logging commands)
+target_link_libraries(${target} PRIVATE ${PROJECT_CXX_LIBS} sfml-graphics 
+                                sfml-system sfml-audio clientInterface logging commands common)
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS})
-target_compile_definitions(${target} PUBLIC ${PROJECT_CXX_DEFINITIONS})
-
-# Test Application For GUI
-set(target ui-gui-demo)
-add_executable(${target} test_applications/ui-gui-demo.cpp)
-target_link_libraries(${target} PRIVATE MenAmongGodsGraphics ${test_application_libs})
-target_compile_features(${target} PRIVATE cxx_std_17)
-target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
 target_compile_definitions(${target} PUBLIC ${PROJECT_CXX_DEFINITIONS})
 
 # Test Application For Loading Legacy Sprites

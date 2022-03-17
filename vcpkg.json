@@ -5,7 +5,6 @@
     "sfml",
     "libzip",
     "zlib",
-    "boost-serialization",
     "boost-test",
     "jsoncpp",
     "drogon"

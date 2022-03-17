@@ -1,13 +1,12 @@
 #include "MapDisplay.h"
 
-#include <boost/archive/text_iarchive.hpp>
 #include <fstream>
 #include <iostream>
 #include <set>
 
 #include "ClientConfiguration.h"
 #include "ColorPalette.h"
-#include "ConstantIdentifiers.h"
+#include "DriverConstants.h"
 #include "GraphicsCache.h"
 #include "GraphicsIndex.h"
 #include "Map.h"
@@ -28,6 +27,17 @@
 
 namespace
 {
+static const constexpr unsigned int HL_BUTTONBOX = 1;
+static const constexpr unsigned int HL_STATBOX   = 2;
+static const constexpr unsigned int HL_BACKPACK  = 3;
+static const constexpr unsigned int HL_EQUIPMENT = 4;
+static const constexpr unsigned int HL_SPELLBOX  = 5;
+static const constexpr unsigned int HL_CITEM     = 6;
+static const constexpr unsigned int HL_MONEY     = 7;
+static const constexpr unsigned int HL_MAP       = 8;
+static const constexpr unsigned int HL_SHOP      = 9;
+static const constexpr unsigned int HL_STATBOX2  = 10;
+
 int autohide( int x, int y )
 {
   if ( x >= ( TILEX / 2 ) || ( y <= TILEX / 2 ) )
@@ -89,7 +99,7 @@ void MapDisplay::draw( sf::RenderTarget& target, sf::RenderStates states ) const
 {
   for ( const auto& tile : spritesToDraw_ )
   {
-    target.draw( tile, states );
+    target.draw( tile.sprite, states );
   }
 
   for ( const auto& text : textToDraw_ )
@@ -264,7 +274,7 @@ void MapDisplay::onUserInput( const sf::Event& e )
       const int x           = clickedTile.x;
       const int y           = clickedTile.y;
 
-      if (x == 0 && y == 0)
+      if ( x == 0 && y == 0 )
       {
         return;
       }
@@ -399,11 +409,11 @@ void MapDisplay::update()
 
       // What is the difference between ba_sprite and back? Can I always use ba_sprite?
       // by using ba_sprite instead; we fixed the intermittent "blank" sprite issue
-      copysprite( map_.getBackgroundSprite( m ), map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+      copysprite( m, map_.getBackgroundSprite( m ), map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
 
       if ( playerData_.getGotoPosition().x == map_.getX( m ) && playerData_.getGotoPosition().y == map_.getY( m ) )
       {
-        copysprite( 31, 0, x * 32, y * 32, xoff, yoff, 0 );
+        copysprite( m, 31, 0, x * 32, y * 32, xoff, yoff, 0 );
       }
     }
   }
@@ -482,28 +492,28 @@ void MapDisplay::update()
 
           if ( hightlight == HL_MAP && tileType_ == 1 && tileX_ == x && tileY_ == y )
           {
-            copysprite( tmp2, map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+            copysprite( m, tmp2, map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
           }
           else
           {
-            copysprite( tmp2, map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+            copysprite( m, tmp2, map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
           }
         }
         else
         {
           if ( hightlight == HL_MAP && tileType_ == 1 && tileX_ == x && tileY_ == y )
           {
-            copysprite( map_.getObject1( m ), map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+            copysprite( m, map_.getObject1( m ), map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
           }
           else
           {
-            copysprite( map_.getObject1( m ), map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+            copysprite( m, map_.getObject1( m ), map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
           }
         }
       }
       else if ( map_.getObject1( m ) )
       {
-        copysprite( map_.getObject1( m ) + 1, map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+        copysprite( m, map_.getObject1( m ) + 1, map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
       }
 
       // character
@@ -542,18 +552,18 @@ void MapDisplay::update()
       if ( map_.getObject2( m ) != 0 )
       {
         bool isSelected = map_.getCharacterId( m ) == playerData_.getSelectedCharacter();
-        copysprite( map_.getObject2( m ), map_.getLight( m ) | tmp, x * 32, y * 32, xoff + map_.getObjectXOffset( m ),
+        copysprite( m, map_.getObject2( m ), map_.getLight( m ) | tmp, x * 32, y * 32, xoff + map_.getObjectXOffset( m ),
                     yoff + map_.getObjectYOffset( m ), map_.getLight( m ), isSelected );
       }
 
       if ( playerData_.getAttackTarget() != 0 && playerData_.getAttackTarget() == map_.getCharacterId( m ) )
       {
-        copysprite( 34, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ), map_.getLight( m ) );
+        copysprite( m, 34, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ), map_.getLight( m ) );
       }
 
       if ( playerData_.getPlayerAction() == DR_GIVE && playerData_.getFirstTarget() == map_.getCharacterCrc( m ) )
       {
-        copysprite( 45, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ), map_.getLight( m ) );
+        copysprite( m, 45, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ), map_.getLight( m ) );
       }
 
       if ( ( playerData_.clientShouldShowNames() | playerData_.clientShouldShowPercentHealth() ) && map_.getCharacterId( m ) )
@@ -601,105 +611,106 @@ void MapDisplay::update()
       if ( playerData_.getPlayerAction() == DR_DROP && playerData_.getFirstTarget() == map_.getX( m ) &&
            playerData_.getSecondTarget() == map_.getY( m ) )
       {
-        copysprite( 32, 0, x * 32, y * 32, xoff, yoff, 0 );
+        copysprite( m, 32, 0, x * 32, y * 32, xoff, yoff, 0 );
       }
       if ( playerData_.getPlayerAction() == DR_PICKUP && playerData_.getFirstTarget() == map_.getX( m ) &&
            playerData_.getSecondTarget() == map_.getY( m ) )
       {
-        copysprite( 33, 0, x * 32, y * 32, xoff, yoff, 0 );
+        copysprite( m, 33, 0, x * 32, y * 32, xoff, yoff, 0 );
       }
       if ( playerData_.getPlayerAction() == DR_USE && playerData_.getFirstTarget() == map_.getX( m ) &&
            playerData_.getSecondTarget() == map_.getY( m ) )
       {
-        copysprite( 45, 0, x * 32, y * 32, xoff, yoff, 0 );
+        copysprite( m, 45, 0, x * 32, y * 32, xoff, yoff, 0 );
       }
 
       // effects
       if ( map_.getFlags2( m ) & MF_MOVEBLOCK )
       {
-        copysprite( 55, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+        copysprite( m, 55, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
       }
       if ( map_.getFlags2( m ) & MF_SIGHTBLOCK )
       {
-        copysprite( 84, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+        copysprite( m, 84, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
       }
       if ( map_.getFlags2( m ) & MF_INDOORS )
       {
-        copysprite( 56, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+        copysprite( m, 56, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
       }
       if ( map_.getFlags2( m ) & MF_UWATER )
       {
-        copysprite( 75, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+        copysprite( m, 75, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
       }
       if ( map_.getFlags2( m ) & MF_NOMONST )
       {
-        copysprite( 59, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+        copysprite( m, 59, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
       }
       if ( map_.getFlags2( m ) & MF_BANK )
       {
-        copysprite( 60, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+        copysprite( m, 60, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
       }
       if ( map_.getFlags2( m ) & MF_TAVERN )
       {
-        copysprite( 61, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+        copysprite( m, 61, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
       }
       if ( map_.getFlags2( m ) & MF_NOMAGIC )
       {
-        copysprite( 62, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+        copysprite( m, 62, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
       }
       if ( map_.getFlags2( m ) & MF_DEATHTRAP )
       {
-        copysprite( 73, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+        copysprite( m, 73, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
       }
       if ( map_.getFlags2( m ) & MF_NOLAG )
       {
-        copysprite( 57, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+        copysprite( m, 57, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
       }
       if ( map_.getFlags2( m ) & MF_ARENA )
       {
-        copysprite( 76, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+        copysprite( m, 76, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
       }
       if ( map_.getFlags2( m ) & MF_NOEXPIRE )
       {
-        copysprite( 82, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+        copysprite( m, 82, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
       }
       if ( map_.getFlags2( m ) & 0x80000000 )
       {
-        copysprite( 72, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+        copysprite( m, 72, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
       }
 
       if ( ( map_.getFlags( m ) & ( INJURED | INJURED1 | INJURED2 ) ) == INJURED )
       {
-        copysprite( 1079, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ), map_.getLight( m ) );
+        copysprite( m, 1079, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ), map_.getLight( m ) );
       }
       if ( ( map_.getFlags( m ) & ( INJURED | INJURED1 | INJURED2 ) ) == ( INJURED | INJURED1 ) )
       {
-        copysprite( 1080, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ), map_.getLight( m ) );
+        copysprite( m, 1080, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ), map_.getLight( m ) );
       }
       if ( ( map_.getFlags( m ) & ( INJURED | INJURED1 | INJURED2 ) ) == ( INJURED | INJURED2 ) )
       {
-        copysprite( 1081, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ), map_.getLight( m ) );
+        copysprite( m, 1081, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ), map_.getLight( m ) );
       }
       if ( ( map_.getFlags( m ) & ( INJURED | INJURED1 | INJURED2 ) ) == ( INJURED | INJURED1 | INJURED2 ) )
       {
-        copysprite( 1082, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ), map_.getLight( m ) );
+        copysprite( m, 1082, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ), map_.getLight( m ) );
       }
 
       if ( map_.getFlags( m ) & DEATH )
       {
         if ( map_.getObject2( m ) )
         {
-          copysprite( 280 + ( ( map_.getFlags( m ) & DEATH ) >> 17 ) - 1, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ),
+          copysprite( m, 280 + ( ( map_.getFlags( m ) & DEATH ) >> 17 ) - 1, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ),
                       yoff + map_.getObjectYOffset( m ), map_.getLight( m ) );
         }
         else
         {
-          copysprite( 280 + ( ( map_.getFlags( m ) & DEATH ) >> 17 ) - 1, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+          copysprite( m, 280 + ( ( map_.getFlags( m ) & DEATH ) >> 17 ) - 1, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
         }
       }
       if ( map_.getFlags( m ) & TOMB )
       {
-        copysprite( 240 + ( ( map_.getFlags( m ) & TOMB ) >> 12 ) - 1, map_.getLight( m ), x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+        copysprite( m, 240 + ( ( map_.getFlags( m ) & TOMB ) >> 12 ) - 1, map_.getLight( m ), x * 32, y * 32, xoff, yoff,
+                    map_.getLight( m ) );
       }
 
       alpha    = 0;
@@ -708,19 +719,27 @@ void MapDisplay::update()
       if ( map_.getFlags( m ) & EMAGIC )
       {
         alpha |= 1;
-        alphastr = std::max( ( unsigned ) alphastr, ( ( map_.getFlags( m ) & EMAGIC ) >> 22 ) );
+        alphastr              = std::max( ( unsigned ) alphastr, ( ( map_.getFlags( m ) & EMAGIC ) >> 22 ) );
+        sf::Color emagicColor = sf::Color::Red;
+        emagicColor.a         = 128;
+        copyEffectSprite( m, 490 + alphastr, x * 32, y * 32, xoff, yoff, emagicColor );
       }
 
       if ( map_.getFlags( m ) & GMAGIC )
       {
         alpha |= 2;
-        alphastr = std::max( ( unsigned ) alphastr, ( ( map_.getFlags( m ) & GMAGIC ) >> 25 ) );
+        alphastr              = std::max( ( unsigned ) alphastr, ( ( map_.getFlags( m ) & GMAGIC ) >> 25 ) );
+        sf::Color gmagicColor = sf::Color::Green;
+        gmagicColor.a         = 128;
+        copyEffectSprite( m, 490 + alphastr, x * 32, y * 32, xoff, yoff, gmagicColor );
       }
 
       if ( map_.getFlags( m ) & CMAGIC )
       {
         alpha |= 4;
         alphastr = std::max( ( unsigned ) alphastr, ( ( map_.getFlags( m ) & CMAGIC ) >> 28 ) );
+        sf::Color cmagicColor { 128, 128, 128, 128 };
+        copyEffectSprite( m, 490 + alphastr, x * 32, y * 32, xoff, yoff, cmagicColor );
       }
     }
   }
@@ -732,49 +751,89 @@ void MapDisplay::update()
 
   sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
 
-  if ( mousePosition.x > 0 && mousePosition.y > 0 )
+  int mapIndex = getMapIndexFromMousePosition( mousePosition );
+
+  auto hoveredSprite = std::find_if( std::begin( spritesToDraw_ ), std::end( spritesToDraw_ ),
+                                     [ & ]( const MapSprite& mapSprite )
+                                     {
+                                       return mapIndex == mapSprite.index;
+                                     } );
+
+  if ( hoveredSprite != std::end( spritesToDraw_ ) )
   {
-    for ( auto& tile : spritesToDraw_ )
-    {
-      if ( tile.getGlobalBounds().contains( mousePosition ) )
-      {
-        tile.setColor( sf::Color { 128, 128, 128, 255 } );
-        break;
-      }
-    }
+    hoveredSprite->sprite.setColor( sf::Color { 128, 128, 128, 255 } );
   }
 }
 
-void MapDisplay::loadFromFile( std::string filePath )
-{
-  std::ifstream                 mapFile( filePath );
-  boost::archive::text_iarchive ia( mapFile );
-
-  cmap tmpMap {};
-  if ( mapFile.is_open() )
-  {
-    for ( unsigned int x = 0; x < MAPX; ++x )
-    {
-      for ( unsigned int y = 0; y < MAPY; ++y )
-      {
-        ia >> tmpMap;
-        map_.setMap( x + y * MAPX, tmpMap );
-      }
-    }
-  }
-
-  mapFile.close();
-}
-
-void MapDisplay::copysprite( int nr, int effect, int xpos, int ypos, int xoff, int yoff, unsigned char light, bool isCharacterSelected )
+void MapDisplay::copyEffectSprite( int index, int nr, int xpos, int ypos, int xoff, int yoff, sf::Color effectColor )
 {
   if ( nr == 0 )
   {
     return;
   }
 
-  spritesToDraw_.push_back( cache_.getSprite( nr ) );
-  sf::Sprite& newSprite = *( spritesToDraw_.end() - 1 );
+  MapSprite newMapSprite { cache_.getSprite( nr ), index };
+  spritesToDraw_.push_back( newMapSprite );
+  sf::Sprite& newSprite = ( spritesToDraw_.end() - 1 )->sprite;
+
+  if ( newSprite.getTexture() == nullptr )
+  {
+    return;
+  }
+
+  unsigned char xs = newSprite.getTexture()->getSize().x / 32;
+  unsigned char ys = newSprite.getTexture()->getSize().y / 32;
+
+  unsigned int rx = ( xpos / 2 ) + ( ypos / 2 ) - ( xs * 16 ) + 32 + XPOS - ( ( TILEX - 34 ) / 2 * 32 );
+  if ( xpos < 0 && ( xpos & 1 ) )
+  {
+    rx--;
+  }
+  if ( ypos < 0 && ( ypos & 1 ) )
+  {
+    rx--;
+  }
+
+  unsigned int ry = ( xpos / 4 ) - ( ypos / 4 ) + YPOS - ys * 32;
+
+  if ( xpos < 0 && ( xpos & 3 ) )
+  {
+    ry--;
+  }
+  if ( ypos < 0 && ( ypos & 3 ) )
+  {
+    ry++;
+  }
+
+  rx += xoff;
+  ry += yoff;
+
+  for ( unsigned int y = 0; y < 1; y++ )
+  {
+    for ( unsigned int x = 0; x < 1; x++ )
+    {
+      newSprite.setPosition( sf::Vector2f { static_cast< float >( rx + x * 32 ), static_cast< float >( ry + y * 32 ) } );
+      newSprite.setColor( effectColor );
+    }
+  }
+}
+
+void MapDisplay::copysprite( int index, int nr, int effect, int xpos, int ypos, int xoff, int yoff, unsigned char light,
+                             bool isCharacterSelected )
+{
+  if ( nr == 0 )
+  {
+    return;
+  }
+
+  MapSprite newMapSprite { cache_.getSprite( nr ), index };
+  spritesToDraw_.push_back( newMapSprite );
+  sf::Sprite& newSprite = ( spritesToDraw_.end() - 1 )->sprite;
+
+  if ( newSprite.getTexture() == nullptr )
+  {
+    return;
+  }
 
   // xs / ys are the x and y size in tiles (width / 32), and height / 32 respectively
   auto newSpriteTexture = newSprite.getTexture();
@@ -841,23 +900,6 @@ void MapDisplay::copysprite( int nr, int effect, int xpos, int ypos, int xoff, i
       }
     }
   }
-}
-
-void MapDisplay::saveToFile() const
-{
-  std::ofstream                 mapFile( "mapfile.archive" );
-  boost::archive::text_oarchive oa { mapFile };
-  if ( mapFile.is_open() )
-  {
-    for ( unsigned int x = 0; x < MAPX; ++x )
-    {
-      for ( unsigned int y = 0; y < MAPY; ++y )
-      {
-        oa << map_.getMap( x + y * MAPX );
-      }
-    }
-  }
-  mapFile.close();
 }
 
 } // namespace MenAmongGods

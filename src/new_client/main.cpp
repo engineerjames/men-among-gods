@@ -4,7 +4,6 @@
 #include "ClientConfiguration.h"
 #include "ClientNetworkActivity.h"
 #include "Component.h"
-#include "ConstantIdentifiers.h"
 #include "FontCache.h"
 #include "GraphicsCache.h"
 #include "GraphicsIndex.h"
@@ -25,6 +24,8 @@
 namespace
 {
 static const constexpr int LOGIN_FONT_SIZE = 16;
+static const constexpr int MODEX           = 800;
+static const constexpr int MODEY           = 600;
 } // namespace
 
 std::atomic< bool > shouldExit {};

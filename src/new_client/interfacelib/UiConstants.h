@@ -6,6 +6,9 @@
 namespace MenAmongGods
 {
 
+static const constexpr int   FONT_SIZE      = 10;
+static const constexpr float LETTER_SPACING = 1.0f;
+
 // Shop (and grave search) position
 static const sf::Vector2f  shopPosition { 220.0f, 260.0f };
 static const sf::Vector2f  closeShopButtonPosition { 500.0f, 260.0f };

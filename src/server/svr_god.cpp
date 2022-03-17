@@ -6,6 +6,7 @@ All rights reserved.
 
 **************************************************************************/
 
+#include <algorithm>
 #include <ctype.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -16,6 +17,10 @@ All rights reserved.
 
 #include "driver.h"
 #include "server.h"
+
+#include "DriverConstants.h"
+#include "RankNames.h"
+#include "SkillTab.h"
 
 static char* mkp( void )
 {
@@ -414,10 +419,10 @@ int god_drop_char( int cn, int x, int y )
 {
   int m, in;
 
-  if ( x < 1 || x > MAPX - 2 || y < 1 || y > MAPY - 2 )
+  if ( x < 1 || x > SERVER_MAPX - 2 || y < 1 || y > SERVER_MAPY - 2 )
     return 0;
 
-  m = x + y * MAPX;
+  m = x + y * SERVER_MAPX;
   if ( map[ m ].ch || map[ m ].to_ch || ( ( in = map[ m ].it ) != 0 && ( it[ in ].flags & IF_MOVEBLOCK ) ) ||
        ( map[ m ].flags & MF_MOVEBLOCK ) || ( map[ m ].flags & MF_TAVERN ) || ( map[ m ].flags & MF_DEATHTRAP ) )
     return 0;
@@ -1168,7 +1173,7 @@ void god_summon( int cn, char* spec1, char* spec2, char* spec3 )
     titlecase_str( spec1 );
     if ( *spec3 )
     { // 3 args
-      which = max( atoi( spec3 ), 1 );
+      which = std::max( atoi( spec3 ), 1 );
     }
     while ( count < which )
     {
@@ -1202,11 +1207,11 @@ void god_summon( int cn, char* spec1, char* spec2, char* spec3 )
       {
         if ( count == 0 )
         {
-          do_char_log( cn, 0, "Couldn't find a %s %s.\n", spec1, rank_name[ atoi( spec2 ) ] );
+          do_char_log( cn, 0, "Couldn't find a %s %s.\n", spec1, MenAmongGods::rankToString[ atoi( spec2 ) ] );
         }
         else
         {
-          do_char_log( cn, 0, "Only found %d %s %s.\n", count, spec1, rank_name[ atoi( spec2 ) ] );
+          do_char_log( cn, 0, "Only found %d %s %s.\n", count, spec1, MenAmongGods::rankToString[ atoi( spec2 ) ] );
         }
       }
       return;
@@ -1409,7 +1414,7 @@ int god_thrall( int cn, char* spec1, char* spec2 )
       }
       else
       {
-        do_char_log( cn, 0, "Couldn't find a %s %s.\n", spec1, rank_name[ atoi( spec2 ) ] );
+        do_char_log( cn, 0, "Couldn't find a %s %s.\n", spec1, MenAmongGods::rankToString[ atoi( spec2 ) ] );
       }
       return 0;
     }
@@ -2116,8 +2121,8 @@ void god_skill( int cn, int co, int n, int val )
   ch[ co ].skill[ n ][ 0 ] = val;
   do_update_char( co );
 
-  do_char_log( cn, 1, "Set %s of %s to %d.\n", skilltab[ n ].name, ch[ co ].name, val );
-  chlog( cn, "IMP: Set %s of %s to %d.", skilltab[ n ].name, ch[ co ].name, val );
+  do_char_log( cn, 1, "Set %s of %s to %d.\n", static_skilltab[ n ].name, ch[ co ].name, val );
+  chlog( cn, "IMP: Set %s of %s to %d.", static_skilltab[ n ].name, ch[ co ].name, val );
 }
 
 void god_donate_item( int in, int place )
@@ -2850,7 +2855,7 @@ void god_gargoyle( int cn )
   }
 }
 
-void god_minor_racechange( int cn, int t ) // note: cannot deal with values which are already higher than the new max!
+void god_minor_racechange( int cn, int t ) // note: cannot deal with values which are already higher than the new std::max!
 {
   int n;
 
@@ -2897,7 +2902,7 @@ void god_minor_racechange( int cn, int t ) // note: cannot deal with values whic
     if ( ch[ cn ].skill[ n ][ 0 ] == 0 && ch_temp[ t ].skill[ n ][ 0 ] )
     {
       ch[ cn ].skill[ n ][ 0 ] = ch_temp[ t ].skill[ n ][ 0 ];
-      xlog( "added %s to %s", skilltab[ n ].name, ch[ cn ].name );
+      xlog( "added %s to %s", static_skilltab[ n ].name, ch[ cn ].name );
     }
     ch[ cn ].skill[ n ][ 1 ] = ch_temp[ t ].skill[ n ][ 1 ];
     ch[ cn ].skill[ n ][ 2 ] = ch_temp[ t ].skill[ n ][ 2 ];

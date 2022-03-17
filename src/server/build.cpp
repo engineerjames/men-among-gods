@@ -6,6 +6,7 @@ All rights reserved.
 
 **************************************************************************/
 
+#include <algorithm>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,16 +20,16 @@ int build_item( int nr, int x, int y )
 {
   int in, n, m;
 
-  if ( x < 0 || x >= MAPX || y < 0 || y >= MAPY )
+  if ( x < 0 || x >= SERVER_MAPX || y < 0 || y >= SERVER_MAPY )
     return 0;
 
-  if ( map[ x + y * MAPX ].it )
+  if ( map[ x + y * SERVER_MAPX ].it )
     return 0;
 
   xlog( "build: add item %d at %d,%d", nr, x, y );
 
-  if ( map[ x + y * MAPX ].fsprite )
-    map[ x + y * MAPX ].fsprite = 0;
+  if ( map[ x + y * SERVER_MAPX ].fsprite )
+    map[ x + y * SERVER_MAPX ].fsprite = 0;
 
   if ( it_temp[ nr ].flags & ( IF_TAKE | IF_LOOK | IF_LOOKSPECIAL | IF_USE | IF_USESPECIAL ) )
   {
@@ -41,7 +42,7 @@ int build_item( int nr, int x, int y )
         if ( it[ n ].used == USE_EMPTY )
           continue;
         if ( it[ n ].driver == 33 )
-          m = max( it[ n ].data[ 0 ], m );
+          m = std::max( static_cast< int >( it[ n ].data[ 0 ] ), m );
       }
 
       m++;
@@ -51,7 +52,7 @@ int build_item( int nr, int x, int y )
       it[ in ].temp      = 0;     // make sure it isnt reset when doing #reset
     }
 
-    map[ x + y * MAPX ].it = in;
+    map[ x + y * SERVER_MAPX ].it = in;
 
     it[ in ].x       = ( short ) x;
     it[ in ].y       = ( short ) y;
@@ -59,11 +60,11 @@ int build_item( int nr, int x, int y )
   }
   else
   {
-    map[ x + y * MAPX ].fsprite = it_temp[ nr ].sprite[ 0 ];
+    map[ x + y * SERVER_MAPX ].fsprite = it_temp[ nr ].sprite[ 0 ];
     if ( it_temp[ nr ].flags & IF_MOVEBLOCK )
-      map[ x + y * MAPX ].flags |= MF_MOVEBLOCK;
+      map[ x + y * SERVER_MAPX ].flags |= MF_MOVEBLOCK;
     if ( it_temp[ nr ].flags & IF_SIGHTBLOCK )
-      map[ x + y * MAPX ].flags |= MF_SIGHTBLOCK;
+      map[ x + y * SERVER_MAPX ].flags |= MF_SIGHTBLOCK;
     return 0;
   }
 
@@ -74,12 +75,12 @@ void build_drop( int x, int y, int in )
 {
   int nr;
 
-  if ( x < 0 || x >= MAPX || y < 0 || y >= MAPY )
+  if ( x < 0 || x >= SERVER_MAPX || y < 0 || y >= SERVER_MAPY )
     return;
 
   if ( in & 0x40000000 )
   {
-    map[ x + y * MAPX ].flags ^= in & 0xfffffff;
+    map[ x + y * SERVER_MAPX ].flags ^= in & 0xfffffff;
     return;
   }
   if ( in & 0x20000000 )
@@ -132,7 +133,7 @@ void build_drop( int x, int y, int in )
       nr                  = tab[ RANDOM( 4 ) ];
     }
 
-    map[ x + y * MAPX ].sprite = nr;
+    map[ x + y * SERVER_MAPX ].sprite = nr;
     return;
   }
 
@@ -156,13 +157,13 @@ void build_remove( int x, int y )
 {
   int nr;
 
-  if ( x < 0 || x >= MAPX || y < 0 || y >= MAPY )
+  if ( x < 0 || x >= SERVER_MAPX || y < 0 || y >= SERVER_MAPY )
     return;
 
-  map[ x + y * MAPX ].fsprite = 0;
-  map[ x + y * MAPX ].flags &= ~( MF_MOVEBLOCK | MF_SIGHTBLOCK );
+  map[ x + y * SERVER_MAPX ].fsprite = 0;
+  map[ x + y * SERVER_MAPX ].flags &= ~( MF_MOVEBLOCK | MF_SIGHTBLOCK );
 
-  nr = map[ x + y * MAPX ].it;
+  nr = map[ x + y * SERVER_MAPX ].it;
   if ( ! nr )
     return;
 
@@ -178,7 +179,7 @@ void build_remove( int x, int y )
   }
 
   it[ nr ].used          = 0;
-  map[ x + y * MAPX ].it = 0;
+  map[ x + y * SERVER_MAPX ].it = 0;
 
   xlog( "build: remove item from %d,%d", x, y );
 }

@@ -30,6 +30,8 @@ All rights reserved.
 
 #include "server.h"
 
+#include "Constants.h"
+
 volatile int quit = 0;
 
 // Array of current players
@@ -941,8 +943,8 @@ int main( int argc, char* args[] )
     if ( ! ch_temp[ n ].used )
       continue;
 
-    x = ch_temp[ n ].data[ 29 ] % MAPX;
-    y = ch_temp[ n ].data[ 29 ] / MAPX;
+    x = ch_temp[ n ].data[ 29 ] % SERVER_MAPX;
+    y = ch_temp[ n ].data[ 29 ] / SERVER_MAPX;
 
     if ( ! x && ! y )
       continue;
@@ -950,7 +952,7 @@ int main( int argc, char* args[] )
     if ( abs( x - ch_temp[ n ].x ) + abs( y - ch_temp[ n ].y ) > 200 )
     {
       xlog( "RESET %d (%s): %d %d -> %d %d", n, ch_temp[ n ].name, ch_temp[ n ].x, ch_temp[ n ].y, x, y );
-      ch_temp[ n ].data[ 29 ] = ch_temp[ n ].x + ch_temp[ n ].y * MAPX;
+      ch_temp[ n ].data[ 29 ] = ch_temp[ n ].x + ch_temp[ n ].y * SERVER_MAPX;
     }
   }
 

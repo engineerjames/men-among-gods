@@ -12,10 +12,28 @@ RUN apt-get install -y  \
     libcrypt-dev \
     zlib1g-dev:i386 \
     cmake \
-    apache2
+    git \
+    apache2 \
+    mesa-common-dev \
+    freeglut3 \
+    freeglut3-dev \
+    libssl-dev:i386 \ 
+    libx11-dev \
+    libxrandr-dev \ 
+    libxi-dev \
+    libudev-dev \
+    libgl1-mesa-dev \
+    curl \ 
+    zip \
+    unzip \
+    tar \
+    pkg-config \
+    clang-tidy-11
 
 ADD . /mag
-WORKDIR /mag/src/server
-RUN cmake -G"Unix Makefiles" -S ./ -B ./build
+WORKDIR /mag
+RUN git clone https://github.com/Microsoft/vcpkg.git
+RUN ./vcpkg/bootstrap-vcpkg.sh
+RUN ./vcpkg/vcpkg integrate install
+RUN cmake -G"Unix Makefiles" -S ./ -B ./build -DCMAKE_TOOLCHAIN_FILE=/mag/vcpkg/scripts/buildsystems/vcpkg.cmake
 RUN cmake --build ./build --parallel
-RUN ./build/server/server

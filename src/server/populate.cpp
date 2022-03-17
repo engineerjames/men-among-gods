@@ -16,24 +16,26 @@ All rights reserved.
 #include "driver.h"
 #include "server.h"
 
+#include "SkillTab.h"
+
 void init_lights( void )
 {
   int x, y, in, m, cnt1 = 0, cnt2 = 0;
 
-  for ( y = m = 0; y < MAPY; y++ )
+  for ( y = m = 0; y < SERVER_MAPY; y++ )
   {
-    for ( x = 0; x < MAPX; x++, m++ )
+    for ( x = 0; x < SERVER_MAPX; x++, m++ )
     {
       map[ m ].light  = 0;
       map[ m ].dlight = 0;
     }
   }
 
-  for ( y = m = 0; y < MAPY; y++ )
+  for ( y = m = 0; y < SERVER_MAPY; y++ )
   {
-    printf( "%4d/%4d (%d,%d)\r", y, MAPY, cnt1, cnt2 );
+    printf( "%4d/%4d (%d,%d)\r", y, SERVER_MAPY, cnt1, cnt2 );
     fflush( stdout );
-    for ( x = 0; x < MAPX; x++, m++ )
+    for ( x = 0; x < SERVER_MAPX; x++, m++ )
     {
       if ( map[ m ].flags & MF_INDOORS )
       {
@@ -986,12 +988,12 @@ void pop_skill( void )
       if ( ch[ cn ].skill[ n ][ 0 ] == 0 && ch_temp[ t ].skill[ n ][ 0 ] )
       {
         ch[ cn ].skill[ n ][ 0 ] = ch_temp[ t ].skill[ n ][ 0 ];
-        xlog( "added %s to %s", skilltab[ n ].name, ch[ cn ].name );
+        xlog( "added %s to %s", static_skilltab[ n ].name, ch[ cn ].name );
       }
       if ( ch_temp[ t ].skill[ n ][ 2 ] < ch[ cn ].skill[ n ][ 0 ] )
       {
         p = skillcost( ch[ cn ].skill[ n ][ 0 ], ch[ cn ].skill[ n ][ 3 ], ch_temp[ t ].skill[ n ][ 2 ] );
-        xlog( "reduced %s on %s from %d to %d, added %d exp", skilltab[ n ].name, ch[ cn ].name, ch[ cn ].skill[ n ][ 0 ],
+        xlog( "reduced %s on %s from %d to %d, added %d exp", static_skilltab[ n ].name, ch[ cn ].name, ch[ cn ].skill[ n ][ 0 ],
               ch_temp[ t ].skill[ n ][ 2 ], p );
         ch[ cn ].skill[ n ][ 0 ] = ch_temp[ t ].skill[ n ][ 2 ];
         ch[ cn ].points += p;
@@ -1038,13 +1040,13 @@ void reset_item( int n )
       }
       else
       {
-        map[ it[ in ].x + it[ in ].y * MAPX ].it      = 0;
+        map[ it[ in ].x + it[ in ].y * SERVER_MAPX ].it      = 0;
         it[ in ].used                                 = USE_EMPTY;
-        map[ it[ in ].x + it[ in ].y * MAPX ].fsprite = it_temp[ n ].sprite[ 0 ];
+        map[ it[ in ].x + it[ in ].y * SERVER_MAPX ].fsprite = it_temp[ n ].sprite[ 0 ];
         if ( it_temp[ n ].flags & IF_MOVEBLOCK )
-          map[ it[ in ].x + it[ in ].y * MAPX ].flags |= MF_MOVEBLOCK;
+          map[ it[ in ].x + it[ in ].y * SERVER_MAPX ].flags |= MF_MOVEBLOCK;
         if ( it_temp[ n ].flags & IF_SIGHTBLOCK )
-          map[ it[ in ].x + it[ in ].y * MAPX ].flags |= MF_SIGHTBLOCK;
+          map[ it[ in ].x + it[ in ].y * SERVER_MAPX ].flags |= MF_SIGHTBLOCK;
       }
     }
   }
@@ -1120,7 +1122,7 @@ void pop_wipe( void )
     if ( ! ( it[ n ].flags & IF_TAKE ) && it[ n ].driver != 7 )
       continue;
     if ( it[ n ].used == USE_ACTIVE )
-      map[ it[ n ].x + it[ n ].y * MAPX ].it = 0;
+      map[ it[ n ].x + it[ n ].y * SERVER_MAPX ].it = 0;
     it[ n ].used = USE_EMPTY;
   }
 
@@ -1217,7 +1219,7 @@ void pop_remove( void )
 
   write( h3, globs, sizeof( struct global ) );
 
-  /*	for (m=0; m<MAPX*MAPY; m++) {
+  /*	for (m=0; m<SERVER_MAPX*SERVER_MAPY; m++) {
                   if ((in=map[m].it)!=0) {
                           if (reason to keep a takeable object) {
 
@@ -1358,7 +1360,7 @@ void pop_load( void )
     if ( ch[ n ].flags & ( CF_PLAYER ) )
       globs->players_created++; // this is useless now (?)
     else
-      map[ ch[ n ].x + ch[ n ].y * MAPX ].ch = n;
+      map[ ch[ n ].x + ch[ n ].y * SERVER_MAPX ].ch = n;
   }
 
   read( h3, globs, sizeof( struct global ) );
@@ -1376,13 +1378,13 @@ void pop_load( void )
       break;
     }
     it[ m ] = itmp;
-    in      = map[ it[ m ].x + it[ m ].y * MAPX ].it;
+    in      = map[ it[ m ].x + it[ m ].y * SERVER_MAPX ].it;
     if ( in )
     {
       xlog( "Destroyed object %s (%d) on %d,%d", it[ in ].name, in, it[ in ].x, it[ in ].y );
       it[ in ].used = USE_EMPTY;
     }
-    map[ it[ m ].x + it[ m ].y * MAPX ].it = m;
+    map[ it[ m ].x + it[ m ].y * SERVER_MAPX ].it = m;
     xlog( "Dropped object %s (%d) on %d,%d", it[ m ].name, in, it[ m ].x, it[ m ].y );
     itc++;
   }
@@ -1596,7 +1598,7 @@ void pop_load_char( int nr )
   if ( ch[ nr ].flags & ( CF_PLAYER ) )
     globs->players_created++; // this is useless now (?)
   else
-    map[ ch[ nr ].x + ch[ nr ].y * MAPX ].ch = nr;
+    map[ ch[ nr ].x + ch[ nr ].y * SERVER_MAPX ].ch = nr;
 
   close( h1 );
 }

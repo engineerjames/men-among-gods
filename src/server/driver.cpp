@@ -6,6 +6,7 @@ All rights reserved.
 
 **************************************************************************/
 
+#include <algorithm>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,12 +16,15 @@ All rights reserved.
 #include "npc.h"
 #include "server.h"
 
+#include "DriverConstants.h"
+#include "SkillTab.h"
+
 /*
 DATA 0-9 is for exclusive drivers as MERCHANT
 
 DATA usage by all NPC drivers
 
-10-18:  patrol-stops, using m=x+y*MAPX
+10-18:  patrol-stops, using m=x+y*SERVER_MAPX
 19:     next stop
 20-23:  doors to close
 24:     prevent fight mode, -1=defend evil, 0=no interference, 1=defend good
@@ -28,7 +32,7 @@ DATA usage by all NPC drivers
 26:     special sub-driver
 27:     last time we got stop command (password logic)
 28:     exp earned since creation (GHOST COMPANION et al)
-29:     resting position (x+y*MAPX)
+29:     resting position (x+y*SERVER_MAPX)
 30:     resting dir (what a waste of space)
 31:     protect character created from template X
 32-35:  lights to keep burning
@@ -63,7 +67,7 @@ DATA usage by all NPC drivers
 70:     last time we called our god for help
 71:     talkativity (CHD_TALKATIVE)
 72:     area of knowledge
-73:     random walk: max distance to origin
+73:     random walk: min distance to origin
 74:     last time we created a ghost
 75:     last time we stunned someone
 76:     last known position of an enemy
@@ -137,7 +141,7 @@ int get_frust_y_off( int f )
 
 int npc_dist( int cn, int co )
 {
-  return max( abs( ch[ cn ].x - ch[ co ].x ), abs( ch[ cn ].y - ch[ co ].y ) );
+  return std::max( abs( ch[ cn ].x - ch[ co ].x ), abs( ch[ cn ].y - ch[ co ].y ) );
 }
 
 int npc_add_enemy( int cn, int co, int always )
@@ -155,7 +159,7 @@ int npc_add_enemy( int cn, int co, int always )
   if ( ! always && ( ch[ cn ].points_tot + 500 ) * 25 < ch[ co ].points_tot )
     return 0;
 
-  ch[ cn ].data[ 76 ] = ch[ co ].x + ch[ co ].y * MAPX;
+  ch[ cn ].data[ 76 ] = ch[ co ].x + ch[ co ].y * SERVER_MAPX;
   ch[ cn ].data[ 77 ] = globs->ticker;
 
   cc = ch[ cn ].attack_cn;
@@ -637,10 +641,10 @@ int npc_give( int cn, int co, int in, int money )
         do_sayx( cn, "Bring me the item again to learn Surround Hit, %s!", ch[ co ].name );
       }
       // end hack
-      do_sayx( cn, "Now I'll teach you %s.", skilltab[ nr ].name );
+      do_sayx( cn, "Now I'll teach you %s.", static_skilltab[ nr ].name );
       if ( ch[ co ].skill[ nr ][ 0 ] )
       {
-        do_sayx( cn, "But you already know %s, %s!", skilltab[ nr ].name, ch[ co ].name );
+        do_sayx( cn, "But you already know %s, %s!", static_skilltab[ nr ].name, ch[ co ].name );
         god_take_from_char( in, cn );
         god_give_char( in, co );
         do_char_log( co, 1, "%s did not accept the %s.\n", ch[ cn ].reference, it[ in ].name );
@@ -648,7 +652,7 @@ int npc_give( int cn, int co, int in, int money )
       else
       {
         ch[ co ].skill[ nr ][ 0 ] = 1;
-        do_char_log( co, 0, "You learned %s!\n", skilltab[ nr ].name );
+        do_char_log( co, 0, "You learned %s!\n", static_skilltab[ nr ].name );
         do_update_char( co );
         if ( ( nr = ch[ cn ].data[ 51 ] ) != 0 )
         {
@@ -842,11 +846,11 @@ int npc_see( int cn, int co )
       return 1;
   }
 
-  if ( map[ ch[ cn ].x + ch[ cn ].y * MAPX ].flags & MF_INDOORS )
+  if ( map[ ch[ cn ].x + ch[ cn ].y * SERVER_MAPX ].flags & MF_INDOORS )
     indoor1 = 1;
   else
     indoor1 = 0;
-  if ( map[ ch[ co ].x + ch[ co ].y * MAPX ].flags & MF_INDOORS )
+  if ( map[ ch[ co ].x + ch[ co ].y * SERVER_MAPX ].flags & MF_INDOORS )
     indoor2 = 1;
   else
     indoor2 = 0;
@@ -882,7 +886,8 @@ int npc_see( int cn, int co )
     {
       if ( ch[ cn ].data[ 95 ] == 2 && ch[ cn ].data[ 93 ] )
       { // attack distance
-        dist = max( abs( ( ch[ cn ].data[ 29 ] % MAPX ) - ch[ co ].x ), abs( ( ch[ cn ].data[ 29 ] / MAPX ) - ch[ co ].y ) );
+        dist = std::max( abs( ( ch[ cn ].data[ 29 ] % SERVER_MAPX ) - ch[ co ].x ),
+                         abs( ( ch[ cn ].data[ 29 ] / SERVER_MAPX ) - ch[ co ].y ) );
         if ( dist > ch[ cn ].data[ 93 ] )
         {
           co = 0;
@@ -901,9 +906,9 @@ int npc_see( int cn, int co )
   if ( ch[ cn ].data[ 95 ] == 1 && ( ch[ co ].flags & ( CF_PLAYER ) ) && globs->ticker > ch[ cn ].data[ 27 ] + TICKS * 120 )
   {
     x1   = ch[ co ].x;
-    x2   = ch[ cn ].data[ 29 ] % MAPX;
+    x2   = ch[ cn ].data[ 29 ] % SERVER_MAPX;
     y1   = ch[ co ].y;
-    y2   = ch[ cn ].data[ 29 ] / MAPX;
+    y2   = ch[ cn ].data[ 29 ] / SERVER_MAPX;
     dist = abs( x1 - x2 ) + abs( y1 - y2 );
     if ( dist <= ch[ cn ].data[ 93 ] )
     {
@@ -1004,7 +1009,7 @@ int npc_shout( int cn, int co, int code, int x, int y )
   if ( ch[ cn ].data[ 53 ] && ch[ cn ].data[ 53 ] == code )
   { // someone called help. If it's our code, we come to the rescue
     ch[ cn ].data[ 92 ] = TICKS * 60;
-    ch[ cn ].data[ 54 ] = x + y * MAPX;
+    ch[ cn ].data[ 54 ] = x + y * SERVER_MAPX;
     ch[ cn ].data[ 55 ] = globs->ticker;
     npc_saytext_n( cn, 5, ch[ co ].name );
 
@@ -1173,13 +1178,14 @@ int npc_try_spell( int cn, int co, int spell )
     return 0;
 
   // dont curse if chances of success are bad
-  if ( spell == SK_CURSE && 10 * ch[ cn ].skill[ SK_CURSE ][ 5 ] / max( 1, ch[ co ].skill[ SK_RESIST ][ 5 ] ) < 7 )
+  if ( spell == SK_CURSE &&
+       10 * ch[ cn ].skill[ SK_CURSE ][ 5 ] / std::max( 1, static_cast< int >( ch[ co ].skill[ SK_RESIST ][ 5 ] ) ) < 7 )
   {
     return 0;
   }
 
   // dont stun if chances of success are bad
-  if ( spell == SK_STUN && 10 * ch[ cn ].skill[ SK_STUN ][ 5 ] / max( 1, ch[ co ].skill[ SK_RESIST ][ 5 ] ) < 5 )
+  if ( spell == SK_STUN && 10 * ch[ cn ].skill[ SK_STUN ][ 5 ] / std::max( 1, static_cast< int >( ch[ co ].skill[ SK_RESIST ][ 5 ] ) ) < 5 )
   {
     return 0;
   }
@@ -1425,7 +1431,7 @@ int npc_driver_high( int cn )
 
   // create light
   if ( ch[ cn ].data[ 62 ] > ch[ cn ].data[ 58 ] && check_dlight( ch[ cn ].x, ch[ cn ].y ) < 20 &&
-       map[ ch[ cn ].x + ch[ cn ].y * MAPX ].light < 20 )
+       map[ ch[ cn ].x + ch[ cn ].y * SERVER_MAPX ].light < 20 )
   {
     if ( npc_try_spell( cn, cn, SK_LIGHT ) )
       return 1;
@@ -1549,18 +1555,18 @@ int npc_driver_high( int cn )
   if ( ch[ cn ].data[ 47 ] && ch[ cn ].misc_action == DR_USE )
     return 0;
 
-  if ( map[ ch[ cn ].x + ch[ cn ].y * MAPX ].flags & MF_INDOORS )
+  if ( map[ ch[ cn ].x + ch[ cn ].y * SERVER_MAPX ].flags & MF_INDOORS )
     indoor1 = 1;
   else
     indoor1 = 0;
 
-  for ( y = max( ch[ cn ].y - 8, 1 ); y < min( ch[ cn ].y + 8, MAPY - 1 ); y++ )
+  for ( y = std::max( ch[ cn ].y - 8, 1 ); y < std::min( ch[ cn ].y + 8, SERVER_MAPY - 1 ); y++ )
   {
-    for ( x = max( ch[ cn ].x - 8, 1 ); x < min( ch[ cn ].x + 8, MAPX - 1 ); x++ )
+    for ( x = std::max( ch[ cn ].x - 8, 1 ); x < std::min( ch[ cn ].x + 8, SERVER_MAPX - 1 ); x++ )
     {
-      if ( ( in = map[ x + y * MAPX ].it ) != 0 )
+      if ( ( in = map[ x + y * SERVER_MAPX ].it ) != 0 )
       {
-        if ( map[ x + y * MAPX ].flags & MF_INDOORS )
+        if ( map[ x + y * SERVER_MAPX ].flags & MF_INDOORS )
           indoor2 = 1;
         else
           indoor2 = 0;
@@ -1600,7 +1606,7 @@ int npc_driver_high( int cn )
         if ( ch[ cn ].data[ 47 ] && indoor1 == indoor2 && ( it[ in ].driver == 7 ) &&
              can_go( ch[ cn ].x, ch[ cn ].y, it[ in ].x, it[ in ].y ) && do_char_can_see_item( cn, in ) )
         {
-          if ( plr_check_target( x + y * MAPX + 1 ) && ! map[ x + y * MAPX + 1 ].it )
+          if ( plr_check_target( x + y * SERVER_MAPX + 1 ) && ! map[ x + y * SERVER_MAPX + 1 ].it )
           {
             in2               = god_create_item( 18 );
             it[ in2 ].carried = cn;
@@ -1915,11 +1921,11 @@ int npc_grave_logic( int cn )
 {
   int x, y, in;
 
-  for ( y = max( ch[ cn ].y - 8, 1 ); y < min( ch[ cn ].y + 8, MAPY - 1 ); y++ )
+  for ( y = std::max( ch[ cn ].y - 8, 1 ); y < std::min( ch[ cn ].y + 8, SERVER_MAPY - 1 ); y++ )
   {
-    for ( x = max( ch[ cn ].x - 8, 1 ); x < min( ch[ cn ].x + 8, MAPX - 1 ); x++ )
+    for ( x = std::max( ch[ cn ].x - 8, 1 ); x < std::min( ch[ cn ].x + 8, SERVER_MAPX - 1 ); x++ )
     {
-      if ( ( in = map[ x + y * MAPX ].it ) != 0 )
+      if ( ( in = map[ x + y * SERVER_MAPX ].it ) != 0 )
       {
         if ( it[ in ].temp == 170 && can_go( ch[ cn ].x, ch[ cn ].y, it[ in ].x, it[ in ].y ) && do_char_can_see_item( cn, in ) &&
              ! npc_already_searched_grave( cn, in ) )
@@ -1980,8 +1986,8 @@ void npc_driver_low( int cn )
   if ( ch[ cn ].data[ 55 ] && ch[ cn ].data[ 55 ] + TICKS * 120 > globs->ticker && ch[ cn ].data[ 54 ] )
   {
     m                   = ch[ cn ].data[ 54 ];
-    ch[ cn ].goto_x     = m % MAPX + get_frust_x_off( globs->ticker );
-    ch[ cn ].goto_y     = m / MAPX + get_frust_y_off( globs->ticker );
+    ch[ cn ].goto_x     = m % SERVER_MAPX + get_frust_x_off( globs->ticker );
+    ch[ cn ].goto_y     = m / SERVER_MAPX + get_frust_y_off( globs->ticker );
     ch[ cn ].data[ 58 ] = 2;
     return;
   }
@@ -1990,8 +1996,8 @@ void npc_driver_low( int cn )
   if ( ch[ cn ].data[ 77 ] && ch[ cn ].data[ 77 ] + TICKS * 30 > globs->ticker )
   {
     m               = ch[ cn ].data[ 76 ];
-    ch[ cn ].goto_x = m % MAPX + get_frust_x_off( ch[ cn ].data[ 36 ] );
-    ch[ cn ].goto_y = m / MAPX + get_frust_y_off( ch[ cn ].data[ 36 ] );
+    ch[ cn ].goto_x = m % SERVER_MAPX + get_frust_x_off( ch[ cn ].data[ 36 ] );
+    ch[ cn ].goto_y = m / SERVER_MAPX + get_frust_y_off( ch[ cn ].data[ 36 ] );
     return;
   }
 
@@ -2004,14 +2010,14 @@ void npc_driver_low( int cn )
     {
       // check if the door is free:
       if ( ! map[ m ].ch && ! map[ m ].to_ch && ! map[ m + 1 ].ch && ! map[ m + 1 ].to_ch && ! map[ m - 1 ].ch && ! map[ m - 1 ].to_ch &&
-           ! map[ m + MAPX ].ch && ! map[ m + MAPX ].to_ch && ! map[ m - MAPX ].ch && ! map[ m - MAPX ].to_ch )
+           ! map[ m + SERVER_MAPX ].ch && ! map[ m + SERVER_MAPX ].to_ch && ! map[ m - SERVER_MAPX ].ch && ! map[ m - SERVER_MAPX ].to_ch )
       {
         in = map[ m ].it;
         if ( in && it[ in ].active )
         {
           ch[ cn ].misc_action  = DR_USE;
-          ch[ cn ].misc_target1 = m % MAPX;
-          ch[ cn ].misc_target2 = m / MAPX;
+          ch[ cn ].misc_target1 = m % SERVER_MAPX;
+          ch[ cn ].misc_target2 = m / SERVER_MAPX;
           ch[ cn ].data[ 58 ]   = 1;
           return;
         }
@@ -2021,14 +2027,14 @@ void npc_driver_low( int cn )
 
   for ( n = 32; n < 36; n++ )
   { // activate light, medium prio
-    if ( ( m = ch[ cn ].data[ n ] ) != 0 && m < MAPX * MAPY )
+    if ( ( m = ch[ cn ].data[ n ] ) != 0 && m < SERVER_MAPX * SERVER_MAPY )
     {
       in = map[ m ].it;
       if ( in && ! it[ in ].active )
       {
         ch[ cn ].misc_action  = DR_USE;
-        ch[ cn ].misc_target1 = m % MAPX;
-        ch[ cn ].misc_target2 = m / MAPX;
+        ch[ cn ].misc_target1 = m % SERVER_MAPX;
+        ch[ cn ].misc_target2 = m / SERVER_MAPX;
         ch[ cn ].data[ 58 ]   = 1;
         return;
       }
@@ -2047,8 +2053,8 @@ void npc_driver_low( int cn )
       return;
 
     m = ch[ cn ].data[ n ];
-    x = m % MAPX + get_frust_x_off( ch[ cn ].data[ 36 ] );
-    y = m / MAPX + get_frust_y_off( ch[ cn ].data[ 36 ] );
+    x = m % SERVER_MAPX + get_frust_x_off( ch[ cn ].data[ 36 ] );
+    y = m / SERVER_MAPX + get_frust_y_off( ch[ cn ].data[ 36 ] );
     if ( ch[ cn ].data[ 36 ] > 20 || abs( ch[ cn ].x - x ) + abs( ch[ cn ].y - y ) < 4 )
     {
       if ( ch[ cn ].data[ 36 ] <= 20 )
@@ -2085,43 +2091,43 @@ void npc_driver_low( int cn )
         x = ch[ cn ].x - 5 + RANDOM( 11 );
         y = ch[ cn ].y - 5 + RANDOM( 11 );
 
-        if ( x < 1 || x >= MAPX || y < 1 || y > MAPX )
+        if ( x < 1 || x >= SERVER_MAPX || y < 1 || y > SERVER_MAPX )
           continue;
 
         if ( ch[ cn ].data[ 73 ] )
         { // too far away from origin?
           int xo, yo;
 
-          xo = ch[ cn ].data[ 29 ] % MAPX;
-          yo = ch[ cn ].data[ 29 ] / MAPX;
+          xo = ch[ cn ].data[ 29 ] % SERVER_MAPX;
+          yo = ch[ cn ].data[ 29 ] / SERVER_MAPX;
 
           if ( abs( x - xo ) + abs( y - yo ) > ch[ cn ].data[ 73 ] )
           {
-            if ( plr_check_target( xo + yo * MAPX ) )
+            if ( plr_check_target( xo + yo * SERVER_MAPX ) )
             {
               ch[ cn ].goto_x = xo;
               ch[ cn ].goto_y = yo;
               return;
             }
-            else if ( plr_check_target( xo + 1 + yo * MAPX ) )
+            else if ( plr_check_target( xo + 1 + yo * SERVER_MAPX ) )
             {
               ch[ cn ].goto_x = xo + 1;
               ch[ cn ].goto_y = yo;
               return;
             }
-            else if ( plr_check_target( xo - 1 + yo * MAPX ) )
+            else if ( plr_check_target( xo - 1 + yo * SERVER_MAPX ) )
             {
               ch[ cn ].goto_x = xo - 1;
               ch[ cn ].goto_y = yo;
               return;
             }
-            else if ( plr_check_target( xo + yo * MAPX + MAPX ) )
+            else if ( plr_check_target( xo + yo * SERVER_MAPX + SERVER_MAPX ) )
             {
               ch[ cn ].goto_x = xo;
               ch[ cn ].goto_y = yo + 1;
               return;
             }
-            else if ( plr_check_target( xo + yo * MAPX - MAPX ) )
+            else if ( plr_check_target( xo + yo * SERVER_MAPX - SERVER_MAPX ) )
             {
               ch[ cn ].goto_x = xo;
               ch[ cn ].goto_y = yo - 1;
@@ -2132,7 +2138,7 @@ void npc_driver_low( int cn )
           }
         }
 
-        if ( ! plr_check_target( x + y * MAPX ) )
+        if ( ! plr_check_target( x + y * SERVER_MAPX ) )
           continue;
         if ( ! can_go( ch[ cn ].x, ch[ cn ].y, x, y ) )
           continue;
@@ -2155,8 +2161,8 @@ void npc_driver_low( int cn )
   if ( ch[ cn ].data[ 29 ] )
   { // resting position, lowest prio
     m = ch[ cn ].data[ 29 ];
-    x = m % MAPX + get_frust_x_off( ch[ cn ].data[ 36 ] );
-    y = m / MAPX + get_frust_y_off( ch[ cn ].data[ 36 ] );
+    x = m % SERVER_MAPX + get_frust_x_off( ch[ cn ].data[ 36 ] );
+    y = m / SERVER_MAPX + get_frust_y_off( ch[ cn ].data[ 36 ] );
 
     ch[ cn ].data[ 58 ] = 0;
     if ( ch[ cn ].x != x || ch[ cn ].y != y )
@@ -2238,7 +2244,7 @@ void npc_driver_low( int cn )
     {
       n = 0;
 
-      in = map[ 446 + 347 * MAPX ].it;
+      in = map[ 446 + 347 * SERVER_MAPX ].it;
       if ( in )
       {
         if ( ! it[ in ].active )
@@ -2249,7 +2255,7 @@ void npc_driver_low( int cn )
             return;
         }
       }
-      in = map[ 450 + 351 * MAPX ].it;
+      in = map[ 450 + 351 * SERVER_MAPX ].it;
       if ( in )
       {
         if ( ! it[ in ].active )
@@ -2260,7 +2266,7 @@ void npc_driver_low( int cn )
             return;
         }
       }
-      in = map[ 457 + 348 * MAPX ].it;
+      in = map[ 457 + 348 * SERVER_MAPX ].it;
       if ( in )
       {
         if ( ! it[ in ].active )
@@ -2271,7 +2277,7 @@ void npc_driver_low( int cn )
             return;
         }
       }
-      in = map[ 457 + 340 * MAPX ].it;
+      in = map[ 457 + 340 * SERVER_MAPX ].it;
       if ( in )
       {
         if ( ! it[ in ].active )
@@ -2282,7 +2288,7 @@ void npc_driver_low( int cn )
             return;
         }
       }
-      in = map[ 449 + 340 * MAPX ].it;
+      in = map[ 449 + 340 * SERVER_MAPX ].it;
       if ( in )
       {
         if ( ! it[ in ].active )

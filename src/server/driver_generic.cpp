@@ -9,28 +9,31 @@ All rights reserved.
 #include "driver.h"
 #include "server.h"
 
+#include "Constants.h"
+#include "DriverConstants.h"
+
 int follow_driver( int cn, int co )
 {
   int m, dir, x, y;
 
   if ( co <= 0 || co >= MAXCHARS )
     return 0;
-  if ( ch[ co ].tox < 5 || ch[ co ].tox > MAPX - 6 || ch[ co ].toy < 5 || ch[ co ].toy > MAPY - 6 )
+  if ( ch[ co ].tox < 5 || ch[ co ].tox > SERVER_MAPX - 6 || ch[ co ].toy < 5 || ch[ co ].toy > SERVER_MAPY - 6 )
     return 0;
 
   if ( ! ( IS_COMPANION( cn ) && ch[ cn ].data[ 63 ] == co ) && ! do_char_can_see( cn, co ) )
     return 0;
 
-  m   = ch[ co ].tox + ch[ co ].toy * MAPX;
+  m   = ch[ co ].tox + ch[ co ].toy * SERVER_MAPX;
   dir = ch[ co ].dir;
 
   switch ( dir )
   {
   case DX_UP:
-    m = m + MAPX * 2;
+    m = m + SERVER_MAPX * 2;
     break;
   case DX_DOWN:
-    m = m - MAPX * 2;
+    m = m - SERVER_MAPX * 2;
     break;
   case DX_LEFT:
     m = m + 2;
@@ -39,23 +42,24 @@ int follow_driver( int cn, int co )
     m = m - 2;
     break;
   case DX_LEFTUP:
-    m = m + 2 + MAPX * 2;
+    m = m + 2 + SERVER_MAPX * 2;
     break;
   case DX_LEFTDOWN:
-    m = m + 2 - MAPX * 2;
+    m = m + 2 - SERVER_MAPX * 2;
     break;
   case DX_RIGHTUP:
-    m = m - 2 + MAPX * 2;
+    m = m - 2 + SERVER_MAPX * 2;
     break;
   case DX_RIGHTDOWN:
-    m = m - 2 - MAPX * 2;
+    m = m - 2 - SERVER_MAPX * 2;
     break;
   default:
     break;
   }
 
-  if ( map[ m ].ch == cn || map[ m + 1 ].ch == cn || map[ m - 1 ].ch == cn || map[ m + MAPX ].ch == cn || map[ m - MAPX ].ch == cn ||
-       map[ m + 1 + MAPX ].ch == cn || map[ m + 1 - MAPX ].ch == cn || map[ m - 1 + MAPX ].ch == cn || map[ m - 1 - MAPX ].ch == cn )
+  if ( map[ m ].ch == cn || map[ m + 1 ].ch == cn || map[ m - 1 ].ch == cn || map[ m + SERVER_MAPX ].ch == cn ||
+       map[ m - SERVER_MAPX ].ch == cn || map[ m + 1 + SERVER_MAPX ].ch == cn || map[ m + 1 - SERVER_MAPX ].ch == cn ||
+       map[ m - 1 + SERVER_MAPX ].ch == cn || map[ m - 1 - SERVER_MAPX ].ch == cn )
   {
 
     if ( ch[ cn ].dir == dir )
@@ -115,23 +119,23 @@ int follow_driver( int cn, int co )
     m = m + 1;
   else if ( plr_check_target( m - 1 ) )
     m = m - 1;
-  else if ( plr_check_target( m + MAPX ) )
-    m = m + MAPX;
-  else if ( plr_check_target( m - MAPX ) )
-    m = m - MAPX;
-  else if ( plr_check_target( m + 1 + MAPX ) )
-    m = m + 1 + MAPX;
-  else if ( plr_check_target( m + 1 - MAPX ) )
-    m = m + 1 - MAPX;
-  else if ( plr_check_target( m - 1 + MAPX ) )
-    m = m - 1 + MAPX;
-  else if ( plr_check_target( m - 1 - MAPX ) )
-    m = m - 1 - MAPX;
+  else if ( plr_check_target( m + SERVER_MAPX ) )
+    m = m + SERVER_MAPX;
+  else if ( plr_check_target( m - SERVER_MAPX ) )
+    m = m - SERVER_MAPX;
+  else if ( plr_check_target( m + 1 + SERVER_MAPX ) )
+    m = m + 1 + SERVER_MAPX;
+  else if ( plr_check_target( m + 1 - SERVER_MAPX ) )
+    m = m + 1 - SERVER_MAPX;
+  else if ( plr_check_target( m - 1 + SERVER_MAPX ) )
+    m = m - 1 + SERVER_MAPX;
+  else if ( plr_check_target( m - 1 - SERVER_MAPX ) )
+    m = m - 1 - SERVER_MAPX;
   else
     return 0;
 
-  ch[ cn ].goto_x = m % MAPX;
-  ch[ cn ].goto_y = m / MAPX;
+  ch[ cn ].goto_x = m % SERVER_MAPX;
+  ch[ cn ].goto_y = m / SERVER_MAPX;
 
   return 1;
 }
@@ -218,10 +222,10 @@ void drv_useto( int cn, int x, int y )
 
   ret = char_useto( cn, x, y );
 
-  if ( x < 0 || x >= MAPX || y < 0 || y >= MAPY )
+  if ( x < 0 || x >= SERVER_MAPX || y < 0 || y >= SERVER_MAPY )
     x = y = 0;
 
-  m  = x + y * MAPX;
+  m  = x + y * SERVER_MAPX;
   in = map[ m ].it;
 
   if ( ret && ( ! in || it[ in ].driver != 25 ) )
