@@ -24,11 +24,12 @@ RUN apt-get install -y  \
     libgl1-mesa-dev \
     clang-tidy-11 \
     libjsoncpp-dev \
-    libboost-all-dev 
-
+    libboost-all-dev \
+    libsfml-dev \
+    libzip-dev
 
 ADD . /mag
 WORKDIR /mag
 RUN cmake -G"Unix Makefiles" -S ./ -B ./build
-RUN cmake --build ./build --parallel
+RUN cmake --build ./build --parallel --target server
 RUN ./build/server/server
