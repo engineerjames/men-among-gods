@@ -15,7 +15,7 @@ RUN apt-get install -y  \
     apache2
 
 ADD . /mag
-WORKDIR /mag/src/server
+WORKDIR /mag
 RUN cmake -G"Unix Makefiles" -S ./ -B ./build
 RUN cmake --build ./build --parallel
 RUN ./build/server/server
