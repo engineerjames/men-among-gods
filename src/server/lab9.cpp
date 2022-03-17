@@ -715,7 +715,7 @@ int use_lab9_door( int cn, int in )
 {
   int temp, flags;
 
-  if ( map[ it[ in ].x + it[ in ].y * MAPX ].ch )
+  if ( map[ it[ in ].x + it[ in ].y * SERVER_MAPX ].ch )
     return 0;
 
   // This statement allows free movement southward.

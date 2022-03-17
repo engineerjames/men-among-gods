@@ -7,8 +7,7 @@
 #include "GuiFormatters.h"
 #include "MainUi.h"
 #include "PlayerData.h"
-#include "SkillTab.h"
-#include "UiPositions.h"
+#include "UiConstants.h"
 #include "UtilityFunctions.h"
 
 #include <iostream>
@@ -271,7 +270,7 @@ void SkillsAndAttributesDisplay::update()
 
     attributes_[ i ].displayValue_.setString( std::to_string( player.attrib[ i ][ 5 ] + nTimesRaised ) );
 
-    int expNeededToRaise = attrib_needed( i, player.attrib[ i ][ 0 ] + nTimesRaised, player );
+    int expNeededToRaise = attrib_needed( player.attrib[ i ][ 0 ] + nTimesRaised, player.attrib[ i ][ 2 ], player.attrib[ i ][ 3 ] );
 
     if ( expNeededToRaise == std::numeric_limits< int >::max() )
     {
@@ -285,7 +284,7 @@ void SkillsAndAttributesDisplay::update()
     attributes_[ i ].displayValue_.update();
     attributes_[ i ].expRequired_.update();
 
-    if ( totalPointsToSpend_ >= attrib_needed( i, player.attrib[ i ][ 0 ] + nTimesRaised, player ) )
+    if ( totalPointsToSpend_ >= attrib_needed( player.attrib[ i ][ 0 ] + nTimesRaised, player.attrib[ i ][ 2 ], player.attrib[ i ][ 3 ] ) )
     {
       attributes_[ i ].plus_.setString( "+" );
     }
@@ -331,7 +330,7 @@ void SkillsAndAttributesDisplay::update()
 
     skills_[ i ].displayValue_.setString( std::to_string( player.skill[ i ][ 5 ] + nTimesRaised ) );
 
-    int expNeededToRaise = skill_needed( i, player.skill[ i ][ 0 ] + nTimesRaised, player );
+    int expNeededToRaise = skill_needed( player.skill[ i ][ 0 ] + nTimesRaised, player.attrib[ i ][ 2 ], player.attrib[ i ][ 3 ] );
     if ( expNeededToRaise == std::numeric_limits< int >::max() )
     {
       skills_[ i ].expRequired_.setString( "" );
@@ -351,7 +350,7 @@ void SkillsAndAttributesDisplay::update()
     skills_[ i ].displayValue_.update();
     skills_[ i ].expRequired_.update();
 
-    if ( totalPointsToSpend_ >= skill_needed( i, player.skill[ i ][ 0 ] + nTimesRaised, player ) )
+    if ( totalPointsToSpend_ >= skill_needed( player.skill[ i ][ 0 ] + nTimesRaised, player.attrib[ i ][ 2 ], player.attrib[ i ][ 3 ] ) )
     {
       skills_[ i ].plus_.setString( "+" );
     }
@@ -401,7 +400,7 @@ void SkillsAndAttributesDisplay::update()
   int nTimesRaisedHp = static_cast< int >( raiseMap_[ lifeDisplay_[ 0 ].name_.getString() ].size() );
   lifeDisplay_[ 0 ].displayValue_.setString( std::to_string( playerData_.getClientSidePlayerInfo().a_hp ) );
 
-  int expNeededToRaiseHp = hp_needed( player.hp[ 0 ] + nTimesRaisedHp, player );
+  int expNeededToRaiseHp = hp_needed( player.hp[ 0 ] + nTimesRaisedHp, player.hp[ 2 ], player.hp[ 3 ] );
   if ( expNeededToRaiseHp == std::numeric_limits< int >::max() )
   {
     lifeDisplay_[ 0 ].expRequired_.setString( "" );
@@ -436,7 +435,7 @@ void SkillsAndAttributesDisplay::update()
   int nTimesRaisedEnd = static_cast< int >( raiseMap_[ lifeDisplay_[ 1 ].name_.getString() ].size() );
   lifeDisplay_[ 1 ].displayValue_.setString( std::to_string( playerData_.getClientSidePlayerInfo().a_end ) );
 
-  int expNeededToRaiseEnd = end_needed( player.end[ 0 ] + nTimesRaisedEnd, player );
+  int expNeededToRaiseEnd = end_needed( player.end[ 0 ] + nTimesRaisedEnd, player.end[ 2 ], player.end[ 3 ] );
   if ( expNeededToRaiseEnd == std::numeric_limits< int >::max() )
   {
     lifeDisplay_[ 1 ].expRequired_.setString( "" );
@@ -449,7 +448,7 @@ void SkillsAndAttributesDisplay::update()
   lifeDisplay_[ 1 ].displayValue_.update();
   lifeDisplay_[ 1 ].expRequired_.update();
 
-  if ( totalPointsToSpend_ >= end_needed( expNeededToRaiseEnd, player ) )
+  if ( totalPointsToSpend_ >= expNeededToRaiseEnd )
   {
     lifeDisplay_[ 1 ].plus_.setString( "+" );
   }
@@ -471,7 +470,7 @@ void SkillsAndAttributesDisplay::update()
   int nTimesRaisedMana = static_cast< int >( raiseMap_[ lifeDisplay_[ 2 ].name_.getString() ].size() );
   lifeDisplay_[ 2 ].displayValue_.setString( std::to_string( playerData_.getClientSidePlayerInfo().a_mana ) );
 
-  int expNeededToRaiseMana = mana_needed( player.mana[ 0 ] + nTimesRaisedMana, player );
+  int expNeededToRaiseMana = mana_needed( player.mana[ 0 ] + nTimesRaisedMana, player.mana[ 2 ], player.mana[ 3 ] );
   if ( expNeededToRaiseMana == std::numeric_limits< int >::max() )
   {
     lifeDisplay_[ 2 ].expRequired_.setString( "" );
@@ -484,7 +483,7 @@ void SkillsAndAttributesDisplay::update()
   lifeDisplay_[ 2 ].displayValue_.update();
   lifeDisplay_[ 2 ].expRequired_.update();
 
-  if ( totalPointsToSpend_ >= mana_needed( player.mana[ 0 ] + nTimesRaisedMana, player ) )
+  if ( totalPointsToSpend_ >= expNeededToRaiseMana )
   {
     lifeDisplay_[ 2 ].plus_.setString( "+" );
   }
@@ -582,8 +581,9 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
         if ( row >= 0 && row <= 4 ) // Attributes
         {
 
-          int nTimesRaised   = static_cast< int >( raiseMap_[ attributes_[ row ].name_.getString() ].size() );
-          int pointsRequired = attrib_needed( row, player.attrib[ row ][ 0 ] + nTimesRaised, player );
+          int nTimesRaised = static_cast< int >( raiseMap_[ attributes_[ row ].name_.getString() ].size() );
+          int pointsRequired =
+              attrib_needed( player.attrib[ row ][ 0 ] + nTimesRaised, player.attrib[ row ][ 2 ], player.attrib[ row ][ 3 ] );
           if ( totalPointsToSpend_ >= pointsRequired )
           {
             std::string attributeName = attributes_.at( row ).name_.getString();
@@ -596,7 +596,7 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
           if ( row == 5 ) // hp
           {
             int nTimesRaised   = static_cast< int >( raiseMap_[ lifeDisplay_[ 0 ].name_.getString() ].size() );
-            int pointsRequired = hp_needed( player.hp[ 0 ] + nTimesRaised, player );
+            int pointsRequired = hp_needed( player.hp[ 0 ] + nTimesRaised, player.hp[ 2 ], player.hp[ 3 ] );
             if ( totalPointsToSpend_ >= pointsRequired )
             {
               std::string hpManaEndName = lifeDisplay_.at( 0 ).name_.getString();
@@ -607,7 +607,7 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
           else if ( row == 6 ) // end
           {
             int nTimesRaised   = static_cast< int >( raiseMap_[ lifeDisplay_[ 1 ].name_.getString() ].size() );
-            int pointsRequired = end_needed( player.end[ 0 ] + nTimesRaised, player );
+            int pointsRequired = end_needed( player.end[ 0 ] + nTimesRaised, player.end[ 2 ], player.end[ 3 ] );
             if ( totalPointsToSpend_ >= pointsRequired )
             {
               std::string hpManaEndName = lifeDisplay_.at( 1 ).name_.getString();
@@ -618,7 +618,7 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
           else if ( row == 7 ) // mana
           {
             int nTimesRaised   = static_cast< int >( raiseMap_[ lifeDisplay_[ 2 ].name_.getString() ].size() );
-            int pointsRequired = mana_needed( player.mana[ 0 ] + nTimesRaised, player );
+            int pointsRequired = mana_needed( player.mana[ 0 ] + nTimesRaised, player.mana[ 2 ], player.mana[ 3 ] );
             if ( totalPointsToSpend_ >= pointsRequired )
             {
               std::string hpManaEndName = lifeDisplay_.at( 2 ).name_.getString();
@@ -637,7 +637,7 @@ void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
           int m            = skillsToDisplay_[ row - 8 ]->skillsIndex_;
           int nTimesRaised = static_cast< int >( raiseMap_[ skillsToDisplay_[ row - 8 ]->name_.getString() ].size() );
 
-          int pointsRequired = skill_needed( m, player.skill[ m ][ 0 ] + nTimesRaised, player );
+          int pointsRequired = skill_needed( player.skill[ m ][ 0 ] + nTimesRaised, player.skill[ m ][ 2 ], player.skill[ m ][ 3 ] );
           if ( totalPointsToSpend_ >= pointsRequired )
           {
             std::string skillName = skillsToDisplay_[ row - 8 ]->name_.getString();

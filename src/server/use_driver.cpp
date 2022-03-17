@@ -12,6 +12,7 @@ All rights reserved.
 #include <string.h>
 
 #include "Constants.h"
+#include "DriverConstants.h"
 #include "RankNames.h"
 #include "SkillTab.h"
 #include "funcs.h"
@@ -57,7 +58,7 @@ int use_door( int cn, int in )
 {
   int in2, lock = 0, n, skill, power, temp, flags;
 
-  if ( map[ it[ in ].x + it[ in ].y * MAPX ].ch )
+  if ( map[ it[ in ].x + it[ in ].y * SERVER_MAPX ].ch )
     return 0;
 
   if ( it[ in ].data[ 0 ] )
@@ -1405,11 +1406,11 @@ int use_crystal_sub( int cn, int in )
 
   do
   {
-    m = RANDOM( 64 ) + 128 + ( RANDOM( 64 ) + 64 ) * MAPX;
+    m = RANDOM( 64 ) + 128 + ( RANDOM( 64 ) + 64 ) * SERVER_MAPX;
   } while ( ! plr_check_target( m ) );
 
-  ch[ cc ].goto_x     = m % MAPX;
-  ch[ cc ].goto_y     = m / MAPX;
+  ch[ cc ].goto_x     = m % SERVER_MAPX;
+  ch[ cc ].goto_y     = m / SERVER_MAPX;
   ch[ cc ].data[ 60 ] = 18 * 20;
   ch[ cc ].data[ 62 ] = 1;
 
@@ -1918,7 +1919,7 @@ int use_pile( int cn, int in )
   it[ in ].used = USE_EMPTY;
   x             = it[ in ].x;
   y             = it[ in ].y;
-  m             = x + y * MAPX;
+  m             = x + y * SERVER_MAPX;
   level         = it[ in ].data[ 0 ];
   map[ m ].it   = 0;
 
@@ -1996,7 +1997,7 @@ int mine_wall( int in, int x, int y )
   int temp, carried;
 
   if ( ! in )
-    in = map[ x + y * MAPX ].it;
+    in = map[ x + y * SERVER_MAPX ].it;
   if ( ! in )
     return 0;
 
@@ -2023,7 +2024,7 @@ int mine_state( int x, int y )
 {
   int in;
 
-  in = map[ x + y * MAPX ].it;
+  in = map[ x + y * SERVER_MAPX ].it;
   if ( ! in )
     return 0;
   if ( it[ in ].driver != 25 )
@@ -2105,8 +2106,8 @@ int use_mine_fast( int cn, int in )
   reset_go( it[ in ].x, it[ in ].y );
   remove_lights( it[ in ].x, it[ in ].y );
 
-  map[ it[ in ].x + it[ in ].y * MAPX ].it = 0;
-  it[ in ].used                            = USE_EMPTY;
+  map[ it[ in ].x + it[ in ].y * SERVER_MAPX ].it = 0;
+  it[ in ].used                                   = USE_EMPTY;
 
   reset_go( it[ in ].x, it[ in ].y );
   add_lights( it[ in ].x, it[ in ].y );
@@ -2441,7 +2442,7 @@ int spawn_penta_enemy( int in )
     return 0;
   ch[ cn ].flags &= ~CF_RESPAWN;
   ch[ cn ].data[ 0 ]  = in;
-  ch[ cn ].data[ 29 ] = it[ in ].x + it[ in ].y * MAPX;
+  ch[ cn ].data[ 29 ] = it[ in ].x + it[ in ].y * SERVER_MAPX;
   ch[ cn ].data[ 60 ] = TICKS * 60 * 2;
   ch[ cn ].data[ 73 ] = 8;
   ch[ cn ].dir        = 1;
@@ -2880,13 +2881,13 @@ int use_kill_undead( int cn, int in )
 
   for ( y = ch[ cn ].y - 8; y < ch[ cn ].y + 8; y++ )
   {
-    if ( y < 1 || y >= MAPY )
+    if ( y < 1 || y >= SERVER_MAPY )
       continue;
     for ( x = ch[ cn ].x - 8; x < ch[ cn ].x + 8; x++ )
     {
-      if ( x < 1 || x >= MAPX )
+      if ( x < 1 || x >= SERVER_MAPX )
         continue;
-      if ( ( co = map[ x + y * MAPX ].ch ) != 0 )
+      if ( ( co = map[ x + y * SERVER_MAPX ].ch ) != 0 )
       {
         if ( ch[ co ].flags & CF_UNDEAD )
         {
@@ -3607,7 +3608,7 @@ void use_driver( int cn, int in, int carried )
 
     if ( ! carried )
     {
-      m = it[ in ].x + it[ in ].y * MAPX;
+      m = it[ in ].x + it[ in ].y * SERVER_MAPX;
       if ( map[ m ].ch || map[ m ].to_ch )
         return;
     }
@@ -4063,11 +4064,11 @@ void lightage( int in, int multi )
   int m, cn, light, act;
 
   if ( ( cn = it[ in ].carried ) != 0 )
-    m = ch[ cn ].x + ch[ cn ].y * MAPX;
+    m = ch[ cn ].x + ch[ cn ].y * SERVER_MAPX;
   else
-    m = it[ in ].x + it[ in ].y * MAPX;
+    m = it[ in ].x + it[ in ].y * SERVER_MAPX;
 
-  if ( m < 1 || m >= MAPX * MAPY )
+  if ( m < 1 || m >= SERVER_MAPX * SERVER_MAPY )
     return;
 
   light = map[ m ].light;
@@ -4307,7 +4308,7 @@ void spiderweb( int in )
         continue;
       ch[ cn ].flags &= ~CF_RESPAWN;
       ch[ cn ].data[ 0 ]  = in;
-      ch[ cn ].data[ 29 ] = it[ in ].x + it[ in ].y * MAPX;
+      ch[ cn ].data[ 29 ] = it[ in ].x + it[ in ].y * SERVER_MAPX;
       ch[ cn ].data[ 60 ] = TICKS * 60 * 2;
       ch[ cn ].data[ 73 ] = 8;
       ch[ cn ].dir        = 1;
@@ -4341,7 +4342,7 @@ void greenlingball( int in )
         continue;
       ch[ cn ].flags &= ~CF_RESPAWN;
       ch[ cn ].data[ 0 ]  = in;
-      ch[ cn ].data[ 29 ] = it[ in ].x + it[ in ].y * MAPX;
+      ch[ cn ].data[ 29 ] = it[ in ].x + it[ in ].y * SERVER_MAPX;
       ch[ cn ].data[ 60 ] = TICKS * 60 * 2;
       ch[ cn ].data[ 73 ] = 8;
       ch[ cn ].dir        = 1;
@@ -4381,14 +4382,14 @@ void expire_driver( int in )
   }
 }
 
-#define EXP_TIME ( MAPY / 4 )
+#define EXP_TIME ( SERVER_MAPY / 4 )
 
 void item_tick_expire( void )
 {
   static int y = 0;
   int        x, in, m, act, cn;
 
-  for ( x = 0, m = y * MAPX; x < MAPX; x++, m++ )
+  for ( x = 0, m = y * SERVER_MAPX; x < SERVER_MAPX; x++, m++ )
   {
     if ( ( in = map[ m ].it ) != 0 )
     {
@@ -4444,8 +4445,8 @@ void item_tick_expire( void )
       else
         act = 0;
 
-      it[ in ].current_age[ act ] += EXP_TIME; // each place is only checked every MAPY ticks
-                                               // so we add MAPY instead of one
+      it[ in ].current_age[ act ] += EXP_TIME; // each place is only checked every SERVER_MAPY ticks
+                                               // so we add SERVER_MAPY instead of one
 
       if ( it[ in ].flags & IF_LIGHTAGE )
         lightage( in, EXP_TIME );
@@ -4518,7 +4519,7 @@ void item_tick_expire( void )
   }
 
   y++;
-  if ( y >= MAPY )
+  if ( y >= SERVER_MAPY )
   {
     globs->expire_run++;
     globs->lost_run++;
@@ -4592,7 +4593,7 @@ void item_tick_gc( void )
     }
     else
     {
-      in2 = map[ it[ n ].x + it[ n ].y * MAPX ].it;
+      in2 = map[ it[ n ].x + it[ n ].y * SERVER_MAPX ].it;
       if ( in2 == n )
         continue;
     }
@@ -4782,9 +4783,9 @@ int step_portal2_lab13( int cn, int in )
   {
     for ( y = 594; y <= 608 && ! flag; y++ )
     {
-      if ( ( co = map[ x + y * MAPX ].ch ) != 0 && co != cn && ( ch[ co ].flags & ( CF_PLAYER ) ) )
+      if ( ( co = map[ x + y * SERVER_MAPX ].ch ) != 0 && co != cn && ( ch[ co ].flags & ( CF_PLAYER ) ) )
         flag = 1;
-      if ( ( in2 = map[ x + y * MAPX ].it ) != 0 && ( it[ in2 ].temp == 664 || it[ in2 ].temp == 170 ) )
+      if ( ( in2 = map[ x + y * SERVER_MAPX ].it ) != 0 && ( it[ in2 ].temp == 664 || it[ in2 ].temp == 170 ) )
         flag = 2;
     }
   }
@@ -4793,9 +4794,9 @@ int step_portal2_lab13( int cn, int in )
   {
     for ( y = 593; y <= 602 && ! flag; y++ )
     {
-      if ( ( co = map[ x + y * MAPX ].ch ) != 0 && co != cn && ( ch[ co ].flags & ( CF_PLAYER ) ) )
+      if ( ( co = map[ x + y * SERVER_MAPX ].ch ) != 0 && co != cn && ( ch[ co ].flags & ( CF_PLAYER ) ) )
         flag = 1;
-      if ( ( in2 = map[ x + y * MAPX ].it ) != 0 && ( it[ in2 ].temp == 664 || it[ in2 ].temp == 170 ) )
+      if ( ( in2 = map[ x + y * SERVER_MAPX ].it ) != 0 && ( it[ in2 ].temp == 664 || it[ in2 ].temp == 170 ) )
         flag = 2;
     }
   }
@@ -4899,10 +4900,10 @@ int step_portal_arena( int cn, int in )
     return -1;
   }
 
-  xs = it[ in ].data[ 1 ] % MAPX;
-  ys = it[ in ].data[ 1 ] / MAPX;
-  xe = it[ in ].data[ 2 ] % MAPX;
-  ye = it[ in ].data[ 2 ] / MAPX;
+  xs = it[ in ].data[ 1 ] % SERVER_MAPX;
+  ys = it[ in ].data[ 1 ] / SERVER_MAPX;
+  xe = it[ in ].data[ 2 ] % SERVER_MAPX;
+  ye = it[ in ].data[ 2 ] / SERVER_MAPX;
 
   if ( ch[ cn ].frx >= xs && ch[ cn ].frx <= xe && ch[ cn ].fry >= ys && ch[ cn ].fry <= ye )
   {
@@ -4914,7 +4915,7 @@ int step_portal_arena( int cn, int in )
   {
     for ( y = ys; y <= ye; y++ )
     {
-      if ( map[ x + y * MAPX ].ch )
+      if ( map[ x + y * SERVER_MAPX ].ch )
       {
         do_char_log( cn, 1, "The arena is busy. Please come back later.\n" );
         return -1;
@@ -4923,7 +4924,7 @@ int step_portal_arena( int cn, int in )
   }
 
   co = pop_create_char( nr, 0 );
-  if ( ! god_drop_char_fuzzy( co, it[ in ].data[ 0 ] % MAPX, it[ in ].data[ 0 ] / MAPX ) )
+  if ( ! god_drop_char_fuzzy( co, it[ in ].data[ 0 ] % SERVER_MAPX, it[ in ].data[ 0 ] / SERVER_MAPX ) )
   {
     do_char_log( cn, 1, "Please tell the gods that the arena isn't working.\n" );
     return -1;
@@ -4943,7 +4944,7 @@ int step_portal_arena( int cn, int in )
 int step_teleport( int cn, int in )
 {
   int        m, x, y, j, m2, m3;
-  static int loc_off[] = { 0, -MAPX, MAPX, 1, -1 };
+  static int loc_off[] = { 0, -SERVER_MAPX, SERVER_MAPX, 1, -1 };
 
   if ( cn <= 0 )
   {
@@ -4993,8 +4994,8 @@ int step_teleport( int cn, int in )
   // instead of plr_map_set(cn);
   map[ m3 ].ch    = cn;
   map[ m3 ].to_ch = 0;
-  ch[ cn ].x      = m3 % MAPX;
-  ch[ cn ].y      = m3 / MAPX;
+  ch[ cn ].x      = m3 % SERVER_MAPX;
+  ch[ cn ].y      = m3 / SERVER_MAPX;
   do_area_notify( cn, 0, ch[ cn ].x, ch[ cn ].y, NT_SEE, cn, 0, 0, 0 );
 
   fx_add_effect( 6, 0, ch[ cn ].x, ch[ cn ].y, 0 );

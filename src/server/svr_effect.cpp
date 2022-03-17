@@ -48,7 +48,7 @@ void effect_tick( void )
       if ( fx[ n ].duration == 0 )
       {
         fx[ n ].used = USE_EMPTY;
-        map[ fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * MAPX ].flags &= ~( MF_GFX_INJURED | MF_GFX_INJURED1 | MF_GFX_INJURED2 );
+        map[ fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * SERVER_MAPX ].flags &= ~( MF_GFX_INJURED | MF_GFX_INJURED1 | MF_GFX_INJURED2 );
       }
     }
 
@@ -56,9 +56,9 @@ void effect_tick( void )
     { // timer for character respawn
       if ( fx[ n ].duration )
         fx[ n ].duration--;
-      if ( fx[ n ].duration == 0 && plr_check_target( fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * MAPX ) )
+      if ( fx[ n ].duration == 0 && plr_check_target( fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * SERVER_MAPX ) )
       {
-        m = fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * MAPX;
+        m = fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * SERVER_MAPX;
         map[ m ].flags |= MF_MOVEBLOCK;
         fx[ n ].type = 8;
       }
@@ -72,12 +72,12 @@ void effect_tick( void )
 
         fx[ n ].used = 0;
 
-        m = fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * MAPX;
+        m = fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * SERVER_MAPX;
         map[ m ].flags &= ~MF_GFX_DEATH;
       }
       else
       {
-        m = fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * MAPX;
+        m = fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * SERVER_MAPX;
         map[ m ].flags &= ~MF_GFX_DEATH;
         map[ m ].flags |= ( ( unsigned long long ) fx[ n ].duration ) << 40;
 
@@ -91,50 +91,50 @@ void effect_tick( void )
             m += 1;
           else if ( can_drop( m - 1 ) )
             m += -1;
-          else if ( can_drop( m + MAPX ) )
-            m += MAPX;
-          else if ( can_drop( m - MAPX ) )
-            m += -MAPX;
-          else if ( can_drop( m + 1 + MAPX ) )
-            m += 1 + MAPX;
-          else if ( can_drop( m + 1 - MAPX ) )
-            m += 1 - MAPX;
-          else if ( can_drop( m - 1 + MAPX ) )
-            m += -1 + MAPX;
-          else if ( can_drop( m - 1 - MAPX ) )
-            m += -1 - MAPX;
+          else if ( can_drop( m + SERVER_MAPX ) )
+            m += SERVER_MAPX;
+          else if ( can_drop( m - SERVER_MAPX ) )
+            m += -SERVER_MAPX;
+          else if ( can_drop( m + 1 + SERVER_MAPX ) )
+            m += 1 + SERVER_MAPX;
+          else if ( can_drop( m + 1 - SERVER_MAPX ) )
+            m += 1 - SERVER_MAPX;
+          else if ( can_drop( m - 1 + SERVER_MAPX ) )
+            m += -1 + SERVER_MAPX;
+          else if ( can_drop( m - 1 - SERVER_MAPX ) )
+            m += -1 - SERVER_MAPX;
           else if ( can_drop( m + 2 ) )
             m += 2;
           else if ( can_drop( m - 2 ) )
             m += -2;
-          else if ( can_drop( m + 2 * MAPX ) )
-            m += 2 * MAPX;
-          else if ( can_drop( m - 2 * MAPX ) )
-            m += -2 * MAPX;
-          else if ( can_drop( m + 2 + MAPX ) )
-            m += 2 + MAPX;
-          else if ( can_drop( m + 2 - MAPX ) )
-            m += 2 - MAPX;
-          else if ( can_drop( m - 2 + MAPX ) )
-            m += -2 + MAPX;
-          else if ( can_drop( m - 2 - MAPX ) )
-            m += -2 - MAPX;
-          else if ( can_drop( m + 1 + 2 * MAPX ) )
-            m += 1 + 2 * MAPX;
-          else if ( can_drop( m + 1 - 2 * MAPX ) )
-            m += 1 - 2 * MAPX;
-          else if ( can_drop( m - 1 + 2 * MAPX ) )
-            m += -1 + 2 * MAPX;
-          else if ( can_drop( m - 1 - 2 * MAPX ) )
-            m += -1 - 2 * MAPX;
-          else if ( can_drop( m + 2 + 2 * MAPX ) )
-            m += 2 + 2 * MAPX;
-          else if ( can_drop( m + 2 - 2 * MAPX ) )
-            m += 2 - 2 * MAPX;
-          else if ( can_drop( m - 2 + 2 * MAPX ) )
-            m += -2 + 2 * MAPX;
-          else if ( can_drop( m - 2 - 2 * MAPX ) )
-            m += -2 - 2 * MAPX;
+          else if ( can_drop( m + 2 * SERVER_MAPX ) )
+            m += 2 * SERVER_MAPX;
+          else if ( can_drop( m - 2 * SERVER_MAPX ) )
+            m += -2 * SERVER_MAPX;
+          else if ( can_drop( m + 2 + SERVER_MAPX ) )
+            m += 2 + SERVER_MAPX;
+          else if ( can_drop( m + 2 - SERVER_MAPX ) )
+            m += 2 - SERVER_MAPX;
+          else if ( can_drop( m - 2 + SERVER_MAPX ) )
+            m += -2 + SERVER_MAPX;
+          else if ( can_drop( m - 2 - SERVER_MAPX ) )
+            m += -2 - SERVER_MAPX;
+          else if ( can_drop( m + 1 + 2 * SERVER_MAPX ) )
+            m += 1 + 2 * SERVER_MAPX;
+          else if ( can_drop( m + 1 - 2 * SERVER_MAPX ) )
+            m += 1 - 2 * SERVER_MAPX;
+          else if ( can_drop( m - 1 + 2 * SERVER_MAPX ) )
+            m += -1 + 2 * SERVER_MAPX;
+          else if ( can_drop( m - 1 - 2 * SERVER_MAPX ) )
+            m += -1 - 2 * SERVER_MAPX;
+          else if ( can_drop( m + 2 + 2 * SERVER_MAPX ) )
+            m += 2 + 2 * SERVER_MAPX;
+          else if ( can_drop( m + 2 - 2 * SERVER_MAPX ) )
+            m += 2 - 2 * SERVER_MAPX;
+          else if ( can_drop( m - 2 + 2 * SERVER_MAPX ) )
+            m += -2 + 2 * SERVER_MAPX;
+          else if ( can_drop( m - 2 - 2 * SERVER_MAPX ) )
+            m += -2 - 2 * SERVER_MAPX;
           else
           {
             int temp;
@@ -181,7 +181,7 @@ void effect_tick( void )
             if ( flag )
             {
               map[ m ].flags |= MF_MOVEBLOCK;
-              fn                 = fx_add_effect( 4, 0, m % MAPX, m / MAPX, fx[ n ].data[ 2 ] );
+              fn                 = fx_add_effect( 4, 0, m % SERVER_MAPX, m / SERVER_MAPX, fx[ n ].data[ 2 ] );
               fx[ fn ].data[ 3 ] = fx[ n ].data[ 3 ];
             }
             else
@@ -223,7 +223,7 @@ void effect_tick( void )
 
         co = fx[ n ].data[ 2 ];
 
-        m = fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * MAPX;
+        m = fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * SERVER_MAPX;
         map[ m ].flags &= ~MF_GFX_TOMB;
         map[ m ].flags &= ~MF_MOVEBLOCK;
 
@@ -243,7 +243,7 @@ void effect_tick( void )
       }
       else
       {
-        m = fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * MAPX;
+        m = fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * SERVER_MAPX;
         map[ m ].flags &= ~MF_GFX_TOMB;
         map[ m ].flags |= ( ( unsigned long long ) fx[ n ].duration ) << 35;
       }
@@ -252,7 +252,7 @@ void effect_tick( void )
     if ( fx[ n ].type == 5 )
     { // evil magic
       fx[ n ].duration++;
-      m = fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * MAPX;
+      m = fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * SERVER_MAPX;
       if ( fx[ n ].duration == 8 )
       {
 
@@ -269,7 +269,7 @@ void effect_tick( void )
     if ( fx[ n ].type == 6 )
     { // good magic
       fx[ n ].duration++;
-      m = fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * MAPX;
+      m = fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * SERVER_MAPX;
       if ( fx[ n ].duration == 8 )
       {
 
@@ -286,7 +286,7 @@ void effect_tick( void )
     if ( fx[ n ].type == 7 )
     { // caster magic
       fx[ n ].duration++;
-      m = fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * MAPX;
+      m = fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * SERVER_MAPX;
       if ( fx[ n ].duration == 8 )
       {
         fx[ n ].used = USE_EMPTY;
@@ -305,17 +305,17 @@ void effect_tick( void )
       if ( fx[ n ].duration == 19 )
       {
         fx[ n ].used = 0;
-        m            = fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * MAPX;
+        m            = fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * SERVER_MAPX;
         map[ m ].flags &= ~MF_GFX_DEATH;
       }
       else
       {
-        m = fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * MAPX;
+        m = fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * SERVER_MAPX;
         map[ m ].flags &= ~MF_GFX_DEATH;
         map[ m ].flags |= ( ( unsigned long long ) fx[ n ].duration ) << 40;
         if ( fx[ n ].duration == 9 )
         {
-          m = fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * MAPX;
+          m = fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * SERVER_MAPX;
           map[ m ].flags &= ~MF_MOVEBLOCK;
           if ( ! pop_create_char( fx[ n ].data[ 2 ], 1 ) && ( ch_temp[ fx[ n ].data[ 2 ] ].flags & CF_RESPAWN ) )
           {
@@ -335,7 +335,7 @@ void effect_tick( void )
 
       if ( fx[ n ].duration == 0 )
       {
-        map[ it[ in ].x + it[ in ].y * MAPX ].it = 0;
+        map[ it[ in ].x + it[ in ].y * SERVER_MAPX ].it = 0;
         if ( fx[ n ].data[ 1 ] )
         {
           cn = pop_create_char( fx[ n ].data[ 1 ], 0 );
@@ -353,26 +353,26 @@ void effect_tick( void )
         fx[ n ].duration--;
       else
       {
-        m = fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * MAPX;
+        m = fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * SERVER_MAPX;
 
         // check if object isnt allowed to respawn (supporting beams for mine)
-        if ( is_beam( map[ m ].it ) || is_beam( map[ m - 1 ].it ) || is_beam( map[ m + 1 ].it ) || is_beam( map[ m - MAPX ].it ) ||
-             is_beam( map[ m + MAPX ].it ) ||
+        if ( is_beam( map[ m ].it ) || is_beam( map[ m - 1 ].it ) || is_beam( map[ m + 1 ].it ) || is_beam( map[ m - SERVER_MAPX ].it ) ||
+             is_beam( map[ m + SERVER_MAPX ].it ) ||
 
-             is_beam( map[ m - 2 ].it ) || is_beam( map[ m + 2 ].it ) || is_beam( map[ m - 2 * MAPX ].it ) ||
-             is_beam( map[ m + 2 * MAPX ].it ) ||
+             is_beam( map[ m - 2 ].it ) || is_beam( map[ m + 2 ].it ) || is_beam( map[ m - 2 * SERVER_MAPX ].it ) ||
+             is_beam( map[ m + 2 * SERVER_MAPX ].it ) ||
 
-             is_beam( map[ m - 1 + 1 * MAPX ].it ) || is_beam( map[ m + 1 + 1 * MAPX ].it ) || is_beam( map[ m - 1 - 1 * MAPX ].it ) ||
-             is_beam( map[ m + 1 - 1 * MAPX ].it ) ||
+             is_beam( map[ m - 1 + 1 * SERVER_MAPX ].it ) || is_beam( map[ m + 1 + 1 * SERVER_MAPX ].it ) || is_beam( map[ m - 1 - 1 * SERVER_MAPX ].it ) ||
+             is_beam( map[ m + 1 - 1 * SERVER_MAPX ].it ) ||
 
-             is_beam( map[ m - 2 + 1 * MAPX ].it ) || is_beam( map[ m + 2 + 1 * MAPX ].it ) || is_beam( map[ m - 2 - 1 * MAPX ].it ) ||
-             is_beam( map[ m + 2 - 1 * MAPX ].it ) ||
+             is_beam( map[ m - 2 + 1 * SERVER_MAPX ].it ) || is_beam( map[ m + 2 + 1 * SERVER_MAPX ].it ) || is_beam( map[ m - 2 - 1 * SERVER_MAPX ].it ) ||
+             is_beam( map[ m + 2 - 1 * SERVER_MAPX ].it ) ||
 
-             is_beam( map[ m - 1 + 2 * MAPX ].it ) || is_beam( map[ m + 1 + 2 * MAPX ].it ) || is_beam( map[ m - 1 - 2 * MAPX ].it ) ||
-             is_beam( map[ m + 1 - 2 * MAPX ].it ) ||
+             is_beam( map[ m - 1 + 2 * SERVER_MAPX ].it ) || is_beam( map[ m + 1 + 2 * SERVER_MAPX ].it ) || is_beam( map[ m - 1 - 2 * SERVER_MAPX ].it ) ||
+             is_beam( map[ m + 1 - 2 * SERVER_MAPX ].it ) ||
 
-             is_beam( map[ m - 2 + 2 * MAPX ].it ) || is_beam( map[ m + 2 + 2 * MAPX ].it ) || is_beam( map[ m - 2 - 2 * MAPX ].it ) ||
-             is_beam( map[ m + 2 - 2 * MAPX ].it ) )
+             is_beam( map[ m - 2 + 2 * SERVER_MAPX ].it ) || is_beam( map[ m + 2 + 2 * SERVER_MAPX ].it ) || is_beam( map[ m - 2 - 2 * SERVER_MAPX ].it ) ||
+             is_beam( map[ m + 2 - 2 * SERVER_MAPX ].it ) )
         {
           fx[ n ].duration = TICKS * 60 * 15;
           continue;
@@ -414,13 +414,13 @@ void effect_tick( void )
 
         fx[ n ].used = 0;
 
-        m = fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * MAPX;
+        m = fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * SERVER_MAPX;
         map[ m ].flags &= ~MF_GFX_DEATH;
       }
       else
       {
 
-        m = fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * MAPX;
+        m = fx[ n ].data[ 0 ] + fx[ n ].data[ 1 ] * SERVER_MAPX;
         map[ m ].flags &= ~MF_GFX_DEATH;
         map[ m ].flags |= ( ( unsigned long long ) fx[ n ].duration ) << 40;
       }

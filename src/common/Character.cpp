@@ -474,20 +474,30 @@ void character::setTotalExperienceFromSkillsAndAttributes()
   { // 10 is the starting value at this point
     for ( int m = 10; m < this->attrib[ z ][ 0 ]; m++ )
     {
-      expTotal += attrib_needed( m, 3 );
+      expTotal += attrib_needed( m, attrib[ z ][ 2 ], attrib[ z ][ 3 ] );
     }
   }
 
-  for ( m = 50; m < ch[ cc ].hp[ 0 ]; m++ )
-    pts += hp_needed( m, 3 );
+  for ( int m = 50; m < hp[ 0 ]; m++ )
+  {
+    expTotal += hp_needed( m, hp[ 2 ], hp[ 3 ] );
+  }
 
-  for ( m = 50; m < ch[ cc ].end[ 0 ]; m++ )
-    pts += end_needed( m, 2 );
+  for ( int m = 50; m < end[ 0 ]; m++ )
+  {
+    expTotal += end_needed( m, end[ 2 ], end[ 3 ] );
+  }
 
-  for ( m = 50; m < ch[ cc ].mana[ 0 ]; m++ )
-    pts += mana_needed( m, 3 );
+  for ( int m = 50; m < mana[ 0 ]; m++ )
+  {
+    expTotal += mana_needed( m, mana[ 2 ], mana[ 3 ] );
+  }
 
-  for ( z = 0; z < 50; z++ )
-    for ( m = 1; m < ch[ cc ].skill[ z ][ 0 ]; m++ )
-      pts += skill_needed( m, 2 );
+  for ( int z = 0; z < 50; z++ )
+  {
+    for ( int m = 1; m < skill[ z ][ 0 ]; m++ )
+    {
+      expTotal += skill_needed( m, skill[ z ][ 2 ], skill[ z ][ 3 ] );
+    }
+  }
 }

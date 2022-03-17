@@ -5,7 +5,7 @@
 #include "ConstantIdentifiers.h"
 #include "GraphicsCache.h"
 #include "PlayerData.h"
-#include "UiPositions.h"
+#include "UiConstants.h"
 #include "RankNames.h"
 
 // TODO: Reduce this duplication

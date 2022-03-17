@@ -1,0 +1,6 @@
+#ifndef MEN_AMONG_GODS_INVENTORY_CONSTANTS_H
+#define MEN_AMONG_GODS_INVENTORY_CONSTANTS_H
+
+static constexpr const int N_ITEMS = 40;
+
+#endif

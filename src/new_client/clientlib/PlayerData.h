@@ -131,7 +131,7 @@ private:
   bool                                     playerDataHasChanged_;
   cplayer                                  clientSidePlayerInfo_; // This is more the truth of what your character is...
   key                                      okey_;
-  std::array< skilltab, SKILLTAB_SIZE >    skillsList_;
+  std::array< skilltab, MAX_SKILLS >    skillsList_;
   look                                     look_;
   mutable std::mutex                       ioMutex_;
   std::string                              password_; // TODO: This is super insecure to store it like this long-term

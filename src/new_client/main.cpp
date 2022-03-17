@@ -25,6 +25,8 @@
 namespace
 {
 static const constexpr int LOGIN_FONT_SIZE = 16;
+static const constexpr int MODEX           = 800;
+static const constexpr int MODEY           = 600;
 } // namespace
 
 std::atomic< bool > shouldExit {};

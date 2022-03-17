@@ -4,6 +4,7 @@
 #include "ConstantIdentifiers.h"
 #include "GraphicsCache.h"
 #include "Map.h"
+#include "MapConstants.h"
 
 namespace MenAmongGods
 {

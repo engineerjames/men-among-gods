@@ -7,6 +7,7 @@
 #include "ClientConfiguration.h"
 #include "ColorPalette.h"
 #include "ConstantIdentifiers.h"
+#include "DriverConstants.h"
 #include "GraphicsCache.h"
 #include "GraphicsIndex.h"
 #include "Map.h"
@@ -27,6 +28,17 @@
 
 namespace
 {
+static const constexpr unsigned int HL_BUTTONBOX = 1;
+static const constexpr unsigned int HL_STATBOX   = 2;
+static const constexpr unsigned int HL_BACKPACK  = 3;
+static const constexpr unsigned int HL_EQUIPMENT = 4;
+static const constexpr unsigned int HL_SPELLBOX  = 5;
+static const constexpr unsigned int HL_CITEM     = 6;
+static const constexpr unsigned int HL_MONEY     = 7;
+static const constexpr unsigned int HL_MAP       = 8;
+static const constexpr unsigned int HL_SHOP      = 9;
+static const constexpr unsigned int HL_STATBOX2  = 10;
+
 int autohide( int x, int y )
 {
   if ( x >= ( TILEX / 2 ) || ( y <= TILEX / 2 ) )
@@ -743,7 +755,7 @@ void MapDisplay::update()
   int mapIndex = getMapIndexFromMousePosition( mousePosition );
 
   auto hoveredSprite = std::find_if( std::begin( spritesToDraw_ ), std::end( spritesToDraw_ ),
-                                     [&]( const MapSprite& mapSprite )
+                                     [ & ]( const MapSprite& mapSprite )
                                      {
                                        return mapIndex == mapSprite.index;
                                      } );

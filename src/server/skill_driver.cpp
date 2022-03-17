@@ -148,7 +148,7 @@ int add_spell( int cn, int in )
   int n, in2, weak = 999, weakest = 99;
   int m;
 
-  m = ch[ cn ].x + ch[ cn ].y * MAPX;
+  m = ch[ cn ].x + ch[ cn ].y * SERVER_MAPX;
   if ( map[ m ].flags & CF_NOMAGIC )
     return 0;
 
@@ -1030,7 +1030,7 @@ void skill_curse( int cn )
 
   co_orig = co;
 
-  m = ch[ cn ].x + ch[ cn ].y * MAPX;
+  m = ch[ cn ].x + ch[ cn ].y * SERVER_MAPX;
   if ( ( co = map[ m + 1 ].ch ) != 0 && ch[ co ].attack_cn == cn && co_orig != co )
   {
     if ( ch[ cn ].skill[ SK_CURSE ][ 5 ] + RANDOM( 20 ) > ch[ co ].skill[ SK_RESIST ][ 5 ] + RANDOM( 20 ) )
@@ -1041,12 +1041,12 @@ void skill_curse( int cn )
     if ( ch[ cn ].skill[ SK_CURSE ][ 5 ] + RANDOM( 20 ) > ch[ co ].skill[ SK_RESIST ][ 5 ] + RANDOM( 20 ) )
       spell_curse( cn, co, ch[ cn ].skill[ SK_CURSE ][ 5 ] );
   }
-  if ( ( co = map[ m + MAPX ].ch ) != 0 && ch[ co ].attack_cn == cn && co_orig != co )
+  if ( ( co = map[ m + SERVER_MAPX ].ch ) != 0 && ch[ co ].attack_cn == cn && co_orig != co )
   {
     if ( ch[ cn ].skill[ SK_CURSE ][ 5 ] + RANDOM( 20 ) > ch[ co ].skill[ SK_RESIST ][ 5 ] + RANDOM( 20 ) )
       spell_curse( cn, co, ch[ cn ].skill[ SK_CURSE ][ 5 ] );
   }
-  if ( ( co = map[ m - MAPX ].ch ) != 0 && ch[ co ].attack_cn == cn && co_orig != co )
+  if ( ( co = map[ m - SERVER_MAPX ].ch ) != 0 && ch[ co ].attack_cn == cn && co_orig != co )
   {
     if ( ch[ cn ].skill[ SK_CURSE ][ 5 ] + RANDOM( 20 ) > ch[ co ].skill[ SK_RESIST ][ 5 ] + RANDOM( 20 ) )
       spell_curse( cn, co, ch[ cn ].skill[ SK_CURSE ][ 5 ] );
@@ -1144,14 +1144,14 @@ void skill_warcry( int cn )
 
   xf = std::max( 1, ch[ cn ].x - 10 );
   yf = std::max( 1, ch[ cn ].y - 10 );
-  xt = std::min( MAPX - 1, ch[ cn ].x + 10 );
-  yt = std::min( MAPY - 1, ch[ cn ].y + 10 );
+  xt = std::min( SERVER_MAPX - 1, ch[ cn ].x + 10 );
+  yt = std::min( SERVER_MAPY - 1, ch[ cn ].y + 10 );
 
   for ( x = xf; x < xt; x++ )
   {
     for ( y = yf; y < yt; y++ )
     {
-      if ( ( co = map[ x + y * MAPX ].ch ) )
+      if ( ( co = map[ x + y * SERVER_MAPX ].ch ) )
       {
         if ( warcry( cn, co, power ) )
         {
@@ -1400,7 +1400,7 @@ void skill_blast( int cn )
 
   dam = dam / 2 + dam / 4;
 
-  m = ch[ cn ].x + ch[ cn ].y * MAPX;
+  m = ch[ cn ].x + ch[ cn ].y * SERVER_MAPX;
   if ( ( co = map[ m + 1 ].ch ) != 0 && ch[ co ].attack_cn == cn && co_orig != co )
   {
     chlog( cn, "Cast Blast on %s", ch[ co ].name );
@@ -1427,7 +1427,7 @@ void skill_blast( int cn )
 
     fx_add_effect( 5, 0, ch[ co ].x, ch[ co ].y, 0 );
   }
-  if ( ( co = map[ m + MAPX ].ch ) != 0 && ch[ co ].attack_cn == cn && co_orig != co )
+  if ( ( co = map[ m + SERVER_MAPX ].ch ) != 0 && ch[ co ].attack_cn == cn && co_orig != co )
   {
     chlog( cn, "Cast Blast on %s", ch[ co ].name );
 
@@ -1440,7 +1440,7 @@ void skill_blast( int cn )
 
     fx_add_effect( 5, 0, ch[ co ].x, ch[ co ].y, 0 );
   }
-  if ( ( co = map[ m - MAPX ].ch ) != 0 && ch[ co ].attack_cn == cn && co_orig != co )
+  if ( ( co = map[ m - SERVER_MAPX ].ch ) != 0 && ch[ co ].attack_cn == cn && co_orig != co )
   {
     chlog( cn, "Cast Blast on %s", ch[ co ].name );
 
@@ -1666,7 +1666,7 @@ void skill_stun( int cn )
 
   co_orig = co;
 
-  m = ch[ cn ].x + ch[ cn ].y * MAPX;
+  m = ch[ cn ].x + ch[ cn ].y * SERVER_MAPX;
   if ( ( co = map[ m + 1 ].ch ) != 0 && ch[ co ].attack_cn == cn && co_orig != co )
   {
     if ( ch[ cn ].skill[ SK_STUN ][ 5 ] + RANDOM( 20 ) > ch[ co ].skill[ SK_RESIST ][ 5 ] + RANDOM( 20 ) )
@@ -1677,12 +1677,12 @@ void skill_stun( int cn )
     if ( ch[ cn ].skill[ SK_STUN ][ 5 ] + RANDOM( 20 ) > ch[ co ].skill[ SK_RESIST ][ 5 ] + RANDOM( 20 ) )
       spell_stun( cn, co, ch[ cn ].skill[ SK_STUN ][ 5 ] );
   }
-  if ( ( co = map[ m + MAPX ].ch ) != 0 && ch[ co ].attack_cn == cn && co_orig != co )
+  if ( ( co = map[ m + SERVER_MAPX ].ch ) != 0 && ch[ co ].attack_cn == cn && co_orig != co )
   {
     if ( ch[ cn ].skill[ SK_STUN ][ 5 ] + RANDOM( 20 ) > ch[ co ].skill[ SK_RESIST ][ 5 ] + RANDOM( 20 ) )
       spell_stun( cn, co, ch[ cn ].skill[ SK_STUN ][ 5 ] );
   }
-  if ( ( co = map[ m - MAPX ].ch ) != 0 && ch[ co ].attack_cn == cn && co_orig != co )
+  if ( ( co = map[ m - SERVER_MAPX ].ch ) != 0 && ch[ co ].attack_cn == cn && co_orig != co )
   {
     if ( ch[ cn ].skill[ SK_STUN ][ 5 ] + RANDOM( 20 ) > ch[ co ].skill[ SK_RESIST ][ 5 ] + RANDOM( 20 ) )
       spell_stun( cn, co, ch[ cn ].skill[ SK_STUN ][ 5 ] );

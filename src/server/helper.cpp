@@ -42,10 +42,10 @@ static inline int check_map_see( int x, int y )
 {
   int m;
 
-  if ( x <= 0 || x >= MAPX || y <= 0 || y >= MAPY )
+  if ( x <= 0 || x >= SERVER_MAPX || y <= 0 || y >= SERVER_MAPY )
     return 0;
 
-  m = x + y * MAPX;
+  m = x + y * SERVER_MAPX;
 
   if ( ismonster )
   {
@@ -67,10 +67,10 @@ static inline int check_map_go( int x, int y )
 {
   int m;
 
-  if ( x <= 0 || x >= MAPX || y <= 0 || y >= MAPY )
+  if ( x <= 0 || x >= SERVER_MAPX || y <= 0 || y >= SERVER_MAPY )
     return 0;
 
-  m = x + y * MAPX;
+  m = x + y * SERVER_MAPX;
 
   if ( map[ m ].flags & MF_MOVEBLOCK )
     return 0;
@@ -235,9 +235,9 @@ void reset_go( int xc, int yc )
 {
   int x, y, cn;
 
-  for ( y = std::max( 0, yc - 18 ); y < std::min( MAPY - 1, yc + 18 ); y++ )
-    for ( x = std::max( 0, xc - 18 ); x < std::min( MAPX - 1, xc + 18 ); x++ )
-      if ( ( cn = map[ x + y * MAPX ].ch ) != 0 )
+  for ( y = std::max( 0, yc - 18 ); y < std::min( SERVER_MAPY - 1, yc + 18 ); y++ )
+    for ( x = std::max( 0, xc - 18 ); x < std::min( SERVER_MAPX - 1, xc + 18 ); x++ )
+      if ( ( cn = map[ x + y * SERVER_MAPX ].ch ) != 0 )
         see[ cn ].x = see[ cn ].y = 0;
 
   ox = oy = 0;
@@ -319,7 +319,7 @@ int check_dlight(int x,int y)
 {
         int m;
 
-        m=x+y*MAPX;
+        m=x+y*SERVER_MAPX;
 
         if (!(map[m].flags&MF_INDOORS)) return globs->dlight;
 
@@ -335,12 +335,12 @@ void compute_dlight( int xc, int yc )
 
   xs = std::max( 0, xc - LIGHTDIST );
   ys = std::max( 0, yc - LIGHTDIST );
-  xe = std::min( MAPX - 1, xc + 1 + LIGHTDIST );
-  ye = std::min( MAPY - 1, yc + 1 + LIGHTDIST );
+  xe = std::min( SERVER_MAPX - 1, xc + 1 + LIGHTDIST );
+  ye = std::min( SERVER_MAPY - 1, yc + 1 + LIGHTDIST );
 
   for ( y = ys; y < ye; y++ )
   {
-    m = y * MAPX + xs;
+    m = y * SERVER_MAPX + xs;
     for ( x = xs; x < xe; x++, m++ )
     {
       if ( ( xc - x ) * ( xc - x ) + ( yc - y ) * ( yc - y ) > ( LIGHTDIST * LIGHTDIST + 1 ) )
@@ -357,7 +357,7 @@ void compute_dlight( int xc, int yc )
   }
   if ( best > 256 )
     best = 256;
-  map[ xc + yc * MAPX ].dlight = best;
+  map[ xc + yc * SERVER_MAPX ].dlight = best;
 
   prof_stop( 18, prof );
 }
@@ -371,12 +371,12 @@ void remove_lights( int x, int y )
 
   xs = std::max( 1, x - LIGHTDIST );
   ys = std::max( 1, y - LIGHTDIST );
-  xe = std::min( MAPX - 2, x + 1 + LIGHTDIST );
-  ye = std::min( MAPY - 2, y + 1 + LIGHTDIST );
+  xe = std::min( SERVER_MAPX - 2, x + 1 + LIGHTDIST );
+  ye = std::min( SERVER_MAPY - 2, y + 1 + LIGHTDIST );
 
   for ( y = ys; y < ye; y++ )
   {
-    m = y * MAPX + xs;
+    m = y * SERVER_MAPX + xs;
     for ( x = xs; x < xe; x++, m++ )
     {
       if ( ( in = map[ m ].it ) != 0 )
@@ -412,12 +412,12 @@ void add_lights( int x, int y )
 
   xs = std::max( 1, x - LIGHTDIST );
   ys = std::max( 1, y - LIGHTDIST );
-  xe = std::min( MAPX - 2, x + 1 + LIGHTDIST );
-  ye = std::min( MAPY - 2, y + 1 + LIGHTDIST );
+  xe = std::min( SERVER_MAPX - 2, x + 1 + LIGHTDIST );
+  ye = std::min( SERVER_MAPY - 2, y + 1 + LIGHTDIST );
 
   for ( y = ys; y < ye; y++ )
   {
-    m = y * MAPX + xs;
+    m = y * SERVER_MAPX + xs;
     for ( x = xs; x < xe; x++, m++ )
     {
       if ( ( in = map[ m ].it ) != 0 )
@@ -932,7 +932,7 @@ int use_labtransfer( int cn, int nr, int exp )
   {
     for ( x = 164; x <= 184; x++ )
     {
-      if ( ( co = map[ x + y * MAPX ].ch ) && ( ch[ co ].flags & ( CF_PLAYER | CF_LABKEEPER ) ) )
+      if ( ( co = map[ x + y * SERVER_MAPX ].ch ) && ( ch[ co ].flags & ( CF_PLAYER | CF_LABKEEPER ) ) )
       {
         do_char_log( cn, 0, "Sorry, the area is still busy. %s is there.\n", ch[ co ].name );
         chlog( cn, "Sorry, the area is still busy. %s is there", ch[ co ].name );

@@ -9,12 +9,16 @@
 #include "ClientConfiguration.h"
 #include "ClientTypes.h"
 #include "ConstantIdentifiers.h"
+#include "InventoryConstants.h"
 #include "Logger.h"
 #include "RankNames.h"
 #include "ResourceLocations.h"
+#include "RaceAndSex.h"
 
 namespace
 {
+
+static const float LOOK_TIME_IN_SECONDS = 10.0f;
 
 int points2rank( int v )
 {
@@ -93,7 +97,7 @@ PlayerData::PlayerData()
     , unique1_()
     , unique2_()
 {
-  for ( int i = 0; i < SKILLTAB_SIZE; ++i )
+  for ( int i = 0; i < MAX_SKILLS; ++i )
   {
     skillsList_[ i ] = static_skilltab[ i ];
   }

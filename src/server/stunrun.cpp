@@ -159,12 +159,12 @@ int npc_check_target( int x, int y )
 {
   int in, m;
 
-  if ( x < 1 || x >= MAPX )
+  if ( x < 1 || x >= SERVER_MAPX )
     return 0;
-  if ( y < 1 || y >= MAPY )
+  if ( y < 1 || y >= SERVER_MAPY )
     return 0;
 
-  m = x + y * MAPX;
+  m = x + y * SERVER_MAPX;
 
   if ( ( ( unsigned long ) map[ m ].flags & ( MF_MOVEBLOCK | MF_NOMONST ) ) || map[ m ].ch || map[ m ].to_ch ||
        ( ( in = map[ m ].it ) && ( it[ in ].flags & IF_MOVEBLOCK ) && it[ in ].driver != 2 ) )
@@ -649,7 +649,7 @@ int npc_stunrun_high( int cn )
         {
           for ( x = 212; x <= 232 && ! tmp; x++ )
           {
-            if ( ( co = map[ x + y * MAPX ].ch ) && ch[ co ].data[ 42 ] != ch[ cn ].data[ 42 ] )
+            if ( ( co = map[ x + y * SERVER_MAPX ].ch ) && ch[ co ].data[ 42 ] != ch[ cn ].data[ 42 ] )
               tmp = 1;
           }
         }

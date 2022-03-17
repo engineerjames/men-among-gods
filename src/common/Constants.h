@@ -65,4 +65,6 @@ static const constexpr unsigned long long CF_SAVEME     = ( 1ull << 44 ); // sav
 static const constexpr unsigned long long CF_GREATERGOD = ( 1ull << 45 ); // greater god
 static const constexpr unsigned long long CF_GREATERINV = ( 1ull << 46 ); // no one sees me, ever
 
+static const constexpr unsigned int SPR_EMPTY = 999;
+
 #endif

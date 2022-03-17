@@ -18,6 +18,7 @@ All rights reserved.
 #include "driver.h"
 #include "server.h"
 
+#include "DriverConstants.h"
 #include "RankNames.h"
 #include "SkillTab.h"
 
@@ -418,10 +419,10 @@ int god_drop_char( int cn, int x, int y )
 {
   int m, in;
 
-  if ( x < 1 || x > MAPX - 2 || y < 1 || y > MAPY - 2 )
+  if ( x < 1 || x > SERVER_MAPX - 2 || y < 1 || y > SERVER_MAPY - 2 )
     return 0;
 
-  m = x + y * MAPX;
+  m = x + y * SERVER_MAPX;
   if ( map[ m ].ch || map[ m ].to_ch || ( ( in = map[ m ].it ) != 0 && ( it[ in ].flags & IF_MOVEBLOCK ) ) ||
        ( map[ m ].flags & MF_MOVEBLOCK ) || ( map[ m ].flags & MF_TAVERN ) || ( map[ m ].flags & MF_DEATHTRAP ) )
     return 0;

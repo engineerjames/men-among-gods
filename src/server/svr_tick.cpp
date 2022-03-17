@@ -23,6 +23,8 @@ All rights reserved.
 
 #include "server.h"
 
+#include "DriverConstants.h"
+
 int ctick = 0;
 
 static char intro_msg1[] = { "Welcome to Men Among Gods, my friend!\n" };
@@ -381,14 +383,15 @@ void plr_cmd_turn( int nr )
 
   if ( IS_BUILDING( cn ) )
   {
-    do_char_log( cn, 3, "x=%d, y=%d, m=%d,light=%d, indoors=%lld, dlight=%d.\n", x, y, x + y * MAPX, map[ x + y * MAPX ].light,
-                 map[ x + y * MAPX ].flags & MF_INDOORS, map[ x + y * MAPX ].dlight );
+    do_char_log( cn, 3, "x=%d, y=%d, m=%d,light=%d, indoors=%lld, dlight=%d.\n", x, y, x + y * SERVER_MAPX,
+                 map[ x + y * SERVER_MAPX ].light, map[ x + y * SERVER_MAPX ].flags & MF_INDOORS, map[ x + y * SERVER_MAPX ].dlight );
 
-    do_char_log( cn, 3, "ch=%d, to_ch=%d, it=%d.\n", map[ x + y * MAPX ].ch, map[ x + y * MAPX ].to_ch, map[ x + y * MAPX ].it );
-    do_char_log( cn, 3, "flags=%04X %04X\n", ( unsigned int ) ( map[ x + y * MAPX ].flags >> 32 ),
-                 ( unsigned int ) ( map[ x + y * MAPX ].flags & 0xFFFF ) );
+    do_char_log( cn, 3, "ch=%d, to_ch=%d, it=%d.\n", map[ x + y * SERVER_MAPX ].ch, map[ x + y * SERVER_MAPX ].to_ch,
+                 map[ x + y * SERVER_MAPX ].it );
+    do_char_log( cn, 3, "flags=%04X %04X\n", ( unsigned int ) ( map[ x + y * SERVER_MAPX ].flags >> 32 ),
+                 ( unsigned int ) ( map[ x + y * SERVER_MAPX ].flags & 0xFFFF ) );
 
-    do_char_log( cn, 3, "sprite=%d, fsprite=%d\n", map[ x + y * MAPX ].sprite, map[ x + y * MAPX ].fsprite );
+    do_char_log( cn, 3, "sprite=%d, fsprite=%d\n", map[ x + y * SERVER_MAPX ].sprite, map[ x + y * SERVER_MAPX ].fsprite );
   }
 
   ch[ cn ].attack_cn    = 0;
@@ -729,10 +732,10 @@ void plr_cmd_look_item( int nr )
   x = *( unsigned short* ) ( player[ nr ].inbuf + 1 );
   y = *( unsigned short* ) ( player[ nr ].inbuf + 3 );
 
-  if ( x < 0 || x >= MAPX || y < 0 || y >= MAPY )
+  if ( x < 0 || x >= SERVER_MAPX || y < 0 || y >= SERVER_MAPY )
     return;
 
-  in = map[ x + y * MAPX ].it;
+  in = map[ x + y * SERVER_MAPX ].it;
 
   cn = player[ nr ].usnr;
 
@@ -1520,20 +1523,20 @@ void plr_logout( int cn, int nr, int reason )
                    ch[ cn ].name );
     }
 
-    if ( map[ ch[ cn ].x + ch[ cn ].y * MAPX ].ch == cn )
+    if ( map[ ch[ cn ].x + ch[ cn ].y * SERVER_MAPX ].ch == cn )
     {
-      map[ ch[ cn ].x + ch[ cn ].y * MAPX ].ch = 0;
+      map[ ch[ cn ].x + ch[ cn ].y * SERVER_MAPX ].ch = 0;
       if ( ch[ cn ].light )
         do_add_light( ch[ cn ].x, ch[ cn ].y, -ch[ cn ].light );
     }
-    if ( map[ ch[ cn ].tox + ch[ cn ].toy * MAPX ].to_ch == cn )
-      map[ ch[ cn ].tox + ch[ cn ].toy * MAPX ].to_ch = 0;
+    if ( map[ ch[ cn ].tox + ch[ cn ].toy * SERVER_MAPX ].to_ch == cn )
+      map[ ch[ cn ].tox + ch[ cn ].toy * SERVER_MAPX ].to_ch = 0;
     remove_enemy( cn );
 
     if ( reason == LO_IDLE || reason == LO_SHUTDOWN || reason == 0 )
     { // give lag scroll to player
       if ( abs( ch[ cn ].x - ch[ cn ].temple_x ) + abs( ch[ cn ].y - ch[ cn ].temple_y ) > 10 &&
-           ! ( map[ ch[ cn ].x + ch[ cn ].y * MAPX ].flags & MF_NOLAG ) )
+           ! ( map[ ch[ cn ].x + ch[ cn ].y * SERVER_MAPX ].flags & MF_NOLAG ) )
       {
         in                 = god_create_item( IT_LAGSCROLL );
         it[ in ].data[ 0 ] = ch[ cn ].x;
@@ -2458,7 +2461,7 @@ int check_dlight( int x, int y )
 {
   int m;
 
-  m = x + y * MAPX;
+  m = x + y * SERVER_MAPX;
 
   if ( ! ( map[ m ].flags & MF_INDOORS ) )
     return globs->dlight;
@@ -2497,9 +2500,9 @@ static void inline empty_field( struct cmap* smap, int n )
 {
         int in;
 
-        if (map[x+y*MAPX].flags&MF_SIGHTBLOCK) return 0;
-        if ((in=map[x+y*MAPX].it) && (it[in].flags&IF_SIGHTBLOCK)) return 0;
-        if (map[x+y*MAPX].ch) return 0;
+        if (map[x+y*SERVER_MAPX].flags&MF_SIGHTBLOCK) return 0;
+        if ((in=map[x+y*SERVER_MAPX].it) && (it[in].flags&IF_SIGHTBLOCK)) return 0;
+        if (map[x+y*SERVER_MAPX].ch) return 0;
 
         return 1;
 }
@@ -2629,7 +2632,8 @@ void plr_getmap_complete( int nr )
   if ( IS_BUILDING( cn ) )
     do_all = 1;
 
-  for ( n = YSCUT * TILEX + XSCUT, m = xs + ys * MAPX, y = ys; y < ye; y++, m += MAPX - TILEX + XSCUT + XECUT, n += XSCUT + XECUT )
+  for ( n = YSCUT * TILEX + XSCUT, m = xs + ys * SERVER_MAPX, y = ys; y < ye;
+        y++, m += SERVER_MAPX - TILEX + XSCUT + XECUT, n += XSCUT + XECUT )
   {
     for ( x = xs; x < xe; x++, n++, m++ )
     {
@@ -2644,7 +2648,7 @@ void plr_getmap_complete( int nr )
       // player[nr].changed_field[p++]=n;
 
       // field outside of map? then display empty one.
-      if ( x < 0 || y < 0 || x >= MAPX || y >= MAPY )
+      if ( x < 0 || y < 0 || x >= SERVER_MAPX || y >= SERVER_MAPY )
       {
         empty_field( smap, n );
         continue;
@@ -2870,7 +2874,8 @@ void plr_getmap_fast( int nr )
   if ( IS_BUILDING( cn ) )
     do_all = 1;
 
-  for ( n = YSCUTF * TILEX + XSCUTF, m = xs + ys * MAPX, y = ys; y < ye; y++, m += MAPX - TILEX + XSCUTF + XECUTF, n += XSCUTF + XECUTF )
+  for ( n = YSCUTF * TILEX + XSCUTF, m = xs + ys * SERVER_MAPX, y = ys; y < ye;
+        y++, m += SERVER_MAPX - TILEX + XSCUTF + XECUTF, n += XSCUTF + XECUTF )
   {
     for ( x = xs; x < xe; x++, n++, m++ )
     {
@@ -2883,7 +2888,7 @@ void plr_getmap_fast( int nr )
         continue;
 
       // field outside of map? then display empty one.
-      if ( x < 0 || y < 0 || x >= MAPX || y >= MAPY )
+      if ( x < 0 || y < 0 || x >= SERVER_MAPX || y >= SERVER_MAPY )
       {
         empty_field( smap, n );
         continue;
@@ -3146,14 +3151,14 @@ int check_valid( int cn )
 {
   int n, in;
 
-  if ( ch[ cn ].x < 1 || ch[ cn ].y < 1 || ch[ cn ].x > MAPX - 2 || ch[ cn ].y > MAPY - 2 )
+  if ( ch[ cn ].x < 1 || ch[ cn ].y < 1 || ch[ cn ].x > SERVER_MAPX - 2 || ch[ cn ].y > SERVER_MAPY - 2 )
   {
     chlog( cn, "Killed character %s (%d) for invalid data", ch[ cn ].name, cn );
     do_char_killed( 0, cn );
     return 0;
   }
 
-  n = ch[ cn ].x + ch[ cn ].y * MAPX;
+  n = ch[ cn ].x + ch[ cn ].y * SERVER_MAPX;
   if ( map[ n ].ch != cn )
   {
     chlog( cn, "Not on map (%d)!", map[ n ].ch );

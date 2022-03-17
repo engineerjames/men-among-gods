@@ -6,7 +6,7 @@
 #include "GraphicsCache.h"
 #include "GuiFormatters.h"
 #include "PlayerData.h"
-#include "UiPositions.h"
+#include "UiConstants.h"
 
 #include <ClientConfiguration.h>
 #include <iostream>

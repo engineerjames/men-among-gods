@@ -6,7 +6,7 @@
 
 // clang-format off
 // NOLINTNEXTLINE
-const skilltab static_skilltab[SKILLTAB_SIZE]={
+const skilltab static_skilltab[MAX_SKILLS]={
 	{0,     'C',    "Hand to Hand", "Fighting without weapons.",                    {AT_BRAVE,AT_AGIL,AT_STREN}},
 	{1,     'C',    "Karate",       "Fighting without weapons and doing damage.",   {AT_BRAVE,AT_AGIL,AT_STREN}},
 	{2,     'C',    "Dagger",       "Fighting with daggers or similiar weapons.",   {AT_BRAVE,AT_AGIL,AT_INT}},
@@ -70,61 +70,61 @@ const skilltab static_skilltab[SKILLTAB_SIZE]={
 	{49,   'Z',   "", "", {0,0,0,}}};
 // clang-format on
 
-int hp_needed( int v, cplayer& pl )
+int hp_needed( int v, int raceSpecificMaximum, int difficultyToRaise )
 {
-  if ( v >= pl.hp[ 2 ] )
+  if ( v >= raceSpecificMaximum )
   {
     return std::numeric_limits< int >::max();
   }
 
-  return v * pl.hp[ 3 ];
+  return v * difficultyToRaise;
 }
 
-int end_needed( int v, cplayer& pl )
+int end_needed( int v, int raceSpecificMaximum, int difficultyToRaise)
 {
-  if ( v >= pl.end[ 2 ] )
+  if ( v >= raceSpecificMaximum )
   {
     return std::numeric_limits< int >::max();
   }
 
-  return v * pl.end[ 3 ] / 2;
+  return v * difficultyToRaise / 2;
 }
 
-int mana_needed( int v, cplayer& pl )
+int mana_needed( int v, int raceSpecificMaximum, int difficultyToRaise )
 {
-  if ( v >= pl.mana[ 2 ] )
+  if ( v >= raceSpecificMaximum )
   {
     return std::numeric_limits< int >::max();
   }
 
-  return v * pl.mana[ 3 ];
+  return v * difficultyToRaise;
 }
 
-int attrib_needed( int n, int v, cplayer& pl )
+int attrib_needed( int v, int raceSpecificMaximum, int difficultyToRaise )
 {
-  if ( v >= pl.attrib[ n ][ 2 ] )
+  if ( v >= raceSpecificMaximum ) //pl.attrib[ n ][ 2 ] )
   {
     return std::numeric_limits< int >::max();
   }
 
-  return v * v * v * pl.attrib[ n ][ 3 ] / 20;
+  return v * v * v * difficultyToRaise / 20;
 }
 
-int skill_needed( int n, int v, cplayer& pl )
+int skill_needed( int v, int raceSpecificMaximum, int difficultyToRaise)
 {
-  if ( v >= pl.skill[ n ][ 2 ] )
+  if ( v >= raceSpecificMaximum )
   {
     return std::numeric_limits< int >::max();
   }
 
-  return std::max( v, v * v * v * pl.skill[ n ][ 3 ] / 40 );
+  return std::max( v, v * v * v * difficultyToRaise / 40 );
 }
 
 int getSkillNumber( std::string skillName )
 {
   const skilltab* foundSkill = nullptr;
 
-  for ( int i = 0; i < SKILLTAB_SIZE; ++i )
+  for ( int i = 0; i < MAX_SKILLS; ++i )
   {
     if ( static_skilltab[ i ].name == skillName )
     {
@@ -143,7 +143,7 @@ int getSkillNumber( std::string skillName )
 
 int getBaseAttributeModifier( const std::string& skillName )
 {
-  for ( unsigned int i = 0; i < SKILLTAB_SIZE; ++i )
+  for ( unsigned int i = 0; i < MAX_SKILLS; ++i )
   {
     if ( static_skilltab[ i ].name == skillName )
     {

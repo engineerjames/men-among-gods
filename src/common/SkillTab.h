@@ -3,7 +3,8 @@
 
 #include <string>
 
-static constexpr const int SKILLTAB_SIZE = 50;
+static constexpr const int MAX_SKILLS  = 50;
+static constexpr const int MAX_ATTRIBUTES = 5;
 
 static const constexpr int AT_BRAVE = 0;
 static const constexpr int AT_WILL  = 1;
@@ -23,14 +24,14 @@ struct skilltab
   int attrib[ 3 ];
 };
 
-int hp_needed( int v, cplayer& pl );
-int end_needed( int v, cplayer& pl );
-int mana_needed( int v, cplayer& pl );
-int attrib_needed( int n, int v, cplayer& pl );
-int skill_needed( int n, int v, cplayer& pl );
+int hp_needed( int v, int raceSpecificMaximum, int difficultyToRaise );
+int end_needed( int v, int raceSpecificMaximum, int difficultyToRaise );
+int mana_needed( int v, int raceSpecificMaximum, int difficultyToRaise );
+int attrib_needed( int v, int raceSpecificMaximum, int difficultyToRaise );
+int skill_needed( int v, int raceSpecificMaximum, int difficultyToRaise );
 int getSkillNumber( std::string skillName );
 int getBaseAttributeModifier( const std::string& skillName );
 
-extern const skilltab static_skilltab[SKILLTAB_SIZE];
+extern const skilltab static_skilltab[ MAX_SKILLS ];
 
 #endif

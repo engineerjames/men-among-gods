@@ -3,8 +3,9 @@
 #include "ColorPalette.h"
 #include "ConstantIdentifiers.h"
 #include "GraphicsCache.h"
+#include "InventoryConstants.h"
 #include "PlayerData.h"
-#include "UiPositions.h"
+#include "UiConstants.h"
 #include "UtilityFunctions.h"
 
 #include <cmath>

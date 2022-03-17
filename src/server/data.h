@@ -95,21 +95,7 @@ struct global
 /* Map */
 /*******/
 
-// 32 bits for flag (static)
-#define MF_MOVEBLOCK    (1ULL<<0)
-#define MF_SIGHTBLOCK   (1ULL<<1)
-#define MF_INDOORS      (1ULL<<2)
-#define MF_UWATER       (1ULL<<3)
-#define MF_NOLAG        (1ULL<<4)
-#define MF_NOMONST      (1ULL<<5)
-#define MF_BANK         (1ULL<<6)
-#define MF_TAVERN       (1ULL<<7)
-#define MF_NOMAGIC      (1ULL<<8)
-#define MF_DEATHTRAP    (1ULL<<9)
 
-#define MF_ARENA        (1ULL<<11)
-
-#define MF_NOEXPIRE     (1ULL<<13)
 /* CS, 991204: NOFIGHT */
 #define MF_NOFIGHT      (1Ull<<14)
 
@@ -131,7 +117,7 @@ struct global
 #define MF_GFX_CMAGIC1  (1ULL<<51)
 
 /* CS, 991113: SIZEs in one header */
-#define MAPSIZE         (sizeof(struct map)*MAPX*MAPY)
+#define MAPSIZE         (sizeof(struct map)*SERVER_MAPX*SERVER_MAPY)
 
 struct map_old
 {
@@ -166,7 +152,7 @@ struct map
 } __attribute__ ((packed));
 
 /* CS, 991113: Support for new pathfinder */
-extern unsigned int mapmark[MAPX][MAPY];
+extern unsigned int mapmark[SERVER_MAPX][SERVER_MAPY];
 extern unsigned int mapmarker;
 
 /**************/

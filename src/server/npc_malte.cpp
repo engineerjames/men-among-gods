@@ -15,6 +15,8 @@ All rights reserved.
 #include "npc.h"
 #include "server.h"
 
+#include "DriverConstants.h"
+
 // NOTE: Even though we don't use the data[] array, we may only use it as it is used in driver.c, since a lot
 //	 of other functions rely on the data in there being either absent or correct.
 

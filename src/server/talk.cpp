@@ -1162,7 +1162,7 @@ void answer_wait( int cn, int co )
     ch[ cn ].goto_x = ch[ cn ].goto_y = 0;
     ch[ cn ].misc_action              = 0;
 
-    ch[ cn ].data[ 29 ] = ch[ cn ].x + ch[ cn ].y * MAPX;
+    ch[ cn ].data[ 29 ] = ch[ cn ].x + ch[ cn ].y * SERVER_MAPX;
     ch[ cn ].data[ 30 ] = ch[ cn ].dir;
 
     ch[ cn ].data[ 69 ] = 0;

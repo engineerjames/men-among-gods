@@ -14,6 +14,7 @@ All rights reserved.
 #include "server.h"
 
 #include "Character.h"
+#include "MapConstants.h"
 
 struct area
 {

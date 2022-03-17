@@ -79,7 +79,7 @@ static int cost( int fx, int fy, int cdir )
 
 int init_node( void )
 {
-  nmap = static_cast< node** >( calloc( MAPX * MAPY, sizeof( struct node* ) ) );
+  nmap = static_cast< node** >( calloc( SERVER_MAPX * SERVER_MAPY, sizeof( struct node* ) ) );
   if ( ! nmap )
     return 0;
 
@@ -87,7 +87,7 @@ int init_node( void )
   if ( ! nodes )
     return 0;
 
-  bad = static_cast< badtarget* >( calloc( MAPX * MAPY, sizeof( struct badtarget ) ) );
+  bad = static_cast< badtarget* >( calloc( SERVER_MAPX * SERVER_MAPY, sizeof( struct badtarget ) ) );
 
   return 1;
 }
@@ -97,10 +97,10 @@ int add_node( int x, int y, int dir, int ccost, int cdir )
   int          m, tcost, gcost;
   struct node *node, *tmp, *prev, *next;
 
-  if ( x < 1 || x >= MAPX || y < 1 || y >= MAPY )
+  if ( x < 1 || x >= SERVER_MAPX || y < 1 || y >= SERVER_MAPY )
     return 0;
 
-  m     = x + y * MAPX;
+  m     = x + y * SERVER_MAPX;
   gcost = cost( x, y, cdir );
   tcost = ccost + gcost;
 
@@ -200,56 +200,56 @@ static void add_suc( struct node* node )
 {
   if ( ! node->dir )
   {
-    if ( dr_check_target( node->x + node->y * MAPX + 1 ) )
+    if ( dr_check_target( node->x + node->y * SERVER_MAPX + 1 ) )
       add_node( node->x + 1, node->y, DX_RIGHT, node->cost + 2 + drv_turncount( node->cdir, DX_RIGHT ), DX_RIGHT );
-    if ( dr_check_target( node->x + node->y * MAPX - 1 ) )
+    if ( dr_check_target( node->x + node->y * SERVER_MAPX - 1 ) )
       add_node( node->x - 1, node->y, DX_LEFT, node->cost + 2 + drv_turncount( node->cdir, DX_LEFT ), DX_LEFT );
-    if ( dr_check_target( node->x + node->y * MAPX + MAPX ) )
+    if ( dr_check_target( node->x + node->y * SERVER_MAPX + SERVER_MAPX ) )
       add_node( node->x, node->y + 1, DX_DOWN, node->cost + 2 + drv_turncount( node->cdir, DX_DOWN ), DX_DOWN );
-    if ( dr_check_target( node->x + node->y * MAPX - MAPX ) )
+    if ( dr_check_target( node->x + node->y * SERVER_MAPX - SERVER_MAPX ) )
       add_node( node->x, node->y - 1, DX_UP, node->cost + 2 + drv_turncount( node->cdir, DX_UP ), DX_UP );
 
-    if ( dr_check_target( node->x + node->y * MAPX + 1 + MAPX ) && dr_check_target( node->x + node->y * MAPX + 1 ) &&
-         dr_check_target( node->x + node->y * MAPX + MAPX ) )
+    if ( dr_check_target( node->x + node->y * SERVER_MAPX + 1 + SERVER_MAPX ) && dr_check_target( node->x + node->y * SERVER_MAPX + 1 ) &&
+         dr_check_target( node->x + node->y * SERVER_MAPX + SERVER_MAPX ) )
       add_node( node->x + 1, node->y + 1, DX_RIGHTDOWN, node->cost + 3 + drv_turncount( node->cdir, DX_RIGHTDOWN ), DX_RIGHTDOWN );
 
-    if ( dr_check_target( node->x + node->y * MAPX + 1 - MAPX ) && dr_check_target( node->x + node->y * MAPX + 1 ) &&
-         dr_check_target( node->x + node->y * MAPX - MAPX ) )
+    if ( dr_check_target( node->x + node->y * SERVER_MAPX + 1 - SERVER_MAPX ) && dr_check_target( node->x + node->y * SERVER_MAPX + 1 ) &&
+         dr_check_target( node->x + node->y * SERVER_MAPX - SERVER_MAPX ) )
       add_node( node->x + 1, node->y - 1, DX_RIGHTUP, node->cost + 3 + drv_turncount( node->cdir, DX_RIGHTUP ), DX_RIGHTUP );
 
-    if ( dr_check_target( node->x + node->y * MAPX - 1 + MAPX ) && dr_check_target( node->x + node->y * MAPX - 1 ) &&
-         dr_check_target( node->x + node->y * MAPX + MAPX ) )
+    if ( dr_check_target( node->x + node->y * SERVER_MAPX - 1 + SERVER_MAPX ) && dr_check_target( node->x + node->y * SERVER_MAPX - 1 ) &&
+         dr_check_target( node->x + node->y * SERVER_MAPX + SERVER_MAPX ) )
       add_node( node->x - 1, node->y + 1, DX_LEFTDOWN, node->cost + 3 + drv_turncount( node->cdir, DX_LEFTDOWN ), DX_LEFTDOWN );
 
-    if ( dr_check_target( node->x + node->y * MAPX - 1 - MAPX ) && dr_check_target( node->x + node->y * MAPX - 1 ) &&
-         dr_check_target( node->x + node->y * MAPX - MAPX ) )
+    if ( dr_check_target( node->x + node->y * SERVER_MAPX - 1 - SERVER_MAPX ) && dr_check_target( node->x + node->y * SERVER_MAPX - 1 ) &&
+         dr_check_target( node->x + node->y * SERVER_MAPX - SERVER_MAPX ) )
       add_node( node->x - 1, node->y - 1, DX_LEFTUP, node->cost + 3 + drv_turncount( node->cdir, DX_LEFTUP ), DX_LEFTUP );
   }
   else
   {
-    if ( dr_check_target( node->x + node->y * MAPX + 1 ) )
+    if ( dr_check_target( node->x + node->y * SERVER_MAPX + 1 ) )
       add_node( node->x + 1, node->y, node->dir, node->cost + 2 + drv_turncount( node->cdir, DX_RIGHT ), DX_RIGHT );
-    if ( dr_check_target( node->x + node->y * MAPX - 1 ) )
+    if ( dr_check_target( node->x + node->y * SERVER_MAPX - 1 ) )
       add_node( node->x - 1, node->y, node->dir, node->cost + 2 + drv_turncount( node->cdir, DX_LEFT ), DX_LEFT );
-    if ( dr_check_target( node->x + node->y * MAPX + MAPX ) )
+    if ( dr_check_target( node->x + node->y * SERVER_MAPX + SERVER_MAPX ) )
       add_node( node->x, node->y + 1, node->dir, node->cost + 2 + drv_turncount( node->cdir, DX_DOWN ), DX_DOWN );
-    if ( dr_check_target( node->x + node->y * MAPX - MAPX ) )
+    if ( dr_check_target( node->x + node->y * SERVER_MAPX - SERVER_MAPX ) )
       add_node( node->x, node->y - 1, node->dir, node->cost + 2 + drv_turncount( node->cdir, DX_UP ), DX_UP );
 
-    if ( dr_check_target( node->x + node->y * MAPX + 1 + MAPX ) && dr_check_target( node->x + node->y * MAPX + 1 ) &&
-         dr_check_target( node->x + node->y * MAPX + MAPX ) )
+    if ( dr_check_target( node->x + node->y * SERVER_MAPX + 1 + SERVER_MAPX ) && dr_check_target( node->x + node->y * SERVER_MAPX + 1 ) &&
+         dr_check_target( node->x + node->y * SERVER_MAPX + SERVER_MAPX ) )
       add_node( node->x + 1, node->y + 1, node->dir, node->cost + 3 + drv_turncount( node->cdir, DX_RIGHTDOWN ), DX_RIGHTDOWN );
 
-    if ( dr_check_target( node->x + node->y * MAPX + 1 - MAPX ) && dr_check_target( node->x + node->y * MAPX + 1 ) &&
-         dr_check_target( node->x + node->y * MAPX - MAPX ) )
+    if ( dr_check_target( node->x + node->y * SERVER_MAPX + 1 - SERVER_MAPX ) && dr_check_target( node->x + node->y * SERVER_MAPX + 1 ) &&
+         dr_check_target( node->x + node->y * SERVER_MAPX - SERVER_MAPX ) )
       add_node( node->x + 1, node->y - 1, node->dir, node->cost + 3 + drv_turncount( node->cdir, DX_RIGHTUP ), DX_RIGHTUP );
 
-    if ( dr_check_target( node->x + node->y * MAPX - 1 + MAPX ) && dr_check_target( node->x + node->y * MAPX - 1 ) &&
-         dr_check_target( node->x + node->y * MAPX + MAPX ) )
+    if ( dr_check_target( node->x + node->y * SERVER_MAPX - 1 + SERVER_MAPX ) && dr_check_target( node->x + node->y * SERVER_MAPX - 1 ) &&
+         dr_check_target( node->x + node->y * SERVER_MAPX + SERVER_MAPX ) )
       add_node( node->x - 1, node->y + 1, node->dir, node->cost + 3 + drv_turncount( node->cdir, DX_LEFTDOWN ), DX_LEFTDOWN );
 
-    if ( dr_check_target( node->x + node->y * MAPX - 1 - MAPX ) && dr_check_target( node->x + node->y * MAPX - 1 ) &&
-         dr_check_target( node->x + node->y * MAPX - MAPX ) )
+    if ( dr_check_target( node->x + node->y * SERVER_MAPX - 1 - SERVER_MAPX ) && dr_check_target( node->x + node->y * SERVER_MAPX - 1 ) &&
+         dr_check_target( node->x + node->y * SERVER_MAPX - SERVER_MAPX ) )
       add_node( node->x - 1, node->y - 1, node->dir, node->cost + 3 + drv_turncount( node->cdir, DX_LEFTUP ), DX_LEFTUP );
   }
 }
@@ -267,7 +267,7 @@ int astar( int fx, int fy, int cdir )
   node->cdir  = cdir;
 
   ngo                    = node;
-  nmap[ fx + fy * MAPX ] = node;
+  nmap[ fx + fy * SERVER_MAPX ] = node;
 
   while ( ngo && ! failed )
   {
@@ -297,29 +297,29 @@ int astar( int fx, int fy, int cdir )
 
 int is_bad_target( int x, int y )
 {
-  return bad[ x + y * MAPX ].tick > globs->ticker;
+  return bad[ x + y * SERVER_MAPX ].tick > globs->ticker;
 }
 
 void add_bad_target( int x, int y )
 {
-  bad[ x + y * MAPX ].tick = globs->ticker + 1;
+  bad[ x + y * SERVER_MAPX ].tick = globs->ticker + 1;
 }
 
 int pathfinder( int cn, int x1, int y1, int flag, int x2, int y2 )
 {
   int tmp, n;
 
-  if ( ch[ cn ].x < 1 || ch[ cn ].x >= MAPX )
+  if ( ch[ cn ].x < 1 || ch[ cn ].x >= SERVER_MAPX )
     return -1;
-  if ( ch[ cn ].y < 1 || ch[ cn ].y >= MAPY )
+  if ( ch[ cn ].y < 1 || ch[ cn ].y >= SERVER_MAPY )
     return -1;
-  if ( x1 < 1 || x1 >= MAPX )
+  if ( x1 < 1 || x1 >= SERVER_MAPX )
     return -1;
-  if ( y1 < 1 || y1 >= MAPY )
+  if ( y1 < 1 || y1 >= SERVER_MAPY )
     return -1;
-  if ( x2 < 0 || x2 >= MAPX )
+  if ( x2 < 0 || x2 >= SERVER_MAPX )
     return -1;
-  if ( y2 < 0 || y2 >= MAPY )
+  if ( y2 < 0 || y2 >= SERVER_MAPY )
     return -1;
 
   if ( is_bad_target( x1, y1 ) )
@@ -340,7 +340,7 @@ int pathfinder( int cn, int x1, int y1, int flag, int x2, int y2 )
   ty2  = y2;
   mode = flag;
 
-  if ( flag == 0 && ! dr_check_target( tx1 + ty1 * MAPX ) )
+  if ( flag == 0 && ! dr_check_target( tx1 + ty1 * SERVER_MAPX ) )
     return -1;
 
   if ( ch[ cn ].attack_cn || ( ! ( ch[ cn ].flags & ( CF_PLAYER | CF_USURP ) ) && ch[ cn ].data[ 78 ] ) )
@@ -362,7 +362,7 @@ int pathfinder( int cn, int x1, int y1, int flag, int x2, int y2 )
 
   for ( n = 0; n < maxnode; n++ )
   {
-    nmap[ nodes[ n ].x + nodes[ n ].y * MAPX ] = NULL;
+    nmap[ nodes[ n ].x + nodes[ n ].y * SERVER_MAPX ] = NULL;
   }
 
   ngo     = NULL;
