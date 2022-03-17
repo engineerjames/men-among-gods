@@ -1,4 +1,4 @@
-[![CMake](https://github.com/engineerjames/men-among-gods/actions/workflows/cmake.yml/badge.svg)](https://github.com/engineerjames/men-among-gods/actions/workflows/cmake.yml)
+[![Build server](https://github.com/engineerjames/men-among-gods/actions/workflows/build.yml/badge.svg)](https://github.com/engineerjames/men-among-gods/actions/workflows/build.yml)
 
 # men-among-gods
 
