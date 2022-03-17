@@ -1,7 +1,6 @@
 #include "PlayerInventoryDisplay.h"
 
 #include "ColorPalette.h"
-#include "ConstantIdentifiers.h"
 #include "GraphicsCache.h"
 #include "InventoryConstants.h"
 #include "PlayerData.h"

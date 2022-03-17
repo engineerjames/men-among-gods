@@ -18,7 +18,6 @@ set( headers
     ClientNetworkActivity.h
     ClientTypes.h
     Compressor.h
-    ConstantIdentifiers.h
     Encoder.h
     Map.h
     PlayerData.h

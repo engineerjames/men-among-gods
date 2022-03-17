@@ -5,7 +5,6 @@
 #include <sstream>
 
 #include "ColorPalette.h"
-#include "ConstantIdentifiers.h"
 #include "UiConstants.h"
 
 namespace MenAmongGods

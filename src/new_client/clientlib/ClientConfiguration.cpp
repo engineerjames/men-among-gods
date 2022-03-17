@@ -1,6 +1,5 @@
 #include "ClientConfiguration.h"
 
-#include "ConstantIdentifiers.h"
 #include "ResourceLocations.h"
 
 #include <fstream>

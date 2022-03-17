@@ -6,7 +6,6 @@
 
 #include "ClientConfiguration.h"
 #include "ColorPalette.h"
-#include "ConstantIdentifiers.h"
 #include "DriverConstants.h"
 #include "GraphicsCache.h"
 #include "GraphicsIndex.h"

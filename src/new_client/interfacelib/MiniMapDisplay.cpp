@@ -1,7 +1,6 @@
 #include "MiniMapDisplay.h"
 
 #include "ColorPalette.h"
-#include "ConstantIdentifiers.h"
 #include "GraphicsCache.h"
 #include "Map.h"
 #include "MapConstants.h"

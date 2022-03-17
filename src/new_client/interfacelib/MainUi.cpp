@@ -1,7 +1,6 @@
 #include "MainUi.h"
 
 #include "ColorPalette.h"
-#include "ConstantIdentifiers.h"
 #include "FontCache.h"
 #include "GraphicsCache.h"
 #include "GuiFormatters.h"

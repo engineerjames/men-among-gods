@@ -4,7 +4,6 @@
 #include <fstream>
 #include <tuple>
 
-#include "ConstantIdentifiers.h"
 #include "Logger.h"
 
 struct look

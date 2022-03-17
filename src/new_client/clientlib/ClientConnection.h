@@ -6,7 +6,6 @@
 #include <cstdint>
 
 #include "ClientTypes.h"
-#include "ConstantIdentifiers.h"
 
 // Forward declarations
 class TickBuffer;

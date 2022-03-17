@@ -2,7 +2,6 @@
 #include "RankDisplay.h"
 
 #include "ColorPalette.h"
-#include "ConstantIdentifiers.h"
 #include "GraphicsCache.h"
 #include "PlayerData.h"
 #include "UiConstants.h"

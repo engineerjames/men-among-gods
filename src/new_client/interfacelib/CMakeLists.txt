@@ -42,7 +42,7 @@ set( headers
     RankDisplay.h
     SkillsAndAttributesDisplay.h
     SoundCache.h
-    UiPositions.h
+    UiConstants.h
     UserOptionPanelDisplay.h
     UtilityFunctions.h
 )
