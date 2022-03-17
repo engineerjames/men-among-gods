@@ -22,14 +22,16 @@ RUN apt-get install -y  \
     libxi-dev \
     libudev-dev \
     libgl1-mesa-dev \
-    clang-tidy-11 \
-    libjsoncpp-dev \
-    libboost-all-dev \
-    libsfml-dev \
-    libzip-dev
+    clang-tidy-11
 
 ADD . /mag
 WORKDIR /mag
+RUN git clone https://github.com/Microsoft/vcpkg.git
+RUN cd ./vcpkg
+RUN ./bootstrap-vcpkg.sh
+RUN ./vcpkg integrate install
+RUN cd ../
+RUN ./vcpkg/vcpkg install 
 RUN cmake -G"Unix Makefiles" -S ./ -B ./build
 RUN cmake --build ./build --parallel --target server
 RUN ./build/server/server
