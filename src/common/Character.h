@@ -174,6 +174,8 @@ struct character
 
   Json::Value      toJson() const;
   static character fromJson( const Json::Value& json );
+
+  void setTotalExperienceFromSkillsAndAttributes();
 };
 #pragma pack( pop )
 static_assert( sizeof( character ) == 3605 );
