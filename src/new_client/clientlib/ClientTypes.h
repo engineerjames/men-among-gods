@@ -4,9 +4,6 @@
 #include <fstream>
 #include <tuple>
 
-#include <boost/archive/text_iarchive.hpp>
-#include <boost/archive/text_oarchive.hpp>
-
 #include "ConstantIdentifiers.h"
 #include "Logger.h"
 
