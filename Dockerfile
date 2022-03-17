@@ -13,6 +13,19 @@ RUN apt-get install -y  \
     zlib1g-dev:i386 \
     cmake \
     apache2
+    mesa-common-dev \
+    freeglut3 \
+    freeglut3-dev 
+    libssl-dev:i386 \ 
+    libx11-dev \
+    libxrandr-dev \ 
+    libxi-dev \
+    libudev-dev \
+    libgl1-mesa-dev \
+    clang-tidy-11 \
+    libjsoncpp-dev \
+    libboost-all-dev 
+
 
 ADD . /mag
 WORKDIR /mag
