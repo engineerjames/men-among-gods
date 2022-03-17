@@ -330,7 +330,7 @@ void SkillsAndAttributesDisplay::update()
 
     skills_[ i ].displayValue_.setString( std::to_string( player.skill[ i ][ 5 ] + nTimesRaised ) );
 
-    int expNeededToRaise = skill_needed( player.skill[ i ][ 0 ] + nTimesRaised, player.attrib[ i ][ 2 ], player.attrib[ i ][ 3 ] );
+    int expNeededToRaise = skill_needed( player.skill[ i ][ 0 ] + nTimesRaised, player.skill[ i ][ 2 ], player.skill[ i ][ 3 ] );
     if ( expNeededToRaise == std::numeric_limits< int >::max() )
     {
       skills_[ i ].expRequired_.setString( "" );
@@ -350,7 +350,7 @@ void SkillsAndAttributesDisplay::update()
     skills_[ i ].displayValue_.update();
     skills_[ i ].expRequired_.update();
 
-    if ( totalPointsToSpend_ >= skill_needed( player.skill[ i ][ 0 ] + nTimesRaised, player.attrib[ i ][ 2 ], player.attrib[ i ][ 3 ] ) )
+    if ( totalPointsToSpend_ >= skill_needed( player.skill[ i ][ 0 ] + nTimesRaised, player.skill[ i ][ 2 ], player.skill[ i ][ 3 ] ) )
     {
       skills_[ i ].plus_.setString( "+" );
     }
