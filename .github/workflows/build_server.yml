@@ -1,6 +1,11 @@
 name: Build server
 
-on: push
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches: [ main ]
 
 jobs:
   build:
