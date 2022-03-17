@@ -23,6 +23,10 @@ RUN apt-get install -y  \
     libxi-dev \
     libudev-dev \
     libgl1-mesa-dev \
+    curl \ 
+    zip \
+    unzip \
+    tar \
     clang-tidy-11
 
 ADD . /mag
