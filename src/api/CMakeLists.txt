@@ -1,5 +1,5 @@
-find_package(Drogon REQUIRED)
-find_package(jsoncpp CONFIG REQUIRED)
+find_package(Drogon)
+find_package(jsoncpp CONFIG)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/server)
 
