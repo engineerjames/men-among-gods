@@ -15,7 +15,7 @@ RUN apt-get install -y  \
     apache2 \
     mesa-common-dev \
     freeglut3 \
-    freeglut3-dev 
+    freeglut3-dev \
     libssl-dev:i386 \ 
     libx11-dev \
     libxrandr-dev \ 
