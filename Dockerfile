@@ -12,6 +12,7 @@ RUN apt-get install -y  \
     libcrypt-dev \
     zlib1g-dev:i386 \
     cmake \
+    git \
     apache2 \
     mesa-common-dev \
     freeglut3 \
