@@ -28,10 +28,8 @@ RUN apt-get install -y  \
 ADD . /mag
 WORKDIR /mag
 RUN git clone https://github.com/Microsoft/vcpkg.git
-RUN cd ./vcpkg
-RUN ./bootstrap-vcpkg.sh
-RUN ./vcpkg integrate install
-RUN cd ../
+RUN ./vcpkg/bootstrap-vcpkg.sh
+RUN ./vcpkg/vcpkg integrate install
 RUN ./vcpkg/vcpkg install 
 RUN cmake -G"Unix Makefiles" -S ./ -B ./build
 RUN cmake --build ./build --parallel --target server
