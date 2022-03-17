@@ -35,7 +35,6 @@ WORKDIR /mag
 RUN git clone https://github.com/Microsoft/vcpkg.git
 RUN ./vcpkg/bootstrap-vcpkg.sh
 RUN ./vcpkg/vcpkg integrate install
-RUN ./vcpkg/vcpkg install 
 RUN cmake -G"Unix Makefiles" -S ./ -B ./build
 RUN cmake --build ./build --parallel --target server
 RUN ./build/server/server
