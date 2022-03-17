@@ -27,6 +27,7 @@ RUN apt-get install -y  \
     zip \
     unzip \
     tar \
+    pkg-config \
     clang-tidy-11
 
 ADD . /mag
