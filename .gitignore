@@ -25,3 +25,6 @@ src/client/*.tds
 
 # Ignore npm packages
 src/game-designer/node_modules/**
+
+# Ignore temp files from blender
+*.blend1
