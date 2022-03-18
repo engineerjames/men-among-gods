@@ -16,6 +16,8 @@ public:
 
   void loadNewGfxCache();
 
+  void correctPosition( int index, sf::Vector2f& position );
+
   sf::Sprite getSprite( std::size_t id );
   sf::Color  getAvgColor( std::size_t id );
 

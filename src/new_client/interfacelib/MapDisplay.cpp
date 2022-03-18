@@ -870,35 +870,32 @@ void MapDisplay::copysprite( int index, int nr, int effect, int xpos, int ypos, 
   rx += xoff;
   ry += yoff;
 
-  for ( unsigned int y = 0; y < 1; y++ )
+  sf::Vector2f spritePosition = sf::Vector2f { static_cast< float >( rx ), static_cast< float >( ry ) };
+  cache_.correctPosition( nr, spritePosition );
+
+  newSprite.setPosition( spritePosition );
+
+  // Apply light effects
+  // Light values range from 0 - 15
+  std::uint8_t lightValue = 255u - static_cast< uint8_t >( static_cast< float >( light ) / 15.0f * 255u );
+  newSprite.setColor( sf::Color { lightValue, lightValue, lightValue, 255u } );
+
+  if ( effect & 64 )
   {
-    for ( unsigned int x = 0; x < 1; x++ )
-    {
-      newSprite.setPosition( sf::Vector2f { static_cast< float >( rx + x * 32 ), static_cast< float >( ry + y * 32 ) } );
+    newSprite.setColor( sf::Color { 0u, 0u, 0u, 0u } );
+    effect -= 64;
+  }
 
-      // Apply light effects
-      // Light values range from 0 - 15
-      std::uint8_t lightValue = 255u - static_cast< uint8_t >( static_cast< float >( light ) / 15.0f * 255u );
-      newSprite.setColor( sf::Color { lightValue, lightValue, lightValue, 255u } );
+  if ( effect & 128 )
+  {
+    newSprite.setColor( sf::Color { 0u, 0u, 0u, 0u } );
 
-      if ( effect & 64 )
-      {
-        newSprite.setColor( sf::Color { 0u, 0u, 0u, 0u } );
-        effect -= 64;
-      }
+    effect -= 128;
+  }
 
-      if ( effect & 128 )
-      {
-        newSprite.setColor( sf::Color { 0u, 0u, 0u, 0u } );
-
-        effect -= 128;
-      }
-
-      if ( isCharacterSelected )
-      {
-        newSprite.setColor( sf::Color::Green );
-      }
-    }
+  if ( isCharacterSelected )
+  {
+    newSprite.setColor( sf::Color::Green );
   }
 }
 

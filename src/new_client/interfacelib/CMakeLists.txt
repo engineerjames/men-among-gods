@@ -96,11 +96,17 @@ add_custom_command(
             TARGET ${target}
             POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E make_directory  ${RESOURCE_OUTPUT_DIRECTORY}/gfx
+            COMMAND ${CMAKE_COMMAND} -E make_directory  ${RESOURCE_OUTPUT_DIRECTORY}/new_gfx
             COMMAND ${CMAKE_COMMAND} -E make_directory  ${RESOURCE_OUTPUT_DIRECTORY}/fonts
             COMMAND ${CMAKE_COMMAND} -E make_directory  ${RESOURCE_OUTPUT_DIRECTORY}/test
             COMMAND ${CMAKE_COMMAND} -E make_directory  ${RESOURCE_OUTPUT_DIRECTORY}/sfx
 
             COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../gfx/gfx.zip ${RESOURCE_OUTPUT_DIRECTORY}/gfx
+
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../new_gfx/01102.png ${RESOURCE_OUTPUT_DIRECTORY}/new_gfx
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../new_gfx/01104.png ${RESOURCE_OUTPUT_DIRECTORY}/new_gfx
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../new_gfx/01106.png ${RESOURCE_OUTPUT_DIRECTORY}/new_gfx
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../new_gfx/01108.png ${RESOURCE_OUTPUT_DIRECTORY}/new_gfx
 
             # Copy all sound files; TODO: Improve later once finalized (no need to list out every individual file)
             COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/1.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
