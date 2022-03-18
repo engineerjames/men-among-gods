@@ -52,7 +52,6 @@ set( test_application_libs
     sfml-graphics 
     sfml-audio
     ZLIB::ZLIB
-    libzip::zip
     client 
     commands 
     common

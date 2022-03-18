@@ -1,15 +1,13 @@
 #include "GraphicsCache.h"
 
-#include <fcntl.h>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <memory>
 #include <sstream>
 #include <string>
-#include <zip.h>
 
 #include <SFML/Graphics/Sprite.hpp>
+#include <json/json.h>
 
 #include "ResourceLocations.h"
 
@@ -20,6 +18,40 @@ GraphicsCache::GraphicsCache()
     , sprites_( MAX_ID + 1 )
     , spriteCache_()
 {
+}
+
+void GraphicsCache::loadNewGfxCache()
+{
+  // Let's read in the configuration JSON file first
+  std::string newGfxConfigPath = MenAmongGods::getConfigPath() + "gfxConfig.json";
+
+  std::ifstream newGfxFile { newGfxConfigPath };
+
+  Json::Value root {};
+
+  newGfxFile >> root;
+
+  for ( const auto& entry : root[ "gfx" ] )
+  {
+    NewGfxCacheEntry cacheEntry {};
+
+    cacheEntry.id   = entry[ "id" ].asInt();
+    cacheEntry.file = entry[ "file" ].asString();
+
+    float newX = entry[ "new_dimensions" ][ "width" ].asFloat();
+    float newY = entry[ "new_dimensions" ][ "height" ].asFloat();
+
+    float oldX = entry[ "old_dimensions" ][ "width" ].asFloat();
+    float oldY = entry[ "old_dimensions" ][ "height" ].asFloat();
+
+    cacheEntry.new_dimensions = sf::Vector2f { newX, newY };
+    cacheEntry.old_dimensions = sf::Vector2f { oldX, oldY };
+
+    cacheEntry.scaling_factor.x = cacheEntry.new_dimensions.x / cacheEntry.old_dimensions.x;
+    cacheEntry.scaling_factor.y = cacheEntry.new_dimensions.y / cacheEntry.old_dimensions.y;
+
+    newGfxCache_[ cacheEntry.id ] = cacheEntry;
+  }
 }
 
 sf::Color GraphicsCache::getAvgColor( std::size_t id )

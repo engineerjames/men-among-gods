@@ -18,6 +18,14 @@ inline std::string getGfxRoot()
   return std::filesystem::exists( GFX_ROOT ) ? GFX_ROOT : ALT_GFX_ROOT;
 }
 
+inline std::string getNewGfxRoot()
+{
+  static const std::string NEW_GFX_ROOT     = RESOURCE_ROOT + "/new_gfx/";
+  static const std::string ALT_NEW_GFX_ROOT = "./res/new_gfx/";
+
+  return std::filesystem::exists( NEW_GFX_ROOT ) ? NEW_GFX_ROOT : ALT_NEW_GFX_ROOT;
+}
+
 inline std::string getSfxRoot()
 {
   static const std::string SFX_ROOT     = RESOURCE_ROOT + "/sfx/";
