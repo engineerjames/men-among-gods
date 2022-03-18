@@ -28,6 +28,7 @@ public:
     sf::Vector2f old_dimensions;
     sf::Vector2f new_dimensions;
     sf::Vector2f scaling_factor;
+    sf::Vector2f offset;
   };
 
   struct SpriteCacheEntry

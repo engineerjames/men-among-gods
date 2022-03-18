@@ -44,6 +44,11 @@ void GraphicsCache::loadNewGfxCache()
     float oldX = entry[ "old_dimensions" ][ "width" ].asFloat();
     float oldY = entry[ "old_dimensions" ][ "height" ].asFloat();
 
+    float offsetX = entry[ "offset" ][ "width" ].asFloat();
+    float offsetY = entry[ "offset" ][ "height" ].asFloat();
+
+    cacheEntry.offset = sf::Vector2f { offsetX, offsetY };
+
     cacheEntry.new_dimensions = sf::Vector2f { newX, newY };
     cacheEntry.old_dimensions = sf::Vector2f { oldX, oldY };
 
@@ -72,8 +77,8 @@ void GraphicsCache::correctPosition( int index, sf::Vector2f& position )
     return;
   }
 
-  position.x += ( newGfxCache_[ index ].new_dimensions.x / 2 ) - 16.0f;
-  position.y += newGfxCache_[ index ].new_dimensions.y - 64.0f;
+  position.x += newGfxCache_[ index ].offset.x;
+  position.y += newGfxCache_[ index ].offset.y;
 }
 
 void GraphicsCache::loadSprite( std::size_t id )

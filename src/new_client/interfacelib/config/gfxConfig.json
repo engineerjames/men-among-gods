@@ -10,6 +10,10 @@
             "old_dimensions": {
                 "width": 32,
                 "height": 64
+            },
+            "offset" : {
+                "width": 48.0,
+                "height": 192.0
             }
         },
         {
@@ -22,6 +26,10 @@
             "old_dimensions": {
                 "width": 32,
                 "height": 64
+            },
+            "offset" : {
+                "width": 48.0,
+                "height": 192.0
             }
         },
         {
@@ -34,6 +42,10 @@
             "old_dimensions": {
                 "width": 32,
                 "height": 64
+            },
+            "offset" : {
+                "width": 48.0,
+                "height": 192.0
             }
         },
         {
@@ -46,6 +58,10 @@
             "old_dimensions": {
                 "width": 32,
                 "height": 64
+            },
+            "offset" : {
+                "width": 48.0,
+                "height": 192.0
             }
         }
     ]
