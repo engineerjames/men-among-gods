@@ -2,7 +2,7 @@
     "gfx": [
         {
             "id": 1102,
-            "file": "./res/gfx/01102.png",
+            "file": "/new_gfx/01102.png",
             "new_dimensions": {
                 "width": 128,
                 "height": 256
@@ -10,11 +10,15 @@
             "old_dimensions": {
                 "width": 32,
                 "height": 64
+            },
+            "offset" : {
+                "width": 48.0,
+                "height": 192.0
             }
         },
         {
             "id": 1104,
-            "file": "./res/gfx/01104.png",
+            "file": "/new_gfx/01104.png",
             "new_dimensions": {
                 "width": 128,
                 "height": 256
@@ -22,11 +26,15 @@
             "old_dimensions": {
                 "width": 32,
                 "height": 64
+            },
+            "offset" : {
+                "width": 48.0,
+                "height": 192.0
             }
         },
         {
             "id": 1106,
-            "file": "./res/gfx/01106.png",
+            "file": "/new_gfx/01106.png",
             "new_dimensions": {
                 "width": 128,
                 "height": 256
@@ -34,11 +42,15 @@
             "old_dimensions": {
                 "width": 32,
                 "height": 64
+            },
+            "offset" : {
+                "width": 48.0,
+                "height": 192.0
             }
         },
         {
             "id": 1108,
-            "file": "./res/gfx/01108.png",
+            "file": "/new_gfx/01108.png",
             "new_dimensions": {
                 "width": 128,
                 "height": 256
@@ -46,6 +58,10 @@
             "old_dimensions": {
                 "width": 32,
                 "height": 64
+            },
+            "offset" : {
+                "width": 48.0,
+                "height": 192.0
             }
         }
     ]

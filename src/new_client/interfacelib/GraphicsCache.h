@@ -16,6 +16,8 @@ public:
 
   void loadNewGfxCache();
 
+  void correctPosition( int index, sf::Vector2f& position );
+
   sf::Sprite getSprite( std::size_t id );
   sf::Color  getAvgColor( std::size_t id );
 
@@ -26,6 +28,7 @@ public:
     sf::Vector2f old_dimensions;
     sf::Vector2f new_dimensions;
     sf::Vector2f scaling_factor;
+    sf::Vector2f offset;
   };
 
   struct SpriteCacheEntry
