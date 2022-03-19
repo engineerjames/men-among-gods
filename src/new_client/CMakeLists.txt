@@ -1,6 +1,5 @@
 set(SFML_STATIC_LIBRARIES OFF)
 find_package(SFML 2.5 COMPONENTS audio network graphics window system CONFIG REQUIRED)
-find_package(libzip CONFIG)
 find_package(jsoncpp CONFIG)
 find_package(ZLIB)
 
@@ -20,6 +19,7 @@ add_custom_command(
             POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E make_directory  ${RESOURCE_OUTPUT_DIRECTORY}/config
             COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/config/config.json ${RESOURCE_OUTPUT_DIRECTORY}/config
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/interfacelib/config/gfxConfig.json ${RESOURCE_OUTPUT_DIRECTORY}/config
             )
 
 if (ENABLE_CLANG_TIDY)

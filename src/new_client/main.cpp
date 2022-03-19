@@ -73,6 +73,7 @@ int main( int argc, char** args )
 
   idxCache->load();
   soundCache->loadAudio( MenAmongGods::getSfxRoot() );
+  gfxCache->loadNewGfxCache();
 
   auto tickBufferPtr = std::make_shared< TickBuffer >( *playerData, *map, *soundCache );
   auto client =
@@ -85,7 +86,6 @@ int main( int argc, char** args )
   std::vector< std::shared_ptr< MenAmongGods::Component > > components {};
   components.push_back( mainUiPtr );
 
-  // bool isLoggingIn                = true;
   bool hasKickStartedNetworkComms = false;
 
   std::vector< std::shared_ptr< MenAmongGods::ClientCommand > > commandList {};
