@@ -2,7 +2,7 @@
     "gfx": [
         {
             "id": 1102,
-            "file": "/new_gfx/01102.png",
+            "file": "01102.png",
             "new_dimensions": {
                 "width": 128,
                 "height": 256
@@ -18,7 +18,7 @@
         },
         {
             "id": 1104,
-            "file": "/new_gfx/01104.png",
+            "file": "01104.png",
             "new_dimensions": {
                 "width": 128,
                 "height": 256
@@ -34,7 +34,7 @@
         },
         {
             "id": 1106,
-            "file": "/new_gfx/01106.png",
+            "file": "01106.png",
             "new_dimensions": {
                 "width": 128,
                 "height": 256
@@ -50,7 +50,7 @@
         },
         {
             "id": 1108,
-            "file": "/new_gfx/01108.png",
+            "file": "01108.png",
             "new_dimensions": {
                 "width": 128,
                 "height": 256

@@ -116,7 +116,7 @@ void GraphicsCache::loadSprite( std::size_t id )
       bool hasNewGfxEntry = false;
       if ( newGfxCache_.count( id ) != 0 )
       {
-        fileToLoad     = MenAmongGods::RESOURCE_ROOT + newGfxCache_[ id ].file;
+        fileToLoad     = MenAmongGods::getNewGfxRoot() + newGfxCache_[ id ].file;
         hasNewGfxEntry = true;
       }
 
