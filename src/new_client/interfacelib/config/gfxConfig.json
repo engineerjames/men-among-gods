@@ -1,68 +1,244 @@
 {
-    "gfx": [
-        {
-            "id": 1102,
-            "file": "01102.png",
-            "new_dimensions": {
-                "width": 128,
-                "height": 256
-            },
-            "old_dimensions": {
-                "width": 32,
-                "height": 64
-            },
-            "offset" : {
-                "width": 48.0,
-                "height": 192.0
-            }
-        },
-        {
-            "id": 1104,
-            "file": "01104.png",
-            "new_dimensions": {
-                "width": 128,
-                "height": 256
-            },
-            "old_dimensions": {
-                "width": 32,
-                "height": 64
-            },
-            "offset" : {
-                "width": 48.0,
-                "height": 192.0
-            }
-        },
-        {
-            "id": 1106,
-            "file": "01106.png",
-            "new_dimensions": {
-                "width": 128,
-                "height": 256
-            },
-            "old_dimensions": {
-                "width": 32,
-                "height": 64
-            },
-            "offset" : {
-                "width": 48.0,
-                "height": 192.0
-            }
-        },
-        {
-            "id": 1108,
-            "file": "01108.png",
-            "new_dimensions": {
-                "width": 128,
-                "height": 256
-            },
-            "old_dimensions": {
-                "width": 32,
-                "height": 64
-            },
-            "offset" : {
-                "width": 48.0,
-                "height": 192.0
-            }
-        }
-    ]
+  "gfx": [
+    {
+      "id": 1102,
+      "file": "01102.png",
+      "new_dimensions": {
+        "width": 128,
+        "height": 256
+      },
+      "old_dimensions": {
+        "width": 32,
+        "height": 64
+      },
+      "offset": {
+        "width": 48.0,
+        "height": 192.0
+      }
+    },
+    {
+      "id": 1104,
+      "file": "01104.png",
+      "new_dimensions": {
+        "width": 128,
+        "height": 256
+      },
+      "old_dimensions": {
+        "width": 32,
+        "height": 64
+      },
+      "offset": {
+        "width": 48.0,
+        "height": 192.0
+      }
+    },
+    {
+      "id": 1106,
+      "file": "01106.png",
+      "new_dimensions": {
+        "width": 128,
+        "height": 256
+      },
+      "old_dimensions": {
+        "width": 32,
+        "height": 64
+      },
+      "offset": {
+        "width": 48.0,
+        "height": 192.0
+      }
+    },
+    {
+      "id": 1108,
+      "file": "01108.png",
+      "new_dimensions": {
+        "width": 128,
+        "height": 256
+      },
+      "old_dimensions": {
+        "width": 32,
+        "height": 64
+      },
+      "offset": {
+        "width": 48.0,
+        "height": 192.0
+      }
+    },
+    {
+      "id": 520,
+      "file": "00520.png",
+      "new_dimensions": {
+        "width": 256,
+        "height": 256
+      },
+      "old_dimensions": {
+        "width": 32,
+        "height": 32
+      },
+      "offset": {
+        "width": 112,
+        "height": 224
+      }
+    },
+    {
+      "id": 521,
+      "file": "00521.png",
+      "new_dimensions": {
+        "width": 256,
+        "height": 256
+      },
+      "old_dimensions": {
+        "width": 32,
+        "height": 32
+      },
+      "offset": {
+        "width": 112,
+        "height": 224
+      }
+    },
+    {
+      "id": 522,
+      "file": "00522.png",
+      "new_dimensions": {
+        "width": 256,
+        "height": 256
+      },
+      "old_dimensions": {
+        "width": 32,
+        "height": 32
+      },
+      "offset": {
+        "width": 112,
+        "height": 224
+      }
+    },
+    {
+      "id": 523,
+      "file": "00523.png",
+      "new_dimensions": {
+        "width": 256,
+        "height": 256
+      },
+      "old_dimensions": {
+        "width": 32,
+        "height": 32
+      },
+      "offset": {
+        "width": 112,
+        "height": 224
+      }
+    },
+    {
+      "id": 524,
+      "file": "00524.png",
+      "new_dimensions": {
+        "width": 256,
+        "height": 256
+      },
+      "old_dimensions": {
+        "width": 32,
+        "height": 32
+      },
+      "offset": {
+        "width": 112,
+        "height": 224
+      }
+    },
+    {
+      "id": 525,
+      "file": "00525.png",
+      "new_dimensions": {
+        "width": 256,
+        "height": 256
+      },
+      "old_dimensions": {
+        "width": 32,
+        "height": 32
+      },
+      "offset": {
+        "width": 112,
+        "height": 224
+      }
+    },
+    {
+      "id": 526,
+      "file": "00526.png",
+      "new_dimensions": {
+        "width": 256,
+        "height": 256
+      },
+      "old_dimensions": {
+        "width": 32,
+        "height": 32
+      },
+      "offset": {
+        "width": 112,
+        "height": 224
+      }
+    },
+    {
+      "id": 527,
+      "file": "00527.png",
+      "new_dimensions": {
+        "width": 256,
+        "height": 256
+      },
+      "old_dimensions": {
+        "width": 32,
+        "height": 32
+      },
+      "offset": {
+        "width": 112,
+        "height": 224
+      }
+    },
+    {
+      "id": 528,
+      "file": "00528.png",
+      "new_dimensions": {
+        "width": 256,
+        "height": 256
+      },
+      "old_dimensions": {
+        "width": 32,
+        "height": 32
+      },
+      "offset": {
+        "width": 112,
+        "height": 224
+      }
+    },
+    {
+      "id": 529,
+      "file": "00529.png",
+      "new_dimensions": {
+        "width": 256,
+        "height": 256
+      },
+      "old_dimensions": {
+        "width": 32,
+        "height": 32
+      },
+      "offset": {
+        "width": 112,
+        "height": 224
+      }
+    },
+    {
+      "id": 530,
+      "file": "00530.png",
+      "new_dimensions": {
+        "width": 256,
+        "height": 256
+      },
+      "old_dimensions": {
+        "width": 32,
+        "height": 32
+      },
+      "offset": {
+        "width": 112,
+        "height": 224
+      }
+    }
+  ]
 }
