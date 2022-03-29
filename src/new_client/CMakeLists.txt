@@ -14,6 +14,50 @@ target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
 target_compile_definitions(${target} PRIVATE ${PROJECT_CXX_DEFINITIONS})
 
+install(
+  TARGETS MenAmongGods
+  JsonCpp::JsonCpp
+  Drogon::Drogon
+  ZLIB::ZLIB
+  libzip::zip
+  sfml-system
+  DESTINATION ${install_directory}
+)
+
+# Just install these files the ol' fashioned way via the post-build command
+install(
+  IMPORTED_RUNTIME_ARTIFACTS
+  JsonCpp::JsonCpp
+  Drogon::Drogon
+  ZLIB::ZLIB
+  libzip::zip
+  sfml-system
+  DESTINATION ${install_directory}
+)
+
+install(
+  FILES  $<TARGET_RUNTIME_DLLS:MenAmongGods>
+  DESTINATION ${install_directory}
+)
+
+# install(CODE [[
+#     file(GET_RUNTIME_DEPENDENCIES
+#         RESOLVED_DEPENDENCIES_VAR RES
+#         UNRESOLVED_DEPENDENCIES_VAR UNRES
+#         CONFLICTING_DEPENDENCIES_PREFIX CONFLICTING_DEPENDENCIES
+#         EXECUTABLES $<TARGET_FILE:MenAmongGods>
+#     )
+
+#     message("\n\nFound dependencies :")
+#     foreach(DEP ${RES})
+#         message("RESOLVED: ${DEP}")
+#     endforeach()
+#     message("\n\nNot found dependencies :")
+#     foreach(DEP ${UNRES})
+#         message("UNRESOLVED: ${DEP}")
+#     endforeach()
+# ]])
+
 add_custom_command(
             TARGET ${target}
             POST_BUILD

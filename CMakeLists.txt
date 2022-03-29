@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(men-among-gods CXX)
+project(men-among-gods C CXX)
 set (CMAKE_CXX_STANDARD 17)
 
 option(ENABLE_CLANG_TIDY "Enable static analysis via clang-tidy" OFF)
@@ -42,7 +42,11 @@ message(STATUS "Generating ResourceLocations.h...")
 message(STATUS "Git revision: ${GIT_REVISION}")
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ResourceLocations.h.in  ${CMAKE_BINARY_DIR}/res/ResourceLocations.h @ONLY)
+
+# TODO: Update this to an INTERFACE target
 include_directories(${CMAKE_BINARY_DIR}/res)
+
+set(install_directory ${CMAKE_BINARY_DIR}/client_files)
 
 if (MSVC)
   list( APPEND PROJECT_CXX_FLAGS /W3 /WX)
@@ -64,11 +68,7 @@ endif()
 
 add_subdirectory(src/new_client)
 add_subdirectory(src/common)
-
-# Currently the unit tests won't link with MinGW for some reason
-if (NOT MINGW)
-  add_subdirectory(src/test)
-endif()
+add_subdirectory(src/test)
 
 if (NOT WIN32)
   add_subdirectory(src/server)
