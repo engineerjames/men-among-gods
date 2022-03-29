@@ -1,5 +1,11 @@
 {
   "name": "men-among-gods",
+  "author": {
+    "email": "jamesleearmes@gmail.com",
+    "name": "James Armes",
+    "url": "https://github.com/engineerjames/men-among-gods"
+  },
+  "description": "Client for Men Among Gods -- 2D Isometric MMORPG based on Mercenaries of Astonia (v2)",
   "version": "0.1.0",
   "private": true,
   "proxy": "http://localhost:3000",
@@ -32,7 +38,8 @@
     "dev": "concurrently -k \"BROWSER=none npm start\" \"npm:electron\"",
     "electron": "wait-on tcp:3000 && electron .",
     "package": "electron-forge package",
-    "lint": "eslint --ext .ts,.tsx ."
+    "lint": "eslint --ext .ts,.tsx .",
+    "make": "electron-forge make"
   },
   "eslintConfig": {
     "extends": [
@@ -79,7 +86,7 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "men_among_gods"
+            "name": "Men-Among-Gods"
           }
         },
         {

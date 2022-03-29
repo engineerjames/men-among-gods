@@ -1,8 +1,8 @@
 import { spawn } from 'child_process';
 import { app, BrowserWindow, dialog, ipcMain } from 'electron';
 import { cwd } from 'process';
-var path = require('path');
 
+var path = require('path');
 var fs = require('fs/promises');
 var fs2 = require('fs');
 
