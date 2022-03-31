@@ -84,10 +84,11 @@ app.whenReady().then(() => {
     let err = fs2.openSync('./out.log', 'a');
 
     let fullyqualifiedpath = path.join(process.resourcesPath, 'client_files', 'MenAmongGods.exe');
+
     console.log('Loading MenAmongGods EXE from ' + fullyqualifiedpath);
     const child = spawn(fullyqualifiedpath, params, {
       detached: true,
-      cwd: path.join(process.cwd(), 'client'),
+      cwd: path.join(process.resourcesPath, 'client_files'),
       stdio: ['ignore', out, err],
     });
 
