@@ -52,9 +52,9 @@ add_custom_target( create_release
 
 add_custom_target( package_release
             COMMAND npm install
-            COMMAND electron-packager.cmd . --extra-resource=${install_directory} --out=${CMAKE_CURRENT_SOURCE_DIR}/electron_app/men-among-gods/out
+            COMMAND electron-packager.cmd . --extra-resource=${install_directory} --out=${PROJECT_SOURCE_DIR}/electron_app/men-among-gods/out
             COMMAND electron-forge make --skip-package
-            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/electron_app/men-among-gods
+            WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/electron_app/men-among-gods
             COMMENT "Creating release..."
 )
 
