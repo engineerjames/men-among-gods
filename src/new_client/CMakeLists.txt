@@ -46,7 +46,7 @@ add_custom_target( create_release
             COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/zlibd1.dll ${install_directory}
             COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:MenAmongGods> ${install_directory}
             COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:MenAmongGods> ${install_directory}
-            #COMMAND ${CMAKE_COMMAND} -E copy_directory ${RESOURCE_OUTPUT_DIRECTORY} ${install_directory}/res
+            COMMAND ${CMAKE_COMMAND} -E copy_directory ${RESOURCE_OUTPUT_DIRECTORY} ${install_directory}/res
             COMMENT "Copying dependencies to ${install_directory}..."
             )
 
