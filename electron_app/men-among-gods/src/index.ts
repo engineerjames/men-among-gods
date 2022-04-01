@@ -1,8 +1,8 @@
 import { spawn } from 'child_process';
 import { app, BrowserWindow, dialog, ipcMain } from 'electron';
 import { cwd } from 'process';
-var path = require('path');
 
+var path = require('path');
 var fs = require('fs/promises');
 var fs2 = require('fs');
 
@@ -83,11 +83,12 @@ app.whenReady().then(() => {
     let out = fs2.openSync('./out.log', 'a');
     let err = fs2.openSync('./out.log', 'a');
 
-    let fullyqualifiedpath = path.join(process.cwd(), 'client', 'MenAmongGods.exe');
+    let fullyqualifiedpath = path.join(process.resourcesPath, 'client_files', 'MenAmongGods.exe');
+
     console.log('Loading MenAmongGods EXE from ' + fullyqualifiedpath);
     const child = spawn(fullyqualifiedpath, params, {
       detached: true,
-      cwd: path.join(process.cwd(), 'client'),
+      cwd: path.join(process.resourcesPath, 'client_files'),
       stdio: ['ignore', out, err],
     });
 

@@ -1,7 +1,7 @@
 # GUI Library
 set(target MenAmongGodsGraphics)
 
-set( sources 
+set( sources
     CommandHistory.cpp
     Component.cpp
     FontCache.cpp
@@ -22,7 +22,7 @@ set( sources
     UserOptionPanelDisplay.cpp
 )
 
-set( headers 
+set( headers
     CommandHistory.h
     ColorPalette.h
     Component.h
@@ -49,18 +49,18 @@ set( headers
 
 set( test_application_libs
     ${PROJECT_CXX_LIBS}
-    sfml-graphics 
+    sfml-graphics
     sfml-audio
     ZLIB::ZLIB
-    client 
-    commands 
+    client
+    commands
     common
     logging
 )
 
 add_library(${target} ${sources} ${headers})
 target_include_directories(${target} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(${target} PRIVATE ${PROJECT_CXX_LIBS} sfml-graphics 
+target_link_libraries(${target} PRIVATE ${PROJECT_CXX_LIBS} sfml-graphics
                                 sfml-system sfml-audio clientInterface logging commands common)
 target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS})
@@ -103,31 +103,10 @@ add_custom_command(
 
             COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../gfx/gfx.zip ${RESOURCE_OUTPUT_DIRECTORY}/gfx
 
-            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../new_gfx/01102.png ${RESOURCE_OUTPUT_DIRECTORY}/new_gfx
-            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../new_gfx/01104.png ${RESOURCE_OUTPUT_DIRECTORY}/new_gfx
-            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../new_gfx/01106.png ${RESOURCE_OUTPUT_DIRECTORY}/new_gfx
-            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../new_gfx/01108.png ${RESOURCE_OUTPUT_DIRECTORY}/new_gfx
+            COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/../new_gfx ${RESOURCE_OUTPUT_DIRECTORY}/new_gfx
 
-            # Copy all sound files; TODO: Improve later once finalized (no need to list out every individual file)
-            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/1.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
-            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/2.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
-            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/3.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
-            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/4.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
-            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/5.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
-            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/6.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
-            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/7.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
-            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/8.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
-            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/9.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
-            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/10.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
-            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/11.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
-            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/12.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
-            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/13.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
-            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/14.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
-            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/15.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
-            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/16.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
-            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/17.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
-            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../sfx/18.wav ${RESOURCE_OUTPUT_DIRECTORY}/sfx
-            
+            COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/../sfx ${RESOURCE_OUTPUT_DIRECTORY}/sfx
+
             COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/test_files/gx00.idx ${RESOURCE_OUTPUT_DIRECTORY}/gfx
 
             COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../fonts/onuava.ttf ${RESOURCE_OUTPUT_DIRECTORY}/fonts

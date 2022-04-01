@@ -1,10 +1,10 @@
-find_package(Drogon)
-find_package(jsoncpp CONFIG)
+find_package(Drogon CONFIG REQUIRED)
+find_package(jsoncpp CONFIG REQUIRED)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/server)
 
 set(target api)
-set(sources 
+set(sources
   main.cpp
   CharacterTemplateApi.cpp
   ItemTemplateApi.cpp
