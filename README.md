@@ -12,4 +12,4 @@ The legacy client front-end has been replaced with electron, but is still in a f
 3. Install CMake, and add its binary directory to the Windows system path
 4. Load up the CMake-GUI--select the source and build directories and VCPKG should do the rest.
 
-### Further instructions TBD
+### Further instructions TBD - Most up to date information will be held on the Wiki.
