@@ -405,16 +405,6 @@ const char* PlayerData::getPlayerDescription() const
   return playerInfo_.desc;
 }
 
-void PlayerData::lock()
-{
-  ioMutex_.lock();
-}
-
-void PlayerData::unlock()
-{
-  ioMutex_.unlock();
-}
-
 void PlayerData::sortSkills()
 {
   std::sort( std::begin( skillsList_ ), std::end( skillsList_ ),
@@ -476,7 +466,8 @@ void PlayerData::resetLookTimer()
 
 void PlayerData::incrementLookTimer()
 {
-  lookTimer_ += ( 1.0f / static_cast< float >( MenAmongGods::ClientConfiguration::instance().frameLimit() ) );
+  // TODO: Before this PR merges, this '30' value needs to be synchronized with the frame rate.
+  lookTimer_ += ( 1.0f / 60 );
 
   if ( lookTimer_ >= LOOK_TIME_IN_SECONDS )
   {

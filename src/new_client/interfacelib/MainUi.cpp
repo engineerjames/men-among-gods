@@ -259,8 +259,6 @@ void MainUi::onUserInput( const sf::Event& e )
 
 void MainUi::update()
 {
-  playerData_.lock();
-
   mapDisplay_.update();
   miniMapDisplay_.update();
   rankDisplay_.update();
@@ -320,8 +318,6 @@ void MainUi::update()
   playerSprite_.setPosition( MenAmongGods::playerSpritePosition );
 
   playerShopDisplay_.update();
-
-  playerData_.unlock();
 }
 
 void MainUi::populateCommands( std::vector< std::shared_ptr< ClientCommand > >& outCommands )

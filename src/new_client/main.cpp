@@ -28,12 +28,8 @@ static const constexpr int MODEX           = 800;
 static const constexpr int MODEY           = 600;
 } // namespace
 
-std::atomic< bool > shouldExit {};
-
 int main( int argc, char** args )
 {
-  shouldExit.store( false );
-
   LOG_SET_LEVEL( MenAmongGods::ClientConfiguration::instance().loggingEnabled() );
 
   auto map        = std::make_unique< MenAmongGods::Map >();
@@ -59,7 +55,7 @@ int main( int argc, char** args )
   }
 
   sf::RenderWindow window( sf::VideoMode( MODEX, MODEY ), "Men Among Gods - v1.1.4" );
-  window.setFramerateLimit( MenAmongGods::ClientConfiguration::instance().frameLimit() );
+  window.setFramerateLimit( 60 );
   window.requestFocus();
 
   std::string fontPath  = MenAmongGods::getFontRoot() + "onuava.ttf";
@@ -85,21 +81,13 @@ int main( int argc, char** args )
   // Populate components
   std::vector< std::shared_ptr< MenAmongGods::Component > > components {};
   components.push_back( mainUiPtr );
-
-  bool hasKickStartedNetworkComms = false;
-
+    
   std::vector< std::shared_ptr< MenAmongGods::ClientCommand > > commandList {};
 
+  client->login();
+
   while ( window.isOpen() )
-  {
-    if ( ! hasKickStartedNetworkComms )
-    {
-      hasKickStartedNetworkComms = true;
-      client->run();
-
-      LOG_DEBUG( "Starting client communication!" );
-    }
-
+  {    
     //
     // Process events--aka input by the user
     //
@@ -143,6 +131,10 @@ int main( int argc, char** args )
     client->addClientCommands( commandList );
     commandList.clear();
 
+    client->processServerTicks();
+
+    client->sendCommands();
+
     //
     // Draw stuff to the screen after clearing previous frame
     //
@@ -161,12 +153,6 @@ int main( int argc, char** args )
     for ( auto& c : components )
     {
       c->finalize();
-    }
-
-    if ( shouldExit.load() )
-    {
-      client->stop();
-      break;
     }
   }
 

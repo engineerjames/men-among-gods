@@ -8,7 +8,6 @@
 #include <iomanip>
 #include <iostream>
 #include <locale>
-#include <mutex>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -123,7 +122,6 @@ public:
 
     LogEntry newEntry { jsonifiedObject.toJson(), msg, level, file, lineNumber, function };
 
-    std::lock_guard< std::mutex > lock( logMutex_ );
     writeEntryToFile( newEntry );
   }
 
@@ -144,7 +142,6 @@ private:
   }
 
   std::fstream outputFile_;
-  std::mutex   logMutex_;
   Level        currentLogLevel_;
 };
 

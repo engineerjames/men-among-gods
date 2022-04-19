@@ -1,8 +1,6 @@
 #ifndef CLIENT_NETWORK_ACTIVITY_H
 #define CLIENT_NETWORK_ACTIVITY_H
 
-#include <atomic>
-#include <mutex>
 #include <string>
 #include <thread>
 
@@ -23,23 +21,20 @@ class ClientNetworkActivity
 {
 public:
   ClientNetworkActivity( TickBuffer& tickBuffer, PlayerData& playerData, const std::string& hostIp, unsigned short hostPort );
-  void run() noexcept;
-  void stop() noexcept;
-  ~ClientNetworkActivity();
 
   void addClientCommands( const std::vector< std::shared_ptr< MenAmongGods::ClientCommand > >& commandList );
 
-private:
-  void startNetworkActivity();
+  void login() noexcept;
+  void processServerTicks() noexcept;
+  void sendCommands() noexcept;
 
-  std::thread                                                   clientNetworkThread_;
+private:
   ClientConnection                                              clientConnection_;
-  std::atomic< bool >                                           cancellationRequested_;
-  bool                                                          isRunning_;
   PlayerData&                                                   playerData_;
   TickBuffer&                                                   tickBuffer_;
   std::vector< std::shared_ptr< MenAmongGods::ClientCommand > > commands_;
-  std::mutex                                                    commandMutex_;
+  sf::Time                                                      timeSinceLastTickSent_;
+  sf::Clock                                                     clock_;
 };
 
 #endif
