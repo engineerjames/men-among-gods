@@ -30,9 +30,6 @@ public:
   // sf::Drawable interface
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
 
-  void loadFromFile( std::string filePath );
-  void saveToFile() const;
-
   struct MapSprite
   {
     sf::Sprite sprite;

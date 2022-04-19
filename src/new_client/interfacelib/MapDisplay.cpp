@@ -433,15 +433,6 @@ void MapDisplay::update()
         tmp = 0;
       }
 
-      if ( map_.getFlags( m ) & INFRARED )
-      {
-        tmp |= 256;
-      }
-      if ( map_.getFlags( m ) & UWATER )
-      {
-        tmp |= 512;
-      }
-
       // object
       if ( playerData_.areWallsHidden() == 0 || ( map_.getFlags( m ) & ISITEM ) || autohide( x, y ) )
       {
@@ -540,15 +531,7 @@ void MapDisplay::update()
       {
         tmp |= 128;
       }
-      if ( map_.getFlags( m ) & INFRARED )
-      {
-        tmp |= 256;
-      }
-      if ( map_.getFlags( m ) & UWATER )
-      {
-        tmp |= 512;
-      }
-
+      
       if ( map_.getObject2( m ) != 0 )
       {
         bool isSelected = map_.getCharacterId( m ) == playerData_.getSelectedCharacter();
