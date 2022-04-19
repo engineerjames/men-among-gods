@@ -4,6 +4,7 @@
 #include "ClientConfiguration.h"
 #include "ClientNetworkActivity.h"
 #include "Component.h"
+#include "Constants.h"
 #include "FontCache.h"
 #include "GraphicsCache.h"
 #include "GraphicsIndex.h"
@@ -55,7 +56,7 @@ int main( int argc, char** args )
   }
 
   sf::RenderWindow window( sf::VideoMode( MODEX, MODEY ), "Men Among Gods - v1.1.4" );
-  window.setFramerateLimit( 60 );
+  window.setFramerateLimit( CLIENT_FRAME_LIMIT );
   window.requestFocus();
 
   std::string fontPath  = MenAmongGods::getFontRoot() + "onuava.ttf";

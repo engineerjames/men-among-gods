@@ -8,70 +8,12 @@
 
 #include "ClientConfiguration.h"
 #include "ClientTypes.h"
+#include "Constants.h"
 #include "InventoryConstants.h"
 #include "Logger.h"
 #include "RankNames.h"
 #include "ResourceLocations.h"
 #include "RaceAndSex.h"
-
-namespace
-{
-
-static const float LOOK_TIME_IN_SECONDS = 10.0f;
-
-int points2rank( int v )
-{
-  if ( v < 50 )
-    return 0;
-  if ( v < 850 )
-    return 1;
-  if ( v < 4900 )
-    return 2;
-  if ( v < 17700 )
-    return 3;
-  if ( v < 48950 )
-    return 4;
-  if ( v < 113750 )
-    return 5;
-  if ( v < 233800 )
-    return 6;
-  if ( v < 438600 )
-    return 7;
-  if ( v < 766650 )
-    return 8;
-  if ( v < 1266650 )
-    return 9;
-  if ( v < 1998700 )
-    return 10;
-  if ( v < 3035500 )
-    return 11;
-  if ( v < 4463550 )
-    return 12;
-  if ( v < 6384350 )
-    return 13;
-  if ( v < 8915600 )
-    return 14;
-  if ( v < 12192400 )
-    return 15;
-  if ( v < 16368450 )
-    return 16;
-  if ( v < 21617250 )
-    return 17;
-  if ( v < 28133300 )
-    return 18;
-  if ( v < 36133300 )
-    return 19;
-  if ( v < 49014500 )
-    return 20;
-  if ( v < 63000600 )
-    return 21;
-  if ( v < 80977100 )
-    return 22;
-
-  return 23;
-}
-
-} // namespace
 
 // NOLINTNEXTLINE
 std::map< unsigned short, looks > PlayerData::lookMap_ {};
@@ -182,7 +124,7 @@ look PlayerData::getShop() const
 
 std::string PlayerData::getRankString() const
 {
-  int         rank       = points2rank( clientSidePlayerInfo_.points_tot );
+  int         rank       = getRank();
   std::string rankString = MenAmongGods::rankToString[ rank ];
 
   return rankString;
@@ -203,7 +145,7 @@ int PlayerData::getItem( int index ) const
 
 int PlayerData::getRank() const
 {
-  return points2rank( clientSidePlayerInfo_.points_tot );
+  return MenAmongGods::points2rank( clientSidePlayerInfo_.points_tot );
 }
 
 void PlayerData::setMode( int newMode )
@@ -467,7 +409,7 @@ void PlayerData::resetLookTimer()
 void PlayerData::incrementLookTimer()
 {
   // TODO: Before this PR merges, this '30' value needs to be synchronized with the frame rate.
-  lookTimer_ += ( 1.0f / 60 );
+  lookTimer_ += ( 1.0f / CLIENT_FRAME_LIMIT );
 
   if ( lookTimer_ >= LOOK_TIME_IN_SECONDS )
   {
