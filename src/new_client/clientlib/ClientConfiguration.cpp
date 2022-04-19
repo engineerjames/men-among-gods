@@ -17,17 +17,13 @@ ClientConfiguration ClientConfiguration::instance()
 Json::Value ClientConfiguration::toJson() const
 {
   Json::Value root {};
-  root[ "networkThreadDelay" ] = networkThreadDelay_;
-  root[ "frameLimit" ]         = frameLimit_;
-  root[ "loggingEnabled" ]     = loggingEnabled_;
-  root[ "enableHpBars" ]       = enableHpBars_;
+
+  root[ "loggingEnabled" ] = loggingEnabled_;
+  root[ "enableHpBars" ]   = enableHpBars_;
+  root[ "hostPort" ]       = hostPort_;
+  root[ "hostIpAddress" ]  = hostIpAddress_;
 
   return root;
-}
-
-int ClientConfiguration::frameLimit() const
-{
-  return frameLimit_;
 }
 
 bool ClientConfiguration::enableHpBars() const
@@ -45,11 +41,6 @@ int ClientConfiguration::hostPort() const
   return hostPort_;
 }
 
-int ClientConfiguration::networkThreadDelay() const
-{
-  return networkThreadDelay_;
-}
-
 bool ClientConfiguration::loggingEnabled() const
 {
   return loggingEnabled_;
@@ -57,9 +48,7 @@ bool ClientConfiguration::loggingEnabled() const
 
 // Set defaults in the constructor
 ClientConfiguration::ClientConfiguration()
-    : networkThreadDelay_( 50 )
-    , frameLimit_( 10 )
-    , loggingEnabled_( false )
+    : loggingEnabled_( false )
     , hostIpAddress_( "127.0.0.1" )
     , hostPort_( 5555 )
     , enableHpBars_( false )
@@ -70,12 +59,10 @@ ClientConfiguration::ClientConfiguration()
 
   inputJsonFile >> root;
 
-  networkThreadDelay_ = root.get( "networkThreadDelay", networkThreadDelay_ ).asInt();
-  frameLimit_         = root.get( "frameLimit", frameLimit_ ).asInt();
-  loggingEnabled_     = root.get( "loggingEnabled", loggingEnabled_ ).asBool();
-  hostIpAddress_      = root.get( "hostIpAddress", hostIpAddress_ ).asString();
-  hostPort_           = root.get( "hostPort", hostPort_ ).asInt();
-  enableHpBars_       = root.get( "enableHpBars", enableHpBars_ ).asBool();
+  loggingEnabled_ = root.get( "loggingEnabled", loggingEnabled_ ).asBool();
+  hostIpAddress_  = root.get( "hostIpAddress", hostIpAddress_ ).asString();
+  hostPort_       = root.get( "hostPort", hostPort_ ).asInt();
+  enableHpBars_   = root.get( "enableHpBars", enableHpBars_ ).asBool();
 
   LOG_DEBUG_OBJ( *this, "Client configuration parameters" );
 }

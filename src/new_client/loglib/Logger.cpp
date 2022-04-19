@@ -12,7 +12,6 @@ Logger& Logger::instance()
 
 Logger::Logger( std::string fileName )
     : outputFile_( fileName, std::ios::app )
-    , logMutex_()
     , currentLogLevel_( Logger::Level::DEBUG )
 {
   addLogEntry( GIT_REVISION, Level::DEBUG, "Logger.cpp", 21, "Constructor" );
@@ -32,7 +31,6 @@ void Logger::addLogEntry( std::string msg, Level level, std::string file, int li
 
   LogEntry newEntry { Json::nullValue, msg, level, file, lineNumber, function };
 
-  std::lock_guard< std::mutex > lock( logMutex_ );
   writeEntryToFile( newEntry );
 }
 } // namespace MenAmongGods::detail

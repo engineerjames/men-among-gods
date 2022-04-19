@@ -4,6 +4,9 @@
 #include <cstdint>
 #include <cstring>
 
+static const constexpr unsigned int CLIENT_FRAME_LIMIT   = 60;
+static const float                  LOOK_TIME_IN_SECONDS = 10.0f;
+
 static const constexpr unsigned int KIN_MERCENARY   = ( 1u << 0 );
 static const constexpr unsigned int KIN_SEYAN_DU    = ( 1u << 1 );
 static const constexpr unsigned int KIN_PURPLE      = ( 1u << 2 );

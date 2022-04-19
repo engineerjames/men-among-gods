@@ -10,8 +10,6 @@
 #include "ServerMessage.h"
 #include "SoundCache.h"
 
-extern std::atomic< bool > shouldExit;
-
 TickBuffer::TickBuffer( PlayerData& playerData, MenAmongGods::Map& map, SoundCache& sfxCache )
     : compressor_()
     , playerData_( playerData )
@@ -123,9 +121,7 @@ void TickBuffer::processTicks()
 
   while ( idx < csize )
   {
-    playerData_.lock();
     int retVal = processServerCommand( buf.data() + idx );
-    playerData_.unlock();
 
     if ( retVal == -1 )
     {
@@ -930,8 +926,6 @@ void TickBuffer::sv_exit( const unsigned char* buf )
   {
     LOG_ERROR( "EXIT: " << logout_reason[ reason ] );
   }
-
-  shouldExit.store( true );
 }
 
 void TickBuffer::sv_load( const unsigned char* )

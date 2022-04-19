@@ -3,7 +3,6 @@
 
 #include <array>
 #include <memory>
-#include <mutex>
 #include <tuple>
 
 #include "ClientTypes.h"
@@ -73,9 +72,6 @@ public:
   look               getShop() const;
   std::vector< int > getUnknownCharacterIds() const;
 
-  void lock();
-  void unlock();
-
   void saveToFile() const;
   void loadFromFile( const std::string& filePath );
 
@@ -132,7 +128,6 @@ private:
   key                                      okey_;
   std::array< skilltab, MAX_SKILLS >    skillsList_;
   look                                     look_;
-  mutable std::mutex                       ioMutex_;
   std::string                              password_; // TODO: This is super insecure to store it like this long-term
   std::vector< LogMessage >                messages_;
   static std::map< unsigned short, looks > lookMap_;

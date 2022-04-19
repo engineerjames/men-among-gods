@@ -2,7 +2,6 @@
 #define MEN_AMONG_GODS_MAP_H
 
 #include <memory>
-#include <mutex>
 
 #include "ClientTypes.h"
 #include "MapConstants.h"
@@ -88,7 +87,6 @@ private:
   int speedo( unsigned int n );
 
   std::array< cmap, MAPX * MAPY > map_;
-  mutable std::recursive_mutex    mapMutex_;
   int                             ctick_;
   std::size_t                     ticker_;
 };
