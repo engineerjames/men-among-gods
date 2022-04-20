@@ -33,8 +33,21 @@ int main( int argc, char** args )
 {
   LOG_SET_LEVEL( MenAmongGods::ClientConfiguration::instance().loggingEnabled() );
 
+  std::string fontPath  = MenAmongGods::getFontRoot() + "onuava.ttf";
+  std::string path      = MenAmongGods::getGfxRoot() + "gfx.zip";
+  std::string indexPath = MenAmongGods::getGfxRoot() + "gx00.idx";
+
+  auto fontCache  = std::make_unique< MenAmongGods::FontCache >( fontPath );
+  auto gfxCache   = std::make_unique< GraphicsCache >();
+  auto idxCache   = std::make_unique< GraphicsIndex >( indexPath );
+  auto soundCache = std::make_unique< SoundCache >();
+
+  sf::RenderWindow window( sf::VideoMode( MODEX, MODEY ), "Men Among Gods - v1.1.4" );
+  window.setFramerateLimit( CLIENT_FRAME_LIMIT );
+  window.requestFocus();
+
   auto map        = std::make_unique< MenAmongGods::Map >();
-  auto playerData = std::make_shared< PlayerData >();
+  auto playerData = std::make_shared< PlayerData >( window, *fontCache );
 
   if ( argc >= 3 )
   {
@@ -55,19 +68,6 @@ int main( int argc, char** args )
     }
   }
 
-  sf::RenderWindow window( sf::VideoMode( MODEX, MODEY ), "Men Among Gods - v1.1.4" );
-  window.setFramerateLimit( CLIENT_FRAME_LIMIT );
-  window.requestFocus();
-
-  std::string fontPath  = MenAmongGods::getFontRoot() + "onuava.ttf";
-  std::string path      = MenAmongGods::getGfxRoot() + "gfx.zip";
-  std::string indexPath = MenAmongGods::getGfxRoot() + "gx00.idx";
-
-  auto fontCache  = std::make_unique< MenAmongGods::FontCache >( fontPath );
-  auto gfxCache   = std::make_unique< GraphicsCache >();
-  auto idxCache   = std::make_unique< GraphicsIndex >( indexPath );
-  auto soundCache = std::make_unique< SoundCache >();
-
   idxCache->load();
   soundCache->loadAudio( MenAmongGods::getSfxRoot() );
   gfxCache->loadNewGfxCache();
@@ -83,13 +83,13 @@ int main( int argc, char** args )
   std::vector< std::shared_ptr< MenAmongGods::Component > > components {};
   components.push_back( mainUiPtr );
   components.push_back( playerData );
-    
+
   std::vector< std::shared_ptr< MenAmongGods::ClientCommand > > commandList {};
 
   client->login();
 
   while ( window.isOpen() )
-  {    
+  {
     //
     // Process events--aka input by the user
     //

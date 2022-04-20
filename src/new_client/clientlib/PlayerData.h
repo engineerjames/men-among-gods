@@ -7,6 +7,7 @@
 
 #include "ClientTypes.h"
 #include "Component.h"
+#include "FontCache.h"
 #include "Player.h"
 #include "SkillTab.h"
 
@@ -17,7 +18,7 @@ struct skilltab;
 class PlayerData : public MenAmongGods::Component
 {
 public:
-  PlayerData();
+  PlayerData( const sf::RenderWindow& window, const MenAmongGods::FontCache& fontCache );
   ~PlayerData() = default;
 
   virtual void update() override;
@@ -25,6 +26,16 @@ public:
   virtual void onUserInput( const sf::Event& e ) override;
 
   virtual void finalize() override;
+
+  enum struct HoverState
+  {
+    USE,
+    ATTACK,
+    GIVE,
+    DROP,
+    PICKUP, // Can't differentiate between pickup and use yet; Need map display to command this
+    NONE
+  };
 
   void draw( sf::RenderTarget&, sf::RenderStates ) const;
 
@@ -134,6 +145,8 @@ public:
 
 private:
   // Holds the name, description, and some client-related settings (split apart later)
+  const sf::RenderWindow&                  window_;
+  const MenAmongGods::FontCache&           fontCache_;
   pdata                                    playerInfo_; // This is more what initially gets sent to the server
   bool                                     playerDataHasChanged_;
   cplayer                                  clientSidePlayerInfo_; // This is more the truth of what your character is...
@@ -157,6 +170,8 @@ private:
 
   bool playerIsHoldingShift_;
   bool playerIsHoldingControl_;
+
+  HoverState hoverState_;
 };
 
 #endif
