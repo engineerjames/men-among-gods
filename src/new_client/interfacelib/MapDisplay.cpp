@@ -97,7 +97,7 @@ MapDisplay::MapDisplay( const sf::Font& font, MenAmongGods::Map& map, PlayerData
 
 void MapDisplay::draw( sf::RenderTarget& target, sf::RenderStates states ) const
 {
-  for ( int i = 0; i < spritesToDraw_.size(); ++i )
+  for ( int i = 0; i < static_cast< int >( spritesToDraw_.size() ); ++i )
   {
     target.draw( spritesToDraw_[ i ].sprite, spritesToDraw_[ i ].renderState );
   }
@@ -775,9 +775,10 @@ void MapDisplay::update()
                                        {
                                          return mapIndex == mapSprite.index && mapSprite.type == MapSprite::SpriteType::Object;
                                        } );
-            
+
     // For interactable objects, we also need to check to ensure that the item is interactable
-    if ( hoveredSprite != std::end( spritesToDraw_ ) && map_.getFlags( mapIndex ) & ISITEM || map_.getFlags( mapIndex ) & ISUSABLE )
+    if ( hoveredSprite != std::end( spritesToDraw_ ) &&
+         ( ( map_.getFlags( mapIndex ) & ISITEM ) || ( map_.getFlags( mapIndex ) & ISUSABLE ) ) )
     {
       MapSprite newSprite             = *hoveredSprite;
       newSprite.renderState.blendMode = sf::BlendAdd;
