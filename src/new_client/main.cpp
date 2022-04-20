@@ -34,7 +34,7 @@ int main( int argc, char** args )
   LOG_SET_LEVEL( MenAmongGods::ClientConfiguration::instance().loggingEnabled() );
 
   auto map        = std::make_unique< MenAmongGods::Map >();
-  auto playerData = std::make_unique< PlayerData >();
+  auto playerData = std::make_shared< PlayerData >();
 
   if ( argc >= 3 )
   {
@@ -82,6 +82,7 @@ int main( int argc, char** args )
   // Populate components
   std::vector< std::shared_ptr< MenAmongGods::Component > > components {};
   components.push_back( mainUiPtr );
+  components.push_back( playerData );
     
   std::vector< std::shared_ptr< MenAmongGods::ClientCommand > > commandList {};
 

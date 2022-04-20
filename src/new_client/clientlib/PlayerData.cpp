@@ -11,9 +11,9 @@
 #include "Constants.h"
 #include "InventoryConstants.h"
 #include "Logger.h"
+#include "RaceAndSex.h"
 #include "RankNames.h"
 #include "ResourceLocations.h"
-#include "RaceAndSex.h"
 
 // NOLINTNEXTLINE
 std::map< unsigned short, looks > PlayerData::lookMap_ {};
@@ -37,6 +37,8 @@ PlayerData::PlayerData()
     , shop_()
     , unique1_()
     , unique2_()
+    , playerIsHoldingShift_( false )
+    , playerIsHoldingControl_( false )
 {
   for ( int i = 0; i < MAX_SKILLS; ++i )
   {
@@ -50,6 +52,35 @@ PlayerData::PlayerData()
 int PlayerData::getMode() const
 {
   return clientSidePlayerInfo_.mode;
+}
+
+void PlayerData::update()
+{
+  playerIsHoldingShift_ = sf::Keyboard::isKeyPressed( sf::Keyboard::LShift );
+
+  playerIsHoldingControl_ = sf::Keyboard::isKeyPressed( sf::Keyboard::LControl );
+}
+
+void PlayerData::onUserInput( const sf::Event& )
+{
+}
+
+void PlayerData::finalize()
+{
+}
+
+void PlayerData::draw( sf::RenderTarget&, sf::RenderStates ) const
+{
+}
+
+bool PlayerData::isHoldingShift() const
+{
+  return playerIsHoldingShift_;
+}
+
+bool PlayerData::isHoldingControl() const
+{
+  return playerIsHoldingControl_;
 }
 
 void PlayerData::setPlayerSprite( int spriteId )

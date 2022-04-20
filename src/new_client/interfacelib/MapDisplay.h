@@ -30,24 +30,34 @@ public:
   // sf::Drawable interface
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
 
-  void loadFromFile( std::string filePath );
-  void saveToFile() const;
-
   struct MapSprite
   {
-    sf::Sprite sprite;
-    int        index;
+    enum struct SpriteType
+    {
+      Tile,
+      Character,
+      Object,
+      Unspecified
+    };
 
-    MapSprite( sf::Sprite sprite_, int index_ )
+    sf::Sprite       sprite;
+    int              index;
+    SpriteType       type;
+    sf::RenderStates renderState;
+
+    MapSprite( sf::Sprite sprite_, int index_, SpriteType type_ )
         : sprite( sprite_ )
         , index( index_ )
+        , type( type_ )
+        , renderState( sf::BlendAlpha )
     {
     }
   };
 
 private:
-  void copysprite( int index, int nr, int effect, int xpos, int ypos, int xoff, int yoff, unsigned char light, bool isCharacterSelected = false );
-  void copyEffectSprite( int index, int nr, int xpos, int ypos, int xoff, int yoff, sf::Color effectColor );
+  void         copysprite( int index, int nr, int effect, int xpos, int ypos, int xoff, int yoff, unsigned char light,
+                           MapSprite::SpriteType spriteType, bool isCharacterSelected = false );
+  void         copyEffectSprite( int index, int nr, int xpos, int ypos, int xoff, int yoff, sf::Color effectColor );
   sf::Vector2i dd_gputtext( int xpos, int ypos, std::string text, int xoff, int yoff );
 
   const sf::Font&                   font_;

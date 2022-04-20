@@ -6,6 +6,7 @@
 #include <tuple>
 
 #include "ClientTypes.h"
+#include "Component.h"
 #include "Player.h"
 #include "SkillTab.h"
 
@@ -13,11 +14,19 @@
 
 struct skilltab;
 
-class PlayerData
+class PlayerData : public MenAmongGods::Component
 {
 public:
   PlayerData();
   ~PlayerData() = default;
+
+  virtual void update() override;
+
+  virtual void onUserInput( const sf::Event& e ) override;
+
+  virtual void finalize() override;
+
+  void draw( sf::RenderTarget&, sf::RenderStates ) const;
 
   struct LogMessage
   {
@@ -120,13 +129,16 @@ public:
 
   void clear();
 
+  bool isHoldingShift() const;
+  bool isHoldingControl() const;
+
 private:
   // Holds the name, description, and some client-related settings (split apart later)
   pdata                                    playerInfo_; // This is more what initially gets sent to the server
   bool                                     playerDataHasChanged_;
   cplayer                                  clientSidePlayerInfo_; // This is more the truth of what your character is...
   key                                      okey_;
-  std::array< skilltab, MAX_SKILLS >    skillsList_;
+  std::array< skilltab, MAX_SKILLS >       skillsList_;
   look                                     look_;
   std::string                              password_; // TODO: This is super insecure to store it like this long-term
   std::vector< LogMessage >                messages_;
@@ -142,6 +154,9 @@ private:
   int unique2_;
 
   float lookTimer_;
+
+  bool playerIsHoldingShift_;
+  bool playerIsHoldingControl_;
 };
 
 #endif

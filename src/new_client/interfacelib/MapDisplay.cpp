@@ -97,10 +97,12 @@ MapDisplay::MapDisplay( const sf::Font& font, MenAmongGods::Map& map, PlayerData
 
 void MapDisplay::draw( sf::RenderTarget& target, sf::RenderStates states ) const
 {
-  for ( const auto& tile : spritesToDraw_ )
+  for ( int i = 0; i < static_cast< int >( spritesToDraw_.size() ); ++i )
   {
-    target.draw( tile.sprite, states );
+    target.draw( spritesToDraw_[ i ].sprite, spritesToDraw_[ i ].renderState );
   }
+
+  states.blendMode = sf::BlendAlpha;
 
   for ( const auto& text : textToDraw_ )
   {
@@ -409,11 +411,12 @@ void MapDisplay::update()
 
       // What is the difference between ba_sprite and back? Can I always use ba_sprite?
       // by using ba_sprite instead; we fixed the intermittent "blank" sprite issue
-      copysprite( m, map_.getBackgroundSprite( m ), map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+      copysprite( m, map_.getBackgroundSprite( m ), map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ),
+                  MapSprite::SpriteType::Tile );
 
       if ( playerData_.getGotoPosition().x == map_.getX( m ) && playerData_.getGotoPosition().y == map_.getY( m ) )
       {
-        copysprite( m, 31, 0, x * 32, y * 32, xoff, yoff, 0 );
+        copysprite( m, 31, 0, x * 32, y * 32, xoff, yoff, 0, MapSprite::SpriteType::Tile );
       }
     }
   }
@@ -431,15 +434,6 @@ void MapDisplay::update()
       else
       {
         tmp = 0;
-      }
-
-      if ( map_.getFlags( m ) & INFRARED )
-      {
-        tmp |= 256;
-      }
-      if ( map_.getFlags( m ) & UWATER )
-      {
-        tmp |= 512;
       }
 
       // object
@@ -492,28 +486,31 @@ void MapDisplay::update()
 
           if ( hightlight == HL_MAP && tileType_ == 1 && tileX_ == x && tileY_ == y )
           {
-            copysprite( m, tmp2, map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+            copysprite( m, tmp2, map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ), MapSprite::SpriteType::Tile );
           }
           else
           {
-            copysprite( m, tmp2, map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+            copysprite( m, tmp2, map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ), MapSprite::SpriteType::Tile );
           }
         }
         else
         {
           if ( hightlight == HL_MAP && tileType_ == 1 && tileX_ == x && tileY_ == y )
           {
-            copysprite( m, map_.getObject1( m ), map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+            copysprite( m, map_.getObject1( m ), map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ),
+                        MapSprite::SpriteType::Object );
           }
           else
           {
-            copysprite( m, map_.getObject1( m ), map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+            copysprite( m, map_.getObject1( m ), map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ),
+                        MapSprite::SpriteType::Object );
           }
         }
       }
       else if ( map_.getObject1( m ) )
       {
-        copysprite( m, map_.getObject1( m ) + 1, map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+        copysprite( m, map_.getObject1( m ) + 1, map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ),
+                    MapSprite::SpriteType::Object );
       }
 
       // character
@@ -540,30 +537,24 @@ void MapDisplay::update()
       {
         tmp |= 128;
       }
-      if ( map_.getFlags( m ) & INFRARED )
-      {
-        tmp |= 256;
-      }
-      if ( map_.getFlags( m ) & UWATER )
-      {
-        tmp |= 512;
-      }
 
       if ( map_.getObject2( m ) != 0 )
       {
         bool isSelected = map_.getCharacterId( m ) == playerData_.getSelectedCharacter();
         copysprite( m, map_.getObject2( m ), map_.getLight( m ) | tmp, x * 32, y * 32, xoff + map_.getObjectXOffset( m ),
-                    yoff + map_.getObjectYOffset( m ), map_.getLight( m ), isSelected );
+                    yoff + map_.getObjectYOffset( m ), map_.getLight( m ), MapSprite::SpriteType::Character, isSelected );
       }
 
       if ( playerData_.getAttackTarget() != 0 && playerData_.getAttackTarget() == map_.getCharacterId( m ) )
       {
-        copysprite( m, 34, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ), map_.getLight( m ) );
+        copysprite( m, 34, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ), map_.getLight( m ),
+                    MapSprite::SpriteType::Unspecified );
       }
 
       if ( playerData_.getPlayerAction() == DR_GIVE && playerData_.getFirstTarget() == map_.getCharacterCrc( m ) )
       {
-        copysprite( m, 45, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ), map_.getLight( m ) );
+        copysprite( m, 45, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ), map_.getLight( m ),
+                    MapSprite::SpriteType::Unspecified );
       }
 
       if ( ( playerData_.clientShouldShowNames() | playerData_.clientShouldShowPercentHealth() ) && map_.getCharacterId( m ) )
@@ -611,88 +602,92 @@ void MapDisplay::update()
       if ( playerData_.getPlayerAction() == DR_DROP && playerData_.getFirstTarget() == map_.getX( m ) &&
            playerData_.getSecondTarget() == map_.getY( m ) )
       {
-        copysprite( m, 32, 0, x * 32, y * 32, xoff, yoff, 0 );
+        copysprite( m, 32, 0, x * 32, y * 32, xoff, yoff, 0, MapSprite::SpriteType::Unspecified );
       }
       if ( playerData_.getPlayerAction() == DR_PICKUP && playerData_.getFirstTarget() == map_.getX( m ) &&
            playerData_.getSecondTarget() == map_.getY( m ) )
       {
-        copysprite( m, 33, 0, x * 32, y * 32, xoff, yoff, 0 );
+        copysprite( m, 33, 0, x * 32, y * 32, xoff, yoff, 0, MapSprite::SpriteType::Unspecified );
       }
       if ( playerData_.getPlayerAction() == DR_USE && playerData_.getFirstTarget() == map_.getX( m ) &&
            playerData_.getSecondTarget() == map_.getY( m ) )
       {
-        copysprite( m, 45, 0, x * 32, y * 32, xoff, yoff, 0 );
+        copysprite( m, 45, 0, x * 32, y * 32, xoff, yoff, 0, MapSprite::SpriteType::Unspecified );
       }
 
       // effects
       if ( map_.getFlags2( m ) & MF_MOVEBLOCK )
       {
-        copysprite( m, 55, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+        copysprite( m, 55, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ), MapSprite::SpriteType::Unspecified );
       }
       if ( map_.getFlags2( m ) & MF_SIGHTBLOCK )
       {
-        copysprite( m, 84, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+        copysprite( m, 84, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ), MapSprite::SpriteType::Unspecified );
       }
       if ( map_.getFlags2( m ) & MF_INDOORS )
       {
-        copysprite( m, 56, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+        copysprite( m, 56, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ), MapSprite::SpriteType::Unspecified );
       }
       if ( map_.getFlags2( m ) & MF_UWATER )
       {
-        copysprite( m, 75, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+        copysprite( m, 75, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ), MapSprite::SpriteType::Unspecified );
       }
       if ( map_.getFlags2( m ) & MF_NOMONST )
       {
-        copysprite( m, 59, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+        copysprite( m, 59, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ), MapSprite::SpriteType::Unspecified );
       }
       if ( map_.getFlags2( m ) & MF_BANK )
       {
-        copysprite( m, 60, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+        copysprite( m, 60, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ), MapSprite::SpriteType::Unspecified );
       }
       if ( map_.getFlags2( m ) & MF_TAVERN )
       {
-        copysprite( m, 61, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+        copysprite( m, 61, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ), MapSprite::SpriteType::Unspecified );
       }
       if ( map_.getFlags2( m ) & MF_NOMAGIC )
       {
-        copysprite( m, 62, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+        copysprite( m, 62, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ), MapSprite::SpriteType::Unspecified );
       }
       if ( map_.getFlags2( m ) & MF_DEATHTRAP )
       {
-        copysprite( m, 73, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+        copysprite( m, 73, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ), MapSprite::SpriteType::Unspecified );
       }
       if ( map_.getFlags2( m ) & MF_NOLAG )
       {
-        copysprite( m, 57, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+        copysprite( m, 57, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ), MapSprite::SpriteType::Unspecified );
       }
       if ( map_.getFlags2( m ) & MF_ARENA )
       {
-        copysprite( m, 76, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+        copysprite( m, 76, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ), MapSprite::SpriteType::Unspecified );
       }
       if ( map_.getFlags2( m ) & MF_NOEXPIRE )
       {
-        copysprite( m, 82, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+        copysprite( m, 82, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ), MapSprite::SpriteType::Unspecified );
       }
       if ( map_.getFlags2( m ) & 0x80000000 )
       {
-        copysprite( m, 72, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+        copysprite( m, 72, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ), MapSprite::SpriteType::Unspecified );
       }
 
       if ( ( map_.getFlags( m ) & ( INJURED | INJURED1 | INJURED2 ) ) == INJURED )
       {
-        copysprite( m, 1079, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ), map_.getLight( m ) );
+        copysprite( m, 1079, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ), map_.getLight( m ),
+                    MapSprite::SpriteType::Unspecified );
       }
       if ( ( map_.getFlags( m ) & ( INJURED | INJURED1 | INJURED2 ) ) == ( INJURED | INJURED1 ) )
       {
-        copysprite( m, 1080, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ), map_.getLight( m ) );
+        copysprite( m, 1080, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ), map_.getLight( m ),
+                    MapSprite::SpriteType::Unspecified );
       }
       if ( ( map_.getFlags( m ) & ( INJURED | INJURED1 | INJURED2 ) ) == ( INJURED | INJURED2 ) )
       {
-        copysprite( m, 1081, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ), map_.getLight( m ) );
+        copysprite( m, 1081, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ), map_.getLight( m ),
+                    MapSprite::SpriteType::Unspecified );
       }
       if ( ( map_.getFlags( m ) & ( INJURED | INJURED1 | INJURED2 ) ) == ( INJURED | INJURED1 | INJURED2 ) )
       {
-        copysprite( m, 1082, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ), map_.getLight( m ) );
+        copysprite( m, 1082, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ), yoff + map_.getObjectYOffset( m ), map_.getLight( m ),
+                    MapSprite::SpriteType::Unspecified );
       }
 
       if ( map_.getFlags( m ) & DEATH )
@@ -700,17 +695,18 @@ void MapDisplay::update()
         if ( map_.getObject2( m ) )
         {
           copysprite( m, 280 + ( ( map_.getFlags( m ) & DEATH ) >> 17 ) - 1, 0, x * 32, y * 32, xoff + map_.getObjectXOffset( m ),
-                      yoff + map_.getObjectYOffset( m ), map_.getLight( m ) );
+                      yoff + map_.getObjectYOffset( m ), map_.getLight( m ), MapSprite::SpriteType::Unspecified );
         }
         else
         {
-          copysprite( m, 280 + ( ( map_.getFlags( m ) & DEATH ) >> 17 ) - 1, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ) );
+          copysprite( m, 280 + ( ( map_.getFlags( m ) & DEATH ) >> 17 ) - 1, 0, x * 32, y * 32, xoff, yoff, map_.getLight( m ),
+                      MapSprite::SpriteType::Unspecified );
         }
       }
       if ( map_.getFlags( m ) & TOMB )
       {
         copysprite( m, 240 + ( ( map_.getFlags( m ) & TOMB ) >> 12 ) - 1, map_.getLight( m ), x * 32, y * 32, xoff, yoff,
-                    map_.getLight( m ) );
+                    map_.getLight( m ), MapSprite::SpriteType::Unspecified );
       }
 
       alpha    = 0;
@@ -753,15 +749,56 @@ void MapDisplay::update()
 
   int mapIndex = getMapIndexFromMousePosition( mousePosition );
 
-  auto hoveredSprite = std::find_if( std::begin( spritesToDraw_ ), std::end( spritesToDraw_ ),
-                                     [ & ]( const MapSprite& mapSprite )
-                                     {
-                                       return mapIndex == mapSprite.index;
-                                     } );
-
-  if ( hoveredSprite != std::end( spritesToDraw_ ) )
+  // Add highlights at the end of the render loop to ensure they're always drawn last.  Effectively
+  // what we're doing is copying the SAME sprite, putting in the SAME location, except changing to an additive blend
+  // mode to get the highlight effect that we are looking for.  We use an if/else if chain to ensure
+  // that we're only highlighting one thing at a time to mimic what is done when we issue commands to the server.
+  if ( playerData_.isHoldingControl() )
   {
-    hoveredSprite->sprite.setColor( sf::Color { 128, 128, 128, 255 } );
+    auto hoveredSprite = std::find_if( std::begin( spritesToDraw_ ), std::end( spritesToDraw_ ),
+                                       [ & ]( const MapSprite& mapSprite )
+                                       {
+                                         return mapIndex == mapSprite.index && mapSprite.type == MapSprite::SpriteType::Character;
+                                       } );
+
+    if ( hoveredSprite != std::end( spritesToDraw_ ) )
+    {
+      MapSprite newSprite             = *hoveredSprite;
+      newSprite.renderState.blendMode = sf::BlendAdd;
+      spritesToDraw_.push_back( newSprite );
+    }
+  }
+  else if ( playerData_.isHoldingShift() )
+  {
+    auto hoveredSprite = std::find_if( std::begin( spritesToDraw_ ), std::end( spritesToDraw_ ),
+                                       [ & ]( const MapSprite& mapSprite )
+                                       {
+                                         return mapIndex == mapSprite.index && mapSprite.type == MapSprite::SpriteType::Object;
+                                       } );
+
+    // For interactable objects, we also need to check to ensure that the item is interactable
+    if ( hoveredSprite != std::end( spritesToDraw_ ) &&
+         ( ( map_.getFlags( mapIndex ) & ISITEM ) || ( map_.getFlags( mapIndex ) & ISUSABLE ) ) )
+    {
+      MapSprite newSprite             = *hoveredSprite;
+      newSprite.renderState.blendMode = sf::BlendAdd;
+      spritesToDraw_.push_back( newSprite );
+    }
+  }
+  else
+  {
+    auto hoveredSprite = std::find_if( std::begin( spritesToDraw_ ), std::end( spritesToDraw_ ),
+                                       [ & ]( const MapSprite& mapSprite )
+                                       {
+                                         return mapIndex == mapSprite.index && mapSprite.type == MapSprite::SpriteType::Tile;
+                                       } );
+
+    if ( hoveredSprite != std::end( spritesToDraw_ ) )
+    {
+      MapSprite newSprite             = *hoveredSprite;
+      newSprite.renderState.blendMode = sf::BlendAdd;
+      spritesToDraw_.push_back( newSprite );
+    }
   }
 }
 
@@ -772,7 +809,7 @@ void MapDisplay::copyEffectSprite( int index, int nr, int xpos, int ypos, int xo
     return;
   }
 
-  MapSprite newMapSprite { cache_.getSprite( nr ), index };
+  MapSprite newMapSprite { cache_.getSprite( nr ), index, MapSprite::SpriteType::Unspecified };
   spritesToDraw_.push_back( newMapSprite );
   sf::Sprite& newSprite = ( spritesToDraw_.end() - 1 )->sprite;
 
@@ -819,14 +856,14 @@ void MapDisplay::copyEffectSprite( int index, int nr, int xpos, int ypos, int xo
 }
 
 void MapDisplay::copysprite( int index, int nr, int effect, int xpos, int ypos, int xoff, int yoff, unsigned char light,
-                             bool isCharacterSelected )
+                             MapSprite::SpriteType spriteType, bool isCharacterSelected )
 {
   if ( nr == 0 )
   {
     return;
   }
 
-  MapSprite newMapSprite { cache_.getSprite( nr ), index };
+  MapSprite newMapSprite { cache_.getSprite( nr ), index, spriteType };
   spritesToDraw_.push_back( newMapSprite );
   sf::Sprite& newSprite = ( spritesToDraw_.end() - 1 )->sprite;
 
