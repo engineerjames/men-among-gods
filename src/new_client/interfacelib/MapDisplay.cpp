@@ -748,6 +748,8 @@ void MapDisplay::update()
   sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
 
   int mapIndex = getMapIndexFromMousePosition( mousePosition );
+  playerData_.setHoverState( PlayerData::HoverState::NONE );
+
 
   // Add highlights at the end of the render loop to ensure they're always drawn last.  Effectively
   // what we're doing is copying the SAME sprite, putting in the SAME location, except changing to an additive blend
@@ -766,6 +768,15 @@ void MapDisplay::update()
       MapSprite newSprite             = *hoveredSprite;
       newSprite.renderState.blendMode = sf::BlendAdd;
       spritesToDraw_.push_back( newSprite );
+
+      if ( playerData_.getCarriedItem() == 0 )
+      {
+        playerData_.setHoverState( PlayerData::HoverState::ATTACK );
+      }
+      else
+      {
+        playerData_.setHoverState( PlayerData::HoverState::GIVE );
+      }
     }
   }
   else if ( playerData_.isHoldingShift() )
@@ -783,6 +794,16 @@ void MapDisplay::update()
       MapSprite newSprite             = *hoveredSprite;
       newSprite.renderState.blendMode = sf::BlendAdd;
       spritesToDraw_.push_back( newSprite );
+
+      // Set the player's hover state appropriately
+      if ( (map_.getFlags( mapIndex ) & ISITEM) && !(map_.getFlags(mapIndex) & ISUSABLE) )
+      {
+        playerData_.setHoverState( PlayerData::HoverState::PICKUP );
+      }
+      else
+      {
+        playerData_.setHoverState( PlayerData::HoverState::USE );
+      }
     }
   }
   else
@@ -800,6 +821,8 @@ void MapDisplay::update()
       spritesToDraw_.push_back( newSprite );
     }
   }
+
+
 }
 
 void MapDisplay::copyEffectSprite( int index, int nr, int xpos, int ypos, int xoff, int yoff, sf::Color effectColor )

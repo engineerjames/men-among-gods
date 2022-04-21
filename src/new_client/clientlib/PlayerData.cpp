@@ -112,7 +112,7 @@ void PlayerData::draw( sf::RenderTarget& target, sf::RenderStates states ) const
 
   auto mousePosition = MenAmongGods::getNormalizedMousePosition( window_ );
 
-  mousePosition += sf::Vector2f { 5.0f, 15.0f };
+  mousePosition += sf::Vector2f { 5.0f, 9.0f };
 
   mouseTextToDraw.setPosition( mousePosition );
 
