@@ -796,14 +796,7 @@ void MapDisplay::update()
       spritesToDraw_.push_back( newSprite );
 
       // Set the player's hover state appropriately
-      if ( (map_.getFlags( mapIndex ) & ISITEM) && !(map_.getFlags(mapIndex) & ISUSABLE) )
-      {
-        playerData_.setHoverState( PlayerData::HoverState::PICKUP );
-      }
-      else
-      {
-        playerData_.setHoverState( PlayerData::HoverState::USE );
-      }
+      playerData_.setHoverState( PlayerData::HoverState::USE );    
     }
   }
   else
