@@ -88,6 +88,36 @@ void PlayerEquipmentDisplay::update()
       }
     }
   }
+
+  // Set Hover states - TODO: Combine PlayerEquipment and PlayerInventory
+  sf::Vector2f mousePosition = MenAmongGods::getNormalizedMousePosition( window_ );
+  int          carriedItem   = playerData_.getCarriedItem();
+
+  if ( MenAmongGods::equipmentBoundingBox.contains( mousePosition ) )
+  {
+    if ( carriedItem == 0 )
+    {
+      if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Key::LShift ) )
+      {
+        playerData_.setHoverState( PlayerData::HoverState::PICKUP );
+      }
+      else
+      {
+        playerData_.setHoverState( PlayerData::HoverState::USE );
+      }
+    }
+    else if ( carriedItem != 0 )
+    {
+      if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Key::LShift ) )
+      {
+        playerData_.setHoverState( PlayerData::HoverState::DROP );
+      }
+      else
+      {
+        playerData_.setHoverState( PlayerData::HoverState::USE );
+      }
+    }
+  }
 }
 
 void PlayerEquipmentDisplay::onUserInput( const sf::Event& e )

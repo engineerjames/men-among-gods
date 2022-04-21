@@ -8,12 +8,14 @@
 
 #include "ClientConfiguration.h"
 #include "ClientTypes.h"
+#include "ColorPalette.h"
 #include "Constants.h"
 #include "InventoryConstants.h"
 #include "Logger.h"
 #include "RaceAndSex.h"
 #include "RankNames.h"
 #include "ResourceLocations.h"
+#include "UtilityFunctions.h"
 
 // NOLINTNEXTLINE
 std::map< unsigned short, looks > PlayerData::lookMap_ {};
@@ -21,8 +23,10 @@ std::map< unsigned short, looks > PlayerData::lookMap_ {};
 // NOLINTNEXTLINE
 int PlayerData::lookAt_ {};
 
-PlayerData::PlayerData()
-    : playerInfo_()
+PlayerData::PlayerData( const sf::RenderWindow& window, const MenAmongGods::FontCache& fontCache )
+    : window_( window )
+    , fontCache_( fontCache )
+    , playerInfo_()
     , playerDataHasChanged_( true ) // Temporarily default to true
     , clientSidePlayerInfo_()
     , okey_()
@@ -39,6 +43,7 @@ PlayerData::PlayerData()
     , unique2_()
     , playerIsHoldingShift_( false )
     , playerIsHoldingControl_( false )
+    , hoverState_( PlayerData::HoverState::NONE )
 {
   for ( int i = 0; i < MAX_SKILLS; ++i )
   {
@@ -56,9 +61,13 @@ int PlayerData::getMode() const
 
 void PlayerData::update()
 {
-  playerIsHoldingShift_ = sf::Keyboard::isKeyPressed( sf::Keyboard::LShift );
-
+  playerIsHoldingShift_   = sf::Keyboard::isKeyPressed( sf::Keyboard::LShift );
   playerIsHoldingControl_ = sf::Keyboard::isKeyPressed( sf::Keyboard::LControl );
+}
+
+void PlayerData::setHoverState(PlayerData::HoverState state)
+{
+  hoverState_ = state;
 }
 
 void PlayerData::onUserInput( const sf::Event& )
@@ -69,8 +78,45 @@ void PlayerData::finalize()
 {
 }
 
-void PlayerData::draw( sf::RenderTarget&, sf::RenderStates ) const
+void PlayerData::draw( sf::RenderTarget& target, sf::RenderStates states ) const
 {
+  std::string mouseText = "";
+
+  switch ( hoverState_ )
+  {
+  case PlayerData::HoverState::PICKUP:
+    mouseText = "Pickup";
+    break;
+  case PlayerData::HoverState::ATTACK:
+    mouseText = "Attack";
+    break;
+  case PlayerData::HoverState::GIVE:
+    mouseText = "Give";
+    break;
+  case PlayerData::HoverState::USE:
+    mouseText = "Use";
+    break;
+  case PlayerData::HoverState::DROP:
+    mouseText = "Drop";
+    break;
+  case PlayerData::HoverState::NONE:
+  default:
+    // Do nothing
+    break;
+  }
+
+  sf::Text mouseTextToDraw { mouseText, fontCache_.getFont(), 9 };
+  mouseTextToDraw.setOutlineColor( sf::Color::Black );
+  mouseTextToDraw.setOutlineThickness( 1 );
+  mouseTextToDraw.setFillColor( MenAmongGods::MsgYellow );
+
+  auto mousePosition = MenAmongGods::getNormalizedMousePosition( window_ );
+
+  mousePosition += sf::Vector2f { 5.0f, 9.0f };
+
+  mouseTextToDraw.setPosition( mousePosition );
+
+  target.draw( mouseTextToDraw, states );
 }
 
 bool PlayerData::isHoldingShift() const

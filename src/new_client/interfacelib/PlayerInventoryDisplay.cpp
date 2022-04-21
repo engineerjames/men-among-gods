@@ -17,7 +17,7 @@
 namespace MenAmongGods
 {
 
-PlayerInventoryDisplay::PlayerInventoryDisplay( const sf::RenderWindow& window, const PlayerData& playerData, GraphicsCache& gfxCache )
+PlayerInventoryDisplay::PlayerInventoryDisplay( const sf::RenderWindow& window, PlayerData& playerData, GraphicsCache& gfxCache )
     : window_( window )
     , playerData_( playerData )
     , gfxCache_( gfxCache )
@@ -76,6 +76,34 @@ void PlayerInventoryDisplay::update()
     sf::Sprite carriedItemSprite = gfxCache_.getSprite( carriedItem );
     carriedItemSprite.setPosition( getNormalizedMousePosition( window_ ) - sf::Vector2f { 10.0, 10.0 } );
     equipmentSprites_.push_back( carriedItemSprite );
+  }
+
+  // Set Hover states
+  sf::Vector2f mousePosition = MenAmongGods::getNormalizedMousePosition( window_ );
+  if ( MenAmongGods::inventoryBoundingBox.contains( mousePosition ) )
+  {
+    if ( carriedItem == 0 )
+    {
+      if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Key::LShift ) )
+      {
+        playerData_.setHoverState( PlayerData::HoverState::PICKUP );
+      }
+      else
+      {
+        playerData_.setHoverState( PlayerData::HoverState::USE );
+      }
+    }
+    else if ( carriedItem != 0 )
+    {
+      if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Key::LShift ) )
+      {
+        playerData_.setHoverState( PlayerData::HoverState::DROP );
+      }
+      else
+      {
+        playerData_.setHoverState( PlayerData::HoverState::USE );
+      }
+    }
   }
 }
 
