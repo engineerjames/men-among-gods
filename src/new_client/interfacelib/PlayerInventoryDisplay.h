@@ -15,7 +15,7 @@ class PlayerInventoryDisplay : public MenAmongGods::Component
 public:
   static const constexpr unsigned int INVENTORY_SLOTS = 12;
 
-  PlayerInventoryDisplay( const sf::RenderWindow& window, const PlayerData& playerData, GraphicsCache& gfxCache );
+  PlayerInventoryDisplay( const sf::RenderWindow& window, PlayerData& playerData, GraphicsCache& gfxCache );
   virtual ~PlayerInventoryDisplay() = default;
   virtual void draw( sf::RenderTarget& target, sf::RenderStates states ) const override;
   virtual void update() override;
@@ -24,7 +24,7 @@ public:
 
 private:
   const sf::RenderWindow&   window_;
-  const PlayerData&         playerData_;
+  PlayerData&               playerData_;
   GraphicsCache&            gfxCache_;
   std::vector< sf::Sprite > equipmentSprites_;
 
