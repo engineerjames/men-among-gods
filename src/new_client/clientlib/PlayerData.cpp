@@ -63,33 +63,11 @@ void PlayerData::update()
 {
   playerIsHoldingShift_   = sf::Keyboard::isKeyPressed( sf::Keyboard::LShift );
   playerIsHoldingControl_ = sf::Keyboard::isKeyPressed( sf::Keyboard::LControl );
+}
 
-  if ( playerIsHoldingControl_ )
-  {
-    if ( getCarriedItem() == 0 )
-    {
-      hoverState_ = PlayerData::HoverState::ATTACK;
-    }
-    else
-    {
-      hoverState_ = PlayerData::HoverState::GIVE;
-    }
-  }
-  else if ( playerIsHoldingShift_ )
-  {
-    if ( getCarriedItem() == 0 )
-    {
-      hoverState_ = PlayerData::HoverState::PICKUP;
-    }
-    else
-    {
-      hoverState_ = PlayerData::HoverState::DROP;
-    }
-  }
-  else
-  {
-    hoverState_ = PlayerData::HoverState::NONE;
-  }
+void PlayerData::setHoverState(PlayerData::HoverState state)
+{
+  hoverState_ = state;
 }
 
 void PlayerData::onUserInput( const sf::Event& )
@@ -106,8 +84,8 @@ void PlayerData::draw( sf::RenderTarget& target, sf::RenderStates states ) const
 
   switch ( hoverState_ )
   {
-  case PlayerData::HoverState::USE:
-    mouseText = "Use";
+  case PlayerData::HoverState::PICKUP:
+    mouseText = "Pickup";
     break;
   case PlayerData::HoverState::ATTACK:
     mouseText = "Attack";
@@ -115,8 +93,8 @@ void PlayerData::draw( sf::RenderTarget& target, sf::RenderStates states ) const
   case PlayerData::HoverState::GIVE:
     mouseText = "Give";
     break;
-  case PlayerData::HoverState::PICKUP:
-    mouseText = "Pickup";
+  case PlayerData::HoverState::USE:
+    mouseText = "Use";
     break;
   case PlayerData::HoverState::DROP:
     mouseText = "Drop";
@@ -127,7 +105,7 @@ void PlayerData::draw( sf::RenderTarget& target, sf::RenderStates states ) const
     break;
   }
 
-  sf::Text mouseTextToDraw { mouseText, fontCache_.getFont(), 8 };
+  sf::Text mouseTextToDraw { mouseText, fontCache_.getFont(), 9 };
   mouseTextToDraw.setOutlineColor( sf::Color::Black );
   mouseTextToDraw.setOutlineThickness( 1 );
   mouseTextToDraw.setFillColor( MenAmongGods::MsgYellow );

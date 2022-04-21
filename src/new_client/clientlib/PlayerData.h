@@ -27,17 +27,17 @@ public:
 
   virtual void finalize() override;
 
+  virtual void draw( sf::RenderTarget&, sf::RenderStates ) const;
+
   enum struct HoverState
   {
     USE,
     ATTACK,
     GIVE,
     DROP,
-    PICKUP, // Can't differentiate between pickup and use yet; Need map display to command this
+    PICKUP,
     NONE
   };
-
-  void draw( sf::RenderTarget&, sf::RenderStates ) const;
 
   struct LogMessage
   {
@@ -142,6 +142,8 @@ public:
 
   bool isHoldingShift() const;
   bool isHoldingControl() const;
+
+  void setHoverState( HoverState state );
 
 private:
   // Holds the name, description, and some client-related settings (split apart later)
