@@ -920,12 +920,17 @@ void TickBuffer::sv_exit( const unsigned char* buf )
   std::memcpy( &reason, buf + 1, sizeof( std::uint32_t ) );
   if ( reason < 1 || reason > 12 )
   {
-    LOG_ERROR( "EXIT: Reason unknown." );
+    std::string exitMessage = "EXIT: Reason unknown.";
+    playerData_.addLogMessage( LogType::ERROR, exitMessage );
   }
   else
   {
-    LOG_ERROR( "EXIT: " << logout_reason[ reason ] );
+    std::stringstream stream {};
+    stream << "EXIT: " << logout_reason[ reason ];
+    playerData_.addLogMessage( LogType::ERROR, stream.str() );
   }
+
+  playerData_.setExitFlag( true );
 }
 
 void TickBuffer::sv_load( const unsigned char* )

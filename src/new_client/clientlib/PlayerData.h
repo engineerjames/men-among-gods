@@ -69,6 +69,8 @@ public:
   void         setMode( int newMode );
   std::string  getRankString() const;
   int          getRank() const;
+  void         setExitFlag( bool newValue );
+  bool         getExitFlag() const;
 
   // TODO: Eliminate this series of "get" calls--need just a plethora of get/set commands
   // for the underlying data values so they can be properly protected from multi-threaded
@@ -172,6 +174,7 @@ private:
 
   bool playerIsHoldingShift_;
   bool playerIsHoldingControl_;
+  bool exitFlag_;
 
   HoverState hoverState_;
 };

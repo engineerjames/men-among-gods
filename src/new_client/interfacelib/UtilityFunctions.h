@@ -3,7 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <array>
-#include <vector>
+#include <set>
 
 #include "MapConstants.h"
 #include "UiConstants.h"
@@ -59,12 +59,13 @@ inline int getMapIndexFromMousePosition( const sf::Vector2f& mousePosition )
   return mx + my * TILEX;
 }
 
-inline std::vector<int> getFuzzyMapIndices( sf::Vector2f centerMousePosition )
+inline std::set<int> getFuzzyMapIndices( sf::Vector2f centerMousePosition )
 {
   int m = getMapIndexFromMousePosition( centerMousePosition );
 
-  std::vector< int > mapIndicesToCheck {};
-  mapIndicesToCheck.push_back( m );
+
+  std::set< int > mapIndicesToCheck {};
+  mapIndicesToCheck.insert( m );
 
   const int N_POINTS_X = 10;
   const int N_POINTS_Y = 10;
@@ -77,9 +78,12 @@ inline std::vector<int> getFuzzyMapIndices( sf::Vector2f centerMousePosition )
       float yOffset = 64.0f - ( j * ( 48.0f / ( N_POINTS_Y - 1 ) ) );
 
       int newIndexToCheck = getMapIndexFromMousePosition( centerMousePosition + sf::Vector2f { xOffset, yOffset } );    
-      mapIndicesToCheck.push_back( newIndexToCheck );
+
+      mapIndicesToCheck.insert( newIndexToCheck );
     }
   }
+
+  std::cerr << "Found " << mapIndicesToCheck.size() << " indices to check." << std::endl;
 
   return mapIndicesToCheck;
 }

@@ -6,6 +6,8 @@
 #include "ClientTypes.h"
 #include "Component.h"
 
+#include <set>
+
 class GraphicsCache;
 class GraphicsIndex;
 class PlayerData;
@@ -62,7 +64,7 @@ private:
 
   typedef std::vector< MapDisplay::MapSprite >::iterator MapSpriteIterator;
 
-  MapSpriteIterator getSpriteByType( const std::vector< int >& mapIndicesToCheck, MapSprite::SpriteType spriteType );
+  MapSpriteIterator getSpriteByType( const std::set< int >& mapIndicesToCheck, MapSprite::SpriteType spriteType );
 
   const sf::Font&                   font_;
   MenAmongGods::Map&                map_;

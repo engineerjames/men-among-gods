@@ -98,7 +98,14 @@ int main( int argc, char** args )
     {
       if ( event.type == sf::Event::Closed )
       {
-        window.close();
+        if ( playerData->getExitFlag() )
+        {
+          window.close();
+        }
+        else 
+        {
+          playerData->addLogMessage( LogType::ERROR, "You must exit the game through the tavern! Or the EXIT button in the lower right hand corner of the screen" );
+        }
       }
 
       for ( auto& c : components )

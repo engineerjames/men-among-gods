@@ -77,7 +77,7 @@ int facing( int x, int y, int dir )
 namespace MenAmongGods
 {
 
-MapDisplay::MapSpriteIterator MapDisplay::getSpriteByType( const std::vector< int >& mapIndicesToCheck, MapSprite::SpriteType spriteType )
+MapDisplay::MapSpriteIterator MapDisplay::getSpriteByType( const std::set< int >& mapIndicesToCheck, MapSprite::SpriteType spriteType )
 {
   auto sprite = std::find_if( std::begin( spritesToDraw_ ), std::end( spritesToDraw_ ),
                               [ & ]( const MapSprite& mapSprite )
@@ -766,7 +766,6 @@ void MapDisplay::update()
 
   sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
 
-  auto mapIndices = getFuzzyMapIndices( mousePosition );
   playerData_.setHoverState( PlayerData::HoverState::NONE );
 
   // Add highlights at the end of the render loop to ensure they're always drawn last.  Effectively
@@ -775,6 +774,7 @@ void MapDisplay::update()
   // that we're only highlighting one thing at a time to mimic what is done when we issue commands to the server.
   if ( playerData_.isHoldingControl() )
   {
+    auto mapIndices = getFuzzyMapIndices( mousePosition );
     auto hoveredSprite = getSpriteByType( mapIndices, MapSprite::SpriteType::Character );
 
     if ( hoveredSprite != std::end( spritesToDraw_ ) )
@@ -795,6 +795,7 @@ void MapDisplay::update()
   }
   else if ( playerData_.isHoldingShift() )
   {
+    auto mapIndices = getFuzzyMapIndices( mousePosition );
     auto hoveredSprite = getSpriteByType( mapIndices, MapSprite::SpriteType::Object );
 
     // For interactable objects, we also need to check to ensure that the item is interactable
@@ -812,9 +813,9 @@ void MapDisplay::update()
   else
   {
     // Only need to check what is currently pointed at by the mouse cursor
-    std::vector< int > mapIndicesToCheck {};
+    std::set< int > mapIndicesToCheck {};
 
-    mapIndicesToCheck.push_back( getMapIndexFromMousePosition( mousePosition ) );
+    mapIndicesToCheck.insert( getMapIndexFromMousePosition( mousePosition ) );
     auto hoveredSprite = getSpriteByType( mapIndicesToCheck, MapSprite::SpriteType::Tile );
 
     if ( hoveredSprite != std::end( spritesToDraw_ ) )

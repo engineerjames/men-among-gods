@@ -43,6 +43,7 @@ PlayerData::PlayerData( const sf::RenderWindow& window, const MenAmongGods::Font
     , unique2_()
     , playerIsHoldingShift_( false )
     , playerIsHoldingControl_( false )
+    , exitFlag_( false )
     , hoverState_( PlayerData::HoverState::NONE )
 {
   for ( int i = 0; i < MAX_SKILLS; ++i )
@@ -63,6 +64,16 @@ void PlayerData::update()
 {
   playerIsHoldingShift_   = sf::Keyboard::isKeyPressed( sf::Keyboard::LShift );
   playerIsHoldingControl_ = sf::Keyboard::isKeyPressed( sf::Keyboard::LControl );
+}
+
+void PlayerData::setExitFlag( bool newValue )
+{
+  exitFlag_ = newValue;
+}
+
+bool PlayerData::getExitFlag() const
+{
+  return exitFlag_;
 }
 
 void PlayerData::setHoverState(PlayerData::HoverState state)
