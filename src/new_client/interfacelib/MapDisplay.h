@@ -60,6 +60,10 @@ private:
   void         copyEffectSprite( int index, int nr, int xpos, int ypos, int xoff, int yoff, sf::Color effectColor );
   sf::Vector2i dd_gputtext( int xpos, int ypos, std::string text, int xoff, int yoff );
 
+  typedef std::vector< MapDisplay::MapSprite >::iterator MapSpriteIterator;
+
+  MapSpriteIterator getSpriteByType( const std::vector< int >& mapIndicesToCheck, MapSprite::SpriteType spriteType );
+
   const sf::Font&                   font_;
   MenAmongGods::Map&                map_;
   PlayerData&                       playerData_;

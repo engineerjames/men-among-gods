@@ -77,6 +77,25 @@ int facing( int x, int y, int dir )
 namespace MenAmongGods
 {
 
+MapDisplay::MapSpriteIterator MapDisplay::getSpriteByType( const std::vector< int >& mapIndicesToCheck, MapSprite::SpriteType spriteType )
+{
+  auto sprite = std::find_if( std::begin( spritesToDraw_ ), std::end( spritesToDraw_ ),
+                              [ & ]( const MapSprite& mapSprite )
+                              {
+                                for ( const auto& mapI : mapIndicesToCheck )
+                                {
+                                  if ( mapSprite.type == spriteType && mapSprite.index == mapI )
+                                  {
+                                    return true;
+                                  }
+                                }
+
+                                return false;
+                              } );
+
+  return sprite;
+}
+
 MapDisplay::MapDisplay( const sf::Font& font, MenAmongGods::Map& map, PlayerData& playerData, GraphicsCache& cache,
                         const GraphicsIndex& index, const sf::RenderWindow& window )
     : MenAmongGods::Component()
@@ -747,9 +766,8 @@ void MapDisplay::update()
 
   sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
 
-  int mapIndex = getMapIndexFromMousePosition( mousePosition );
+  auto mapIndices = getFuzzyMapIndices( mousePosition );
   playerData_.setHoverState( PlayerData::HoverState::NONE );
-
 
   // Add highlights at the end of the render loop to ensure they're always drawn last.  Effectively
   // what we're doing is copying the SAME sprite, putting in the SAME location, except changing to an additive blend
@@ -757,11 +775,7 @@ void MapDisplay::update()
   // that we're only highlighting one thing at a time to mimic what is done when we issue commands to the server.
   if ( playerData_.isHoldingControl() )
   {
-    auto hoveredSprite = std::find_if( std::begin( spritesToDraw_ ), std::end( spritesToDraw_ ),
-                                       [ & ]( const MapSprite& mapSprite )
-                                       {
-                                         return mapIndex == mapSprite.index && mapSprite.type == MapSprite::SpriteType::Character;
-                                       } );
+    auto hoveredSprite = getSpriteByType( mapIndices, MapSprite::SpriteType::Character );
 
     if ( hoveredSprite != std::end( spritesToDraw_ ) )
     {
@@ -781,31 +795,27 @@ void MapDisplay::update()
   }
   else if ( playerData_.isHoldingShift() )
   {
-    auto hoveredSprite = std::find_if( std::begin( spritesToDraw_ ), std::end( spritesToDraw_ ),
-                                       [ & ]( const MapSprite& mapSprite )
-                                       {
-                                         return mapIndex == mapSprite.index && mapSprite.type == MapSprite::SpriteType::Object;
-                                       } );
+    auto hoveredSprite = getSpriteByType( mapIndices, MapSprite::SpriteType::Object );
 
     // For interactable objects, we also need to check to ensure that the item is interactable
     if ( hoveredSprite != std::end( spritesToDraw_ ) &&
-         ( ( map_.getFlags( mapIndex ) & ISITEM ) || ( map_.getFlags( mapIndex ) & ISUSABLE ) ) )
+         ( ( map_.getFlags( hoveredSprite->index ) & ISITEM ) || ( map_.getFlags( hoveredSprite->index ) & ISUSABLE ) ) )
     {
       MapSprite newSprite             = *hoveredSprite;
       newSprite.renderState.blendMode = sf::BlendAdd;
       spritesToDraw_.push_back( newSprite );
 
       // Set the player's hover state appropriately
-      playerData_.setHoverState( PlayerData::HoverState::USE );    
+      playerData_.setHoverState( PlayerData::HoverState::USE );
     }
   }
   else
   {
-    auto hoveredSprite = std::find_if( std::begin( spritesToDraw_ ), std::end( spritesToDraw_ ),
-                                       [ & ]( const MapSprite& mapSprite )
-                                       {
-                                         return mapIndex == mapSprite.index && mapSprite.type == MapSprite::SpriteType::Tile;
-                                       } );
+    // Only need to check what is currently pointed at by the mouse cursor
+    std::vector< int > mapIndicesToCheck {};
+
+    mapIndicesToCheck.push_back( getMapIndexFromMousePosition( mousePosition ) );
+    auto hoveredSprite = getSpriteByType( mapIndicesToCheck, MapSprite::SpriteType::Tile );
 
     if ( hoveredSprite != std::end( spritesToDraw_ ) )
     {
@@ -814,8 +824,6 @@ void MapDisplay::update()
       spritesToDraw_.push_back( newSprite );
     }
   }
-
-
 }
 
 void MapDisplay::copyEffectSprite( int index, int nr, int xpos, int ypos, int xoff, int yoff, sf::Color effectColor )
