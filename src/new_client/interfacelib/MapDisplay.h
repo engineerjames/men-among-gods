@@ -78,6 +78,7 @@ private:
   int                               tileType_;
   int                               tileX_;
   int                               tileY_;
+  int                               lastHoveredIndex_;
 };
 } // namespace MenAmongGods
 

@@ -70,7 +70,7 @@ void ClientNetworkActivity::processServerTicks() noexcept
 {
   sf::Time now = clock_.getElapsedTime();
 
-  if ( ( now - timeSinceLastTickSent_ ).asSeconds() > 0.75f )
+  if ( ( now - timeSinceLastTickSent_ ).asSeconds() > 1.0f )
   {
     if ( ! clientConnection_.sendTick() )
     {

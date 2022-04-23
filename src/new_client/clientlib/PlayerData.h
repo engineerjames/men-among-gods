@@ -145,7 +145,8 @@ public:
   bool isHoldingShift() const;
   bool isHoldingControl() const;
 
-  void setHoverState( HoverState state );
+  void       setHoverState( HoverState state );
+  HoverState getHoverState() const;
 
 private:
   // Holds the name, description, and some client-related settings (split apart later)

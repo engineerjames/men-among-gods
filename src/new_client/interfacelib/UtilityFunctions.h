@@ -63,8 +63,9 @@ inline std::set<int> getFuzzyMapIndices( sf::Vector2f centerMousePosition )
 {
   int m = getMapIndexFromMousePosition( centerMousePosition );
 
-
   std::set< int > mapIndicesToCheck {};
+  
+  // First check exactly where the mouse cursor is (just in-case)
   mapIndicesToCheck.insert( m );
 
   const int N_POINTS_X = 10;
@@ -82,8 +83,6 @@ inline std::set<int> getFuzzyMapIndices( sf::Vector2f centerMousePosition )
       mapIndicesToCheck.insert( newIndexToCheck );
     }
   }
-
-  std::cerr << "Found " << mapIndicesToCheck.size() << " indices to check." << std::endl;
 
   return mapIndicesToCheck;
 }

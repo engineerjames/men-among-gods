@@ -88,6 +88,8 @@ int main( int argc, char** args )
 
   client->login();
 
+  // TODO: Eventually we'll add an optional FPS display for testing only
+
   while ( window.isOpen() )
   {
     //

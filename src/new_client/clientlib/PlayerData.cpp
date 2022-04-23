@@ -76,9 +76,14 @@ bool PlayerData::getExitFlag() const
   return exitFlag_;
 }
 
-void PlayerData::setHoverState(PlayerData::HoverState state)
+void PlayerData::setHoverState( PlayerData::HoverState state )
 {
   hoverState_ = state;
+}
+
+PlayerData::HoverState PlayerData::getHoverState() const
+{
+  return hoverState_;
 }
 
 void PlayerData::onUserInput( const sf::Event& )
