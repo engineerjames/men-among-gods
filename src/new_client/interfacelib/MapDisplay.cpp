@@ -427,6 +427,13 @@ void MapDisplay::update()
     }
   }
 
+  // Exit early if the player has left to avoid drawing text and other such things
+  // on the screen unnecessarily
+  if ( playerData_.getExitFlag())
+  {
+    return;
+  }
+
   for ( y = TILEY - 1; y >= 0; y-- )
   {
     for ( x = 0; x < TILEX; x++ )
@@ -858,6 +865,12 @@ void MapDisplay::copysprite( int index, int nr, int effect, int xpos, int ypos, 
   if ( nr == 0 )
   {
     return;
+  }
+
+  // Player has exited, blacken all draw requests to an invalid sprite.
+  if ( playerData_.getExitFlag() )
+  {
+    nr = 999;
   }
 
   MapSprite newMapSprite { cache_.getSprite( nr ), index, spriteType };

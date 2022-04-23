@@ -346,7 +346,7 @@ void Map::tick()
 
   // Need to perform the regular "engine tick" here:
   for ( unsigned int n = 0; n < TILEX * TILEY; n++ )
-  {
+  { 
     map_[ n ].back     = 0;
     map_[ n ].obj1     = 0;
     map_[ n ].obj2     = 0;
