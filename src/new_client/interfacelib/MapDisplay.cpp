@@ -451,51 +451,14 @@ void MapDisplay::update()
 
       // object
       if ( playerData_.areWallsHidden() == 0 || ( map_.getFlags( m ) & ISITEM ) || autohide( x, y ) )
-      {
-        int tmp2 {};
-
+      {        
         if ( map_.getObject1( m ) > 16335 && map_.getObject1( m ) < 16422 && map_.getObject1( m ) != 16357 &&
              map_.getObject1( m ) != 16365 && map_.getObject1( m ) != 16373 && map_.getObject1( m ) != 16381 &&
              map_.getObject1( m ) != 16357 && map_.getObject1( m ) != 16389 && map_.getObject1( m ) != 16397 &&
              map_.getObject1( m ) != 16405 && map_.getObject1( m ) != 16413 && map_.getObject1( m ) != 16421 &&
              ! facing( x, y, playerData_.getPlayerDirection() ) && ! autohide( x, y ) && playerData_.areWallsHidden() )
         { // mine hack
-          if ( map_.getObject1( m ) < 16358 )
-          {
-            tmp2 = 457;
-          }
-          else if ( map_.getObject1( m ) < 16366 )
-          {
-            tmp2 = 456;
-          }
-          else if ( map_.getObject1( m ) < 16374 )
-          {
-            tmp2 = 455;
-          }
-          else if ( map_.getObject1( m ) < 16382 )
-          {
-            tmp2 = 466;
-          }
-          else if ( map_.getObject1( m ) < 16390 )
-          {
-            tmp2 = 459;
-          }
-          else if ( map_.getObject1( m ) < 16398 )
-          {
-            tmp2 = 458;
-          }
-          else if ( map_.getObject1( m ) < 16398 )
-          {
-            tmp2 = 449;
-          }
-          else if ( map_.getObject1( m ) < 16406 )
-          {
-            tmp2 = 468;
-          }
-          else
-          {
-            tmp2 = 467;
-          }
+          // Do nothing--might need to re-evaluate deleting this.
         }
         else
         {

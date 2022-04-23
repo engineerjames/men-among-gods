@@ -44,21 +44,31 @@ PlayerEquipmentDisplay::PlayerEquipmentDisplay( const sf::RenderWindow& window, 
     : window_( window )
     , playerData_( playerData )
     , gfxCache_( gfxCache )
-    , inventorySprites_()
+    , equipmentSprites_()
+    , highlightedSprite_( )
 {
 }
 
 void PlayerEquipmentDisplay::draw( sf::RenderTarget& target, sf::RenderStates states ) const
 {
-  for ( const auto& s : inventorySprites_ )
+  for ( const auto& s : equipmentSprites_ )
   {
     target.draw( s, states );
+  }
+
+  if ( highlightedSprite_.has_value() )
+  {
+    sf::RenderStates additiveState {};
+    additiveState.blendMode = sf::BlendAdd;
+
+    target.draw( *highlightedSprite_, additiveState );
   }
 }
 
 void PlayerEquipmentDisplay::update()
 {
-  inventorySprites_.clear();
+  equipmentSprites_.clear();
+  highlightedSprite_.reset();
 
   if ( playerData_.getShowLook() )
   { // TODO: Simplify this logic
@@ -70,7 +80,7 @@ void PlayerEquipmentDisplay::update()
       {
         sf::Sprite newSprite = gfxCache_.getSprite( itemReference );
         newSprite.setPosition( sf::Vector2f { static_cast< float >( 303 + ( n % 2 ) * 35 ), static_cast< float >( 2 + ( n / 2 ) * 35 ) } );
-        inventorySprites_.push_back( newSprite );
+        equipmentSprites_.push_back( newSprite );
       }
     }
   }
@@ -83,8 +93,20 @@ void PlayerEquipmentDisplay::update()
       if ( itemReference != 0 )
       {
         sf::Sprite newSprite = gfxCache_.getSprite( itemReference );
-        newSprite.setPosition( sf::Vector2f { static_cast< float >( 303 + ( n % 2 ) * 35 ), static_cast< float >( 2 + ( n / 2 ) * 35 ) } );
-        inventorySprites_.push_back( newSprite );
+
+        const float        xPosition = static_cast< float >( 303 + ( n % 2 ) * 35 );
+        const float        yPosition = static_cast< float >( 2 + ( n / 2 ) * 35 );
+        const sf::Vector2f upperLeftCorner { xPosition, yPosition };
+
+        newSprite.setPosition( upperLeftCorner );
+        equipmentSprites_.push_back( newSprite );
+
+        sf::FloatRect itemBox { upperLeftCorner, sf::Vector2f { 32.0f, 32.0f } };
+        if ( itemBox.contains( MenAmongGods::getNormalizedMousePosition( window_ ) ) )
+        {
+          // Create the highlight effect
+          highlightedSprite_ = newSprite;
+        }
       }
     }
   }
