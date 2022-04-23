@@ -104,7 +104,6 @@ void PlayerEquipmentDisplay::update()
         sf::FloatRect itemBox { upperLeftCorner, sf::Vector2f { 32.0f, 32.0f } };
         if ( itemBox.contains( MenAmongGods::getNormalizedMousePosition( window_ ) ) )
         {
-          // Create the highlight effect
           highlightedSprite_ = newSprite;
         }
       }

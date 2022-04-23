@@ -5,6 +5,8 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <optional>
+
 class PlayerData;
 class GraphicsCache;
 
@@ -28,10 +30,11 @@ private:
   GraphicsCache&            gfxCache_;
   std::vector< sf::Sprite > equipmentSprites_;
 
-  sf::RectangleShape scrollBar_;
-  sf::FloatRect      upArrow_;
-  sf::FloatRect      downArrow_;
-  int                scrollPosition_;
+  sf::RectangleShape          scrollBar_;
+  sf::FloatRect               upArrow_;
+  sf::FloatRect               downArrow_;
+  int                         scrollPosition_;
+  std::optional< sf::Sprite > highlightedSprite_;
 };
 } // namespace MenAmongGods
 
