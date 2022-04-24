@@ -522,6 +522,23 @@ void SkillsAndAttributesDisplay::update()
 
 void SkillsAndAttributesDisplay::onUserInput( const sf::Event& e )
 {
+  if ( e.type == sf::Event::MouseWheelScrolled )
+  {
+    sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
+    if (MenAmongGods::skillsBoundingBox.contains(mousePosition))
+    {
+      if ( e.mouseWheelScroll.delta > 0.0f && scrollPosition_ > 0 )
+      {
+        scrollPosition_ -= 5;
+
+      }
+      else if ( e.mouseWheelScroll.delta < 0.0f && scrollPosition_ < 20 )
+      {
+        scrollPosition_ += 5;
+      }
+    }
+  }
+
   if ( e.type == sf::Event::MouseButtonReleased && e.mouseButton.button == sf::Mouse::Button::Left )
   {
     sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );

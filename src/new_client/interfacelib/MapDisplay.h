@@ -6,6 +6,8 @@
 #include "ClientTypes.h"
 #include "Component.h"
 
+#include <set>
+
 class GraphicsCache;
 class GraphicsIndex;
 class PlayerData;
@@ -60,6 +62,10 @@ private:
   void         copyEffectSprite( int index, int nr, int xpos, int ypos, int xoff, int yoff, sf::Color effectColor );
   sf::Vector2i dd_gputtext( int xpos, int ypos, std::string text, int xoff, int yoff );
 
+  typedef std::vector< MapDisplay::MapSprite >::iterator MapSpriteIterator;
+
+  MapSpriteIterator getSpriteByType( const std::set< int >& mapIndicesToCheck, MapSprite::SpriteType spriteType );
+
   const sf::Font&                   font_;
   MenAmongGods::Map&                map_;
   PlayerData&                       playerData_;
@@ -72,6 +78,7 @@ private:
   int                               tileType_;
   int                               tileX_;
   int                               tileY_;
+  int                               lastHoveredIndex_;
 };
 } // namespace MenAmongGods
 

@@ -125,7 +125,17 @@ void UserOptionPanelDisplay::onUserInput( const sf::Event& e )
     // Exit
     if ( exitRectangle_.getGlobalBounds().contains( mousePosition ) )
     {
-      commands_.push_back( std::make_shared< MenAmongGods::ExitCommand >() );
+      static bool hasRequestedExit = false;
+
+      if (!hasRequestedExit)
+      {
+        playerData_.addLogMessage( LogType::ERROR, "Are you sure you want to exit this way? You will be punished by the Gods!" );
+        hasRequestedExit = true;
+      }
+      else
+      {
+        commands_.push_back( std::make_shared< MenAmongGods::ExitCommand >() );
+      }
     }
 
     // Hide walls - true->false, false->true when clicked

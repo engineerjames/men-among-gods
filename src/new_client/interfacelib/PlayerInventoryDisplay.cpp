@@ -26,6 +26,7 @@ PlayerInventoryDisplay::PlayerInventoryDisplay( const sf::RenderWindow& window, 
     , upArrow_( MenAmongGods::inventoryScrollUpBoxPosition, MenAmongGods::scrollBoxSize )
     , downArrow_( MenAmongGods::inventoryScrollDownBoxPosition, MenAmongGods::scrollBoxSize )
     , scrollPosition_( 0 )
+    , highlightedSprite_( )
 {
   scrollBar_.setPosition( MenAmongGods::inventoryScrollBarPosition );
   scrollBar_.setSize( MenAmongGods::inventoryScrollBarSize );
@@ -40,11 +41,21 @@ void PlayerInventoryDisplay::draw( sf::RenderTarget& target, sf::RenderStates st
   }
 
   target.draw( scrollBar_, states );
+
+  if ( highlightedSprite_.has_value() )
+  {
+    sf::RenderStates additiveState {};
+    additiveState.blendMode = sf::BlendAdd;
+
+    target.draw( *highlightedSprite_, additiveState );
+  }
 }
 
 void PlayerInventoryDisplay::update()
 {
   equipmentSprites_.clear();
+  highlightedSprite_.reset();
+
   int drawnItems = 0;
   for ( unsigned int i = scrollPosition_ * 2; i < N_ITEMS; ++i )
   {
@@ -57,6 +68,12 @@ void PlayerInventoryDisplay::update()
     sf::Vector2f spritePosition { static_cast< float >( 220 + ( drawnItems % 2 ) * 35 ),
                                   static_cast< float >( 2 + ( drawnItems / 2 ) * 35 ) };
     lastSprite.setPosition( spritePosition );
+
+    sf::FloatRect itemBox { spritePosition, sf::Vector2f { 32.0f, 32.0f } };
+    if ( itemBox.contains( MenAmongGods::getNormalizedMousePosition( window_ ) ) )
+    {
+      highlightedSprite_ = lastSprite;
+    }
 
     // Only 10 items can be displayed at once
     drawnItems++;
@@ -109,6 +126,22 @@ void PlayerInventoryDisplay::update()
 
 void PlayerInventoryDisplay::onUserInput( const sf::Event& e )
 {
+  if (e.type == sf::Event::MouseWheelScrolled)
+  {
+    sf::Vector2f mousePosition = MenAmongGods::getNormalizedMousePosition( window_ );
+    if ( MenAmongGods::inventoryBoundingBox.contains(mousePosition))
+    {
+      if ( e.mouseWheelScroll.delta > 0.0 )
+      {
+        scrollPosition_ = std::max( scrollPosition_ - 1, 0 );
+      }
+      else if ( e.mouseWheelScroll.delta < 0.0 )
+      {
+        scrollPosition_ = std::min( scrollPosition_ + 1, 15 );
+      }
+    }
+  }
+
   if ( e.type == sf::Event::MouseButtonReleased && e.mouseButton.button == sf::Mouse::Button::Left )
   {
     sf::Vector2f mousePosition = MenAmongGods::getNormalizedMousePosition( window_ );

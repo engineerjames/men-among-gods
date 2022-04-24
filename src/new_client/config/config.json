@@ -1,5 +1,5 @@
 {
-  "hostIpAddress": "ec2-3-90-219-226.compute-1.amazonaws.com",
+  "hostIpAddress": "192.168.1.223",
   "hostPort": 5555,
   "loggingEnabled": false,
   "enableHpBars": false
