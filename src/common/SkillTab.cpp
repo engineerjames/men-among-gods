@@ -1,6 +1,6 @@
 #include "SkillTab.h"
 
-#include <numeric>
+#include <limits>
 
 #include "Player.h"
 
