@@ -27,16 +27,6 @@
 
 namespace
 {
-static const constexpr unsigned int HL_BUTTONBOX = 1;
-static const constexpr unsigned int HL_STATBOX   = 2;
-static const constexpr unsigned int HL_BACKPACK  = 3;
-static const constexpr unsigned int HL_EQUIPMENT = 4;
-static const constexpr unsigned int HL_SPELLBOX  = 5;
-static const constexpr unsigned int HL_CITEM     = 6;
-static const constexpr unsigned int HL_MONEY     = 7;
-static const constexpr unsigned int HL_MAP       = 8;
-static const constexpr unsigned int HL_SHOP      = 9;
-static const constexpr unsigned int HL_STATBOX2  = 10;
 
 int autohide( int x, int y )
 {
@@ -76,6 +66,25 @@ int facing( int x, int y, int dir )
 
 namespace MenAmongGods
 {
+
+MapDisplay::MapSpriteIterator MapDisplay::getSpriteByType( const std::set< int >& mapIndicesToCheck, MapSprite::SpriteType spriteType )
+{
+  auto sprite = std::find_if( std::begin( spritesToDraw_ ), std::end( spritesToDraw_ ),
+                              [ & ]( const MapSprite& mapSprite )
+                              {
+                                for ( const auto& mapI : mapIndicesToCheck )
+                                {
+                                  if ( mapSprite.type == spriteType && mapSprite.index == mapI )
+                                  {
+                                    return true;
+                                  }
+                                }
+
+                                return false;
+                              } );
+
+  return sprite;
+}
 
 MapDisplay::MapDisplay( const sf::Font& font, MenAmongGods::Map& map, PlayerData& playerData, GraphicsCache& cache,
                         const GraphicsIndex& index, const sf::RenderWindow& window )
@@ -268,28 +277,32 @@ void MapDisplay::onUserInput( const sf::Event& e )
       return;
     }
 
-    int m = getMapIndexFromMousePosition( mousePosition );
-
     for ( const auto& i : getFuzzyMapIndices( mousePosition ) )
     {
-      cmap      clickedTile = map_.getMap( i );
-      const int x           = clickedTile.x;
-      const int y           = clickedTile.y;
+      cmap clickedTile = map_.getMap( i );
+
+      if ( playerData_.getHoverState() != PlayerData::HoverState::NONE && lastHoveredIndex_ != 0 )
+      {
+        clickedTile = map_.getMap( lastHoveredIndex_ );
+      }
+
+      const int x = clickedTile.x;
+      const int y = clickedTile.y;
 
       if ( x == 0 && y == 0 )
       {
         return;
       }
 
-      if ( playerData_.getCarriedItem() != 0 && ! ( map_.getFlags( m ) & ISITEM ) )
+      if ( playerData_.getCarriedItem() != 0 && ! ( clickedTile.flags & ISITEM ) )
       {
         commands_.emplace_back( std::make_shared< MenAmongGods::DropCommand >( x, y ) );
         return;
       }
 
-      if ( map_.getFlags( m ) & ISITEM )
+      if ( clickedTile.flags & ISITEM )
       {
-        if ( map_.getFlags( m ) & ISUSABLE )
+        if ( clickedTile.flags & ISUSABLE )
         {
           commands_.emplace_back( std::make_shared< MenAmongGods::UseCommand >( x, y ) );
         }
@@ -367,7 +380,6 @@ void MapDisplay::update()
   int selected_visible {};
   int alpha {};
   int alphastr {};
-  int hightlight {};
   int selected_char = playerData_.getSelectedCharacter();
 
   int xoff       = -map_.getObjectXOffset( ( TILEX / 2 ) + ( TILEY / 2 ) * MAPX ) - 176; //-176;
@@ -383,14 +395,8 @@ void MapDisplay::update()
       // background
       int m = x + y * MAPX;
 
-      if ( hightlight == HL_MAP && tileType_ == 0 && tileX_ == x && tileY_ == y )
-      {
-        tmp = 16;
-      }
-      else
-      {
-        tmp = 0;
-      }
+      tmp = 0;
+
       if ( map_.getFlags( m ) & INVIS )
       {
         tmp |= 64;
@@ -421,6 +427,13 @@ void MapDisplay::update()
     }
   }
 
+  // Exit early if the player has left to avoid drawing text and other such things
+  // on the screen unnecessarily
+  if ( playerData_.getExitFlag())
+  {
+    return;
+  }
+
   for ( y = TILEY - 1; y >= 0; y-- )
   {
     for ( x = 0; x < TILEX; x++ )
@@ -438,73 +451,19 @@ void MapDisplay::update()
 
       // object
       if ( playerData_.areWallsHidden() == 0 || ( map_.getFlags( m ) & ISITEM ) || autohide( x, y ) )
-      {
-        int tmp2 {};
-
+      {        
         if ( map_.getObject1( m ) > 16335 && map_.getObject1( m ) < 16422 && map_.getObject1( m ) != 16357 &&
              map_.getObject1( m ) != 16365 && map_.getObject1( m ) != 16373 && map_.getObject1( m ) != 16381 &&
              map_.getObject1( m ) != 16357 && map_.getObject1( m ) != 16389 && map_.getObject1( m ) != 16397 &&
              map_.getObject1( m ) != 16405 && map_.getObject1( m ) != 16413 && map_.getObject1( m ) != 16421 &&
              ! facing( x, y, playerData_.getPlayerDirection() ) && ! autohide( x, y ) && playerData_.areWallsHidden() )
         { // mine hack
-          if ( map_.getObject1( m ) < 16358 )
-          {
-            tmp2 = 457;
-          }
-          else if ( map_.getObject1( m ) < 16366 )
-          {
-            tmp2 = 456;
-          }
-          else if ( map_.getObject1( m ) < 16374 )
-          {
-            tmp2 = 455;
-          }
-          else if ( map_.getObject1( m ) < 16382 )
-          {
-            tmp2 = 466;
-          }
-          else if ( map_.getObject1( m ) < 16390 )
-          {
-            tmp2 = 459;
-          }
-          else if ( map_.getObject1( m ) < 16398 )
-          {
-            tmp2 = 458;
-          }
-          else if ( map_.getObject1( m ) < 16398 )
-          {
-            tmp2 = 449;
-          }
-          else if ( map_.getObject1( m ) < 16406 )
-          {
-            tmp2 = 468;
-          }
-          else
-          {
-            tmp2 = 467;
-          }
-
-          if ( hightlight == HL_MAP && tileType_ == 1 && tileX_ == x && tileY_ == y )
-          {
-            copysprite( m, tmp2, map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ), MapSprite::SpriteType::Tile );
-          }
-          else
-          {
-            copysprite( m, tmp2, map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ), MapSprite::SpriteType::Tile );
-          }
+          // Do nothing--might need to re-evaluate deleting this.
         }
         else
         {
-          if ( hightlight == HL_MAP && tileType_ == 1 && tileX_ == x && tileY_ == y )
-          {
-            copysprite( m, map_.getObject1( m ), map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ),
-                        MapSprite::SpriteType::Object );
-          }
-          else
-          {
-            copysprite( m, map_.getObject1( m ), map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ),
-                        MapSprite::SpriteType::Object );
-          }
+          copysprite( m, map_.getObject1( m ), map_.getLight( m ) | tmp, x * 32, y * 32, xoff, yoff, map_.getLight( m ),
+                      MapSprite::SpriteType::Object );
         }
       }
       else if ( map_.getObject1( m ) )
@@ -747,9 +706,7 @@ void MapDisplay::update()
 
   sf::Vector2f mousePosition = getNormalizedMousePosition( window_ );
 
-  int mapIndex = getMapIndexFromMousePosition( mousePosition );
   playerData_.setHoverState( PlayerData::HoverState::NONE );
-
 
   // Add highlights at the end of the render loop to ensure they're always drawn last.  Effectively
   // what we're doing is copying the SAME sprite, putting in the SAME location, except changing to an additive blend
@@ -757,15 +714,13 @@ void MapDisplay::update()
   // that we're only highlighting one thing at a time to mimic what is done when we issue commands to the server.
   if ( playerData_.isHoldingControl() )
   {
-    auto hoveredSprite = std::find_if( std::begin( spritesToDraw_ ), std::end( spritesToDraw_ ),
-                                       [ & ]( const MapSprite& mapSprite )
-                                       {
-                                         return mapIndex == mapSprite.index && mapSprite.type == MapSprite::SpriteType::Character;
-                                       } );
+    auto mapIndices    = getFuzzyMapIndices( mousePosition );
+    auto hoveredSprite = getSpriteByType( mapIndices, MapSprite::SpriteType::Character );
 
     if ( hoveredSprite != std::end( spritesToDraw_ ) )
     {
       MapSprite newSprite             = *hoveredSprite;
+      lastHoveredIndex_               = hoveredSprite->index;
       newSprite.renderState.blendMode = sf::BlendAdd;
       spritesToDraw_.push_back( newSprite );
 
@@ -781,31 +736,29 @@ void MapDisplay::update()
   }
   else if ( playerData_.isHoldingShift() )
   {
-    auto hoveredSprite = std::find_if( std::begin( spritesToDraw_ ), std::end( spritesToDraw_ ),
-                                       [ & ]( const MapSprite& mapSprite )
-                                       {
-                                         return mapIndex == mapSprite.index && mapSprite.type == MapSprite::SpriteType::Object;
-                                       } );
+    auto mapIndices    = getFuzzyMapIndices( mousePosition );
+    auto hoveredSprite = getSpriteByType( mapIndices, MapSprite::SpriteType::Object );
 
     // For interactable objects, we also need to check to ensure that the item is interactable
     if ( hoveredSprite != std::end( spritesToDraw_ ) &&
-         ( ( map_.getFlags( mapIndex ) & ISITEM ) || ( map_.getFlags( mapIndex ) & ISUSABLE ) ) )
+         ( ( map_.getFlags( hoveredSprite->index ) & ISITEM ) || ( map_.getFlags( hoveredSprite->index ) & ISUSABLE ) ) )
     {
       MapSprite newSprite             = *hoveredSprite;
+      lastHoveredIndex_               = hoveredSprite->index;
       newSprite.renderState.blendMode = sf::BlendAdd;
       spritesToDraw_.push_back( newSprite );
 
       // Set the player's hover state appropriately
-      playerData_.setHoverState( PlayerData::HoverState::USE );    
+      playerData_.setHoverState( PlayerData::HoverState::USE );
     }
   }
   else
   {
-    auto hoveredSprite = std::find_if( std::begin( spritesToDraw_ ), std::end( spritesToDraw_ ),
-                                       [ & ]( const MapSprite& mapSprite )
-                                       {
-                                         return mapIndex == mapSprite.index && mapSprite.type == MapSprite::SpriteType::Tile;
-                                       } );
+    // Only need to check what is currently pointed at by the mouse cursor
+    std::set< int > mapIndicesToCheck {};
+
+    mapIndicesToCheck.insert( getMapIndexFromMousePosition( mousePosition ) );
+    auto hoveredSprite = getSpriteByType( mapIndicesToCheck, MapSprite::SpriteType::Tile );
 
     if ( hoveredSprite != std::end( spritesToDraw_ ) )
     {
@@ -814,8 +767,6 @@ void MapDisplay::update()
       spritesToDraw_.push_back( newSprite );
     }
   }
-
-
 }
 
 void MapDisplay::copyEffectSprite( int index, int nr, int xpos, int ypos, int xoff, int yoff, sf::Color effectColor )
@@ -877,6 +828,12 @@ void MapDisplay::copysprite( int index, int nr, int effect, int xpos, int ypos, 
   if ( nr == 0 )
   {
     return;
+  }
+
+  // Player has exited, blacken all draw requests to an invalid sprite.
+  if ( playerData_.getExitFlag() )
+  {
+    nr = 999;
   }
 
   MapSprite newMapSprite { cache_.getSprite( nr ), index, spriteType };
