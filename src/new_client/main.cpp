@@ -33,7 +33,9 @@ int main( int argc, char** args )
 {
   LOG_SET_LEVEL( MenAmongGods::ClientConfiguration::instance().loggingEnabled() );
 
-  std::string fontPath  = MenAmongGods::getFontRoot() + "Ra-Mono.otf";
+  // Amiko-Regular is a great choice
+  // BP-Mono looks decent, would need some tweaks--at least it is a serif font
+  std::string fontPath  = MenAmongGods::getFontRoot() + "BPmono.ttf";
   std::string path      = MenAmongGods::getGfxRoot() + "gfx.zip";
   std::string indexPath = MenAmongGods::getGfxRoot() + "gx00.idx";
 

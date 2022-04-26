@@ -1,5 +1,6 @@
 #include "FontCache.h"
 
+#include "GraphicsCache.h"
 #include "Logger.h"
 
 namespace MenAmongGods
