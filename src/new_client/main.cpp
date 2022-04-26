@@ -35,7 +35,7 @@ int main( int argc, char** args )
 
   // Amiko-Regular is a great choice
   // BP-Mono looks decent, would need some tweaks--at least it is a serif font
-  std::string fontPath  = MenAmongGods::getFontRoot() + "BPmono.ttf";
+  std::string fontPath  = MenAmongGods::getFontRoot() + "Amiko-Regular.ttf";
   std::string path      = MenAmongGods::getGfxRoot() + "gfx.zip";
   std::string indexPath = MenAmongGods::getGfxRoot() + "gx00.idx";
 

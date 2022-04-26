@@ -110,13 +110,8 @@ add_custom_command(
             COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/test_files/gx00.idx ${RESOURCE_OUTPUT_DIRECTORY}/gfx
 
             COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../fonts/onuava.ttf ${RESOURCE_OUTPUT_DIRECTORY}/fonts
-            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../fonts/Ra-Mono.otf ${RESOURCE_OUTPUT_DIRECTORY}/fonts
-            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../fonts/Solid-Mono.ttf ${RESOURCE_OUTPUT_DIRECTORY}/fonts
             COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../fonts/Amiko-Regular.ttf ${RESOURCE_OUTPUT_DIRECTORY}/fonts
             COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../fonts/BPmono.ttf ${RESOURCE_OUTPUT_DIRECTORY}/fonts
-            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../fonts/FiraMono-Regular.otf ${RESOURCE_OUTPUT_DIRECTORY}/fonts
-            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../fonts/SpaceMono-Regular.ttf ${RESOURCE_OUTPUT_DIRECTORY}/fonts
-            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../fonts/VIPROX-PersonalUse.otf ${RESOURCE_OUTPUT_DIRECTORY}/fonts
 
             COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/test_files/mapfile.archive ${RESOURCE_OUTPUT_DIRECTORY}/test
             COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/test_files/player.archive ${RESOURCE_OUTPUT_DIRECTORY}/test
