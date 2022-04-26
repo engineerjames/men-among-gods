@@ -101,6 +101,7 @@ MapDisplay::MapDisplay( const sf::Font& font, MenAmongGods::Map& map, PlayerData
     , tileType_()
     , tileX_()
     , tileY_()
+    , lastHoveredIndex_( 0 )
 {
 }
 
@@ -429,7 +430,7 @@ void MapDisplay::update()
 
   // Exit early if the player has left to avoid drawing text and other such things
   // on the screen unnecessarily
-  if ( playerData_.getExitFlag())
+  if ( playerData_.getExitFlag() )
   {
     return;
   }
@@ -451,7 +452,7 @@ void MapDisplay::update()
 
       // object
       if ( playerData_.areWallsHidden() == 0 || ( map_.getFlags( m ) & ISITEM ) || autohide( x, y ) )
-      {        
+      {
         if ( map_.getObject1( m ) > 16335 && map_.getObject1( m ) < 16422 && map_.getObject1( m ) != 16357 &&
              map_.getObject1( m ) != 16365 && map_.getObject1( m ) != 16373 && map_.getObject1( m ) != 16381 &&
              map_.getObject1( m ) != 16357 && map_.getObject1( m ) != 16389 && map_.getObject1( m ) != 16397 &&
@@ -531,7 +532,7 @@ void MapDisplay::update()
 
         // Look text that appears on the map
         lastText.setPosition( sf::Vector2f { static_cast< float >( textPosition.x ), static_cast< float >( textPosition.y ) } );
-        lastText.setCharacterSize( 8 );
+        lastText.setCharacterSize( 10 );
         lastText.setOutlineColor( sf::Color::Black );
         lastText.setOutlineThickness( 1.0f );
         lastText.setFillColor( MenAmongGods::MsgYellow );
@@ -887,7 +888,8 @@ void MapDisplay::copysprite( int index, int nr, int effect, int xpos, int ypos, 
 
   // Apply light effects
   // Light values range from 0 - 15
-  std::uint8_t lightValue = 255u - static_cast< uint8_t >( static_cast< float >( light ) / 15.0f * 255u );
+  const unsigned int minLightRgb = 32;
+  std::uint8_t lightValue  = std::max( minLightRgb, ( 255u - static_cast< std::uint8_t >( static_cast< float >( light ) / 15.0f * 255u ) ) );
   newSprite.setColor( sf::Color { lightValue, lightValue, lightValue, 255u } );
 
   if ( effect & 64 )
