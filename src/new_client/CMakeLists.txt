@@ -81,7 +81,7 @@ else()
               )
 endif()
 
-
+# Need to ensure that electron-packager and electron-builder has been installed globally
 add_custom_target( package_release
             COMMAND npm install
             COMMAND npx electron-packager . --extra-resource=${install_directory} --out=${PROJECT_SOURCE_DIR}/electron_app/men-among-gods/out

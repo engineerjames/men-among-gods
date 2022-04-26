@@ -6,7 +6,7 @@
     "url": "https://github.com/engineerjames/men-among-gods"
   },
   "description": "Client for Men Among Gods -- 2D Isometric MMORPG based on Mercenaries of Astonia (v2)",
-  "version": "0.1.0",
+  "version": "1.1.6",
   "private": true,
   "proxy": "http://localhost:3000",
   "dependencies": {
