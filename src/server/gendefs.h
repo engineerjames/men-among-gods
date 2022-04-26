@@ -12,7 +12,7 @@ All rights reserved.
 #define VERSION 0x020E07
 #define MINVERSION 0x020E06
 
-#define TICKS 18
+#define TICKS 20
 #define TICK ( 1000000 / TICKS )
 
 static constexpr const int SERVER_MAPX = 1024;

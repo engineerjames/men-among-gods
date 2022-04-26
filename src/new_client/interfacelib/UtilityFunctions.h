@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <array>
+#include <set>
 
 #include "MapConstants.h"
 #include "UiConstants.h"
@@ -58,23 +59,30 @@ inline int getMapIndexFromMousePosition( const sf::Vector2f& mousePosition )
   return mx + my * TILEX;
 }
 
-inline std::array< int, 10 > getFuzzyMapIndices( sf::Vector2f centerMousePosition )
+inline std::set<int> getFuzzyMapIndices( sf::Vector2f centerMousePosition )
 {
   int m = getMapIndexFromMousePosition( centerMousePosition );
 
-  std::array< int, 10 > mapIndicesToCheck {};
+  std::set< int > mapIndicesToCheck {};
+  
+  // First check exactly where the mouse cursor is (just in-case)
+  mapIndicesToCheck.insert( m );
 
-  // First check the original index specified
-  mapIndicesToCheck[ 0 ] = m;
-  mapIndicesToCheck[ 1 ] = getMapIndexFromMousePosition( centerMousePosition + sf::Vector2f { 16.0f, 0.0f } );
-  mapIndicesToCheck[ 2 ] = getMapIndexFromMousePosition( centerMousePosition + sf::Vector2f { -16.0f, 0.0f } );
-  mapIndicesToCheck[ 3 ] = getMapIndexFromMousePosition( centerMousePosition + sf::Vector2f { 0.0f, 16.0f } );
-  mapIndicesToCheck[ 4 ] = getMapIndexFromMousePosition( centerMousePosition + sf::Vector2f { 0.0f, 32.0f } );
-  mapIndicesToCheck[ 5 ] = getMapIndexFromMousePosition( centerMousePosition + sf::Vector2f { 0.0f, 32.0f } );
-  mapIndicesToCheck[ 6 ] = getMapIndexFromMousePosition( centerMousePosition + sf::Vector2f { 32.0f, 0.0f } );
-  mapIndicesToCheck[ 7 ] = getMapIndexFromMousePosition( centerMousePosition + sf::Vector2f { -32.0f, 0.0f } );
-  mapIndicesToCheck[ 8 ] = getMapIndexFromMousePosition( centerMousePosition + sf::Vector2f { 32.0f, 32.0f } );
-  mapIndicesToCheck[ 9 ] = getMapIndexFromMousePosition( centerMousePosition + sf::Vector2f { -32.0f, -32.0f } );
+  const int N_POINTS_X = 10;
+  const int N_POINTS_Y = 10;
+
+  for (int i = 0; i < N_POINTS_X; ++i)
+  {
+    for (int j = 0; j < N_POINTS_Y; ++j)
+    {
+      float xOffset = -16.0f + ( i * (  32.0f / ( N_POINTS_X - 1 ) ) );
+      float yOffset = 64.0f - ( j * ( 48.0f / ( N_POINTS_Y - 1 ) ) );
+
+      int newIndexToCheck = getMapIndexFromMousePosition( centerMousePosition + sf::Vector2f { xOffset, yOffset } );    
+
+      mapIndicesToCheck.insert( newIndexToCheck );
+    }
+  }
 
   return mapIndicesToCheck;
 }

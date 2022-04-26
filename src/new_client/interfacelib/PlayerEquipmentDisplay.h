@@ -5,6 +5,8 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <optional>
+
 class PlayerData;
 class GraphicsCache;
 
@@ -23,10 +25,11 @@ public:
   virtual void finalize() override;
 
 private:
-  const sf::RenderWindow&   window_;
-  PlayerData&               playerData_;
-  GraphicsCache&            gfxCache_;
-  std::vector< sf::Sprite > inventorySprites_;
+  const sf::RenderWindow&     window_;
+  PlayerData&                 playerData_;
+  GraphicsCache&              gfxCache_;
+  std::vector< sf::Sprite >   equipmentSprites_;
+  std::optional< sf::Sprite > highlightedSprite_;
 };
 } // namespace MenAmongGods
 
