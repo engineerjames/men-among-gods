@@ -33,7 +33,9 @@ int main( int argc, char** args )
 {
   LOG_SET_LEVEL( MenAmongGods::ClientConfiguration::instance().loggingEnabled() );
 
-  std::string fontPath  = MenAmongGods::getFontRoot() + "onuava.ttf";
+  // Amiko-Regular is a great choice
+  // BP-Mono looks decent, would need some tweaks--at least it is a serif font
+  std::string fontPath  = MenAmongGods::getFontRoot() + "Amiko-Regular.ttf";
   std::string path      = MenAmongGods::getGfxRoot() + "gfx.zip";
   std::string indexPath = MenAmongGods::getGfxRoot() + "gx00.idx";
 
@@ -42,7 +44,7 @@ int main( int argc, char** args )
   auto idxCache   = std::make_unique< GraphicsIndex >( indexPath );
   auto soundCache = std::make_unique< SoundCache >();
 
-  sf::RenderWindow window( sf::VideoMode( MODEX, MODEY ), "Men Among Gods - v1.1.4" );
+  sf::RenderWindow window( sf::VideoMode( MODEX, MODEY ), "Men Among Gods - v1.1.6" );
   window.setFramerateLimit( CLIENT_FRAME_LIMIT );
   window.requestFocus();
 

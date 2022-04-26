@@ -28,7 +28,7 @@ MainUi::MainUi( const sf::RenderWindow& window, Map& map, PlayerData& pdata, Gra
     , expLabel_()
     , expValue_()
     , skillsAndAttributes_( window, *this, font_, gfxCache, gfxIndex, pdata )
-    , msgBox_()
+    , msgBox_( window )
     , userInput_( font_ )
     , playerEquipment_( window, pdata, gfxCache )
     , playerInventory_( window, pdata, gfxCache )

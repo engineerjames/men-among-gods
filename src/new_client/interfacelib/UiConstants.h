@@ -56,8 +56,8 @@ static const sf::Vector2f  equipmentBoundingBoxPosition { 304.0f, 3.0f };
 static const sf::Vector2f  equipmentBoundingBoxSize { 66.0f, 206.0f };
 static const sf::FloatRect equipmentBoundingBox { equipmentBoundingBoxPosition, equipmentBoundingBoxSize };
 
-static const sf::Vector2f skillsBoundingBoxPosition {0.0f, 114.0f};
-static const sf::Vector2f skillsBoundingBoxSize {206.0f, 140.0f};
+static const sf::Vector2f  skillsBoundingBoxPosition { 0.0f, 114.0f };
+static const sf::Vector2f  skillsBoundingBoxSize { 206.0f, 140.0f };
 static const sf::FloatRect skillsBoundingBox { skillsBoundingBoxPosition, skillsBoundingBoxSize };
 
 // User input text box
@@ -88,6 +88,11 @@ static const sf::Vector2f endMaxValuePosition { 136.0f, 281.0f };
 static const sf::Vector2f manaLabelPosition { 4.0f, 295.0f };
 static const sf::Vector2f manaCurrentValuePosition { 111.0f, 295.0f };
 static const sf::Vector2f manaMaxValuePosition { 136.0f, 295.0f };
+
+// Chat log location
+static const sf::Vector2f  chatLogPosition { 500.0f, 3.0f };
+static const sf::Vector2f  chatLogSize { 300.0f, 235.0f };
+static const sf::FloatRect chatLogBoundingBox { chatLogPosition, chatLogSize };
 
 // Client options on the bottom-right
 static const sf::Vector2f  clientOptionsOrigin { 608.0f, 555.0f };
