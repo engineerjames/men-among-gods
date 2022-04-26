@@ -12,7 +12,7 @@ namespace MenAmongGods
 class PlayerLogDisplay : public sf::Transformable, public MenAmongGods::Component
 {
 public:
-  PlayerLogDisplay();
+  PlayerLogDisplay( const sf::RenderWindow& window );
   ~PlayerLogDisplay() = default;
 
   void         addMessage( sf::Text newMsg );
@@ -26,6 +26,7 @@ private:
   void        recalculateMessagePositions();
   std::string splitStringWithNewlines( std::string& input );
 
+  const sf::RenderWindow& window_;
   std::vector< sf::Text > messageLog_;
   const int               charactersPerLine_;
   int                     chatLogOffset_;

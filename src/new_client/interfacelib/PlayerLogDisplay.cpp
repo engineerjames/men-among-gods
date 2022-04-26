@@ -6,14 +6,16 @@
 
 #include "ColorPalette.h"
 #include "UiConstants.h"
+#include "UtilityFunctions.h"
 
 namespace MenAmongGods
 {
-PlayerLogDisplay::PlayerLogDisplay()
+PlayerLogDisplay::PlayerLogDisplay( const sf::RenderWindow& window )
     : sf::Transformable()
     , MenAmongGods::Component()
+    , window_( window )
     , messageLog_()
-    , charactersPerLine_( 48 )
+    , charactersPerLine_( 52 )
     , chatLogOffset_( 0 )
 {
 }
@@ -23,10 +25,25 @@ void PlayerLogDisplay::update()
   // Do nothing for now.
 }
 
-void PlayerLogDisplay::onUserInput( const sf::Event& )
+void PlayerLogDisplay::onUserInput( const sf::Event& e )
 {
+  bool         scrolledDown  = false;
+  bool         scrolledUp    = false;
+  sf::Vector2f mousePosition = MenAmongGods::getNormalizedMousePosition( window_ );
 
-  if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Key::PageUp ) )
+  if ( e.type == sf::Event::MouseWheelScrolled && MenAmongGods::chatLogBoundingBox.contains( mousePosition ) )
+  {
+    if ( e.mouseWheelScroll.delta > 0 )
+    {
+      scrolledUp = true;
+    }
+    else if ( e.mouseWheelScroll.delta < 0 )
+    {
+      scrolledDown = true;
+    }
+  }
+
+  if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Key::PageUp ) || scrolledUp )
   {
     if ( static_cast< int >( messageLog_.size() ) > ( chatLogOffset_ + 5 ) )
     {
@@ -35,7 +52,7 @@ void PlayerLogDisplay::onUserInput( const sf::Event& )
     }
   }
 
-  if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Key::PageDown ) )
+  if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Key::PageDown ) || scrolledDown )
   {
     chatLogOffset_ == 0 ? chatLogOffset_ : chatLogOffset_ -= 5;
     recalculateMessagePositions();
