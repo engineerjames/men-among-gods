@@ -482,7 +482,7 @@ void game_loop( int sock )
   if ( tdiff < 1 )
     tdiff = 1;
 
-  if ( globs->ticker % 8 == 0 )
+  if ( globs->ticker )
   {
     prof = prof_start();
 
