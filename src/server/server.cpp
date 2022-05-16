@@ -967,7 +967,7 @@ int main( int argc, char* args[] )
     if ( ( globs->ticker & 4095 ) == 0 )
     {
       load_mod();
-      // update();
+      update();
     }
     game_loop( sock );
     if ( quit )

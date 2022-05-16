@@ -14,5 +14,5 @@ The legacy client front-end has been replaced with electron, but is still in a f
 
 ### Further instructions TBD - Most up to date information will be held on the Wiki.
 Docker build commands:
-sudo docker build --label men-among-gods -f ./server.Dockerfile ./
-sudo docker run -p <hostPort>:5555
+sudo docker build -t men-among-gods -f ./server.Dockerfile ./
+sudo docker run -p <hostPort>:5555 <imageName>

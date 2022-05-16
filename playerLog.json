@@ -1,0 +1,23 @@
+{
+	"file" : "Logger.cpp",
+	"function" : "Constructor",
+	"level" : "DEBUG",
+	"lineNumber" : 21,
+	"msg" : "08a1e07d5487af07a540fd612b480cd92fac6d67",
+	"time" : "2022-05-16 13:28:15"
+}
+{
+	"file" : "/home/james/git/men-among-gods/src/new_client/clientlib/ClientConfiguration.cpp",
+	"function" : "MenAmongGods::ClientConfiguration::ClientConfiguration()",
+	"level" : "DEBUG",
+	"lineNumber" : 67,
+	"msg" : "Client configuration parameters",
+	"object" : 
+	{
+		"enableHpBars" : false,
+		"hostIpAddress" : "127.0.0.1",
+		"hostPort" : 5555,
+		"loggingEnabled" : false
+	},
+	"time" : "2022-05-16 13:28:15"
+}

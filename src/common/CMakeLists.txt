@@ -1,4 +1,4 @@
-find_package(jsoncpp REQUIRED)
+find_package(jsoncpp CONFIG REQUIRED)
 
 set(target common)
 
@@ -25,7 +25,7 @@ target_link_libraries(${target} PRIVATE ${PROJECT_CXX_LIBS} logging)
 if (NOT BUILD_SERVER_ONLY)
   target_link_libraries(${target} PUBLIC JsonCpp::JsonCpp )
 else()
-  target_link_libraries(${target} PRIVATE jsoncpp)
+  target_link_libraries(${target} PUBLIC jsoncpp)
   target_include_directories(${target} SYSTEM PUBLIC /usr/include/jsoncpp)
 endif()
 target_compile_features(${target} PRIVATE cxx_std_17)
