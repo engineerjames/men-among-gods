@@ -16,7 +16,12 @@ set(headers
 )
 
 add_executable(${target} ${sources} ${headers})
-target_link_libraries(${target} PRIVATE Drogon::Drogon JsonCpp::JsonCpp common)
+if (NOT BUILD_SERVER_ONLY)
+  target_link_libraries(${target} PRIVATE Drogon::Drogon JsonCpp::JsonCpp common)
+else()
+  target_link_libraries(${target} PRIVATE Drogon::Drogon jsoncpp common)
+  target_include_directories(${target} SYSTEM PUBLIC /usr/include/jsoncpp)
+endif()
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS})
 target_compile_definitions(${target} PRIVATE ${PROJECT_CXX_DEFINITIONS})
 

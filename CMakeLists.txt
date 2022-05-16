@@ -7,6 +7,7 @@ option(ENABLE_CLANG_TIDY "Enable static analysis via clang-tidy" OFF)
 option(ENABLE_LOGGING "Enable logging output from new client application" ON)
 option(ENABLE_UBSAN "Enable undefined behavior sanitizer" OFF)
 option(ENABLE_ASAN "Enable address sanitizer" OFF)
+option(BUILD_SERVER_ONLY "Build only the server" OFF)
 
 if (MSVC)
   set(ENABLE_CLANG_TIDY OFF)
@@ -23,9 +24,11 @@ endif()
 
 enable_testing()
 
-set(Boost_USE_STATIC_LIBS OFF)
-set(BUILD_SHARED_LIBS OFF)
-find_package(Boost COMPONENTS unit_test_framework REQUIRED)
+if (NOT BUILD_SERVER_ONLY)
+  set(Boost_USE_STATIC_LIBS OFF)
+  set(BUILD_SHARED_LIBS OFF)
+  find_package(Boost COMPONENTS unit_test_framework REQUIRED)
+endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -66,12 +69,14 @@ else()
   endif()
 endif()
 
-add_subdirectory(src/new_client)
-add_subdirectory(src/common)
-add_subdirectory(src/test)
+if (NOT BUILD_SERVER_ONLY)
+  add_subdirectory(src/new_client)
+  add_subdirectory(src/test)
+endif()
 
 if (NOT WIN32)
   add_subdirectory(src/server)
 endif()
 
+add_subdirectory(src/common)
 add_subdirectory(src/api)

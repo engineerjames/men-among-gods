@@ -1,6 +1,7 @@
 #include "Character.h"
 
 #include <array>
+#include <cstring>
 #include <iostream>
 
 #include "Constants.h"
