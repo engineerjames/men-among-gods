@@ -77,5 +77,6 @@
     },
     "cmake.generator": "Ninja",
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
-    "cmake.configureOnEdit": false
+    "cmake.configureOnEdit": false,
+    "cmake.configureOnOpen": true
 }
