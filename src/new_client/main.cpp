@@ -69,6 +69,16 @@ int main( int argc, char** args )
       playerData->fromJson( root );
     }
   }
+  else
+  {
+    // Development only?
+    Json::Value root{};
+    root["sex"] = 1;
+    root["race"] = 2;
+    root["name"] = "Ishtard";
+    root["desc"] = "Nondescript.";
+    root["pass"] = "";
+  }
 
   idxCache->load();
   soundCache->loadAudio( MenAmongGods::getSfxRoot() );
@@ -106,9 +116,11 @@ int main( int argc, char** args )
         {
           window.close();
         }
-        else 
+        else
         {
-          playerData->addLogMessage( LogType::ERROR, "You must exit the game through the tavern! Or the EXIT button in the lower right hand corner of the screen" );
+          playerData->addLogMessage(
+              LogType::ERROR,
+              "You must exit the game through the tavern! Or the EXIT button in the lower right hand corner of the screen" );
         }
       }
 
