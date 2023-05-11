@@ -133,7 +133,7 @@ private:
 
     if ( outputFile_.is_open() )
     {
-      outputFile_ << newEntry.toJson().toStyledString();
+      outputFile_ << newEntry.toJson().toStyledString() << "," << std::endl;
     }
     else
     {
