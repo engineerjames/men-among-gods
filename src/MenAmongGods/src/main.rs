@@ -1,6 +1,11 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] // hide console window on Windows in release
 
 use eframe::egui;
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::thread::{self};
+use tinyfiledialogs::{MessageBoxIcon, YesNo};
+
+static SHOULD_RESET_UI: AtomicBool = AtomicBool::new(false);
 
 fn main() -> Result<(), eframe::Error> {
     env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
@@ -21,11 +26,18 @@ enum Sex {
     Female,
 }
 
+#[derive(PartialEq)]
+enum Race {
+    Templar,
+    Mercenary,
+    Harakim,
+}
+
 struct MyApp {
     name: String,
     description: String,
     sex: Sex,
-    race: String,
+    race: Race,
     password: String,
 }
 
@@ -35,10 +47,21 @@ impl Default for MyApp {
             name: "".to_owned(),
             description: "".to_owned(),
             sex: Sex::Male,
-            race: "".to_owned(),
+            race: Race::Templar,
             password: "".to_owned(),
         }
     }
+}
+
+fn get_reset_choice() -> YesNo {
+    let choice = tinyfiledialogs::message_box_yes_no(
+        "hello",
+        "yes or no?",
+        MessageBoxIcon::Question,
+        YesNo::No,
+    );
+
+    return choice;
 }
 
 impl eframe::App for MyApp {
@@ -59,19 +82,62 @@ impl eframe::App for MyApp {
                     .labelled_by(password_label.id);
             });
 
+            ui.label("Sex");
             ui.horizontal(|ui| {
                 ui.radio_value(&mut self.sex, Sex::Male, "Male");
                 ui.radio_value(&mut self.sex, Sex::Female, "Female");
             });
 
-            //ui.add(egui::Slider::new(&mut self.sex, 0..=120).text("age"));
+            ui.label("Race: ");
+            ui.horizontal(|ui| {
+                ui.radio_value(&mut self.race, Race::Templar, "Templar");
+                ui.radio_value(&mut self.race, Race::Mercenary, "Mercenary");
+                ui.radio_value(&mut self.race, Race::Harakim, "Harakim");
+            });
+
+            let desc_label = ui.label("Description: ");
+            ui.add(egui::widgets::TextEdit::multiline(&mut self.description))
+                .labelled_by(desc_label.id);
 
             ui.horizontal(|ui| {
                 if ui.button("Play").clicked() {}
-                if ui.button("New").clicked() {}
-                if ui.button("Load").clicked() {}
-                if ui.button("Save").clicked() {}
+                if ui.button("New").clicked() {
+                    thread::spawn(move || {
+                        let choice = get_reset_choice();
+
+                        match choice {
+                            YesNo::No => (),
+                            YesNo::Yes => SHOULD_RESET_UI.store(true, Ordering::Relaxed),
+                        };
+                    });
+                }
+
+                if ui.button("Load").clicked() {
+                    let open_file: String;
+                    match tinyfiledialogs::open_file_dialog("Open", "password.txt", None) {
+                        Some(file) => open_file = file,
+                        None => open_file = "null".to_string(),
+                    }
+
+                    println!("{}", open_file);
+                    // TODO: Add loading from json file
+                }
+                if ui.button("Save").clicked() {
+                    let save_file: String;
+                    match tinyfiledialogs::save_file_dialog("Save", "password.txt") {
+                        Some(file) => save_file = file,
+                        None => save_file = "null".to_string(),
+                    }
+                    println!("{}", save_file);
+
+                    // TODO: Add saving to json file
+                }
             });
+
+            if SHOULD_RESET_UI.load(Ordering::Relaxed) {
+                *self = MyApp::default();
+                SHOULD_RESET_UI.store(false, Ordering::Relaxed)
+            }
         });
     }
 }
