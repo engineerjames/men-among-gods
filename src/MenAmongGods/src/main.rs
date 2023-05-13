@@ -1,6 +1,8 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] // hide console window on Windows in release
 
 use eframe::egui;
+use serde_json::json;
+use std::process::Command;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::thread::{self};
 use tinyfiledialogs::{MessageBoxIcon, YesNo};
@@ -10,7 +12,7 @@ static SHOULD_RESET_UI: AtomicBool = AtomicBool::new(false);
 fn main() -> Result<(), eframe::Error> {
     env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
     let options = eframe::NativeOptions {
-        initial_window_size: Some(egui::vec2(400.0, 600.0)),
+        initial_window_size: Some(egui::vec2(400.0, 300.0)),
         ..Default::default()
     };
     eframe::run_native(
@@ -20,17 +22,17 @@ fn main() -> Result<(), eframe::Error> {
     )
 }
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Clone, Copy)]
 enum Sex {
-    Male,
-    Female,
+    Male = 1,
+    Female = 2,
 }
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Clone, Copy)]
 enum Race {
-    Templar,
-    Mercenary,
-    Harakim,
+    Templar = 1,
+    Mercenary = 3,
+    Harakim = 2,
 }
 
 struct MyApp {
@@ -55,13 +57,35 @@ impl Default for MyApp {
 
 fn get_reset_choice() -> YesNo {
     let choice = tinyfiledialogs::message_box_yes_no(
-        "hello",
-        "yes or no?",
-        MessageBoxIcon::Question,
+        "Reset entries?",
+        "WARNING: Selecting yes will erase the player data held within the UI.  
+        \nInsure you have saved your player files first.\n\nSelect yes to reset the UI.",
+        MessageBoxIcon::Warning,
         YesNo::No,
     );
 
     return choice;
+}
+
+// Need following json properties
+// name
+// desc
+// pass
+// race (int)
+// sex (int)
+
+fn get_json_body_for_client(app: &MyApp) -> String {
+    let race = app.race as u8;
+    let sex = app.sex as u8;
+
+    json!({
+        "name": app.name,
+        "desc": app.description,
+        "pass": app.password,
+        "race": race,
+        "sex" : sex,
+    })
+    .to_string()
 }
 
 impl eframe::App for MyApp {
@@ -100,7 +124,25 @@ impl eframe::App for MyApp {
                 .labelled_by(desc_label.id);
 
             ui.horizontal(|ui| {
-                if ui.button("Play").clicked() {}
+                if ui.button("Play").clicked() {
+                    if cfg!(target_os = "windows") {
+                        Command::new("cmd")
+                            .args(["/C", "echo hello"])
+                            .output()
+                            .expect("failed to execute process")
+                    } else {
+                        let json_arg = get_json_body_for_client(&self);
+
+                        println!("{}", json_arg);
+
+                        Command::new(
+                            "/home/james/git/men-among-gods/build/src/new_client/MenAmongGods",
+                        ) // TODO: Don't hard-code this
+                        .arg(json_arg)
+                        .output()
+                        .expect("failed to execute process")
+                    };
+                }
                 if ui.button("New").clicked() {
                     thread::spawn(move || {
                         let choice = get_reset_choice();
@@ -131,6 +173,10 @@ impl eframe::App for MyApp {
                     println!("{}", save_file);
 
                     // TODO: Add saving to json file
+                }
+
+                if ui.button("Quit").clicked() {
+                    std::process::exit(0);
                 }
             });
 
