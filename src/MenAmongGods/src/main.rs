@@ -138,6 +138,7 @@ impl eframe::App for MyApp {
                         Command::new(
                             "/home/james/git/men-among-gods/build/src/new_client/MenAmongGods",
                         ) // TODO: Don't hard-code this
+                        .arg("newentry")
                         .arg(json_arg)
                         .output()
                         .expect("failed to execute process")

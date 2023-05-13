@@ -55,12 +55,14 @@ int main( int argc, char** args )
   {
     if ( std::string( args[ 1 ] ) == "moafile" )
     {
+      LOG_DEBUG("Loading into client via moafile");
       // Loading via moafile
       playerData->loadFromJsonFile( std::string( args[ 2 ] ) );
       playerData->setPassword( std::string( args[ 3 ] ) );
     }
     else if ( std::string( args[ 1 ] ) == "newentry" )
     {
+      LOG_DEBUG("Loading into client via a new character entry");
       // Loading via json based ui
       Json::Reader reader {};
 

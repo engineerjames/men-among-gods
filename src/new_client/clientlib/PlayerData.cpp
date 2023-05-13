@@ -630,6 +630,8 @@ void PlayerData::fromJson( Json::Value& json )
   const std::string playerPass        = json[ "pass" ].asString();
   setName( playerName );
 
+  LOG_DEBUG("Logging in with parameter: " << json.toStyledString());
+
   std::strncpy( const_cast< char* >( okey_.name ), playerName.c_str(), playerName.length() );
   std::strncpy( const_cast< char* >( clientSidePlayerInfo_.name ), playerName.c_str(), playerName.length() );
   std::strncpy( const_cast< char* >( playerInfo_.desc ), playerDescription.c_str(), 160 - 1 );
