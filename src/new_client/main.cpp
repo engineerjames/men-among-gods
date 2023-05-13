@@ -78,6 +78,8 @@ int main( int argc, char** args )
     root["name"] = "Ishtard";
     root["desc"] = "Nondescript.";
     root["pass"] = "";
+
+    playerData->fromJson( root );
   }
 
   idxCache->load();
