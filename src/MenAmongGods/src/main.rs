@@ -2,12 +2,15 @@
 
 use eframe::egui;
 use serde_json::json;
+use std::fs;
 use std::process::Command;
 use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::Mutex;
 use std::thread::{self};
 use tinyfiledialogs::{MessageBoxIcon, YesNo};
 
 static SHOULD_RESET_UI: AtomicBool = AtomicBool::new(false);
+static LOADED_JSON: Mutex<serde_json::Value> = Mutex::new(serde_json::Value::Null);
 
 fn main() -> Result<(), eframe::Error> {
     env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
@@ -66,13 +69,6 @@ fn get_reset_choice() -> YesNo {
 
     return choice;
 }
-
-// Need following json properties
-// name
-// desc
-// pass
-// race (int)
-// sex (int)
 
 fn get_json_body_for_client(app: &MyApp) -> String {
     let race = app.race as u8;
@@ -157,23 +153,37 @@ impl eframe::App for MyApp {
 
                 if ui.button("Load").clicked() {
                     let open_file: String;
-                    match tinyfiledialogs::open_file_dialog("Open", "password.txt", None) {
+                    match tinyfiledialogs::open_file_dialog(
+                        "Open",
+                        "password.txt",
+                        Some((&["*.moa"], "MOA Files")),
+                    ) {
                         Some(file) => open_file = file,
                         None => open_file = "null".to_string(),
                     }
 
-                    println!("{}", open_file);
-                    // TODO: Add loading from json file
-                }
-                if ui.button("Save").clicked() {
-                    let save_file: String;
-                    match tinyfiledialogs::save_file_dialog("Save", "password.txt") {
-                        Some(file) => save_file = file,
-                        None => save_file = "null".to_string(),
-                    }
-                    println!("{}", save_file);
+                    if open_file != "null".to_string() {
+                        println!("{}", open_file);
+                        let data = fs::read_to_string(open_file).expect("Unable to read file");
 
-                    // TODO: Add saving to json file
+                        let mut json = LOADED_JSON.lock().unwrap();
+
+                        *json = serde_json::from_str(&data)
+                            .expect("JSON does not have correct format.");
+
+                        dbg!(json.to_string());
+
+                        self.name = json["pdata"]["name"].as_str().unwrap().to_string();
+                        self.description = json["pdata"]["desc"].as_str().unwrap().to_string();
+
+                        let json_race = json["key"]["race"].as_i64().unwrap();
+
+                        let sex_and_race = get_sex_and_race(json_race);
+
+                        self.sex = sex_and_race.0;
+                        self.race = sex_and_race.1;
+                    }
+                    // TODO: Add loading from json file
                 }
 
                 if ui.button("Quit").clicked() {
@@ -187,4 +197,14 @@ impl eframe::App for MyApp {
             }
         });
     }
+}
+
+fn get_sex_and_race(json_race: i64) -> (Sex, Race) {
+    // Don't support the other races yet.
+    match json_race {
+        2 => return (Sex::Male, Race::Mercenary),
+        3 => return (Sex::Male, Race::Templar),
+        4 => return (Sex::Male, Race::Harakim),
+        _ => panic!("Invalid json_race"),
+    };
 }
