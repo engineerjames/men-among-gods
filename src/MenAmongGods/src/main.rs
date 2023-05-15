@@ -1,8 +1,10 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] // hide console window on Windows in release
 
 use eframe::egui;
+use notify::{RecommendedWatcher, RecursiveMode, Config, Watcher};
 use serde_json::json;
 use std::fs;
+use std::path::Path;
 use std::process::Command;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Mutex;
@@ -14,12 +16,34 @@ static LOADED_JSON: Mutex<serde_json::Value> = Mutex::new(serde_json::Value::Nul
 static HAS_LOADED_MOA: AtomicBool = AtomicBool::new(false);
 static LOADED_MOA_PATH: Mutex<String> = Mutex::new(String::new());
 
+fn watch<P: AsRef<Path>>(path: P) -> notify::Result<()> {
+    let (tx, rx) = std::sync::mpsc::channel();
+
+    // Automatically select the best implementation for your platform.
+    // You can also access each implementation directly e.g. INotifyWatcher.
+    let mut watcher = RecommendedWatcher::new(tx, Config::default())?;
+
+    // Add a path to be watched. All files and directories at that path and
+    // below will be monitored for changes.
+    watcher.watch(path.as_ref(), RecursiveMode::NonRecursive)?;
+
+    for res in rx {
+        match res {
+            Ok(event) => println!("changed: {:?}", event),
+            Err(e) => println!("watch error: {:?}", e),
+        }
+    }
+
+    Ok(())
+}
+
 fn main() -> Result<(), eframe::Error> {
     env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
     let options = eframe::NativeOptions {
         initial_window_size: Some(egui::vec2(400.0, 300.0)),
         ..Default::default()
     };
+
     eframe::run_native(
         "Men Among Gods", // TODO: Include version information
         options,
@@ -127,13 +151,12 @@ impl eframe::App for MyApp {
                         Command::new("cmd")
                             .args(["/C", "echo hello"])
                             .output()
-                            .expect("failed to execute process")
+                            .expect("failed to execute process");
                     } else {
                         let json_arg = get_json_body_for_client(&self);
+                        let file_path = LOADED_MOA_PATH.lock().unwrap().clone();
 
                         if HAS_LOADED_MOA.load(Ordering::Relaxed) == true {
-                            let file_path = LOADED_MOA_PATH.lock().unwrap().clone();
-
                             Command::new(
                                 "/home/james/git/men-among-gods/build/src/new_client/MenAmongGods",
                             ) // TODO: Don't hard-code this
@@ -141,7 +164,7 @@ impl eframe::App for MyApp {
                             .arg(file_path)
                             .arg(self.password.clone())
                             .output()
-                            .expect("failed to execute process")
+                            .expect("failed to execute process");
                         } else {
                             Command::new(
                                 "/home/james/git/men-among-gods/build/src/new_client/MenAmongGods",
@@ -149,9 +172,9 @@ impl eframe::App for MyApp {
                             .arg("newentry")
                             .arg(json_arg)
                             .output()
-                            .expect("failed to execute process")
+                            .expect("failed to execute process");
                         }
-                    };
+                    }
                 }
                 if ui.button("New").clicked() {
                     HAS_LOADED_MOA.store(false, Ordering::Relaxed);
