@@ -11,6 +11,8 @@ use tinyfiledialogs::{MessageBoxIcon, YesNo};
 
 static SHOULD_RESET_UI: AtomicBool = AtomicBool::new(false);
 static LOADED_JSON: Mutex<serde_json::Value> = Mutex::new(serde_json::Value::Null);
+static HAS_LOADED_MOA: AtomicBool = AtomicBool::new(false);
+static LOADED_MOA_PATH: Mutex<String> = Mutex::new(String::new());
 
 fn main() -> Result<(), eframe::Error> {
     env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
@@ -129,18 +131,31 @@ impl eframe::App for MyApp {
                     } else {
                         let json_arg = get_json_body_for_client(&self);
 
-                        println!("{}", json_arg);
+                        if HAS_LOADED_MOA.load(Ordering::Relaxed) == true {
+                            let file_path = LOADED_MOA_PATH.lock().unwrap().clone();
 
-                        Command::new(
-                            "/home/james/git/men-among-gods/build/src/new_client/MenAmongGods",
-                        ) // TODO: Don't hard-code this
-                        .arg("newentry")
-                        .arg(json_arg)
-                        .output()
-                        .expect("failed to execute process")
+                            Command::new(
+                                "/home/james/git/men-among-gods/build/src/new_client/MenAmongGods",
+                            ) // TODO: Don't hard-code this
+                            .arg("moafile")
+                            .arg(file_path)
+                            .arg(self.password.clone())
+                            .output()
+                            .expect("failed to execute process")
+                        } else {
+                            Command::new(
+                                "/home/james/git/men-among-gods/build/src/new_client/MenAmongGods",
+                            ) // TODO: Don't hard-code this
+                            .arg("newentry")
+                            .arg(json_arg)
+                            .output()
+                            .expect("failed to execute process")
+                        }
                     };
                 }
                 if ui.button("New").clicked() {
+                    HAS_LOADED_MOA.store(false, Ordering::Relaxed);
+
                     thread::spawn(move || {
                         let choice = get_reset_choice();
 
@@ -163,15 +178,17 @@ impl eframe::App for MyApp {
                     }
 
                     if open_file != "null".to_string() {
-                        println!("{}", open_file);
+                        HAS_LOADED_MOA.store(true, Ordering::Relaxed);
+
+                        let mut moa_path = LOADED_MOA_PATH.lock().unwrap();
+                        *moa_path = open_file.clone();
+
                         let data = fs::read_to_string(open_file).expect("Unable to read file");
 
                         let mut json = LOADED_JSON.lock().unwrap();
 
                         *json = serde_json::from_str(&data)
                             .expect("JSON does not have correct format.");
-
-                        dbg!(json.to_string());
 
                         self.name = json["pdata"]["name"].as_str().unwrap().to_string();
                         self.description = json["pdata"]["desc"].as_str().unwrap().to_string();
@@ -183,7 +200,6 @@ impl eframe::App for MyApp {
                         self.sex = sex_and_race.0;
                         self.race = sex_and_race.1;
                     }
-                    // TODO: Add loading from json file
                 }
 
                 if ui.button("Quit").clicked() {
