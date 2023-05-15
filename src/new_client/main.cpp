@@ -59,6 +59,10 @@ int main( int argc, char** args )
       // Loading via moafile
       playerData->loadFromJsonFile( std::string( args[ 2 ] ) );
       playerData->setPassword( std::string( args[ 3 ] ) );
+
+      std::cerr << "Logging in via moa file" << std::endl;
+      std::cerr << std::string(args[2]) << std::endl;
+      std::cerr << std::string(args[3]) << std::endl;
     }
     else if ( std::string( args[ 1 ] ) == "newentry" )
     {
