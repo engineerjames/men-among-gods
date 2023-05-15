@@ -55,37 +55,25 @@ int main( int argc, char** args )
   {
     if ( std::string( args[ 1 ] ) == "moafile" )
     {
-      LOG_DEBUG("Loading into client via moafile");
+      LOG_DEBUG( "Loading into client via moafile" );
       // Loading via moafile
       playerData->loadFromJsonFile( std::string( args[ 2 ] ) );
       playerData->setPassword( std::string( args[ 3 ] ) );
-
-      std::cerr << "Logging in via moa file" << std::endl;
-      std::cerr << std::string(args[2]) << std::endl;
-      std::cerr << std::string(args[3]) << std::endl;
     }
     else if ( std::string( args[ 1 ] ) == "newentry" )
     {
-      LOG_DEBUG("Loading into client via a new character entry");
-      // Loading via json based ui
-      Json::Reader reader {};
+      LOG_DEBUG( "Loading into client via a new character entry" );
 
-      Json::Value root {};
+      Json::Reader reader {};
+      Json::Value  root {};
       reader.parse( args[ 2 ], root );
+
       playerData->fromJson( root );
     }
   }
   else
   {
-    // Development only?
-    Json::Value root{};
-    root["sex"] = 1;
-    root["race"] = 2;
-    root["name"] = "Ishtard";
-    root["desc"] = "Nondescript.";
-    root["pass"] = "";
-
-    playerData->fromJson( root );
+    return -1;
   }
 
   idxCache->load();
@@ -106,7 +94,12 @@ int main( int argc, char** args )
 
   std::vector< std::shared_ptr< MenAmongGods::ClientCommand > > commandList {};
 
-  client->login();
+  auto errMessage = client->login();
+  if ( errMessage.has_value() )
+  {
+    std::cerr << errMessage.value() << std::endl;
+    return -1;
+  }
 
   // TODO: Eventually we'll add an optional FPS display for testing only
 

@@ -30,20 +30,20 @@ void ClientNetworkActivity::addClientCommands( const std::vector< std::shared_pt
     return;
   }
 
-    LOG_DEBUG( "Adding " << commandList.size() << " commands to network thread." );
+  LOG_DEBUG( "Adding " << commandList.size() << " commands to network thread." );
 
   // Insert new commands to the end of the command list
   commands_.insert( std::end( commands_ ), std::begin( commandList ), std::end( commandList ) );
 }
 
-void ClientNetworkActivity::login() noexcept
+std::optional< std::string > ClientNetworkActivity::login() noexcept
 {
   bool connectionSuccessful = clientConnection_.connect();
 
   if ( ! connectionSuccessful )
   {
     LOG_ERROR( "Unable to establish connection." );
-    return;
+    return "Unable to establish connection";
   }
 
   bool loginSuccessful = clientConnection_.login( playerData_ );
@@ -51,7 +51,7 @@ void ClientNetworkActivity::login() noexcept
   if ( ! loginSuccessful )
   {
     LOG_ERROR( "Unable to login." );
-    return;
+    return "Unable to login.";
   }
 
   bool sendPlayerInfoSuccessful = clientConnection_.sendPlayerData( playerData_ );
@@ -59,11 +59,13 @@ void ClientNetworkActivity::login() noexcept
   if ( ! sendPlayerInfoSuccessful )
   {
     LOG_ERROR( "Unable to send player information." );
-    return;
+    return "Unable to send player information.";
   }
 
   clientConnection_.sendHardwareInfo();
   clientConnection_.setSocketMode( ClientConnection::SocketIOMode::NonBlocking );
+
+  return std::nullopt;
 }
 
 void ClientNetworkActivity::processServerTicks() noexcept
