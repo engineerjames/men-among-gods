@@ -148,7 +148,7 @@ impl eframe::App for MyApp {
                             .arg("moafile")
                             .arg(file_path)
                             .arg(self.password.clone())
-                            .output()
+                            .spawn()
                             .expect("failed to execute process");
                         } else {
                             Command::new(
@@ -156,7 +156,7 @@ impl eframe::App for MyApp {
                             ) // TODO: Don't hard-code this
                             .arg("newentry")
                             .arg(json_arg)
-                            .output()
+                            .spawn()
                             .expect("failed to execute process");
                         }
                     }
@@ -227,7 +227,7 @@ impl eframe::App for MyApp {
             }
 
             self.login_status = fs::read_to_string("./status.log".to_string())
-                .expect("Unable to read from status file.");
+                .unwrap_or("".to_string());
         });
     }
 }

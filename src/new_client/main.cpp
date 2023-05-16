@@ -113,6 +113,8 @@ int main( int argc, char** args )
   // TODO: Eventually we'll add an optional FPS display for testing only
 
   openFile << "Opening client window." << std::endl;
+  openFile.close();
+
   while ( window.isOpen() )
   {
     //
