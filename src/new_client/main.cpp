@@ -18,6 +18,7 @@
 #include "TickBuffer.h"
 
 #include <filesystem>
+#include <fstream>
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -32,6 +33,8 @@ static const constexpr int MODEY           = 600;
 int main( int argc, char** args )
 {
   LOG_SET_LEVEL( MenAmongGods::ClientConfiguration::instance().loggingEnabled() );
+
+  std::ofstream openFile { "status.log" };
 
   // Amiko-Regular is a great choice
   // BP-Mono looks decent, would need some tweaks--at least it is a serif font
@@ -73,8 +76,11 @@ int main( int argc, char** args )
   }
   else
   {
+    openFile << "Invalid arguments." << std::endl;
     return -1;
   }
+
+  openFile << "Loading assets..." << std::endl;
 
   idxCache->load();
   soundCache->loadAudio( MenAmongGods::getSfxRoot() );
@@ -93,16 +99,20 @@ int main( int argc, char** args )
   components.push_back( playerData );
 
   std::vector< std::shared_ptr< MenAmongGods::ClientCommand > > commandList {};
+  openFile << "Done loading assets." << std::endl;
+
+  openFile << "Logging in..." << std::endl;
 
   auto errMessage = client->login();
   if ( errMessage.has_value() )
   {
-    std::cerr << errMessage.value() << std::endl;
+    openFile << errMessage.value();
     return -1;
   }
 
   // TODO: Eventually we'll add an optional FPS display for testing only
 
+  openFile << "Opening client window." << std::endl;
   while ( window.isOpen() )
   {
     //

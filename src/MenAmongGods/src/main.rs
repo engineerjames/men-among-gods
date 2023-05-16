@@ -1,10 +1,8 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] // hide console window on Windows in release
 
 use eframe::egui;
-use notify::{RecommendedWatcher, RecursiveMode, Config, Watcher};
 use serde_json::json;
 use std::fs;
-use std::path::Path;
 use std::process::Command;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Mutex;
@@ -16,33 +14,18 @@ static LOADED_JSON: Mutex<serde_json::Value> = Mutex::new(serde_json::Value::Nul
 static HAS_LOADED_MOA: AtomicBool = AtomicBool::new(false);
 static LOADED_MOA_PATH: Mutex<String> = Mutex::new(String::new());
 
-fn watch<P: AsRef<Path>>(path: P) -> notify::Result<()> {
-    let (tx, rx) = std::sync::mpsc::channel();
-
-    // Automatically select the best implementation for your platform.
-    // You can also access each implementation directly e.g. INotifyWatcher.
-    let mut watcher = RecommendedWatcher::new(tx, Config::default())?;
-
-    // Add a path to be watched. All files and directories at that path and
-    // below will be monitored for changes.
-    watcher.watch(path.as_ref(), RecursiveMode::NonRecursive)?;
-
-    for res in rx {
-        match res {
-            Ok(event) => println!("changed: {:?}", event),
-            Err(e) => println!("watch error: {:?}", e),
-        }
-    }
-
-    Ok(())
-}
-
 fn main() -> Result<(), eframe::Error> {
     env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
     let options = eframe::NativeOptions {
-        initial_window_size: Some(egui::vec2(400.0, 300.0)),
+        initial_window_size: Some(egui::vec2(300.0, 400.0)),
         ..Default::default()
     };
+
+    // Delete status file and re-create if it exists
+    if std::path::Path::new("./status.log").exists() {
+        std::fs::remove_file("./status.log").expect("Unable to remove file.");
+        std::fs::write("./status.log", "").expect("Unable to re-create status log file.");
+    }
 
     eframe::run_native(
         "Men Among Gods", // TODO: Include version information
@@ -70,6 +53,7 @@ struct MyApp {
     sex: Sex,
     race: Race,
     password: String,
+    login_status: String,
 }
 
 impl Default for MyApp {
@@ -80,6 +64,7 @@ impl Default for MyApp {
             sex: Sex::Male,
             race: Race::Templar,
             password: "".to_owned(),
+            login_status: "".to_owned(),
         }
     }
 }
@@ -230,10 +215,19 @@ impl eframe::App for MyApp {
                 }
             });
 
+            ui.vertical(|ui| {
+                let status_label = ui.label("Status: ");
+                ui.add(egui::widgets::TextEdit::multiline(&mut self.login_status))
+                    .labelled_by(status_label.id);
+            });
+
             if SHOULD_RESET_UI.load(Ordering::Relaxed) {
                 *self = MyApp::default();
                 SHOULD_RESET_UI.store(false, Ordering::Relaxed)
             }
+
+            self.login_status = fs::read_to_string("./status.log".to_string())
+                .expect("Unable to read from status file.");
         });
     }
 }
