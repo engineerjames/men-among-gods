@@ -25,7 +25,7 @@ add_custom_command(
 
 # Doing 'install' a different way--we'll collect all build artifacts ${install_directory}; this is really quite
 # horrible, but I haven't been able to figure out an alternative with CMake just yet that works reliably.
-if (CMAKE_BUILD_TYPE MATCHES Debug)
+if (CMAKE_BUILD_TYPE MATCHES "Debug")
   message(STATUS "[Debug Mode] Creating custom target to create release directory...")
   add_custom_target( create_release
               COMMAND ${CMAKE_COMMAND} -E make_directory  ${install_directory}
@@ -80,15 +80,6 @@ else()
               COMMENT "Copying dependencies to ${install_directory}..."
               )
 endif()
-
-# Need to ensure that electron-packager and electron-builder has been installed globally
-add_custom_target( package_release
-            COMMAND npm install
-            COMMAND npx electron-packager . --extra-resource=${install_directory} --out=${PROJECT_SOURCE_DIR}/electron_app/men-among-gods/out
-            COMMAND electron-builder.cmd --prepackaged ${PROJECT_SOURCE_DIR}/electron_app/men-among-gods/out/men-among-gods-win32-x64
-            WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/electron_app/men-among-gods
-            COMMENT "Creating release..."
-)
 
 if (ENABLE_CLANG_TIDY)
   set_target_properties(${target} PROPERTIES CXX_CLANG_TIDY clang-tidy-11)

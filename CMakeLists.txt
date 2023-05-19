@@ -70,6 +70,8 @@ add_subdirectory(src/new_client)
 add_subdirectory(src/common)
 add_subdirectory(src/test)
 
+add_subdirectory(src/MenAmongGods)
+
 if (NOT WIN32)
   add_subdirectory(src/server)
 endif()
