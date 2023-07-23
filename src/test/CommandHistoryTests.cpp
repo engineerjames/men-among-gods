@@ -1,14 +1,11 @@
-#define BOOST_TEST_MAIN
-#include <boost/test/unit_test.hpp>
+#include "Catch.hpp"
 
 #include "CommandHistory.h"
 
 #include <array>
 #include <string>
 
-BOOST_AUTO_TEST_SUITE( COMMAND_HISTORY_TESTS )
-
-BOOST_AUTO_TEST_CASE( GET_PREVIOUS_COMMAND )
+TEST_CASE( GET_PREVIOUS_COMMAND )
 {
   MenAmongGods::CommandHistory history {};
   history.addCommand( "a" );
@@ -21,25 +18,25 @@ BOOST_AUTO_TEST_CASE( GET_PREVIOUS_COMMAND )
   std::string fourthCommand = history.getPreviousCommand();
   std::string fifthCommand  = history.getPreviousCommand();
 
-  BOOST_CHECK_EQUAL( firstCommand, "c" );
-  BOOST_CHECK_EQUAL( secondCommand, "b" );
-  BOOST_CHECK_EQUAL( thirdCommand, "a" );
-  BOOST_CHECK_EQUAL( fourthCommand, "a" );
-  BOOST_CHECK_EQUAL( fifthCommand, "a" );
+  REQUIRE( firstCommand == "c" );
+  REQUIRE( secondCommand == "b" );
+  REQUIRE( thirdCommand == "a" );
+  REQUIRE( fourthCommand == "a" );
+  REQUIRE( fifthCommand == "a" );
 }
 
-BOOST_AUTO_TEST_CASE( EMPTY_COMMAND_HISTORY )
+TEST_CASE( EMPTY_COMMAND_HISTORY )
 {
   MenAmongGods::CommandHistory history {};
 
   std::string previousCommand = history.getPreviousCommand();
   std::string nextCommand     = history.getNextCommand();
 
-  BOOST_CHECK_EQUAL( previousCommand, "" );
-  BOOST_CHECK_EQUAL( nextCommand, "" );
+  REQUIRE( previousCommand == "" );
+  REQUIRE( nextCommand == "" );
 }
 
-BOOST_AUTO_TEST_CASE( BACK_AND_FORTH )
+TEST_CASE( BACK_AND_FORTH )
 {
   MenAmongGods::CommandHistory history {};
 
@@ -54,12 +51,10 @@ BOOST_AUTO_TEST_CASE( BACK_AND_FORTH )
   std::string fifthCommand  = history.getNextCommand();
   std::string sixthCommand  = history.getNextCommand();
 
-  BOOST_CHECK_EQUAL( firstCommand, "c" );
-  BOOST_CHECK_EQUAL( secondCommand, "b" );
-  BOOST_CHECK_EQUAL( thirdCommand, "c" );
-  BOOST_CHECK_EQUAL( fourthCommand, "b" );
-  BOOST_CHECK_EQUAL( fifthCommand, "c" );
-  BOOST_CHECK_EQUAL( sixthCommand, "" );
+  REQUIRE( firstCommand == "c" );
+  REQUIRE( secondCommand == "b" );
+  REQUIRE( thirdCommand == "c" );
+  REQUIRE( fourthCommand == "b" );
+  REQUIRE( fifthCommand == "c" );
+  REQUIRE( sixthCommand == "" );
 }
-
-BOOST_AUTO_TEST_SUITE_END()

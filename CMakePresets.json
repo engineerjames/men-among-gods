@@ -1,0 +1,107 @@
+{
+    "version": 2,
+    "configurePresets": [
+        {
+            "name": "WSL-GCC9-Debug",
+            "displayName": "GCC 9.3.0 x86_64-Debug",
+            "warnings": {
+                "dev": false
+            },
+            "generator": "Ninja",
+            "description": "Using compilers: C = /bin/x86_64-linux-gnu-gcc-9, CXX = /bin/x86_64-linux-gnu-g++-9",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
+                "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/../vcpkg/scripts/buildsystems/vcpkg.cmake",
+                "CMAKE_CXX_COMPILER": "/bin/x86_64-linux-gnu-g++-9"
+            }
+        },
+        {
+            "name": "WSL-GCC9-Release",
+            "displayName": "GCC 9.3.0 x86_64-Release",
+            "warnings": {
+                "dev": false
+            },
+            "generator": "Ninja",
+            "description": "Using compilers: C = /bin/x86_64-linux-gnu-gcc-9, CXX = /bin/x86_64-linux-gnu-g++-9",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
+                "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/../vcpkg/scripts/buildsystems/vcpkg.cmake",
+                "CMAKE_CXX_COMPILER": "/bin/x86_64-linux-gnu-g++-9"
+            }
+        },
+        {
+            "name": "MSVC-vcpkg-debug",
+            "displayName": "VCPKG-Debug",
+            "warnings": {
+                "dev": false
+            },
+            "description": "Sets Ninja generator, build and install directory",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_TOOLCHAIN_FILE": "C:/vcpkg/scripts/buildsystems/vcpkg.cmake",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}"
+            }
+        },
+        {
+            "name": "MSVC-vcpkg-release",
+            "displayName": "VCPKG-Release",
+            "warnings": {
+                "dev": false
+            },
+            "description": "Sets Ninja generator, build and install directory",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_TOOLCHAIN_FILE": "C:/vcpkg/scripts/buildsystems/vcpkg.cmake",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}"
+            }
+        },
+        {
+            "name": "VSCode-debug",
+            "displayName": "VSCode-debug",
+            "warnings": {
+                "dev": false
+            },
+            "description": "Sets Ninja generator, build and install directory",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_TOOLCHAIN_FILE": "C:/vcpkg/scripts/buildsystems/vcpkg.cmake",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
+                "CMAKE_CXX_COMPILER": "cl"
+            },
+            "architecture": {
+                "value": "x64",
+                "strategy": "external"
+            }
+        },
+        {
+            "name": "VSCode-release",
+            "displayName": "VSCode-release",
+            "warnings": {
+                "dev": false
+            },
+            "description": "Sets Ninja generator, build and install directory",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_TOOLCHAIN_FILE": "C:/vcpkg/scripts/buildsystems/vcpkg.cmake",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
+                "CMAKE_CXX_COMPILER": "cl"
+            },
+            "architecture": {
+                "value": "x64",
+                "strategy": "external"
+            }
+        }
+    ]
+}
