@@ -18,6 +18,12 @@
 #define __PRETTY_FUNCTION__ __FUNCSIG__
 #endif
 
+// Some test and older libraries #define ERROR, which
+// produces very strange errors for Level::ERROR
+#ifdef ERROR
+#undef ERROR
+#endif
+
 namespace MenAmongGods::detail
 {
 

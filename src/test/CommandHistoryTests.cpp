@@ -1,3 +1,4 @@
+#define CATCH_CONFIG_MAIN
 #include "Catch.hpp"
 
 #include "CommandHistory.h"
@@ -5,7 +6,7 @@
 #include <array>
 #include <string>
 
-TEST_CASE( GET_PREVIOUS_COMMAND )
+TEST_CASE( "GET_PREVIOUS_COMMAND" )
 {
   MenAmongGods::CommandHistory history {};
   history.addCommand( "a" );
@@ -25,7 +26,7 @@ TEST_CASE( GET_PREVIOUS_COMMAND )
   REQUIRE( fifthCommand == "a" );
 }
 
-TEST_CASE( EMPTY_COMMAND_HISTORY )
+TEST_CASE( "EMPTY_COMMAND_HISTORY" )
 {
   MenAmongGods::CommandHistory history {};
 
@@ -36,7 +37,7 @@ TEST_CASE( EMPTY_COMMAND_HISTORY )
   REQUIRE( nextCommand == "" );
 }
 
-TEST_CASE( BACK_AND_FORTH )
+TEST_CASE( "BACK_AND_FORTH" )
 {
   MenAmongGods::CommandHistory history {};
 
