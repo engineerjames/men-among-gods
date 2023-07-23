@@ -11,5 +11,6 @@ Currently you can connect to a server and play the game mostly as you would expe
 2. Clone the repository (after installing Microsoft Visual Studio of some variety)
 3. Install CMake, and add its binary directory to the Windows system path
 4. Load up the CMake-GUI--select the source and build directories and VCPKG should do the rest.
+5. Alternatively, you could open VSCode from a Developer Command Prompt (to ensure that the MSVC compiler is on your PATH)
 
 ### Further instructions TBD - Most up to date information will be held on the Wiki.
