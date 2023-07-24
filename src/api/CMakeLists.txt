@@ -1,5 +1,4 @@
 find_package(Drogon CONFIG REQUIRED)
-find_package(jsoncpp CONFIG REQUIRED)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/server)
 
@@ -16,7 +15,7 @@ set(headers
 )
 
 add_executable(${target} ${sources} ${headers})
-target_link_libraries(${target} PRIVATE Drogon::Drogon JsonCpp::JsonCpp common)
+target_link_libraries(${target} PRIVATE Drogon::Drogon njson common)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS})
 target_compile_definitions(${target} PRIVATE ${PROJECT_CXX_DEFINITIONS})
 

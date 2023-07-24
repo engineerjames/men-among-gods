@@ -24,6 +24,8 @@ RUN apt-get install -y  \
     libxi-dev \
     libudev-dev \
     libgl1-mesa-dev \
+    libsfml-dev \
+    libjsoncpp-dev \
     curl \
     zip \
     unzip \
@@ -34,6 +36,15 @@ RUN apt-get install -y  \
 ADD . /mag
 WORKDIR /mag
 RUN git clone https://github.com/Microsoft/vcpkg.git
-RUN ./vcpkg/bootstrap-vcpkg.sh
-RUN cmake -GNinja -S ./ -B ./build -DCMAKE_TOOLCHAIN_FILE=/mag/vcpkg/scripts/buildsystems/vcpkg.cmake
-RUN cmake --build ./build --parallel
+#RUN ./vcpkg/bootstrap-vcpkg.sh
+#RUN cmake -S ./ -B ./build -DCMAKE_TOOLCHAIN_FILE=/mag/vcpkg/scripts/buildsystems/vcpkg.cmake
+#RUN cmake --build ./build --parallel
+
+# mkdir drogon
+# cd drogon
+# git clone https://github.com/drogonframework/drogon.git
+# openssl libssl-dev libjsoncpp-dev uuid-dev zlib1g-dev libc-ares-dev\
+#postgresql-server-dev-all libmariadbclient-dev libsqlite3-dev libhiredis-dev\
+# ./build.sh
+# install via cmake ? Nah, build does this
+# Switch to nohlman json

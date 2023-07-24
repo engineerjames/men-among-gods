@@ -62,6 +62,8 @@ else()
   endif()
 endif()
 
+add_subdirectory(external)
+
 add_subdirectory(src/new_client)
 add_subdirectory(src/common)
 add_subdirectory(src/test)
