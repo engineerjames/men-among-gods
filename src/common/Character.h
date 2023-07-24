@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-#include <json/json.h>
+#include <nlohmann/json.hpp>
 
 #pragma pack( push, 1 )
 struct character
@@ -172,8 +172,8 @@ struct character
   std::int32_t data[ 100 ];
   char         text[ 10 ][ 160 ];
 
-  Json::Value      toJson() const;
-  static character fromJson( const Json::Value& json );
+  nlohmann::json      toJson() const;
+  static character fromJson( const nlohmann::json& json );
 
   void setTotalExperienceFromSkillsAndAttributes();
 };

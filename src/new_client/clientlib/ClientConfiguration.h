@@ -19,7 +19,7 @@ public:
   int         hostPort() const;
   bool        enableHpBars() const;
 
-  Json::Value toJson() const;
+  nlohmann::json toJson() const;
 
 private:
   ClientConfiguration();

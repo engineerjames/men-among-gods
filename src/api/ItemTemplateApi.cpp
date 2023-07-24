@@ -36,8 +36,9 @@ void items::getItemTemplates( const drogon::HttpRequestPtr& req, std::function< 
 
   if ( id >= 0 && id < MAX_TITEMS && itemTemplates_[ id ] != nullptr )
   {
-    Json::Value jsonResponse = itemTemplates_[ id ]->toJson();
-    auto        response     = drogon::HttpResponse::newHttpJsonResponse( jsonResponse );
+    nlohmann::json jsonResponse = itemTemplates_[ id ]->toJson();
+    auto        response     = drogon::HttpResponse::newHttpResponse( );
+    response->setBody(jsonResponse.dump());
     response->setStatusCode( drogon::HttpStatusCode::k200OK );
     callback( response );
   }

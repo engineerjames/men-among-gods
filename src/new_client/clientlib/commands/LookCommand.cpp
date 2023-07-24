@@ -16,9 +16,9 @@ bool LookCommand::send( sf::TcpSocket& socket ) const
   return LookCommand::sendOneArgument( socket, characterNumber_ );
 }
 
-Json::Value LookCommand::toJson() const
+nlohmann::json LookCommand::toJson() const
 {
-  Json::Value root          = ClientCommand::toJson();
+  nlohmann::json root          = ClientCommand::toJson();
   root[ "characterNumber" ] = characterNumber_;
 
   return root;

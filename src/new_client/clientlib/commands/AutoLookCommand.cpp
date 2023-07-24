@@ -16,9 +16,9 @@ bool AutoLookCommand::send( sf::TcpSocket& socket ) const
   return AutoLookCommand::sendOneArgument( socket, characterNumber_ );
 }
 
-Json::Value AutoLookCommand::toJson() const
+nlohmann::json AutoLookCommand::toJson() const
 {
-  Json::Value root          = ClientCommand::toJson();
+  nlohmann::json root          = ClientCommand::toJson();
   root[ "characterNumber" ] = characterNumber_;
 
   return root;

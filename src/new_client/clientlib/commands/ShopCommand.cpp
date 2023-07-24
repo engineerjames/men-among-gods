@@ -17,9 +17,9 @@ bool ShopCommand::send( sf::TcpSocket& socket ) const
   return ShopCommand::sendTwoArguments( socket, shopNumber_, itemNumber_ );
 }
 
-Json::Value ShopCommand::toJson() const
+nlohmann::json ShopCommand::toJson() const
 {
-  Json::Value root     = MenAmongGods::ClientCommand::toJson();
+  nlohmann::json root     = MenAmongGods::ClientCommand::toJson();
   root[ "shopNumber" ] = shopNumber_;
   root[ "itemNumber" ] = itemNumber_;
 

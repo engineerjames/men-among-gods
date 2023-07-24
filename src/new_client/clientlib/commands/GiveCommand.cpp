@@ -16,9 +16,9 @@ bool GiveCommand::send( sf::TcpSocket& socket ) const
   return GiveCommand::sendOneArgument( socket, characterNumber_ );
 }
 
-Json::Value GiveCommand::toJson() const
+nlohmann::json GiveCommand::toJson() const
 {
-  Json::Value root          = ClientCommand::toJson();
+  nlohmann::json root          = ClientCommand::toJson();
   root[ "characterNumber" ] = characterNumber_;
 
   return root;

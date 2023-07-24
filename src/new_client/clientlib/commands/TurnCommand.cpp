@@ -17,9 +17,9 @@ bool TurnCommand::send( sf::TcpSocket& socket ) const
   return TurnCommand::sendTwoArguments( socket, x_, y_ );
 }
 
-Json::Value TurnCommand::toJson() const
+nlohmann::json TurnCommand::toJson() const
 {
-  Json::Value root = MenAmongGods::ClientCommand::toJson();
+  nlohmann::json root = MenAmongGods::ClientCommand::toJson();
   root[ "x" ]      = x_;
   root[ "y" ]      = y_;
 

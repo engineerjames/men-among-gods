@@ -3,7 +3,7 @@
 #include "ResourceLocations.h"
 
 #include <fstream>
-#include <json/json.h>
+#include <nlohmann/json.hpp>
 
 namespace MenAmongGods
 {
@@ -14,9 +14,9 @@ ClientConfiguration ClientConfiguration::instance()
   return instance_;
 }
 
-Json::Value ClientConfiguration::toJson() const
+nlohmann::json ClientConfiguration::toJson() const
 {
-  Json::Value root {};
+  nlohmann::json root {};
 
   root[ "loggingEnabled" ] = loggingEnabled_;
   root[ "enableHpBars" ]   = enableHpBars_;
@@ -55,14 +55,14 @@ ClientConfiguration::ClientConfiguration()
 {
   // Read in the JSON parameters from the file
   std::ifstream inputJsonFile { MenAmongGods::getConfigPath() + "config.json" };
-  Json::Value   root {};
+  nlohmann::json root {};
 
   inputJsonFile >> root;
 
-  loggingEnabled_ = root.get( "loggingEnabled", loggingEnabled_ ).asBool();
-  hostIpAddress_  = root.get( "hostIpAddress", hostIpAddress_ ).asString();
-  hostPort_       = root.get( "hostPort", hostPort_ ).asInt();
-  enableHpBars_   = root.get( "enableHpBars", enableHpBars_ ).asBool();
+  loggingEnabled_ = root["loggingEnabled"].get<bool>();
+  hostIpAddress_  = root["hostIpAddress"].get<std::string>();
+  hostPort_       = root["hostPort"].get<int>();
+  enableHpBars_   = root["enableHpBars"].get<bool>();
 
   LOG_DEBUG_OBJ( *this, "Client configuration parameters" );
 }

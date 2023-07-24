@@ -23,7 +23,7 @@ static const constexpr unsigned int STRING_BUFFER_SIZE = 250;
 static const constexpr unsigned int TCP_BUFFER_SIZE = 16;
 
 // clang-format off
-const std::map< ClientMessages::MessageTypes, unsigned int > offSetToInputMap = { 
+const std::map< ClientMessages::MessageTypes, unsigned int > offSetToInputMap = {
   { ClientMessages::MessageTypes::CMD_INPUT1, CMD_INPUT1_OFFSET },
   { ClientMessages::MessageTypes::CMD_INPUT2, CMD_INPUT2_OFFSET },
   { ClientMessages::MessageTypes::CMD_INPUT3, CMD_INPUT3_OFFSET },
@@ -31,7 +31,7 @@ const std::map< ClientMessages::MessageTypes, unsigned int > offSetToInputMap = 
   { ClientMessages::MessageTypes::CMD_INPUT5, CMD_INPUT5_OFFSET },
   { ClientMessages::MessageTypes::CMD_INPUT6, CMD_INPUT6_OFFSET },
   { ClientMessages::MessageTypes::CMD_INPUT7, CMD_INPUT7_OFFSET },
-  { ClientMessages::MessageTypes::CMD_INPUT8, CMD_INPUT8_OFFSET } 
+  { ClientMessages::MessageTypes::CMD_INPUT8, CMD_INPUT8_OFFSET }
   };
 // clang-format on
 } // namespace
@@ -94,9 +94,9 @@ bool SayCommand::send( sf::TcpSocket& socket ) const
   return inputSent;
 }
 
-Json::Value SayCommand::toJson() const
+nlohmann::json SayCommand::toJson() const
 {
-  Json::Value root    = MenAmongGods::ClientCommand::toJson();
+  nlohmann::json root    = MenAmongGods::ClientCommand::toJson();
   root[ "statement" ] = statement_;
 
   return root;

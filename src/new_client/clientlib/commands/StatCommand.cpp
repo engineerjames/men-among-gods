@@ -17,9 +17,9 @@ bool StatCommand::send( sf::TcpSocket& socket ) const
   return StatCommand::sendTwoArguments( socket, statNumber_, raiseNTimes_ );
 }
 
-Json::Value StatCommand::toJson() const
+nlohmann::json StatCommand::toJson() const
 {
-  Json::Value root      = MenAmongGods::ClientCommand::toJson();
+  nlohmann::json root      = MenAmongGods::ClientCommand::toJson();
   root[ "statNumber" ]  = statNumber_;
   root[ "raiseNTimes" ] = raiseNTimes_;
 

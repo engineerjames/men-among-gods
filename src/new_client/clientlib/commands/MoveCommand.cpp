@@ -17,9 +17,9 @@ bool MoveCommand::send( sf::TcpSocket& socket ) const
   return MoveCommand::sendTwoArguments( socket, x_, y_ );
 }
 
-Json::Value MoveCommand::toJson() const
+nlohmann::json MoveCommand::toJson() const
 {
-  Json::Value root = ClientCommand::toJson();
+  nlohmann::json root = ClientCommand::toJson();
   root[ "x" ]      = x_;
   root[ "y" ]      = y_;
 

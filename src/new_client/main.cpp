@@ -67,9 +67,7 @@ int main( int argc, char** args )
     {
       LOG_DEBUG( "Loading into client via a new character entry" );
 
-      Json::Reader reader {};
-      Json::Value  root {};
-      reader.parse( args[ 2 ], root );
+      nlohmann::json  root = nlohmann::json::parse(args[2]);
 
       playerData->fromJson( root );
     }

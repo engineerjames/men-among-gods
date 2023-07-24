@@ -17,9 +17,9 @@ bool PickupCommand::send( sf::TcpSocket& socket ) const
   return PickupCommand::sendTwoArguments( socket, x_, y_ );
 }
 
-Json::Value PickupCommand::toJson() const
+nlohmann::json PickupCommand::toJson() const
 {
-  Json::Value root = MenAmongGods::ClientCommand::toJson();
+  nlohmann::json root = MenAmongGods::ClientCommand::toJson();
   root[ "x" ]      = x_;
   root[ "y" ]      = y_;
 

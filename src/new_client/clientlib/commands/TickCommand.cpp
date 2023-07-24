@@ -16,9 +16,9 @@ bool TickCommand::send( sf::TcpSocket& socket ) const
   return TickCommand::sendOneArgument( socket, tickValue_ );
 }
 
-Json::Value TickCommand::toJson() const
+nlohmann::json TickCommand::toJson() const
 {
-  Json::Value root    = MenAmongGods::ClientCommand::toJson();
+  nlohmann::json root    = MenAmongGods::ClientCommand::toJson();
   root[ "tickValue" ] = tickValue_;
 
   return root;

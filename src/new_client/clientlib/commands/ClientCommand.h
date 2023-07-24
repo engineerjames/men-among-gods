@@ -7,7 +7,7 @@
 #include <SFML/Network.hpp>
 #include <array>
 #include <cstring>
-#include <json/json.h>
+#include <nlohmann/json.hpp>
 
 namespace MenAmongGods
 {
@@ -24,9 +24,9 @@ public:
   ClientCommand( const ClientCommand& ) = default;
   ClientCommand& operator=( const ClientCommand& ) = default;
 
-  virtual Json::Value toJson() const
+  virtual nlohmann::json toJson() const
   {
-    Json::Value root {};
+    nlohmann::json root {};
     root[ "type" ] = ClientMessages::getName( type_ );
 
     return root;
