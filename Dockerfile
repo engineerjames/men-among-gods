@@ -31,20 +31,19 @@ RUN apt-get install -y  \
     unzip \
     tar \
     pkg-config \
+    openssl \
+    libssl-dev \
+    uuid-dev \
+    zlib1g-dev \
+    libc-ares-dev \
+    postgresql-server-dev-all \
+    libmariadbclient-dev \
+    libsqlite3-dev \
+    libhiredis-dev \
     clang-tidy-11
-
 ADD . /mag
 WORKDIR /mag
-RUN git clone https://github.com/Microsoft/vcpkg.git
-#RUN ./vcpkg/bootstrap-vcpkg.sh
-#RUN cmake -S ./ -B ./build -DCMAKE_TOOLCHAIN_FILE=/mag/vcpkg/scripts/buildsystems/vcpkg.cmake
-#RUN cmake --build ./build --parallel
-
-# mkdir drogon
-# cd drogon
-# git clone https://github.com/drogonframework/drogon.git
-# openssl libssl-dev libjsoncpp-dev uuid-dev zlib1g-dev libc-ares-dev\
-#postgresql-server-dev-all libmariadbclient-dev libsqlite3-dev libhiredis-dev\
-# ./build.sh
-# install via cmake ? Nah, build does this
-# Switch to nohlman json
+RUN git clone https://github.com/drogonframework/drogon.git
+RUN cd drogon && ./build.sh && cd ..
+RUN cmake -S ./ -B ./build
+RUN cmake --build ./build --parallel
