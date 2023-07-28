@@ -17,9 +17,9 @@ bool DropCommand::send( sf::TcpSocket& socket ) const
   return DropCommand::sendTwoArguments( socket, x_, y_ );
 }
 
-Json::Value DropCommand::toJson() const
+nlohmann::json DropCommand::toJson() const
 {
-  Json::Value root = ClientCommand::toJson();
+  nlohmann::json root = ClientCommand::toJson();
   root[ "x" ]      = x_;
   root[ "y" ]      = y_;
 

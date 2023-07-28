@@ -4,7 +4,7 @@
 #include <fstream>
 #include <iostream>
 
-#include <json/json.h>
+#include <nlohmann/json.hpp>
 
 #include "ClientConfiguration.h"
 #include "ClientTypes.h"
@@ -623,20 +623,22 @@ void PlayerData::clear()
 }
 
 // This is only expected to be called with the electron-UI info
-void PlayerData::fromJson( Json::Value& json )
+void PlayerData::fromJson( nlohmann::json& json )
 {
-  const std::string playerName        = json[ "name" ].asString();
-  const std::string playerDescription = json[ "desc" ].asString();
-  const std::string playerPass        = json[ "pass" ].asString();
+  const std::string playerName        = json[ "name" ].get<std::string>();
+  const std::string playerDescription = json[ "desc" ].get<std::string>();
+  const std::string playerPass        = json[ "pass" ].get<std::string>();
   setName( playerName );
+
+  LOG_DEBUG("Logging in with parameter: " << json.dump());
 
   std::strncpy( const_cast< char* >( okey_.name ), playerName.c_str(), playerName.length() );
   std::strncpy( const_cast< char* >( clientSidePlayerInfo_.name ), playerName.c_str(), playerName.length() );
   std::strncpy( const_cast< char* >( playerInfo_.desc ), playerDescription.c_str(), 160 - 1 );
   password_ = playerPass;
 
-  int sexInt  = json[ "sex" ].asInt();
-  int raceInt = json[ "race" ].asInt();
+  int sexInt  = json[ "sex" ].get<int>();
+  int raceInt = json[ "race" ].get<int>();
 
   MenAmongGods::Sex  sex = sexInt == 1 ? MenAmongGods::Sex::Male : MenAmongGods::Sex::Female;
   MenAmongGods::Race race {};
@@ -667,37 +669,37 @@ void PlayerData::loadFromJsonFile( const std::string& fileName )
   //
   // Player data
   //
-  Json::Value root {};
+  nlohmann::json root {};
 
   playerFile >> root;
 
-  std::strncpy( playerInfo_.cname, root[ "pdata" ][ "name" ].asCString(), 80 - 1 );
-  std::strncpy( playerInfo_.desc, root[ "pdata" ][ "desc" ].asCString(), 160 - 1 );
-  std::strncpy( playerInfo_.ref, root[ "pdata" ][ "ref" ].asCString(), 80 - 1 );
-  playerInfo_.show_names = root[ "pdata" ][ "show_names" ].asInt();
-  playerInfo_.show_proz  = root[ "pdata" ][ "show_percent_health" ].asInt();
+  std::strncpy( playerInfo_.cname, root[ "pdata" ][ "name" ].get<std::string>().c_str(), 80 - 1 );
+  std::strncpy( playerInfo_.desc, root[ "pdata" ][ "desc" ].get<std::string>().c_str(), 160 - 1 );
+  std::strncpy( playerInfo_.ref, root[ "pdata" ][ "ref" ].get<std::string>().c_str(), 80 - 1 );
+  playerInfo_.show_names = root[ "pdata" ][ "show_names" ].get<int>();
+  playerInfo_.show_proz  = root[ "pdata" ][ "show_percent_health" ].get<int>();
 
   // X-buttons
   for ( int i = 0; i < 12; ++i )
   {
-    std::strncpy( playerInfo_.xbutton[ i ].name, root[ "pdata" ][ "xbutton" ][ i ][ "name" ].asCString(), 8 - 1 );
-    playerInfo_.xbutton[ i ].skill_nr = root[ "pdata" ][ "xbutton" ][ i ][ "skill_id" ].asInt();
+    std::strncpy( playerInfo_.xbutton[ i ].name, root[ "pdata" ][ "xbutton" ][ i ][ "name" ].get<std::string>().c_str(), 8 - 1 );
+    playerInfo_.xbutton[ i ].skill_nr = root[ "pdata" ][ "xbutton" ][ i ][ "skill_id" ].get<int>();
   }
 
   //
   // key data
   //
-  okey_.usnr  = root[ "key" ][ "usnr" ].asUInt();
-  okey_.pass1 = root[ "key" ][ "pass1" ].asUInt();
-  okey_.pass2 = root[ "key" ][ "pass2" ].asUInt();
-  std::strncpy( okey_.name, root[ "key" ][ "name" ].asCString(), 40 - 1 );
-  okey_.race = root[ "key" ][ "race" ].asInt();
+  okey_.usnr  = root[ "key" ][ "usnr" ].get<unsigned int>();
+  okey_.pass1 = root[ "key" ][ "pass1" ].get<unsigned int>();
+  okey_.pass2 = root[ "key" ][ "pass2" ].get<unsigned int>();
+  std::strncpy( okey_.name, root[ "key" ][ "name" ].get<std::string>().c_str(), 40 - 1 );
+  okey_.race = root[ "key" ][ "race" ].get<int>();
 
   //
   // unique values
   //
-  unique1_ = root[ "unique1" ].asInt();
-  unique2_ = root[ "unique2" ].asInt();
+  unique1_ = root[ "unique1" ].get<int>();
+  unique2_ = root[ "unique2" ].get<int>();
 }
 
 // save_options and save_unique combined
@@ -724,31 +726,35 @@ void PlayerData::saveToJsonFile( const std::string& fileName ) const
   //
   // Player data
   //
-  Json::Value root {};
+  nlohmann::json root {};
 
-  root[ "pdata" ]                          = Json::objectValue;
+  // TODO: Confirm if this is needed?
+  //root[ "pdata" ]                          = json::object();
   root[ "pdata" ][ "name" ]                = playerInfo_.cname;
   root[ "pdata" ][ "desc" ]                = playerInfo_.desc;
   root[ "pdata" ][ "ref" ]                 = playerInfo_.ref;
   root[ "pdata" ][ "changed" ]             = playerInfo_.changed;
   root[ "pdata" ][ "show_names" ]          = playerInfo_.show_names;
   root[ "pdata" ][ "show_percent_health" ] = playerInfo_.show_proz;
-  root[ "pdata" ][ "xbutton" ]             = Json::arrayValue;
+  //root[ "pdata" ][ "xbutton" ]             = json::array();
 
+  std::array<nlohmann::json, 12> xButtonArray{};
   for ( unsigned int i = 0; i < 12; ++i )
   {
-    Json::Value xbJson {};
+    nlohmann::json xbJson {};
 
     xbJson[ "name" ]     = playerInfo_.xbutton[ i ].name;
     xbJson[ "skill_id" ] = playerInfo_.xbutton[ i ].skill_nr;
 
-    root[ "pdata" ][ "xbutton" ].append( xbJson );
+    xButtonArray[i] = xbJson;
   }
+
+  root["pdata"]["xbutton"] = xButtonArray;
 
   //
   // key data
   //
-  root[ "key" ]            = Json::objectValue;
+  // root[ "key" ]            = Json::objectValue;
   root[ "key" ][ "usnr" ]  = okey_.usnr;
   root[ "key" ][ "pass1" ] = okey_.pass1;
   root[ "key" ][ "pass2" ] = okey_.pass2;
@@ -761,7 +767,7 @@ void PlayerData::saveToJsonFile( const std::string& fileName ) const
   root[ "unique1" ] = unique1_;
   root[ "unique2" ] = unique2_;
 
-  playerFile << root.toStyledString();
+  playerFile << root.dump();
 
   std::cerr << "Saved player file to: ./" << fullFilePath << std::endl;
 }

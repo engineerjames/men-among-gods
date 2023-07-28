@@ -6,224 +6,224 @@
 #include "Constants.h"
 #include "SkillTab.h"
 
-character character::fromJson( const Json::Value& json )
+character character::fromJson( const nlohmann::json& json )
 {
   character newChar {};
 
-  newChar.used = json[ "used" ].asInt();
+  newChar.used = json[ "used" ].get<int>();
 
-  std::strncpy( newChar.name, json[ "name" ].asString().c_str(), sizeof( newChar.name ) - 1 );
-  std::strncpy( newChar.reference, json[ "reference" ].asString().c_str(), sizeof( newChar.reference ) - 1 );
-  std::strncpy( newChar.description, json[ "description" ].asString().c_str(), sizeof( newChar.description ) - 1 );
+  std::strncpy( newChar.name, json[ "name" ].get<std::string>().c_str(), sizeof( newChar.name ) - 1 );
+  std::strncpy( newChar.reference, json[ "reference" ].get<std::string>().c_str(), sizeof( newChar.reference ) - 1 );
+  std::strncpy( newChar.description, json[ "description" ].get<std::string>().c_str(), sizeof( newChar.description ) - 1 );
 
-  newChar.kindred = json[ "kindred" ].asInt();
-  newChar.player  = json[ "player" ].asInt();
-  newChar.pass1   = json[ "pass1" ].asUInt();
-  newChar.pass2   = json[ "pass2" ].asUInt();
-  newChar.sprite  = json[ "sprite" ].asUInt();
-  newChar.sound   = json[ "sound" ].asUInt();
+  newChar.kindred = json[ "kindred" ].get<int>();
+  newChar.player  = json[ "player" ].get<int>();
+  newChar.pass1   = json[ "pass1" ].get<unsigned int>();
+  newChar.pass2   = json[ "pass2" ].get<unsigned int>();
+  newChar.sprite  = json[ "sprite" ].get<unsigned int>();
+  newChar.sound   = json[ "sound" ].get<unsigned int>();
 
   // clang-format off
-  if (json[ "flags" ][ "immortal" ]               .asBool()) { newChar.flags |= CF_IMMORTAL;}
-  if (json[ "flags" ][ "god" ]                    .asBool()) { newChar.flags |= CF_GOD;}
-  if (json[ "flags" ][ "creator" ]                .asBool()) { newChar.flags |= CF_CREATOR;}
-  if (json[ "flags" ][ "build_mode" ]             .asBool()) { newChar.flags |= CF_BUILDMODE;}
-  if (json[ "flags" ][ "respawn" ]                .asBool()) { newChar.flags |= CF_RESPAWN;}
-  if (json[ "flags" ][ "player" ]                 .asBool()) { newChar.flags |= CF_PLAYER;}
-  if (json[ "flags" ][ "new_user" ]               .asBool()) { newChar.flags |= CF_NEWUSER;}
-  if (json[ "flags" ][ "no_tell" ]                .asBool()) { newChar.flags |= CF_NOTELL;}
-  if (json[ "flags" ][ "no_shout" ]               .asBool()) { newChar.flags |= CF_NOSHOUT;}
-  if (json[ "flags" ][ "merchant" ]               .asBool()) { newChar.flags |= CF_MERCHANT;}
-  if (json[ "flags" ][ "staff" ]                  .asBool()) { newChar.flags |= CF_STAFF;}
-  if (json[ "flags" ][ "no_hp_regen" ]            .asBool()) { newChar.flags |= CF_NOHPREG;}
-  if (json[ "flags" ][ "no_end_regen" ]           .asBool()) { newChar.flags |= CF_NOENDREG;}
-  if (json[ "flags" ][ "no_mana_regen" ]          .asBool()) { newChar.flags |= CF_NOMANAREG;}
-  if (json[ "flags" ][ "invisible" ]              .asBool()) { newChar.flags |= CF_INVISIBLE;}
-  if (json[ "flags" ][ "infrared" ]               .asBool()) { newChar.flags |= CF_INFRARED;}
-  if (json[ "flags" ][ "body" ]                   .asBool()) { newChar.flags |= CF_BODY;}
-  if (json[ "flags" ][ "no_sleep" ]               .asBool()) { newChar.flags |= CF_NOSLEEP;}
-  if (json[ "flags" ][ "undead" ]                 .asBool()) { newChar.flags |= CF_UNDEAD;}
-  if (json[ "flags" ][ "no_magic" ]               .asBool()) { newChar.flags |= CF_NOMAGIC;}
-  if (json[ "flags" ][ "stoned" ]                 .asBool()) { newChar.flags |= CF_STONED;}
-  if (json[ "flags" ][ "usurp" ]                  .asBool()) { newChar.flags |= CF_USURP;}
-  if (json[ "flags" ][ "imp" ]                    .asBool()) { newChar.flags |= CF_IMP;}
-  if (json[ "flags" ][ "shutup" ]                 .asBool()) { newChar.flags |= CF_SHUTUP;}
-  if (json[ "flags" ][ "no_description" ]         .asBool()) { newChar.flags |= CF_NODESC;}
-  if (json[ "flags" ][ "profiler" ]               .asBool()) { newChar.flags |= CF_PROF;}
-  if (json[ "flags" ][ "simple_anim" ]            .asBool()) { newChar.flags |= CF_SIMPLE;}
-  if (json[ "flags" ][ "kicked" ]                 .asBool()) { newChar.flags |= CF_KICKED;}
-  if (json[ "flags" ][ "no_list" ]                .asBool()) { newChar.flags |= CF_NOLIST;}
-  if (json[ "flags" ][ "no_who" ]                 .asBool()) { newChar.flags |= CF_NOWHO;}
-  if (json[ "flags" ][ "spell_ignore" ]           .asBool()) { newChar.flags |= CF_SPELLIGNORE;}
-  if (json[ "flags" ][ "computer_controlled" ]    .asBool()) { newChar.flags |= CF_CCP;}
-  if (json[ "flags" ][ "safe" ]                   .asBool()) { newChar.flags |= CF_SAFE;}
-  if (json[ "flags" ][ "no_staff" ]               .asBool()) { newChar.flags |= CF_NOSTAFF;}
-  if (json[ "flags" ][ "purple_of_honor" ]        .asBool()) { newChar.flags |= CF_POH;}
-  if (json[ "flags" ][ "purple_of_honor_leader" ] .asBool()) { newChar.flags |= CF_POH_LEADER;}
-  if (json[ "flags" ][ "thrall" ]                 .asBool()) { newChar.flags |= CF_THRALL;}
-  if (json[ "flags" ][ "lab_keeper" ]             .asBool()) { newChar.flags |= CF_LABKEEPER;}
-  if (json[ "flags" ][ "is_looting" ]             .asBool()) { newChar.flags |= CF_ISLOOTING;}
-  if (json[ "flags" ][ "golden" ]                 .asBool()) { newChar.flags |= CF_GOLDEN;}
-  if (json[ "flags" ][ "black" ]                  .asBool()) { newChar.flags |= CF_BLACK;}
-  if (json[ "flags" ][ "password" ]               .asBool()) { newChar.flags |= CF_PASSWD;}
-  if (json[ "flags" ][ "update" ]                 .asBool()) { newChar.flags |= CF_UPDATE;}
-  if (json[ "flags" ][ "save_me" ]                .asBool()) { newChar.flags |= CF_SAVEME;}
-  if (json[ "flags" ][ "greater_god" ]            .asBool()) { newChar.flags |= CF_GREATERGOD;}
-  if (json[ "flags" ][ "greater_invisibility" ]   .asBool()) { newChar.flags |= CF_GREATERINV;}
+  if (json[ "flags" ][ "immortal" ]               .get<bool>()) { newChar.flags |= CF_IMMORTAL;}
+  if (json[ "flags" ][ "god" ]                    .get<bool>()) { newChar.flags |= CF_GOD;}
+  if (json[ "flags" ][ "creator" ]                .get<bool>()) { newChar.flags |= CF_CREATOR;}
+  if (json[ "flags" ][ "build_mode" ]             .get<bool>()) { newChar.flags |= CF_BUILDMODE;}
+  if (json[ "flags" ][ "respawn" ]                .get<bool>()) { newChar.flags |= CF_RESPAWN;}
+  if (json[ "flags" ][ "player" ]                 .get<bool>()) { newChar.flags |= CF_PLAYER;}
+  if (json[ "flags" ][ "new_user" ]               .get<bool>()) { newChar.flags |= CF_NEWUSER;}
+  if (json[ "flags" ][ "no_tell" ]                .get<bool>()) { newChar.flags |= CF_NOTELL;}
+  if (json[ "flags" ][ "no_shout" ]               .get<bool>()) { newChar.flags |= CF_NOSHOUT;}
+  if (json[ "flags" ][ "merchant" ]               .get<bool>()) { newChar.flags |= CF_MERCHANT;}
+  if (json[ "flags" ][ "staff" ]                  .get<bool>()) { newChar.flags |= CF_STAFF;}
+  if (json[ "flags" ][ "no_hp_regen" ]            .get<bool>()) { newChar.flags |= CF_NOHPREG;}
+  if (json[ "flags" ][ "no_end_regen" ]           .get<bool>()) { newChar.flags |= CF_NOENDREG;}
+  if (json[ "flags" ][ "no_mana_regen" ]          .get<bool>()) { newChar.flags |= CF_NOMANAREG;}
+  if (json[ "flags" ][ "invisible" ]              .get<bool>()) { newChar.flags |= CF_INVISIBLE;}
+  if (json[ "flags" ][ "infrared" ]               .get<bool>()) { newChar.flags |= CF_INFRARED;}
+  if (json[ "flags" ][ "body" ]                   .get<bool>()) { newChar.flags |= CF_BODY;}
+  if (json[ "flags" ][ "no_sleep" ]               .get<bool>()) { newChar.flags |= CF_NOSLEEP;}
+  if (json[ "flags" ][ "undead" ]                 .get<bool>()) { newChar.flags |= CF_UNDEAD;}
+  if (json[ "flags" ][ "no_magic" ]               .get<bool>()) { newChar.flags |= CF_NOMAGIC;}
+  if (json[ "flags" ][ "stoned" ]                 .get<bool>()) { newChar.flags |= CF_STONED;}
+  if (json[ "flags" ][ "usurp" ]                  .get<bool>()) { newChar.flags |= CF_USURP;}
+  if (json[ "flags" ][ "imp" ]                    .get<bool>()) { newChar.flags |= CF_IMP;}
+  if (json[ "flags" ][ "shutup" ]                 .get<bool>()) { newChar.flags |= CF_SHUTUP;}
+  if (json[ "flags" ][ "no_description" ]         .get<bool>()) { newChar.flags |= CF_NODESC;}
+  if (json[ "flags" ][ "profiler" ]               .get<bool>()) { newChar.flags |= CF_PROF;}
+  if (json[ "flags" ][ "simple_anim" ]            .get<bool>()) { newChar.flags |= CF_SIMPLE;}
+  if (json[ "flags" ][ "kicked" ]                 .get<bool>()) { newChar.flags |= CF_KICKED;}
+  if (json[ "flags" ][ "no_list" ]                .get<bool>()) { newChar.flags |= CF_NOLIST;}
+  if (json[ "flags" ][ "no_who" ]                 .get<bool>()) { newChar.flags |= CF_NOWHO;}
+  if (json[ "flags" ][ "spell_ignore" ]           .get<bool>()) { newChar.flags |= CF_SPELLIGNORE;}
+  if (json[ "flags" ][ "computer_controlled" ]    .get<bool>()) { newChar.flags |= CF_CCP;}
+  if (json[ "flags" ][ "safe" ]                   .get<bool>()) { newChar.flags |= CF_SAFE;}
+  if (json[ "flags" ][ "no_staff" ]               .get<bool>()) { newChar.flags |= CF_NOSTAFF;}
+  if (json[ "flags" ][ "purple_of_honor" ]        .get<bool>()) { newChar.flags |= CF_POH;}
+  if (json[ "flags" ][ "purple_of_honor_leader" ] .get<bool>()) { newChar.flags |= CF_POH_LEADER;}
+  if (json[ "flags" ][ "thrall" ]                 .get<bool>()) { newChar.flags |= CF_THRALL;}
+  if (json[ "flags" ][ "lab_keeper" ]             .get<bool>()) { newChar.flags |= CF_LABKEEPER;}
+  if (json[ "flags" ][ "is_looting" ]             .get<bool>()) { newChar.flags |= CF_ISLOOTING;}
+  if (json[ "flags" ][ "golden" ]                 .get<bool>()) { newChar.flags |= CF_GOLDEN;}
+  if (json[ "flags" ][ "black" ]                  .get<bool>()) { newChar.flags |= CF_BLACK;}
+  if (json[ "flags" ][ "password" ]               .get<bool>()) { newChar.flags |= CF_PASSWD;}
+  if (json[ "flags" ][ "update" ]                 .get<bool>()) { newChar.flags |= CF_UPDATE;}
+  if (json[ "flags" ][ "save_me" ]                .get<bool>()) { newChar.flags |= CF_SAVEME;}
+  if (json[ "flags" ][ "greater_god" ]            .get<bool>()) { newChar.flags |= CF_GREATERGOD;}
+  if (json[ "flags" ][ "greater_invisibility" ]   .get<bool>()) { newChar.flags |= CF_GREATERINV;}
   // clang-format on
 
-  newChar.alignment = json[ "alignment" ].asInt();
-  newChar.temple_x  = json[ "temple_x" ].asUInt();
-  newChar.temple_y  = json[ "temple_y" ].asUInt();
-  newChar.tavern_x  = json[ "tavern_x" ].asUInt();
-  newChar.tavern_y  = json[ "tavern_y" ].asUInt();
-  newChar.temp      = json[ "temp" ].asUInt();
+  newChar.alignment = json[ "alignment" ].get<int>();
+  newChar.temple_x  = json[ "temple_x" ].get<unsigned int>();
+  newChar.temple_y  = json[ "temple_y" ].get<unsigned int>();
+  newChar.tavern_x  = json[ "tavern_x" ].get<unsigned int>();
+  newChar.tavern_y  = json[ "tavern_y" ].get<unsigned int>();
+  newChar.temp      = json[ "temp" ].get<unsigned int>();
 
-  const Json::Value& jsonAttributes = json[ "attributes" ];
+  const nlohmann::json& jsonAttributes = json[ "attributes" ];
   for ( int i = 0; i < 5; ++i )
   {
     for ( int j = 0; j < 6; ++j )
     {
-      newChar.attrib[ i ][ j ] = jsonAttributes[ i ][ "data" ][ j ].asUInt();
+      newChar.attrib[ i ][ j ] = jsonAttributes[ i ][ "data" ][ j ].get<unsigned int>();
     }
   }
 
   for ( int i = 0; i < 6; ++i )
   {
-    newChar.hp[ i ]   = json[ "hp" ][ i ].asUInt();
-    newChar.end[ i ]  = json[ "end" ][ i ].asUInt();
-    newChar.mana[ i ] = json[ "mana" ][ i ].asUInt();
+    newChar.hp[ i ]   = json[ "hp" ][ i ].get<unsigned int>();
+    newChar.end[ i ]  = json[ "end" ][ i ].get<unsigned int>();
+    newChar.mana[ i ] = json[ "mana" ][ i ].get<unsigned int>();
   }
 
-  const Json::Value& jsonSkills = json[ "skills" ];
+  const nlohmann::json& jsonSkills = json[ "skills" ];
   for ( int i = 0; i < 50; ++i )
   {
     for ( int j = 0; j < 6; ++j )
     {
-      newChar.skill[ i ][ j ] = jsonSkills[ i ][ "data" ][ j ].asUInt();
+      newChar.skill[ i ][ j ] = jsonSkills[ i ][ "data" ][ j ].get<unsigned int>();
     }
   }
 
-  newChar.weapon_bonus = json[ "weapon_bonus" ].asUInt();
-  newChar.armor_bonus  = json[ "armor_bonus" ].asUInt();
-  newChar.a_hp         = json[ "a_hp" ].asInt();
-  newChar.a_end        = json[ "a_end" ].asInt();
-  newChar.a_mana       = json[ "a_mana" ].asInt();
-  newChar.light        = json[ "light" ].asUInt();
-  newChar.mode         = json[ "mode" ].asUInt();
-  newChar.speed        = json[ "speed" ].asInt();
-  newChar.points       = json[ "points" ].asInt();
-  newChar.points_tot   = json[ "points_tot" ].asInt();
-  newChar.armor        = json[ "armor" ].asInt();
-  newChar.weapon       = json[ "weapon" ].asInt();
-  newChar.x            = json[ "x" ].asInt();
-  newChar.y            = json[ "y" ].asInt();
-  newChar.tox          = json[ "tox" ].asInt();
-  newChar.toy          = json[ "toy" ].asInt();
-  newChar.frx          = json[ "frx" ].asInt();
-  newChar.fry          = json[ "fry" ].asInt();
-  newChar.status       = json[ "status" ].asInt();
-  newChar.status2      = json[ "status2" ].asInt();
-  newChar.dir          = json[ "dir" ].asUInt();
-  newChar.gold         = json[ "gold" ].asInt();
+  newChar.weapon_bonus = json[ "weapon_bonus" ].get<unsigned int>();
+  newChar.armor_bonus  = json[ "armor_bonus" ].get<unsigned int>();
+  newChar.a_hp         = json[ "a_hp" ].get<int>();
+  newChar.a_end        = json[ "a_end" ].get<int>();
+  newChar.a_mana       = json[ "a_mana" ].get<int>();
+  newChar.light        = json[ "light" ].get<unsigned int>();
+  newChar.mode         = json[ "mode" ].get<unsigned int>();
+  newChar.speed        = json[ "speed" ].get<int>();
+  newChar.points       = json[ "points" ].get<int>();
+  newChar.points_tot   = json[ "points_tot" ].get<int>();
+  newChar.armor        = json[ "armor" ].get<int>();
+  newChar.weapon       = json[ "weapon" ].get<int>();
+  newChar.x            = json[ "x" ].get<int>();
+  newChar.y            = json[ "y" ].get<int>();
+  newChar.tox          = json[ "tox" ].get<int>();
+  newChar.toy          = json[ "toy" ].get<int>();
+  newChar.frx          = json[ "frx" ].get<int>();
+  newChar.fry          = json[ "fry" ].get<int>();
+  newChar.status       = json[ "status" ].get<int>();
+  newChar.status2      = json[ "status2" ].get<int>();
+  newChar.dir          = json[ "dir" ].get<unsigned int>();
+  newChar.gold         = json[ "gold" ].get<int>();
 
   for ( int i = 0; i < 40; ++i )
   {
-    newChar.item[ i ] = json[ "item" ][ i ].asUInt();
+    newChar.item[ i ] = json[ "item" ][ i ].get<unsigned int>();
   }
 
   for ( int i = 0; i < 20; ++i )
   {
-    newChar.worn[ i ]  = json[ "worn" ][ i ].asUInt();
-    newChar.spell[ i ] = json[ "spell" ][ i ].asUInt();
+    newChar.worn[ i ]  = json[ "worn" ][ i ].get<unsigned int>();
+    newChar.spell[ i ] = json[ "spell" ][ i ].get<unsigned int>();
   }
 
-  newChar.citem               = json[ "citem" ].asUInt();
-  newChar.creation_date       = json[ "creation_date" ].asUInt();
-  newChar.login_date          = json[ "login_date" ].asUInt();
-  newChar.addr                = json[ "addr" ].asUInt();
-  newChar.current_online_time = json[ "current_online_time" ].asUInt();
-  newChar.total_online_time   = json[ "total_online_time" ].asUInt();
-  newChar.comp_volume         = json[ "comp_volume" ].asUInt();
-  newChar.raw_volume          = json[ "raw_volume" ].asUInt();
-  newChar.idle                = json[ "idle" ].asUInt();
-  newChar.attack_cn           = json[ "attack_cn" ].asUInt();
-  newChar.skill_nr            = json[ "skill_nr" ].asUInt();
-  newChar.skill_target1       = json[ "skill_target1" ].asUInt();
-  newChar.skill_target2       = json[ "skill_target2" ].asUInt();
-  newChar.goto_x              = json[ "goto_x" ].asUInt();
-  newChar.goto_y              = json[ "goto_y" ].asUInt();
-  newChar.use_nr              = json[ "use_nr" ].asUInt();
-  newChar.misc_action         = json[ "misc_action" ].asUInt();
-  newChar.misc_target1        = json[ "misc_target1" ].asUInt();
-  newChar.misc_target2        = json[ "misc_target2" ].asUInt();
-  newChar.cerrno              = json[ "cerrno" ].asUInt();
-  newChar.escape_timer        = json[ "escape_timer" ].asUInt();
+  newChar.citem               = json[ "citem" ].get<unsigned int>();
+  newChar.creation_date       = json[ "creation_date" ].get<unsigned int>();
+  newChar.login_date          = json[ "login_date" ].get<unsigned int>();
+  newChar.addr                = json[ "addr" ].get<unsigned int>();
+  newChar.current_online_time = json[ "current_online_time" ].get<unsigned int>();
+  newChar.total_online_time   = json[ "total_online_time" ].get<unsigned int>();
+  newChar.comp_volume         = json[ "comp_volume" ].get<unsigned int>();
+  newChar.raw_volume          = json[ "raw_volume" ].get<unsigned int>();
+  newChar.idle                = json[ "idle" ].get<unsigned int>();
+  newChar.attack_cn           = json[ "attack_cn" ].get<unsigned int>();
+  newChar.skill_nr            = json[ "skill_nr" ].get<unsigned int>();
+  newChar.skill_target1       = json[ "skill_target1" ].get<unsigned int>();
+  newChar.skill_target2       = json[ "skill_target2" ].get<unsigned int>();
+  newChar.goto_x              = json[ "goto_x" ].get<unsigned int>();
+  newChar.goto_y              = json[ "goto_y" ].get<unsigned int>();
+  newChar.use_nr              = json[ "use_nr" ].get<unsigned int>();
+  newChar.misc_action         = json[ "misc_action" ].get<unsigned int>();
+  newChar.misc_target1        = json[ "misc_target1" ].get<unsigned int>();
+  newChar.misc_target2        = json[ "misc_target2" ].get<unsigned int>();
+  newChar.cerrno              = json[ "cerrno" ].get<unsigned int>();
+  newChar.escape_timer        = json[ "escape_timer" ].get<unsigned int>();
 
   for ( int i = 0; i < 4; ++i )
   {
-    newChar.enemy[ i ] = json[ "enemy" ][ i ].asUInt();
+    newChar.enemy[ i ] = json[ "enemy" ][ i ].get<unsigned int>();
   }
 
-  newChar.current_enemy = json[ "current_enemy" ].asUInt();
-  newChar.retry         = json[ "retry" ].asUInt();
-  newChar.stunned       = json[ "stunned" ].asUInt();
-  newChar.speed_mod     = json[ "speed_mode" ].asInt();
-  newChar.last_action   = json[ "last_action" ].asInt();
-  newChar.unused        = json[ "unused" ].asInt();
-  newChar.depot_sold    = json[ "depot_sold" ].asInt();
-  newChar.gethit_dam    = json[ "gethit_dam" ].asInt();
-  newChar.gethit_bonus  = json[ "gethit_bonus" ].asInt();
-  newChar.light_bonus   = json[ "light_bonus" ].asUInt();
+  newChar.current_enemy = json[ "current_enemy" ].get<unsigned int>();
+  newChar.retry         = json[ "retry" ].get<unsigned int>();
+  newChar.stunned       = json[ "stunned" ].get<unsigned int>();
+  newChar.speed_mod     = json[ "speed_mode" ].get<int>();
+  newChar.last_action   = json[ "last_action" ].get<int>();
+  newChar.unused        = json[ "unused" ].get<int>();
+  newChar.depot_sold    = json[ "depot_sold" ].get<int>();
+  newChar.gethit_dam    = json[ "gethit_dam" ].get<int>();
+  newChar.gethit_bonus  = json[ "gethit_bonus" ].get<int>();
+  newChar.light_bonus   = json[ "light_bonus" ].get<unsigned int>();
 
-  std::strncpy( newChar.passwd, json[ "password" ].asString().c_str(), sizeof( newChar.passwd ) - 1 );
+  std::strncpy( newChar.passwd, json[ "password" ].get<std::string>().c_str(), sizeof( newChar.passwd ) - 1 );
 
-  newChar.lastattack = json[ "lastattack" ].asInt();
+  newChar.lastattack = json[ "lastattack" ].get<int>();
 
   for ( int i = 0; i < 25; ++i )
   {
-    newChar.future1[ i ] = json[ "future1" ][ i ].asInt();
+    newChar.future1[ i ] = json[ "future1" ][ i ].get<int>();
   }
 
   for ( int i = 0; i < 49; ++i )
   {
-    newChar.future2[ i ] = json[ "future2" ][ i ].asInt();
+    newChar.future2[ i ] = json[ "future2" ][ i ].get<int>();
   }
 
   for ( int i = 0; i < 62; ++i )
   {
-    newChar.depot[ i ] = json[ "depot" ][ i ].asUInt();
+    newChar.depot[ i ] = json[ "depot" ][ i ].get<unsigned int>();
   }
 
   for ( int i = 0; i < 12; ++i )
   {
-    newChar.future3[ i ] = json[ "future3" ][ i ].asInt();
+    newChar.future3[ i ] = json[ "future3" ][ i ].get<int>();
   }
 
   for ( int i = 0; i < 100; ++i )
   {
-    newChar.data[ i ] = json[ "data" ][ i ].asInt();
+    newChar.data[ i ] = json[ "data" ][ i ].get<int>();
   }
 
   for ( int i = 0; i < 10; ++i )
   {
-    std::strncpy( newChar.text[ i ], json[ "text" ][ i ].asString().c_str(), sizeof( newChar.text[ i ] ) - 1 );
+    std::strncpy( newChar.text[ i ], json[ "text" ][ i ].get<std::string>().c_str(), sizeof( newChar.text[ i ] ) - 1 );
   }
 
-  newChar.sprite_override = json[ "sprite_override" ].asInt();
-  newChar.depot_cost      = json[ "depot_cost" ].asInt();
-  newChar.luck            = json[ "luck" ].asInt();
-  newChar.unreach         = json[ "unreach" ].asInt();
-  newChar.unreachx        = json[ "unreach_x" ].asInt();
-  newChar.unreachy        = json[ "unreach_y" ].asInt();
-  newChar.monsterClass    = json[ "monsterClass" ].asInt();
+  newChar.sprite_override = json[ "sprite_override" ].get<int>();
+  newChar.depot_cost      = json[ "depot_cost" ].get<int>();
+  newChar.luck            = json[ "luck" ].get<int>();
+  newChar.unreach         = json[ "unreach" ].get<int>();
+  newChar.unreachx        = json[ "unreach_x" ].get<int>();
+  newChar.unreachy        = json[ "unreach_y" ].get<int>();
+  newChar.monsterClass    = json[ "monsterClass" ].get<int>();
 
   return newChar;
 }
 
-Json::Value character::toJson() const
+nlohmann::json character::toJson() const
 {
-  Json::Value root {};
+  nlohmann::json root {};
 
   root[ "used" ]                              = used;
   root[ "name" ]                              = name;
@@ -235,7 +235,7 @@ Json::Value character::toJson() const
   root[ "pass2" ]                             = pass2;
   root[ "sprite" ]                            = sprite;
   root[ "sound" ]                             = sound;
-  root[ "flags" ]                             = Json::objectValue;
+  //root[ "flags" ]                             = Json::objectValue;
   root[ "flags" ][ "immortal" ]               = static_cast< bool >( flags & CF_IMMORTAL );
   root[ "flags" ][ "god" ]                    = static_cast< bool >( flags & CF_GOD );
   root[ "flags" ][ "creator" ]                = static_cast< bool >( flags & CF_CREATOR );
@@ -289,24 +289,24 @@ Json::Value character::toJson() const
   root[ "tavern_y" ]                          = tavern_y;
   root[ "temp" ]                              = temp;
 
-  root[ "attributes" ]                        = Json::arrayValue;
-  std::array< const char*, 5 > attributeNames = { "Braveness", "Willpower", "Intuition", "Agility", "Strength" };
-  for ( int i = 0; i < 5; ++i )
-  {
-    Json::Value attributeRoot {};
-    attributeRoot[ "name" ] = attributeNames[ i ];
-    attributeRoot[ "data" ] = Json::arrayValue;
-    for ( int j = 0; j < 6; ++j )
-    {
-      attributeRoot[ "data" ].append( attrib[ i ][ j ] );
-    }
+  // //root[ "attributes" ]                        = Json::arrayValue;
+  // std::array< const char*, 5 > attributeNames = { "Braveness", "Willpower", "Intuition", "Agility", "Strength" };
+  // for ( int i = 0; i < 5; ++i )
+  // {
+  //   nlohmann::json attributeRoot {};
+  //   attributeRoot[ "name" ] = attributeNames[ i ];
+  //   //attributeRoot[ "data" ] = Json::arrayValue;
+  //   for ( int j = 0; j < 6; ++j )
+  //   {
+  //     attributeRoot[ "data" ].append( attrib[ i ][ j ] );
+  //   }
 
-    root[ "attributes" ].append( attributeRoot );
-  }
+  //   root[ "attributes" ].append( attributeRoot );
+  // }
 
-  root[ "hp" ]   = Json::arrayValue;
-  root[ "end" ]  = Json::arrayValue;
-  root[ "mana" ] = Json::arrayValue;
+  //root[ "hp" ]   = Json::arrayValue;
+  //root[ "end" ]  = Json::arrayValue;
+  //root[ "mana" ] = Json::arrayValue;
 
   for ( int i = 0; i < 6; ++i )
   {
@@ -315,25 +315,25 @@ Json::Value character::toJson() const
     root[ "mana" ][ i ] = mana[ i ];
   }
 
-  root[ "skills" ] = Json::arrayValue;
-  for ( int i = 0; i < 50; ++i )
-  {
-    Json::Value skillRoot {};
+  //root[ "skills" ] = Json::arrayValue;
+  // for ( int i = 0; i < 50; ++i )
+  // {
+  //   nlohmann::json skillRoot {};
 
-    if ( std::string( static_skilltab[ i ].name ).empty() )
-    {
-      continue;
-    }
+  //   if ( std::string( static_skilltab[ i ].name ).empty() )
+  //   {
+  //     continue;
+  //   }
 
-    skillRoot[ "name" ] = static_skilltab[ i ].name;
-    skillRoot[ "data" ] = Json::arrayValue;
-    for ( int j = 0; j < 6; ++j )
-    {
-      skillRoot[ "data" ].append( skill[ i ][ j ] );
-    }
+  //   skillRoot[ "name" ] = static_skilltab[ i ].name;
+  //   //skillRoot[ "data" ] = Json::arrayValue;
+  //   for ( int j = 0; j < 6; ++j )
+  //   {
+  //     skillRoot[ "data" ].append( skill[ i ][ j ] );
+  //   }
 
-    root[ "skills" ].append( skillRoot );
-  }
+  //   root[ "skills" ].append( skillRoot );
+  // }
 
   root[ "weapon_bonus" ] = weapon_bonus;
   root[ "armor_bonus" ]  = armor_bonus;
@@ -358,14 +358,14 @@ Json::Value character::toJson() const
   root[ "dir" ]          = dir;
   root[ "gold" ]         = gold;
 
-  root[ "item" ] = Json::arrayValue;
+  //root[ "item" ] = Json::arrayValue;
   for ( int i = 0; i < 40; ++i )
   {
     root[ "item" ][ i ] = item[ i ];
   }
 
-  root[ "worn" ]  = Json::arrayValue;
-  root[ "spell" ] = Json::arrayValue;
+  //root[ "worn" ]  = Json::arrayValue;
+  //root[ "spell" ] = Json::arrayValue;
   for ( int i = 0; i < 20; ++i )
   {
     root[ "worn" ][ i ]  = worn[ i ];
@@ -394,7 +394,7 @@ Json::Value character::toJson() const
   root[ "cerrno" ]              = cerrno;
   root[ "escape_timer" ]        = escape_timer;
 
-  root[ "enemy" ] = Json::arrayValue;
+  //root[ "enemy" ] = Json::arrayValue;
   for ( int i = 0; i < 4; ++i )
   {
     root[ "enemy" ][ i ] = enemy[ i ];
@@ -413,12 +413,12 @@ Json::Value character::toJson() const
   root[ "password" ]      = std::string( passwd );
   root[ "lastattack" ]    = lastattack;
 
-  root[ "future1" ] = Json::arrayValue;
-  root[ "future2" ] = Json::arrayValue;
-  root[ "depot" ]   = Json::arrayValue;
-  root[ "future3" ] = Json::arrayValue;
-  root[ "data" ]    = Json::arrayValue;
-  root[ "text" ]    = Json::arrayValue;
+  //root[ "future1" ] = Json::arrayValue;
+  //root[ "future2" ] = Json::arrayValue;
+  //root[ "depot" ]   = Json::arrayValue;
+  //root[ "future3" ] = Json::arrayValue;
+  //root[ "data" ]    = Json::arrayValue;
+  //root[ "text" ]    = Json::arrayValue;
 
   for ( int i = 0; i < 25; ++i )
   {

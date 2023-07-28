@@ -7,7 +7,7 @@
 #include <string>
 
 #include <SFML/Graphics/Sprite.hpp>
-#include <json/json.h>
+#include <nlohmann/json.hpp>
 
 #include "ResourceLocations.h"
 
@@ -27,7 +27,7 @@ void GraphicsCache::loadNewGfxCache()
 
   std::ifstream newGfxFile { newGfxConfigPath };
 
-  Json::Value root {};
+  nlohmann::json root {};
 
   newGfxFile >> root;
 
@@ -35,17 +35,17 @@ void GraphicsCache::loadNewGfxCache()
   {
     NewGfxCacheEntry cacheEntry {};
 
-    cacheEntry.id   = entry[ "id" ].asInt();
-    cacheEntry.file = entry[ "file" ].asString();
+    cacheEntry.id   = entry[ "id" ].get<int>();
+    cacheEntry.file = entry[ "file" ].get<std::string>();
 
-    float newX = entry[ "new_dimensions" ][ "width" ].asFloat();
-    float newY = entry[ "new_dimensions" ][ "height" ].asFloat();
+    float newX = entry[ "new_dimensions" ][ "width" ].get<float>();
+    float newY = entry[ "new_dimensions" ][ "height" ].get<float>();
 
-    float oldX = entry[ "old_dimensions" ][ "width" ].asFloat();
-    float oldY = entry[ "old_dimensions" ][ "height" ].asFloat();
+    float oldX = entry[ "old_dimensions" ][ "width" ].get<float>();
+    float oldY = entry[ "old_dimensions" ][ "height" ].get<float>();
 
-    float offsetX = entry[ "offset" ][ "width" ].asFloat();
-    float offsetY = entry[ "offset" ][ "height" ].asFloat();
+    float offsetX = entry[ "offset" ][ "width" ].get<float>();
+    float offsetY = entry[ "offset" ][ "height" ].get<float>();
 
     cacheEntry.offset = sf::Vector2f { offsetX, offsetY };
 

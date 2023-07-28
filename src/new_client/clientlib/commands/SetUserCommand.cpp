@@ -12,7 +12,7 @@ namespace
 {
 
 // clang-format off
-const std::map< int, std::pair<int, int> > offSetToInputMap = { 
+const std::map< int, std::pair<int, int> > offSetToInputMap = {
   {  0, {0, 0}  },
   {  1, {0, 13} },
   {  2, {0, 26} },
@@ -80,9 +80,9 @@ bool SetUserCommand::send( sf::TcpSocket& socket ) const
 }
 
 
-Json::Value SetUserCommand::toJson() const
+nlohmann::json SetUserCommand::toJson() const
 {
-  Json::Value root            = MenAmongGods::ClientCommand::toJson();
+  nlohmann::json root            = MenAmongGods::ClientCommand::toJson();
   root[ "playerName" ]        = playerName_;
   root[ "playerDescription" ] = playerDescription_;
 

@@ -26,9 +26,9 @@ bool UniqueCommand::send( sf::TcpSocket& socket ) const
   return status == sf::Socket::Status::Done;
 }
 
-Json::Value UniqueCommand::toJson() const
+nlohmann::json UniqueCommand::toJson() const
 {
-  Json::Value root  = MenAmongGods::ClientCommand::toJson();
+  nlohmann::json root  = MenAmongGods::ClientCommand::toJson();
   root[ "unique1" ] = unique1_;
   root[ "unique2" ] = unique2_;
 

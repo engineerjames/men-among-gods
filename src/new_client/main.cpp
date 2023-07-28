@@ -18,6 +18,7 @@
 #include "TickBuffer.h"
 
 #include <filesystem>
+#include <fstream>
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -32,6 +33,8 @@ static const constexpr int MODEY           = 600;
 int main( int argc, char** args )
 {
   LOG_SET_LEVEL( MenAmongGods::ClientConfiguration::instance().loggingEnabled() );
+
+  std::ofstream openFile { "status.log" };
 
   // Amiko-Regular is a great choice
   // BP-Mono looks decent, would need some tweaks--at least it is a serif font
@@ -55,20 +58,27 @@ int main( int argc, char** args )
   {
     if ( std::string( args[ 1 ] ) == "moafile" )
     {
+      LOG_DEBUG( "Loading into client via moafile" );
       // Loading via moafile
       playerData->loadFromJsonFile( std::string( args[ 2 ] ) );
       playerData->setPassword( std::string( args[ 3 ] ) );
     }
     else if ( std::string( args[ 1 ] ) == "newentry" )
     {
-      // Loading via json based ui
-      Json::Reader reader {};
+      LOG_DEBUG( "Loading into client via a new character entry" );
 
-      Json::Value root {};
-      reader.parse( args[ 2 ], root );
+      nlohmann::json  root = nlohmann::json::parse(args[2]);
+
       playerData->fromJson( root );
     }
   }
+  else
+  {
+    openFile << "Invalid arguments." << std::endl;
+    return -1;
+  }
+
+  openFile << "Loading assets..." << std::endl;
 
   idxCache->load();
   soundCache->loadAudio( MenAmongGods::getSfxRoot() );
@@ -87,10 +97,21 @@ int main( int argc, char** args )
   components.push_back( playerData );
 
   std::vector< std::shared_ptr< MenAmongGods::ClientCommand > > commandList {};
+  openFile << "Done loading assets." << std::endl;
 
-  client->login();
+  openFile << "Logging in..." << std::endl;
+
+  auto errMessage = client->login();
+  if ( errMessage.has_value() )
+  {
+    openFile << errMessage.value();
+    return -1;
+  }
 
   // TODO: Eventually we'll add an optional FPS display for testing only
+
+  openFile << "Opening client window." << std::endl;
+  openFile.close();
 
   while ( window.isOpen() )
   {
@@ -106,9 +127,11 @@ int main( int argc, char** args )
         {
           window.close();
         }
-        else 
+        else
         {
-          playerData->addLogMessage( LogType::ERROR, "You must exit the game through the tavern! Or the EXIT button in the lower right hand corner of the screen" );
+          playerData->addLogMessage(
+              LogType::ERROR,
+              "You must exit the game through the tavern! Or the EXIT button in the lower right hand corner of the screen" );
         }
       }
 

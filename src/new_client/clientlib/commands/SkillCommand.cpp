@@ -18,9 +18,9 @@ bool SkillCommand::send( sf::TcpSocket& socket ) const
   return SkillCommand::sendThreeArguments( socket, skillNumber_, selectedCharacter_, baseModifierAttribute_ );
 }
 
-Json::Value SkillCommand::toJson() const
+nlohmann::json SkillCommand::toJson() const
 {
-  Json::Value root                = MenAmongGods::ClientCommand::toJson();
+  nlohmann::json root                = MenAmongGods::ClientCommand::toJson();
   root[ "skillNumber" ]           = skillNumber_;
   root[ "baseModifierAttribute" ] = baseModifierAttribute_;
   root[ "selectedCharacter" ]     = selectedCharacter_;

@@ -29,7 +29,7 @@ void Logger::addLogEntry( std::string msg, Level level, std::string file, int li
     return;
   }
 
-  LogEntry newEntry { Json::nullValue, msg, level, file, lineNumber, function };
+  LogEntry newEntry { nlohmann::json{}, msg, level, file, lineNumber, function };
 
   writeEntryToFile( newEntry );
 }

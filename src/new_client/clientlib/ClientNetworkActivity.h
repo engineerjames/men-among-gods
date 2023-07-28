@@ -1,6 +1,7 @@
 #ifndef CLIENT_NETWORK_ACTIVITY_H
 #define CLIENT_NETWORK_ACTIVITY_H
 
+#include <optional>
 #include <string>
 #include <thread>
 
@@ -24,9 +25,9 @@ public:
 
   void addClientCommands( const std::vector< std::shared_ptr< MenAmongGods::ClientCommand > >& commandList );
 
-  void login() noexcept;
-  void processServerTicks() noexcept;
-  void sendCommands() noexcept;
+  std::optional< std::string > login() noexcept;
+  void                         processServerTicks() noexcept;
+  void                         sendCommands() noexcept;
 
 private:
   ClientConnection                                              clientConnection_;

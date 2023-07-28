@@ -46,7 +46,7 @@ set( headers
 
 # TODO: Add respawn / password executables?
 add_executable(${target} ${sources} ${headers})
-target_link_libraries(${target} PRIVATE -m32 z m crypt common32)
+target_link_libraries(${target} PRIVATE -m32 z m crypt common32 njson)
 target_compile_options(${target} PRIVATE -Wall -Wextra -m32 -w -fno-strict-aliasing)
 
 # Need the .dat files accessible / copied out to the server build directory

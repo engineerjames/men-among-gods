@@ -12,7 +12,7 @@ public:
   virtual ~SkillCommand() = default;
 
   virtual bool        send( sf::TcpSocket& socket ) const override;
-  virtual Json::Value toJson() const override;
+  virtual nlohmann::json toJson() const override;
 
 private:
   std::uint32_t skillNumber_;

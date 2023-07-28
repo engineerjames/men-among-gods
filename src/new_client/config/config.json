@@ -1,6 +1,6 @@
 {
-  "hostIpAddress": "192.168.1.223",
+  "hostIpAddress": "127.0.0.1",
   "hostPort": 5555,
-  "loggingEnabled": false,
+  "loggingEnabled": true,
   "enableHpBars": false
 }

@@ -21,9 +21,9 @@ bool ModeCommand::send( sf::TcpSocket& socket ) const
   return ModeCommand::sendTwoArguments( socket, newMode_, 0 );
 }
 
-Json::Value ModeCommand::toJson() const
+nlohmann::json ModeCommand::toJson() const
 {
-  Json::Value root  = ClientCommand::toJson();
+  nlohmann::json root  = ClientCommand::toJson();
   root[ "newMode" ] = newMode_;
 
   return root;

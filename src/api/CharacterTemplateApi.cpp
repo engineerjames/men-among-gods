@@ -58,10 +58,11 @@ void characters::getCharacterTemplates( const drogon::HttpRequestPtr&           
 
   if ( id >= 0 && id < MAX_TCHARS && templates[ id ] != nullptr )
   {
-    Json::Value jsonResponse = templates[ id ]->toJson();
+    nlohmann::json jsonResponse = templates[ id ]->toJson();
     jsonResponse[ "id" ]     = id;
 
-    auto response = drogon::HttpResponse::newHttpJsonResponse( jsonResponse );
+    auto response = drogon::HttpResponse::newHttpResponse( );
+    response->setBody(jsonResponse.dump());
     response->setStatusCode( drogon::HttpStatusCode::k200OK );
     callback( response );
   }
@@ -87,7 +88,9 @@ void characters::getCharacterTemplatesByName( const drogon::HttpRequestPtr&     
 
   if ( ! name.empty() && map.count( name ) != 0 )
   {
-    Json::Value jsonResponse = Json::arrayValue;
+    nlohmann::json jsonResponse{};
+
+    std::vector<nlohmann::json> arrayMembers{};
 
     for ( auto&& [ n, characterlist ] : map )
     {
@@ -95,16 +98,18 @@ void characters::getCharacterTemplatesByName( const drogon::HttpRequestPtr&     
       {
         for ( auto&& [ cid, charptr ] : characterlist )
         {
-          Json::Value root = charptr->toJson();
+          nlohmann::json root = charptr->toJson();
           root[ "id" ]     = cid;
 
-          jsonResponse.append( root );
+          arrayMembers.push_back( root );
         }
       }
     }
 
-    auto response = drogon::HttpResponse::newHttpJsonResponse( jsonResponse );
-    response->setStatusCode( drogon::HttpStatusCode::k200OK );
+    jsonResponse = arrayMembers;
+
+    auto response = drogon::HttpResponse::newHttpResponse( );
+    response->setBody(jsonResponse.dump());
     callback( response );
   }
   else
@@ -149,11 +154,11 @@ void characters::copyExistingTemplateById( const drogon::HttpRequestPtr&        
     return;
   }
 
-  Json::Value root {};
+  nlohmann::json root {};
   root[ "id" ] = newId;
-  auto resp    = drogon::HttpResponse::newHttpJsonResponse( root );
-  resp->setStatusCode( drogon::HttpStatusCode::k200OK );
-  callback( resp );
+  auto response = drogon::HttpResponse::newHttpResponse( );
+  response->setBody(root.dump());
+  callback( response );
 
   saveTemplateFile( templates );
 }
@@ -182,12 +187,13 @@ void characters::updateExistingTemplateById( const drogon::HttpRequestPtr&      
 
   std::cerr << "Received: " << ( req->getJsonObject() )->toStyledString();
 
-  auto      jsonBody                 = req->getJsonObject();
-  character receivedCharacterDetails = character::fromJson( *jsonBody );
+  auto      jsonBody                 = req->getJsonObject()->toStyledString();
+  character receivedCharacterDetails = character::fromJson( nlohmann::json::parse(jsonBody) );
 
   *templates[ id ] = receivedCharacterDetails;
 
-  auto resp = drogon::HttpResponse::newHttpJsonResponse( *jsonBody );
+  auto resp = drogon::HttpResponse::newHttpResponse( );
+  resp->setBody(jsonBody);
   resp->setStatusCode( drogon::HttpStatusCode::k200OK );
   callback( resp );
 

@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-#include <json/json.h>
+#include <nlohmann/json.hpp>
 
 #pragma pack( push, 1 )
 struct item
@@ -77,8 +77,8 @@ struct item
   unsigned char driver;     // 596, special routines for LOOKSPECIAL and USESPECIAL
   std::uint32_t data[ 10 ]; // 634, driver data
 
-  Json::Value toJson() const;
-  static item fromJson( const Json::Value& json );
+  nlohmann::json toJson() const;
+  static item fromJson( const nlohmann::json& json );
 };
 #pragma pack( pop )
 static_assert( sizeof( item ) == 634 );

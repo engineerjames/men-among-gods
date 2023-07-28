@@ -17,9 +17,9 @@ bool LookItemCommand::send( sf::TcpSocket& socket ) const
   return LookItemCommand::sendTwoArguments( socket, x_, y_ );
 }
 
-Json::Value LookItemCommand::toJson() const
+nlohmann::json LookItemCommand::toJson() const
 {
-  Json::Value root = ClientCommand::toJson();
+  nlohmann::json root = ClientCommand::toJson();
   root[ "x" ]      = x_;
   root[ "y" ]      = y_;
 

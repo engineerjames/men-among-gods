@@ -12,10 +12,16 @@
 #include <string>
 #include <vector>
 
-#include <json/json.h>
+#include <nlohmann/json.hpp>
 
 #if WIN32
 #define __PRETTY_FUNCTION__ __FUNCSIG__
+#endif
+
+// Some test and older libraries #define ERROR, which
+// produces very strange errors for Level::ERROR
+#ifdef ERROR
+#undef ERROR
 #endif
 
 namespace MenAmongGods::detail
@@ -49,7 +55,7 @@ public:
 
   struct LogEntry
   {
-    const Json::Value json_;
+    const nlohmann::json json_;
     const std::string msg_;
     const Level       level_;
     const std::string file_;
@@ -57,7 +63,7 @@ public:
     const std::time_t currentTime_;
     std::string       functionName_;
 
-    LogEntry( Json::Value json, std::string msg, Level level, std::string file, int lineNumber, std::string functionName )
+    LogEntry( nlohmann::json json, std::string msg, Level level, std::string file, int lineNumber, std::string functionName )
         : json_( json )
         , msg_( msg )
         , level_( level )
@@ -68,14 +74,14 @@ public:
     {
     }
 
-    Json::Value toJson() const
+    nlohmann::json toJson() const
     {
-      Json::Value root {};
+      nlohmann::json root {};
 
       root[ "time" ] = wtime( currentTime_ );
       root[ "msg" ]  = msg_;
 
-      if ( json_ != Json::nullValue )
+      if ( ! json_.is_null() )
       {
         root[ "object" ] = json_;
       }
@@ -133,7 +139,7 @@ private:
 
     if ( outputFile_.is_open() )
     {
-      outputFile_ << newEntry.toJson().toStyledString();
+      outputFile_ << newEntry.toJson().dump() << "," << std::endl;
     }
     else
     {
