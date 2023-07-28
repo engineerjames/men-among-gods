@@ -7,8 +7,8 @@
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "tauri_frontend",
-    "version": "0.0.0"
+    "productName": "Men Among Gods",
+    "version": "0.0.1"
   },
   "tauri": {
     "allowlist": {
@@ -37,7 +37,7 @@
       {
         "fullscreen": false,
         "resizable": true,
-        "title": "tauri_frontend",
+        "title": "Men Among Gods",
         "width": 800,
         "height": 600
       }
