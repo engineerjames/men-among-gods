@@ -1,20 +1,37 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-#[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
+use std::{path::PathBuf, process::Command};
+
+fn get_mag_client(main_exe_path: PathBuf) -> PathBuf {
+    let main_dir = main_exe_path.parent().unwrap();
+
+    let mag_client_name = "MenAmongGods.exe";
+    let mag_client_path = main_dir.join(mag_client_name);
+    return mag_client_path;
 }
 
+// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
 fn play(name: &str, pass: &str) {
     println!("Playing with {}, and {}", name, pass);
+    let exe_path = get_mag_client(std::env::current_exe().unwrap());
+
+    println!("Running Men Among Gods client at: {}", exe_path.display());
+
+    if cfg!(target_os = "windows") {
+        Command::new("cmd")
+            .args(["/C", "cd"])
+            .spawn()
+            .expect("Command failed to start");
+    } else {
+        // TODO: Linux
+    };
 }
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![greet, play])
+        .invoke_handler(tauri::generate_handler![play])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
