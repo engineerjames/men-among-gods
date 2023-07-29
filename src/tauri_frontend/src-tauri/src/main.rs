@@ -7,7 +7,12 @@ fn get_mag_client(main_exe_path: PathBuf) -> PathBuf {
     let main_dir = main_exe_path.parent().unwrap();
 
     let mag_client_name = "MenAmongGods.exe";
-    let mag_client_path = main_dir.join(mag_client_name);
+
+    let mag_client_path = main_dir
+        .join("_up_")
+        .join("resources")
+        .join(mag_client_name);
+
     return mag_client_path;
 }
 
@@ -20,12 +25,15 @@ fn play(name: &str, pass: &str) {
     println!("Running Men Among Gods client at: {}", exe_path.display());
 
     if cfg!(target_os = "windows") {
-        Command::new("cmd")
-            .args(["/C", "cd"])
+        Command::new(exe_path)
+            .args(["newentry", "{name: 'bob', desc: 'bob2', pass: '1234', race: 2, sex: 1}"])
             .spawn()
             .expect("Command failed to start");
     } else {
-        // TODO: Linux
+        Command::new(exe_path)
+            .args(["newentry", "{name: 'bob', desc: 'bob2', pass: '1234', race: 2, sex: 1}"])
+            .spawn()
+            .expect("Command failed to start");
     };
 }
 
