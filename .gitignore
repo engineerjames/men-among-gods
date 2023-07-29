@@ -28,3 +28,5 @@ src/game-designer/node_modules/**
 
 # Ignore temp files from blender
 *.blend1
+
+src/tauri_frontend/resources
