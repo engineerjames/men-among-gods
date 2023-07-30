@@ -7,8 +7,8 @@ use std::{path::PathBuf, process::Command};
 #[derive(Serialize, Deserialize)]
 struct UIData {
     name: String,
-    description: String,
-    password: String,
+    desc: String,
+    pass: String,
     race: u8,
     sex: u8,
 }
@@ -36,17 +36,21 @@ fn play(name: &str, pass: &str) {
 
     let data_from_ui = UIData {
         name: name.to_owned(),
-        password: pass.to_owned(),
-        description: "".to_owned(),
+        pass: pass.to_owned(),
+        desc: "".to_owned(),
         race: 2,
         sex: 1,
     };
+
+    let stringified_data = serde_json::to_string(&data_from_ui).unwrap();
+
+    println!("Stringified data representation: {}", &stringified_data);
 
     if cfg!(target_os = "windows") {
         Command::new(exe_path.clone())
             .args([
                 "newentry",
-                serde_json::to_string(&data_from_ui).unwrap().as_str(),
+                &stringified_data,
             ])
             .current_dir(exe_path.parent().unwrap())
             .spawn()
@@ -55,7 +59,7 @@ fn play(name: &str, pass: &str) {
         Command::new(exe_path.clone())
             .args([
                 "newentry",
-                serde_json::to_string(&data_from_ui).unwrap().as_str(),
+                &stringified_data,
             ])
             .current_dir(exe_path.parent().unwrap())
             .spawn()
