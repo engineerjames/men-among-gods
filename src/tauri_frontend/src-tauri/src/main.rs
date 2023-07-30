@@ -1,7 +1,17 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use serde::{Deserialize, Serialize};
 use std::{path::PathBuf, process::Command};
+
+#[derive(Serialize, Deserialize)]
+struct UIData {
+    name: String,
+    description: String,
+    password: String,
+    race: u8,
+    sex: u8,
+}
 
 fn get_mag_client(main_exe_path: PathBuf) -> PathBuf {
     let main_dir = main_exe_path.parent().unwrap();
@@ -24,14 +34,30 @@ fn play(name: &str, pass: &str) {
 
     println!("Running Men Among Gods client at: {}", exe_path.display());
 
+    let data_from_ui = UIData {
+        name: name.to_owned(),
+        password: pass.to_owned(),
+        description: "".to_owned(),
+        race: 2,
+        sex: 1,
+    };
+
     if cfg!(target_os = "windows") {
-        Command::new(exe_path)
-            .args(["newentry", "{name: 'bob', desc: 'bob2', pass: '1234', race: 2, sex: 1}"])
+        Command::new(exe_path.clone())
+            .args([
+                "newentry",
+                serde_json::to_string(&data_from_ui).unwrap().as_str(),
+            ])
+            .current_dir(exe_path.parent().unwrap())
             .spawn()
             .expect("Command failed to start");
     } else {
-        Command::new(exe_path)
-            .args(["newentry", "{name: 'bob', desc: 'bob2', pass: '1234', race: 2, sex: 1}"])
+        Command::new(exe_path.clone())
+            .args([
+                "newentry",
+                serde_json::to_string(&data_from_ui).unwrap().as_str(),
+            ])
+            .current_dir(exe_path.parent().unwrap())
             .spawn()
             .expect("Command failed to start");
     };
