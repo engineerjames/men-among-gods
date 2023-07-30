@@ -32,6 +32,7 @@ static const constexpr int MODEY           = 600;
 
 int main( int argc, char** args )
 {
+  // TODO: This should be the log level, not just enabled or not...
   LOG_SET_LEVEL( MenAmongGods::ClientConfiguration::instance().loggingEnabled() );
 
   std::ofstream openFile { "status.log" };
@@ -67,15 +68,19 @@ int main( int argc, char** args )
     {
       LOG_DEBUG( "Loading into client via a new character entry" );
 
-      nlohmann::json  root = nlohmann::json::parse(args[2]);
+      nlohmann::json root = nlohmann::json::parse( args[ 2 ] );
 
       playerData->fromJson( root );
     }
   }
   else
   {
-    openFile << "Invalid arguments." << std::endl;
-    return -1;
+    // Attempt hard-coded entry
+    openFile << "Invalid arguments...using default character" << std::endl;
+    playerData->setName( "Demo" );
+    playerData->setDescription( "Demo description" );
+    playerData->setPassword( "12345678" );
+    playerData->setRaceAndSex( "Harakim", "Male" );
   }
 
   openFile << "Loading assets..." << std::endl;
