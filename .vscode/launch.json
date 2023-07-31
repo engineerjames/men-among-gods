@@ -7,7 +7,8 @@
             "program": "${workspaceFolder}/out/build/MSVC-vcpkg-release/src/new_client/MenAmongGods.exe",
             "args": [
                 "newentry",
-                "{ \"name\": \"bob\", \"desc\": \"bob2\", \"pass\": \"1234\", \"race\": 2, \"sex\": 1}"
+                "{ \"name\": \"bob\", \"desc\": \"bob2\", \"pass\": \"1234\", \"race\": 2, \"sex\": 1}",
+                "{ \"ip_address\": \"127.0.0.1\", \"port\": \"32678\"}"
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/out/build/MSVC-vcpkg-release/src/new_client",
