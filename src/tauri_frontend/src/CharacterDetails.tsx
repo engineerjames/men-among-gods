@@ -41,14 +41,37 @@ const CharacterDetails: FunctionComponent<{}> = () => {
         }
 
 
-        await invoke("play", { name: name, pass: pass, desc: desc, sex: sexAsInt, race: characterClassAsInt });
+        await invoke("play", {
+            name: name,
+            pass: pass,
+            desc: desc,
+            sex: sexAsInt,
+            race: characterClassAsInt
+        });
     }
 
     return <>
         <Stack spacing={2}>
-            <input hidden={!buttonsAreEnabled} value={name} onChange={(e) => setName(e.currentTarget.value)} required id="outlined-basic" placeholder="Character Name" />
-            <input hidden={!buttonsAreEnabled} value={desc} onChange={(e) => setDesc(e.currentTarget.value)} required id="outlined-basic" placeholder="Description" type="text" />
-            <input hidden={!buttonsAreEnabled} value={pass} onChange={(e) => setPass(e.currentTarget.value)} required id="outlined-basic" placeholder="Password" type="password" />
+
+            <input hidden={!buttonsAreEnabled}
+                value={name}
+                onChange={(e) => setName(e.currentTarget.value)}
+                required id="outlined-basic"
+                placeholder="Character Name" />
+
+            <input hidden={!buttonsAreEnabled}
+                value={desc}
+                onChange={(e) => setDesc(e.currentTarget.value)}
+                required id="outlined-basic"
+                placeholder="Description"
+                type="text" />
+
+            <input hidden={!buttonsAreEnabled}
+                value={pass}
+                onChange={(e) => setPass(e.currentTarget.value)}
+                required id="outlined-basic"
+                placeholder="Password"
+                type="password" />
 
             <Stack spacing={3} direction="row" divider={<Divider orientation="vertical" />} >
                 Gender:
