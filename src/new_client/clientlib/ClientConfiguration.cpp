@@ -54,15 +54,15 @@ ClientConfiguration::ClientConfiguration()
     , enableHpBars_( false )
 {
   // Read in the JSON parameters from the file
-  std::ifstream inputJsonFile { MenAmongGods::getConfigPath() + "config.json" };
-  nlohmann::json root {};
+  std::ifstream  inputJsonFile { MenAmongGods::getConfigPath() + "config.json" };
+  nlohmann::json root = nlohmann::json::parse( inputJsonFile );
 
-  inputJsonFile >> root;
+  LOG_DEBUG( "Found configuration here: " + MenAmongGods::getConfigPath() + "config.json" )
 
-  loggingEnabled_ = root["loggingEnabled"].get<bool>();
-  hostIpAddress_  = root["hostIpAddress"].get<std::string>();
-  hostPort_       = root["hostPort"].get<int>();
-  enableHpBars_   = root["enableHpBars"].get<bool>();
+  loggingEnabled_ = root[ "loggingEnabled" ].get< bool >();
+  hostIpAddress_  = root[ "hostIpAddress" ].get< std::string >();
+  hostPort_       = root[ "hostPort" ].get< int >();
+  enableHpBars_   = root[ "enableHpBars" ].get< bool >();
 
   LOG_DEBUG_OBJ( *this, "Client configuration parameters" );
 }

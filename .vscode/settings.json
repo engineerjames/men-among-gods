@@ -84,5 +84,8 @@
     "cmake.generator": "Ninja",
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "cmake.configureOnEdit": false,
-    "cmake.configureOnOpen": true
+    "cmake.configureOnOpen": false,
+    "rust-analyzer.linkedProjects": [
+        "src/tauri_frontend/src-tauri/Cargo.toml"
+    ]
 }

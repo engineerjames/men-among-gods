@@ -12,48 +12,48 @@ static const std::string RESOURCE_ROOT = "@RESOURCE_OUTPUT_DIRECTORY@";
 
 inline std::string getGfxRoot()
 {
-  static const std::string GFX_ROOT     = RESOURCE_ROOT + "/gfx/";
-  static const std::string ALT_GFX_ROOT = "./res/gfx/";
+  static const std::string ALT_GFX_ROOT = RESOURCE_ROOT + "/gfx/";
+  static const std::string GFX_ROOT     = "./res/gfx/";
 
   return std::filesystem::exists( GFX_ROOT ) ? GFX_ROOT : ALT_GFX_ROOT;
 }
 
 inline std::string getNewGfxRoot()
 {
-  static const std::string NEW_GFX_ROOT     = RESOURCE_ROOT + "/new_gfx/";
-  static const std::string ALT_NEW_GFX_ROOT = "./res/new_gfx/";
+  static const std::string ALT_NEW_GFX_ROOT = RESOURCE_ROOT + "/new_gfx/";
+  static const std::string NEW_GFX_ROOT     = "./res/new_gfx/";
 
   return std::filesystem::exists( NEW_GFX_ROOT ) ? NEW_GFX_ROOT : ALT_NEW_GFX_ROOT;
 }
 
 inline std::string getSfxRoot()
 {
-  static const std::string SFX_ROOT     = RESOURCE_ROOT + "/sfx/";
-  static const std::string ALT_SFX_ROOT = "./res/sfx/";
+  static const std::string ALT_SFX_ROOT = RESOURCE_ROOT + "/sfx/";
+  static const std::string SFX_ROOT     = "./res/sfx/";
 
   return std::filesystem::exists( SFX_ROOT ) ? SFX_ROOT : ALT_SFX_ROOT;
 }
 
 inline std::string getFontRoot()
 {
-  static const std::string FONT_ROOT     = RESOURCE_ROOT + "/fonts/";
-  static const std::string ALT_FONT_ROOT = "./res/fonts/";
+  static const std::string ALT_FONT_ROOT = RESOURCE_ROOT + "/fonts/";
+  static const std::string FONT_ROOT     = "./res/fonts/";
 
   return std::filesystem::exists( FONT_ROOT ) ? FONT_ROOT : ALT_FONT_ROOT;
 }
 
 inline std::string getTestRoot()
 {
-  static const std::string TEST_ROOT     = RESOURCE_ROOT + "/test/";
-  static const std::string ALT_TEST_ROOT = "./res/test/";
+  static const std::string ALT_TEST_ROOT = RESOURCE_ROOT + "/test/";
+  static const std::string TEST_ROOT     = "./res/test/";
 
   return std::filesystem::exists( TEST_ROOT ) ? TEST_ROOT : ALT_TEST_ROOT;
 }
 
 inline std::string getConfigPath()
 {
-  static const std::string CONFIG_ROOT     = RESOURCE_ROOT + "/config/";
-  static const std::string ALT_CONFIG_ROOT = "./res/config/";
+  static const std::string ALT_CONFIG_ROOT = RESOURCE_ROOT + "/config/";
+  static const std::string CONFIG_ROOT     = "./res/config/";
 
   return std::filesystem::exists( CONFIG_ROOT ) ? CONFIG_ROOT : ALT_CONFIG_ROOT;
 }
