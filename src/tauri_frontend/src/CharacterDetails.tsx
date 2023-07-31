@@ -1,74 +1,43 @@
-import { FunctionComponent, useState } from "react";
-import { invoke } from "@tauri-apps/api/tauri";
-import { Stack, Divider, CircularProgress, Backdrop, RadioGroup, FormControlLabel, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import { Dispatch, FunctionComponent, SetStateAction } from "react";
+import { Stack, Divider, RadioGroup, FormControlLabel, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { Radio } from "theme-ui";
 
-const CharacterDetails: FunctionComponent<{}> = () => {
-    const [name, setName] = useState("");
-    const [pass, setPass] = useState("");
-    const [desc, setDesc] = useState("");
-    const [sex, setSex] = useState('male');
-    const [buttonsAreEnabled, setbuttonsAreEnabled] = useState(true);
-    const [characterClass, setCharacterClass] = useState('templar');
+interface PropType {
+    name: string,
+    pass: string,
+    desc: string,
+    sex: string,
+    characterClass: string,
+    onChangeName: Dispatch<SetStateAction<string>>,
+    onChangePass: Dispatch<SetStateAction<string>>,
+    onChangeDesc: Dispatch<SetStateAction<string>>,
+    onChangeSex: Dispatch<SetStateAction<string>>,
+    onChangeCharacterClass: Dispatch<SetStateAction<string>>,
+}
 
-    let clearValues = () => {
-        setName("");
-        setPass("");
-        setDesc("");
-        setSex('male');
-    }
-
+const CharacterDetails: FunctionComponent<PropType> = (props) => {
     let isSexMale = () => {
-        return sex === "male";
-    }
-
-    async function play() {
-        let sexAsInt = sex === "male" ? 1 : 2;
-
-        let characterClassAsInt = 1;
-        switch (characterClass) {
-            case "templar":
-                characterClassAsInt = 1;
-                break;
-            case "harakim":
-                characterClassAsInt = 2;
-                break;
-            case "mercenary":
-                characterClassAsInt = 3;
-                break;
-            default:
-                break;
-        }
-
-
-        await invoke("play", {
-            name: name,
-            pass: pass,
-            desc: desc,
-            sex: sexAsInt,
-            race: characterClassAsInt
-        });
+        return props.sex === "male";
     }
 
     return <>
         <Stack spacing={2}>
-
-            <input hidden={!buttonsAreEnabled}
-                value={name}
-                onChange={(e) => setName(e.currentTarget.value)}
+            <input
+                value={props.name}
+                onChange={(e) => props.onChangeName(e.currentTarget.value)}
                 required id="outlined-basic"
                 placeholder="Character Name" />
 
-            <input hidden={!buttonsAreEnabled}
-                value={desc}
-                onChange={(e) => setDesc(e.currentTarget.value)}
+            <input
+                value={props.desc}
+                onChange={(e) => props.onChangeDesc(e.currentTarget.value)}
                 required id="outlined-basic"
                 placeholder="Description"
                 type="text" />
 
-            <input hidden={!buttonsAreEnabled}
-                value={pass}
-                onChange={(e) => setPass(e.currentTarget.value)}
+            <input
+                value={props.pass}
+                onChange={(e) => props.onChangePass(e.currentTarget.value)}
                 required id="outlined-basic"
                 placeholder="Password"
                 type="password" />
@@ -78,7 +47,7 @@ const CharacterDetails: FunctionComponent<{}> = () => {
                 <FormControl>
                     <RadioGroup
                         row
-                        onClick={(event) => { event?.target?.value && setSex(event?.target?.value) }}
+                        onClick={(event) => { event?.target?.value && props.onChangeSex(event?.target?.value) }}
                         aria-labelledby="demo-controlled-radio-buttons-group"
                         name="radio-buttons-group"
                     >
@@ -93,9 +62,9 @@ const CharacterDetails: FunctionComponent<{}> = () => {
                     <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        value={characterClass}
+                        value={props.characterClass}
                         label="Class"
-                        onChange={(e) => { setCharacterClass(e.target.value); }}
+                        onChange={(e) => { props.onChangeCharacterClass(e.target.value); }}
                     >
                         <MenuItem value="templar">Templar</MenuItem>
                         <MenuItem value="harakim">Harakim</MenuItem>
@@ -103,23 +72,7 @@ const CharacterDetails: FunctionComponent<{}> = () => {
                     </Select>
                 </FormControl>
             </Stack>
-
-            <Stack spacing={2} direction="row" divider={<Divider orientation="vertical" flexItem />} >
-                <button hidden={!buttonsAreEnabled} onClick={() => {
-                    setbuttonsAreEnabled(false);
-                    play();
-                }}>Play</button>
-                <button hidden={!buttonsAreEnabled} onClick={() => {
-                    clearValues()
-                }}>New</button>
-            </Stack>
-        </Stack >
-        <Backdrop
-            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-            open={!buttonsAreEnabled}
-        >
-            <CircularProgress color="inherit" />
-        </Backdrop>
+        </Stack>
     </>;
 }
 
