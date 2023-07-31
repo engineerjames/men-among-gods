@@ -58,6 +58,9 @@ int main( int argc, char** args )
     auto map        = std::make_unique< MenAmongGods::Map >();
     auto playerData = std::make_shared< PlayerData >( window, *fontCache );
 
+    std::optional< std::string > uiDefinedIpAddress;
+    std::optional< std::string > uiDefinedPort;
+
     if ( argc >= 3 )
     {
       if ( std::string( args[ 1 ] ) == "moafile" )
@@ -71,7 +74,11 @@ int main( int argc, char** args )
       {
         LOG_DEBUG( "Loading into client via a new character entry" );
 
-        nlohmann::json root = nlohmann::json::parse( args[ 2 ] );
+        nlohmann::json root        = nlohmann::json::parse( args[ 2 ] );
+        nlohmann::json server_root = nlohmann::json::parse( args[ 3 ] );
+
+        uiDefinedIpAddress = server_root[ "ip_address" ].get< std::string >();
+        uiDefinedPort      = server_root[ "port" ].get< std::string >();
 
         playerData->fromJson( root );
       }
@@ -93,9 +100,21 @@ int main( int argc, char** args )
     gfxCache->loadNewGfxCache();
 
     auto tickBufferPtr = std::make_shared< TickBuffer >( *playerData, *map, *soundCache );
-    auto client        = std::make_shared< ClientNetworkActivity >( *tickBufferPtr, *playerData,
-                                                             MenAmongGods::ClientConfiguration::instance().hostIpAddress(),
-                                                             MenAmongGods::ClientConfiguration::instance().hostPort() );
+
+    std::shared_ptr< ClientNetworkActivity > client;
+    if ( uiDefinedIpAddress && uiDefinedPort )
+    {
+      client = std::make_shared< ClientNetworkActivity >( *tickBufferPtr, *playerData, uiDefinedIpAddress.value(),
+                                                          std::stoi( uiDefinedPort.value() ) );
+      openFile << "Using UI defined ip address and port values." << std::endl;
+    }
+    else
+    {
+      client = std::make_shared< ClientNetworkActivity >( *tickBufferPtr, *playerData,
+                                                          MenAmongGods::ClientConfiguration::instance().hostIpAddress(),
+                                                          MenAmongGods::ClientConfiguration::instance().hostPort() );
+      openFile << "Using configuration file defined ip and port values." << std::endl;
+    }
 
     auto mainUiPtr = std::make_shared< MenAmongGods::MainUi >( window, *map, *playerData, *gfxCache, *idxCache, *fontCache );
 
