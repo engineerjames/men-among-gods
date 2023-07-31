@@ -28,7 +28,7 @@ fn get_mag_client(main_exe_path: PathBuf) -> PathBuf {
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
-fn play(name: &str, pass: &str) {
+fn play(name: &str, pass: &str, desc: &str, sex: u8, race: u8) {
     println!("Playing with {}, and {}", name, pass);
     let exe_path = get_mag_client(std::env::current_exe().unwrap());
 
@@ -37,9 +37,9 @@ fn play(name: &str, pass: &str) {
     let data_from_ui = UIData {
         name: name.to_owned(),
         pass: pass.to_owned(),
-        desc: "".to_owned(),
-        race: 2,
-        sex: 1,
+        desc: desc.to_owned(),
+        race: race,
+        sex: sex,
     };
 
     let stringified_data = serde_json::to_string(&data_from_ui).unwrap();
