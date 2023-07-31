@@ -47,7 +47,7 @@ const CharacterDetails: FunctionComponent<PropType> = (props) => {
                 <FormControl>
                     <RadioGroup
                         row
-                        onClick={(event) => { event?.target?.value && props.onChangeSex(event?.target?.value) }}
+                        onClick={(event) => { (event.target as HTMLInputElement).value && props.onChangeSex((event.target as HTMLInputElement).value) }}
                         aria-labelledby="demo-controlled-radio-buttons-group"
                         name="radio-buttons-group"
                     >
