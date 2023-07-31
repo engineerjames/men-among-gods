@@ -7,11 +7,14 @@ set(sources
   main.cpp
   CharacterTemplateApi.cpp
   ItemTemplateApi.cpp
+  AccountApi.cpp
 )
 
 set(headers
   CharacterTemplateApi.h
   ItemTemplateApi.h
+  AccountApi.h
+  plusaes.hpp
 )
 
 add_executable(${target} ${sources} ${headers})
