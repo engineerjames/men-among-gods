@@ -1,5 +1,5 @@
 set(SFML_STATIC_LIBRARIES OFF)
-find_package(SFML 2.5 COMPONENTS audio network graphics window system CONFIG REQUIRED)
+find_package(SFML 2.6.1 COMPONENTS audio network graphics window system CONFIG REQUIRED)
 find_package(ZLIB REQUIRED)
 
 add_subdirectory(clientlib)

@@ -5,5 +5,15 @@
     "sfml",
     "zlib",
     "drogon"
+  ],
+  "overrides": [
+    {
+      "name": "drogon",
+      "version": "1.9.4"
+    },
+    {
+      "name": "sfml",
+      "version": "2.6.1"
+    }
   ]
 }
