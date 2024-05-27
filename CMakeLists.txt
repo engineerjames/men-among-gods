@@ -45,7 +45,7 @@ include_directories(${CMAKE_BINARY_DIR}/res)
 set(install_directory ${CMAKE_BINARY_DIR}/client_files)
 
 if (MSVC)
-  list( APPEND PROJECT_CXX_FLAGS /W3 /WX)
+  list( APPEND PROJECT_CXX_FLAGS /W3 /WX /EHsc /DEBUG:FULL)
   list( APPEND PROJECT_CXX_DEFINITIONS _CRT_SECURE_NO_WARNINGS _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS)
 else()
   list( APPEND PROJECT_CXX_FLAGS -g3 -Wall -Wextra -Wshadow -Werror -Wpedantic -Wmissing-include-dirs -Wswitch-default -Wswitch-enum -Wfloat-equal)

@@ -1,6 +1,6 @@
 set(SFML_STATIC_LIBRARIES OFF)
 find_package(SFML 2.5 COMPONENTS audio network graphics window system CONFIG REQUIRED)
-find_package(ZLIB)
+find_package(ZLIB REQUIRED)
 
 add_subdirectory(clientlib)
 
@@ -13,6 +13,13 @@ target_compile_features(${target} PRIVATE cxx_std_17)
 target_compile_options(${target} PRIVATE ${PROJECT_CXX_FLAGS} )
 target_compile_definitions(${target} PRIVATE ${PROJECT_CXX_DEFINITIONS})
 
+#https://cmake.org/cmake/help/latest/command/file.html#get-runtime-dependencies
+#file(GET_RUNTIME_DEPENDENCIES EXECUTABLES $<TARGET_FILE:MenAmongGods>)
+add_custom_command( TARGET MenAmongGods POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E copy
+                        $<TARGET_RUNTIME_DLLS:MenAmongGods>
+                        $<TARGET_FILE_DIR:MenAmongGods>
+                    COMMAND_EXPAND_LISTS)
 add_custom_command(
             TARGET ${target}
             POST_BUILD
@@ -28,26 +35,6 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
   message(STATUS "[Debug Mode] Creating custom target to create release directory...")
   add_custom_target( create_release
               COMMAND ${CMAKE_COMMAND} -E make_directory  ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/brotlicommon.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/brotlidec.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/bz2d.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/FLAC.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/freetyped.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/jsoncpp.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/libpng16d.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/ogg.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/OpenAL32.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/sfml-audio-d-2.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/sfml-graphics-d-2.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/sfml-network-d-2.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/sfml-system-d-2.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/sfml-window-d-2.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/vorbis.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/vorbisenc.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/vorbisfile.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/zlibd1.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:MenAmongGods> ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:MenAmongGods> ${install_directory}
               COMMAND ${CMAKE_COMMAND} -E copy_directory ${RESOURCE_OUTPUT_DIRECTORY} ${install_directory}/res
               COMMENT "Copying dependencies to ${install_directory}..."
               )
@@ -55,26 +42,6 @@ else()
   message(STATUS "[Release Mode] Creating custom target to create release directory...")
   add_custom_target( create_release
               COMMAND ${CMAKE_COMMAND} -E make_directory  ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/brotlicommon.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/brotlidec.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/bz2.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/FLAC.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/freetype.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/jsoncpp.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/libpng16.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/ogg.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/OpenAL32.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/sfml-audio-2.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/sfml-graphics-2.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/sfml-network-2.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/sfml-system-2.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/sfml-window-2.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/vorbis.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/vorbisenc.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/vorbisfile.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/zlib1.dll ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:MenAmongGods> ${install_directory}
-              COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:MenAmongGods> ${install_directory}
               COMMAND ${CMAKE_COMMAND} -E copy_directory ${RESOURCE_OUTPUT_DIRECTORY} ${install_directory}/res
               COMMENT "Copying dependencies to ${install_directory}..."
               )

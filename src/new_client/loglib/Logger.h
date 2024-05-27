@@ -14,7 +14,7 @@
 
 #include <nlohmann/json.hpp>
 
-#if WIN32
+#if _MSC_VER
 #define __PRETTY_FUNCTION__ __FUNCSIG__
 #endif
 
