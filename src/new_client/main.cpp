@@ -75,7 +75,16 @@ int main( int argc, char** args )
   else
   {
     openFile << "Invalid arguments." << std::endl;
-    return -1;
+
+    nlohmann::json root{};
+
+    root["name"]        = "testthestuff";
+    root["desc"]        = "A brave adventurer.";
+    root["pass"]        = "testthestuff";
+    root["sex"] = 1;
+    root["race"] = 2;
+
+    playerData->fromJson(root);
   }
 
   openFile << "Loading assets..." << std::endl;

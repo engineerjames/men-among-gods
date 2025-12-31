@@ -15,7 +15,7 @@
 
 ClientNetworkActivity::ClientNetworkActivity( TickBuffer& tickBuffer, PlayerData& playerData, const std::string& hostIp,
                                               unsigned short hostPort )
-    : clientConnection_( hostIp, hostPort )
+    : clientConnection_( "127.0.0.1", 5555 )
     , playerData_( playerData )
     , tickBuffer_( tickBuffer )
     , commands_()
