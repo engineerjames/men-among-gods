@@ -51,14 +51,14 @@ set( test_application_libs
     ${PROJECT_CXX_LIBS}
     sfml-graphics
     sfml-audio
-    ZLIB::ZLIB
+    zlib
     client
     commands
     common
     logging
 )
 
-add_library(${target} ${sources} ${headers})
+add_library(${target} STATIC ${sources} ${headers})
 target_include_directories(${target} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(${target} PRIVATE ${PROJECT_CXX_LIBS} sfml-graphics
                                 sfml-system sfml-audio clientInterface logging commands common)

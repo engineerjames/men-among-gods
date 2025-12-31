@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.14)
 project(men-among-gods C CXX)
 set (CMAKE_CXX_STANDARD 17)
 
+link_directories(${CMAKE_CURRENT_SOURCE_DIR}/external/x86-windows/lib)
+
 option(ENABLE_CLANG_TIDY "Enable static analysis via clang-tidy" OFF)
 option(ENABLE_LOGGING "Enable logging output from new client application" ON)
 option(ENABLE_UBSAN "Enable undefined behavior sanitizer" OFF)

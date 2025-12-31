@@ -24,9 +24,9 @@ set( headers
     ServerMessage.h
     TickBuffer.h
 )
-add_library(${target} ${sources} ${headers})
+add_library(${target} STATIC ${sources} ${headers})
 target_link_libraries(${target} PRIVATE ${PROJECT_CXX_LIBS})
-target_link_libraries(${target} PRIVATE sfml-graphics sfml-network logging ZLIB::ZLIB common
+target_link_libraries(${target} PRIVATE sfml-graphics sfml-network logging zlib common
                                         MenAmongGodsGraphics commands)
 
 if (NOT MSVC)
@@ -104,7 +104,7 @@ set( headers
     commands/UniqueCommand.h
     commands/UseCommand.h
 )
-add_library(${target} ${sources} ${headers})
+add_library(${target} STATIC ${sources} ${headers})
 target_link_libraries(${target} PRIVATE sfml-network MenAmongGodsGraphics clientInterface logging client)
 target_link_libraries(${target} PRIVATE ${PROJECT_CXX_LIBS})
 target_compile_features(${target} PRIVATE cxx_std_17)

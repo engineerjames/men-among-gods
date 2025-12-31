@@ -1,7 +1,4 @@
 set(SFML_STATIC_LIBRARIES OFF)
-find_package(SFML 2.5 COMPONENTS audio network graphics window system CONFIG REQUIRED)
-find_package(ZLIB)
-
 add_subdirectory(clientlib)
 
 set(target MenAmongGods)
